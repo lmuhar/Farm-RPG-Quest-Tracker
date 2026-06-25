@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2 } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
-import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
+import { getQuestStatus, compareQuests, isLimitedTime, isActiveOrUpcomingLimitedTime, isCompletable } from './utils';
 import { useStore } from './store';
 import { SkillsPanel } from './components/SkillsPanel';
 import { InventoryPanel } from './components/InventoryPanel';
@@ -47,10 +47,6 @@ export default function App() {
     [questsWithStatus]
   );
 
-  const limitedTimeQuests = useMemo(
-    () => questsWithStatus.filter(({ quest }) => isLimitedTime(quest)),
-    [questsWithStatus]
-  );
 
   const filteredQuests = useMemo(() => {
     return questsWithStatus.filter(({ quest, status }) => {
@@ -114,10 +110,12 @@ export default function App() {
 
   const isSearching = globalSearch.trim().length > 0;
 
-  // Limited-time quests that are not completed — for alert banner
+  // Only current/upcoming limited-time quests for the alert banner (not old past events)
   const activeLimitedQuests = useMemo(
-    () => limitedTimeQuests.filter(({ status }) => status !== 'completed'),
-    [limitedTimeQuests]
+    () => questsWithStatus.filter(
+      ({ quest, status }) => status !== 'completed' && isActiveOrUpcomingLimitedTime(quest)
+    ),
+    [questsWithStatus]
   );
 
   return (

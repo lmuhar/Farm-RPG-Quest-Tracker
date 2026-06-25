@@ -78,6 +78,18 @@ export function isLimitedTime(quest: Quest): boolean {
   return quest.startDate !== '' || quest.endDate !== '';
 }
 
+// Returns true if the quest's time window is currently active or upcoming (within 30 days)
+export function isActiveOrUpcomingLimitedTime(quest: Quest): boolean {
+  if (!quest.endDate) return false;
+  const today = new Date();
+  const end = new Date(quest.endDate);
+  if (isNaN(end.getTime())) return false;
+  const thirtyDaysFromNow = new Date(today);
+  thirtyDaysFromNow.setDate(today.getDate() + 30);
+  // Show if end date is in the future or within the last 2 days (might still be live)
+  return end >= new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
+}
+
 export function formatDuration(minutes: number): string {
   if (minutes < 1) return `${Math.round(minutes * 60)}s`;
   if (minutes < 60) {
