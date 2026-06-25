@@ -110,6 +110,12 @@ export function npcColor(npc: string): string {
   return colors[npc] ?? 'bg-slate-500/20 text-slate-300 border-slate-500/30';
 }
 
+export function isCompletable(quest: Quest, inventory: Record<string, number>): boolean {
+  const items = parseItems(quest.itemsRequired);
+  if (items.length === 0) return true;
+  return items.every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity);
+}
+
 export function statusColor(status: QuestStatus): string {
   switch (status) {
     case 'completed': return 'border-green-500/50 bg-green-500/5';

@@ -41,4 +41,5 @@ export interface AppState {
   player: PlayerProfile;
   cropTimes: CropTime[];
   plotCount: number;
+  craftingRecipes: Record<string, ParsedItem[]>;
 }

@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
-import { Sprout, ListTodo, GitBranch, Search, X } from 'lucide-react';
+import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2 } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
-import { getQuestStatus, compareQuests } from './utils';
+import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
 import { useStore } from './store';
 import { SkillsPanel } from './components/SkillsPanel';
 import { InventoryPanel } from './components/InventoryPanel';
@@ -10,18 +10,25 @@ import { CropTimerPanel } from './components/CropTimerPanel';
 import { QuestCard } from './components/QuestCard';
 import { QuestLineView } from './components/QuestLineView';
 import { ActiveQuestsSummary } from './components/ActiveQuestsSummary';
+import { ImportExport } from './components/ImportExport';
+import { RecipesPanel } from './components/RecipesPanel';
+import { SetupWizard } from './components/SetupWizard';
+import { GrowPlanner } from './components/GrowPlanner';
+import { StatsTab } from './components/StatsTab';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'quests' | 'questlines';
+type Tab = 'active' | 'quests' | 'questlines' | 'grow' | 'stats';
+type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
-  const { player, questStatuses } = useStore();
+  const { player, questStatuses, inventory } = useStore();
   const [tab, setTab] = useState<Tab>('active');
   const [globalSearch, setGlobalSearch] = useState('');
   const [filterNpc, setFilterNpc] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'available' | 'locked' | 'completed'>('all');
+  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [questlineSearch, setQuestlineSearch] = useState('');
+  const [showWizard, setShowWizard] = useState(false);
 
   const npcs = useMemo(() => [...new Set(allQuests.map((q) => q.npc))].sort(), []);
 
@@ -35,9 +42,26 @@ export default function App() {
     [questsWithStatus]
   );
 
+  const completedCount = useMemo(
+    () => questsWithStatus.filter((q) => q.status === 'completed').length,
+    [questsWithStatus]
+  );
+
+  const limitedTimeQuests = useMemo(
+    () => questsWithStatus.filter(({ quest }) => isLimitedTime(quest)),
+    [questsWithStatus]
+  );
+
   const filteredQuests = useMemo(() => {
     return questsWithStatus.filter(({ quest, status }) => {
-      if (filterStatus !== 'all' && status !== filterStatus) return false;
+      if (filterStatus === 'limited') {
+        if (!isLimitedTime(quest)) return false;
+      } else if (filterStatus === 'completable') {
+        if (status === 'completed' || status === 'locked') return false;
+        if (!isCompletable(quest, inventory)) return false;
+      } else if (filterStatus !== 'all' && status !== filterStatus) {
+        return false;
+      }
       if (filterNpc && quest.npc !== filterNpc) return false;
       const s = globalSearch.toLowerCase();
       if (s) {
@@ -51,7 +75,7 @@ export default function App() {
       }
       return true;
     });
-  }, [questsWithStatus, filterStatus, filterNpc, globalSearch]);
+  }, [questsWithStatus, filterStatus, filterNpc, globalSearch, inventory]);
 
   const questlineGroups = useMemo(() => {
     const groups = new Map<string, Quest[]>();
@@ -84,22 +108,27 @@ export default function App() {
   }, [questlineGroups, questlineSearch]);
 
   const stats = useMemo(() => {
-    const completed = questsWithStatus.filter((q) => q.status === 'completed').length;
     const available = questsWithStatus.filter((q) => q.status === 'available').length;
-    return { completed, available, active: activeQuests.length, total: allQuests.length };
-  }, [questsWithStatus, activeQuests]);
+    return { completed: completedCount, available, active: activeQuests.length, total: allQuests.length };
+  }, [questsWithStatus, activeQuests, completedCount]);
 
   const isSearching = globalSearch.trim().length > 0;
+
+  // Limited-time quests that are not completed — for alert banner
+  const activeLimitedQuests = useMemo(
+    () => limitedTimeQuests.filter(({ status }) => status !== 'completed'),
+    [limitedTimeQuests]
+  );
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
       <header className="bg-slate-800/80 border-b border-slate-700 sticky top-0 z-10 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
           <Sprout size={22} className="text-green-400 flex-shrink-0" />
-          <h1 className="text-lg font-bold text-white flex-shrink-0">Farm RPG</h1>
+          <h1 className="text-lg font-bold text-white flex-shrink-0 hidden sm:block">Farm RPG</h1>
 
           {/* Global search */}
-          <div className="relative flex-1 max-w-md mx-4">
+          <div className="relative flex-1 max-w-md mx-2 sm:mx-4">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="text"
@@ -121,11 +150,21 @@ export default function App() {
             )}
           </div>
 
-          <div className="ml-auto flex items-center gap-4 text-xs text-slate-400 flex-shrink-0">
+          {completedCount < 10 && (
+            <button
+              onClick={() => setShowWizard(true)}
+              className="flex items-center gap-1.5 bg-purple-700/50 hover:bg-purple-700/70 text-purple-300 border border-purple-600/50 rounded-lg px-2.5 py-1.5 text-xs font-medium flex-shrink-0"
+            >
+              <Wand2 size={13} />
+              <span className="hidden sm:inline">Quick Setup</span>
+            </button>
+          )}
+
+          <div className="ml-auto flex items-center gap-2 sm:gap-4 text-xs text-slate-400 flex-shrink-0">
             <span className="text-yellow-400 font-medium">{stats.active} active</span>
             <span className="text-green-400 font-medium">{stats.completed} done</span>
-            <span>{stats.available} available</span>
-            <span className="text-slate-600">{stats.total} total</span>
+            <span className="hidden sm:inline">{stats.available} available</span>
+            <span className="text-slate-600 hidden sm:inline">{stats.total} total</span>
           </div>
         </div>
       </header>
@@ -135,31 +174,45 @@ export default function App() {
           <SkillsPanel />
           <InventoryPanel />
           <CropTimerPanel />
+          <ImportExport />
+          <RecipesPanel />
         </aside>
 
         <main className="flex-1 min-w-0 space-y-4">
-          <div className="flex gap-1 bg-slate-800/60 rounded-lg p-1 border border-slate-700">
+          <div className="flex gap-1 bg-slate-800/60 rounded-lg p-1 border border-slate-700 overflow-x-auto">
             {([
-              { id: 'active', label: 'Active Quests', icon: <ListTodo size={14} /> },
+              { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
               { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
+              { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
+              { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
             ] as const).map(({ id, label, icon }) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded text-sm transition-colors ${
+                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded text-xs sm:text-sm transition-colors whitespace-nowrap ${
                   tab === id
                     ? 'bg-purple-600 text-white font-medium'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                {icon} {label}
+                {icon} <span className="hidden xs:inline sm:inline">{label}</span>
               </button>
             ))}
           </div>
 
           {tab === 'active' && (
             <div className="space-y-3">
+              {activeLimitedQuests.length > 0 && (
+                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3">
+                  <p className="text-xs font-semibold text-orange-300 mb-2">⏰ Limited-time quests ({activeLimitedQuests.length})</p>
+                  <div className="space-y-1">
+                    {activeLimitedQuests.map(({ quest, status }) => (
+                      <QuestCard key={quest.id} quest={quest} status={status} />
+                    ))}
+                  </div>
+                </div>
+              )}
               <ActiveQuestsSummary quests={activeQuests} questStatuses={questStatuses} questlineGroups={questlineGroups} />
               {activeQuests.length > 0 && (
                 <div className="space-y-2">
@@ -173,6 +226,13 @@ export default function App() {
 
           {tab === 'quests' && (
             <div className="space-y-3">
+              {filterStatus === 'limited' && activeLimitedQuests.length > 0 && (
+                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3">
+                  <p className="text-xs font-semibold text-orange-300 mb-1">⏰ Active limited-time quests</p>
+                  <p className="text-xs text-slate-400">{activeLimitedQuests.length} not yet completed</p>
+                </div>
+              )}
+
               <div className="flex gap-2 flex-wrap">
                 {/* Per-tab search (mirrors global) */}
                 <div className="relative flex-1 min-w-48">
@@ -187,13 +247,15 @@ export default function App() {
                 </div>
                 <select
                   value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value as typeof filterStatus)}
+                  onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
                   className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
                 >
                   <option value="all">All statuses</option>
+                  <option value="completable">Completable now</option>
                   <option value="available">Available</option>
                   <option value="locked">Locked</option>
                   <option value="completed">Completed</option>
+                  <option value="limited">Limited time</option>
                 </select>
                 <select
                   value={filterNpc}
@@ -260,8 +322,18 @@ export default function App() {
               ))}
             </div>
           )}
+
+          {tab === 'grow' && (
+            <GrowPlanner questlineGroups={questlineGroups} />
+          )}
+
+          {tab === 'stats' && (
+            <StatsTab questlineGroups={questlineGroups} />
+          )}
         </main>
       </div>
+
+      {showWizard && <SetupWizard onClose={() => setShowWizard(false)} />}
     </div>
   );
 }

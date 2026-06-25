@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppState, PlayerProfile, QuestStatus } from './types';
+import type { AppState, ParsedItem, PlayerProfile, QuestStatus } from './types';
 
 interface Store extends AppState {
   setQuestStatus: (id: string, status: QuestStatus) => void;
@@ -11,6 +11,9 @@ interface Store extends AppState {
   removeCropTime: (item: string) => void;
   setPlotCount: (count: number) => void;
   resetAll: () => void;
+  importState: (data: Partial<AppState>) => void;
+  setCraftingRecipe: (item: string, ingredients: ParsedItem[]) => void;
+  removeCraftingRecipe: (item: string) => void;
 }
 
 const defaultCropTimes = [
@@ -53,6 +56,7 @@ export const useStore = create<Store>()(
       player: defaultPlayer,
       cropTimes: defaultCropTimes,
       plotCount: 28,
+      craftingRecipes: {},
 
       setQuestStatus: (id, status) =>
         set((s) => ({ questStatuses: { ...s.questStatuses, [id]: status } })),
@@ -88,6 +92,27 @@ export const useStore = create<Store>()(
           player: defaultPlayer,
           cropTimes: defaultCropTimes,
           plotCount: 28,
+          craftingRecipes: {},
+        }),
+
+      importState: (data) =>
+        set((s) => ({
+          questStatuses: data.questStatuses ?? s.questStatuses,
+          inventory: data.inventory ?? s.inventory,
+          player: data.player ?? s.player,
+          cropTimes: data.cropTimes ?? s.cropTimes,
+          plotCount: data.plotCount ?? s.plotCount,
+          craftingRecipes: data.craftingRecipes ?? s.craftingRecipes,
+        })),
+
+      setCraftingRecipe: (item, ingredients) =>
+        set((s) => ({ craftingRecipes: { ...s.craftingRecipes, [item]: ingredients } })),
+
+      removeCraftingRecipe: (item) =>
+        set((s) => {
+          const recipes = { ...s.craftingRecipes };
+          delete recipes[item];
+          return { craftingRecipes: recipes };
         }),
     }),
     { name: 'farm-rpg-tracker' }

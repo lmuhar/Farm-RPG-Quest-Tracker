@@ -1,4 +1,4 @@
-import { CheckCircle, Circle, Clock, Lock, Play, ChevronDown, ChevronUp } from 'lucide-react';
+import { CheckCircle, Circle, Clock, Lock, Play, ChevronDown, ChevronUp, Hammer } from 'lucide-react';
 import { useState } from 'react';
 import type { Quest, QuestStatus } from '../types';
 import { parseItems, npcColor, statusColor, formatDuration, calcGrowsNeeded } from '../utils';
@@ -17,8 +17,17 @@ const statusIcon = {
 };
 
 export function QuestCard({ quest, status }: Props) {
-  const { setQuestStatus, inventory, cropTimes, plotCount } = useStore();
+  const { setQuestStatus, inventory, cropTimes, plotCount, craftingRecipes } = useStore();
   const [expanded, setExpanded] = useState(false);
+  const [expandedRecipes, setExpandedRecipes] = useState<Set<string>>(new Set());
+
+  const toggleRecipe = (item: string) => {
+    setExpandedRecipes((prev) => {
+      const next = new Set(prev);
+      next.has(item) ? next.delete(item) : next.add(item);
+      return next;
+    });
+  };
 
   const required = parseItems(quest.itemsRequired);
   const rewards = parseItems(quest.rewardItems);
@@ -85,27 +94,47 @@ export function QuestCard({ quest, status }: Props) {
                   const grows = cropTime ? calcGrowsNeeded(need, plotCount) : null;
                   const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
 
+                  const recipe = craftingRecipes[item];
+                  const isRecipeExpanded = expandedRecipes.has(item);
+
                   return (
-                    <div key={item} className="flex items-center justify-between text-xs gap-2">
-                      <span className="text-slate-300">
-                        <span className="font-mono text-slate-100">{quantity}x</span> {item}
-                      </span>
-                      <div className="flex items-center gap-2 text-right">
-                        {have > 0 && (
-                          <span className={`${have >= quantity ? 'text-green-400' : 'text-yellow-400'}`}>
-                            {have}/{quantity}
-                          </span>
-                        )}
-                        {need > 0 && cropTime && (
-                          <span className="text-green-300 flex items-center gap-1">
-                            <Clock size={10} />
-                            {grows}x grow ({formatDuration(totalTime!)})
-                          </span>
-                        )}
-                        {need > 0 && !cropTime && (
-                          <span className="text-red-400">need {need}</span>
-                        )}
+                    <div key={item} className="text-xs">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-slate-300 flex items-center gap-1">
+                          <span className="font-mono text-slate-100">{quantity}x</span> {item}
+                          {recipe && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); toggleRecipe(item); }}
+                              className="text-orange-400 hover:text-orange-300 ml-1"
+                              title="Show crafting ingredients"
+                            >
+                              <Hammer size={10} />
+                            </button>
+                          )}
+                        </span>
+                        <div className="flex items-center gap-2 text-right">
+                          {have > 0 && (
+                            <span className={`${have >= quantity ? 'text-green-400' : 'text-yellow-400'}`}>
+                              {have}/{quantity}
+                            </span>
+                          )}
+                          {need > 0 && cropTime && (
+                            <span className="text-green-300 flex items-center gap-1">
+                              <Clock size={10} />
+                              {grows}x grow ({formatDuration(totalTime!)})
+                            </span>
+                          )}
+                          {need > 0 && !cropTime && (
+                            <span className="text-red-400">need {need}</span>
+                          )}
+                        </div>
                       </div>
+                      {recipe && isRecipeExpanded && (
+                        <div className="ml-4 mt-0.5 text-orange-300/80 bg-orange-500/5 rounded px-2 py-1">
+                          <span className="text-orange-400 font-medium">Raw materials: </span>
+                          {recipe.map((ing) => `${ing.quantity * quantity}x ${ing.item}`).join(', ')}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
