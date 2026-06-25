@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
-import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2 } from 'lucide-react';
+import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Menu } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
-import { getQuestStatus, compareQuests, isLimitedTime, isActiveOrUpcomingLimitedTime, isCompletable } from './utils';
+import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
 import { useStore } from './store';
 import { SkillsPanel } from './components/SkillsPanel';
 import { InventoryPanel } from './components/InventoryPanel';
@@ -29,6 +29,8 @@ export default function App() {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
+  const [showCompletedLines, setShowCompletedLines] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const npcs = useMemo(() => [...new Set(allQuests.map((q) => q.npc))].sort(), []);
 
@@ -47,6 +49,10 @@ export default function App() {
     [questsWithStatus]
   );
 
+  const limitedTimeQuests = useMemo(
+    () => questsWithStatus.filter(({ quest }) => isLimitedTime(quest)),
+    [questsWithStatus]
+  );
 
   const filteredQuests = useMemo(() => {
     return questsWithStatus.filter(({ quest, status }) => {
@@ -103,6 +109,14 @@ export default function App() {
     );
   }, [questlineGroups, questlineSearch]);
 
+  const visibleQuestlines = useMemo(() => {
+    if (showCompletedLines) return filteredQuestlines;
+    return filteredQuestlines.filter(({ quests }) => {
+      const completedInLine = quests.filter((q) => questStatuses[q.id] === 'completed').length;
+      return completedInLine < quests.length;
+    });
+  }, [filteredQuestlines, showCompletedLines, questStatuses]);
+
   const stats = useMemo(() => {
     const available = questsWithStatus.filter((q) => q.status === 'available').length;
     return { completed: completedCount, available, active: activeQuests.length, total: allQuests.length };
@@ -110,12 +124,10 @@ export default function App() {
 
   const isSearching = globalSearch.trim().length > 0;
 
-  // Only current/upcoming limited-time quests for the alert banner (not old past events)
+  // Limited-time quests that are not completed — for alert banner
   const activeLimitedQuests = useMemo(
-    () => questsWithStatus.filter(
-      ({ quest, status }) => status !== 'completed' && isActiveOrUpcomingLimitedTime(quest)
-    ),
-    [questsWithStatus]
+    () => limitedTimeQuests.filter(({ status }) => status !== 'completed'),
+    [limitedTimeQuests]
   );
 
   return (
@@ -124,6 +136,13 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
           <Sprout size={22} className="text-green-400 flex-shrink-0" />
           <h1 className="text-lg font-bold text-white flex-shrink-0 hidden sm:block">Farm RPG</h1>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="lg:hidden text-slate-400 hover:text-slate-200 flex-shrink-0"
+            title="Open sidebar"
+          >
+            <Menu size={18} />
+          </button>
 
           {/* Global search */}
           <div className="relative flex-1 max-w-md mx-2 sm:mx-4">
@@ -167,8 +186,36 @@ export default function App() {
         </div>
       </header>
 
+      {/* Mobile sidebar drawer */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+          <div className="absolute left-0 top-0 bottom-0 w-80 bg-slate-900 border-r border-slate-700 overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-slate-700">
+              <div className="flex items-center gap-2">
+                <Sprout size={18} className="text-green-400" />
+                <span className="font-bold text-white">Farm RPG</span>
+              </div>
+              <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-slate-200">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <SkillsPanel />
+              <InventoryPanel />
+              <CropTimerPanel />
+              <ImportExport />
+              <RecipesPanel />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 py-6 flex gap-6">
-        <aside className="w-72 flex-shrink-0 space-y-4">
+        <aside className="w-72 flex-shrink-0 space-y-4 hidden lg:block">
           <SkillsPanel />
           <InventoryPanel />
           <CropTimerPanel />
@@ -314,8 +361,20 @@ export default function App() {
                   </button>
                 )}
               </div>
-              <p className="text-xs text-slate-500">{filteredQuestlines.length} quest lines</p>
-              {filteredQuestlines.map(({ name, quests }) => (
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-slate-500">{visibleQuestlines.length} quest lines</p>
+                <button
+                  onClick={() => setShowCompletedLines(!showCompletedLines)}
+                  className={`text-xs px-2 py-1 rounded border transition-colors ${
+                    showCompletedLines
+                      ? 'bg-slate-700/50 text-slate-300 border-slate-600'
+                      : 'bg-slate-800 text-slate-400 border-slate-700'
+                  }`}
+                >
+                  {showCompletedLines ? 'Hide completed lines' : 'Show completed lines'}
+                </button>
+              </div>
+              {visibleQuestlines.map(({ name, quests }) => (
                 <QuestLineView key={name} questline={name} quests={quests} />
               ))}
             </div>

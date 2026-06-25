@@ -17,7 +17,7 @@ const statusIcon = {
 };
 
 export function QuestCard({ quest, status }: Props) {
-  const { setQuestStatus, inventory, cropTimes, plotCount, craftingRecipes } = useStore();
+  const { setQuestStatus, inventory, cropTimes, plotCount, craftingRecipes, player, questNotes, setQuestNote } = useStore();
   const [expanded, setExpanded] = useState(false);
   const [expandedRecipes, setExpandedRecipes] = useState<Set<string>>(new Set());
 
@@ -40,6 +40,23 @@ export function QuestCard({ quest, status }: Props) {
   };
 
   const isLimited = quest.startDate || quest.endDate;
+
+  // Compute locked reasons
+  const lockedReasons: string[] = [];
+  if (status === 'locked') {
+    if (quest.farmingLv > 0 && player.farmingLv < quest.farmingLv)
+      lockedReasons.push(`🌾 Need Farming ${quest.farmingLv} (you have ${player.farmingLv})`);
+    if (quest.fishingLv > 0 && player.fishingLv < quest.fishingLv)
+      lockedReasons.push(`🎣 Need Fishing ${quest.fishingLv} (you have ${player.fishingLv})`);
+    if (quest.craftingLv > 0 && player.craftingLv < quest.craftingLv)
+      lockedReasons.push(`🔨 Need Crafting ${quest.craftingLv} (you have ${player.craftingLv})`);
+    if (quest.exploringLv > 0 && player.exploringLv < quest.exploringLv)
+      lockedReasons.push(`🗺️ Need Exploring ${quest.exploringLv} (you have ${player.exploringLv})`);
+    if (quest.requiredNpcLevel > 0 && (player.npcLevels[quest.npc] ?? 0) < quest.requiredNpcLevel)
+      lockedReasons.push(`💬 Need ${quest.npc} lv ${quest.requiredNpcLevel} (you have ${player.npcLevels[quest.npc] ?? 0})`);
+  }
+
+  const note = questNotes[quest.id] ?? '';
 
   return (
     <div className={`rounded-lg border transition-all ${statusColor(status)}`}>
@@ -68,11 +85,19 @@ export function QuestCard({ quest, status }: Props) {
                 ⏰ Limited
               </span>
             )}
+            {note && (
+              <span className="text-xs text-yellow-400" title={note}>📝</span>
+            )}
           </div>
           <p className="text-sm font-medium text-slate-100 mt-1">{quest.name}</p>
           <p className="text-xs text-slate-500 mt-0.5 truncate">
             {required.map((i) => `${i.quantity}x ${i.item}`).join(', ') || 'No items required'}
           </p>
+          {status === 'locked' && lockedReasons.length > 0 && (
+            <p className="text-xs text-slate-500 mt-1">
+              {lockedReasons.join(' · ')}
+            </p>
+          )}
         </div>
 
         {expanded ? <ChevronUp size={14} className="text-slate-500 flex-shrink-0 mt-1" /> : <ChevronDown size={14} className="text-slate-500 flex-shrink-0 mt-1" />}
@@ -193,6 +218,18 @@ export function QuestCard({ quest, status }: Props) {
                 )}
               </>
             )}
+          </div>
+
+          <div>
+            <textarea
+              placeholder="Add a note…"
+              value={note}
+              onChange={(e) => setQuestNote(quest.id, e.target.value)}
+              onBlur={(e) => setQuestNote(quest.id, e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              rows={2}
+              className="w-full bg-slate-700/50 border border-slate-600 rounded px-2 py-1.5 text-xs text-slate-300 placeholder-slate-600 focus:outline-none focus:border-yellow-500/60 resize-none"
+            />
           </div>
         </div>
       )}

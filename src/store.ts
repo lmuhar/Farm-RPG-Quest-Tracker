@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppState, ParsedItem, PlayerProfile, QuestStatus } from './types';
+import type { AppState, GrowQueueItem, ParsedItem, PlayerProfile, QuestStatus } from './types';
 
 interface Store extends AppState {
   setQuestStatus: (id: string, status: QuestStatus) => void;
@@ -14,6 +14,8 @@ interface Store extends AppState {
   importState: (data: Partial<AppState>) => void;
   setCraftingRecipe: (item: string, ingredients: ParsedItem[]) => void;
   removeCraftingRecipe: (item: string) => void;
+  setGrowQueue: (queue: GrowQueueItem[]) => void;
+  setQuestNote: (id: string, note: string) => void;
 }
 
 const defaultCropTimes = [
@@ -57,6 +59,8 @@ export const useStore = create<Store>()(
       cropTimes: defaultCropTimes,
       plotCount: 28,
       craftingRecipes: {},
+      growQueue: [],
+      questNotes: {},
 
       setQuestStatus: (id, status) =>
         set((s) => ({ questStatuses: { ...s.questStatuses, [id]: status } })),
@@ -93,6 +97,8 @@ export const useStore = create<Store>()(
           cropTimes: defaultCropTimes,
           plotCount: 28,
           craftingRecipes: {},
+          growQueue: [],
+          questNotes: {},
         }),
 
       importState: (data) =>
@@ -103,6 +109,8 @@ export const useStore = create<Store>()(
           cropTimes: data.cropTimes ?? s.cropTimes,
           plotCount: data.plotCount ?? s.plotCount,
           craftingRecipes: data.craftingRecipes ?? s.craftingRecipes,
+          growQueue: data.growQueue ?? s.growQueue,
+          questNotes: data.questNotes ?? s.questNotes,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -114,6 +122,11 @@ export const useStore = create<Store>()(
           delete recipes[item];
           return { craftingRecipes: recipes };
         }),
+
+      setGrowQueue: (growQueue) => set({ growQueue }),
+
+      setQuestNote: (id, note) =>
+        set((s) => ({ questNotes: { ...s.questNotes, [id]: note } })),
     }),
     { name: 'farm-rpg-tracker' }
   )

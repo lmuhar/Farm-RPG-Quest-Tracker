@@ -15,6 +15,8 @@ export function ImportExport() {
       cropTimes: store.cropTimes,
       plotCount: store.plotCount,
       craftingRecipes: store.craftingRecipes,
+      growQueue: store.growQueue,
+      questNotes: store.questNotes,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

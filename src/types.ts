@@ -35,6 +35,11 @@ export interface CropTime {
 
 export type QuestStatus = 'locked' | 'available' | 'active' | 'completed';
 
+export interface GrowQueueItem {
+  item: string;
+  grows: number;
+}
+
 export interface AppState {
   questStatuses: Record<string, QuestStatus>;
   inventory: Record<string, number>;
@@ -42,4 +47,6 @@ export interface AppState {
   cropTimes: CropTime[];
   plotCount: number;
   craftingRecipes: Record<string, ParsedItem[]>;
+  growQueue: GrowQueueItem[];
+  questNotes: Record<string, string>;
 }

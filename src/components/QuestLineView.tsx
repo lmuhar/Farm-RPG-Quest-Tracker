@@ -55,11 +55,13 @@ export function QuestLineView({ questline, quests }: Props) {
   })();
 
   const remainingQuests = quests.filter((_, i) => statuses[i] !== 'completed');
+  const isFullyCompleted = completedCount === quests.length;
 
   return (
-    <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
+    <div className={`bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden${isFullyCompleted ? ' opacity-60' : ''}`}>
       <button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => !isFullyCompleted && setExpanded(!expanded)}
+        disabled={isFullyCompleted}
         className="w-full flex items-center gap-3 p-4 hover:bg-slate-700/30 transition-colors text-left"
       >
         <div className="flex-1">
