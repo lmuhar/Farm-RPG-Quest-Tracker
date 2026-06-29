@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Menu } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
@@ -22,7 +22,7 @@ type Tab = 'active' | 'quests' | 'questlines' | 'grow' | 'stats';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
-  const { player, questStatuses, inventory } = useStore();
+  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
   const [tab, setTab] = useState<Tab>('active');
   const [globalSearch, setGlobalSearch] = useState('');
   const [filterNpc, setFilterNpc] = useState('');
@@ -31,6 +31,27 @@ export default function App() {
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Load state from server on mount (server wins over localStorage)
+  useEffect(() => {
+    fetch('/api/state')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data) importState(data); })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Debounced save to server on every state change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetch('/api/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes }),
+      }).catch(() => {});
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes]);
 
   const npcs = useMemo(() => [...new Set(allQuests.map((q) => q.npc))].sort(), []);
 
@@ -46,11 +67,6 @@ export default function App() {
 
   const completedCount = useMemo(
     () => questsWithStatus.filter((q) => q.status === 'completed').length,
-    [questsWithStatus]
-  );
-
-  const limitedTimeQuests = useMemo(
-    () => questsWithStatus.filter(({ quest }) => isLimitedTime(quest)),
     [questsWithStatus]
   );
 
@@ -123,12 +139,6 @@ export default function App() {
   }, [questsWithStatus, activeQuests, completedCount]);
 
   const isSearching = globalSearch.trim().length > 0;
-
-  // Limited-time quests that are not completed — for alert banner
-  const activeLimitedQuests = useMemo(
-    () => limitedTimeQuests.filter(({ status }) => status !== 'completed'),
-    [limitedTimeQuests]
-  );
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
@@ -248,16 +258,6 @@ export default function App() {
 
           {tab === 'active' && (
             <div className="space-y-3">
-              {activeLimitedQuests.length > 0 && (
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3">
-                  <p className="text-xs font-semibold text-orange-300 mb-2">⏰ Limited-time quests ({activeLimitedQuests.length})</p>
-                  <div className="space-y-1">
-                    {activeLimitedQuests.map(({ quest, status }) => (
-                      <QuestCard key={quest.id} quest={quest} status={status} />
-                    ))}
-                  </div>
-                </div>
-              )}
               <ActiveQuestsSummary quests={activeQuests} questStatuses={questStatuses} questlineGroups={questlineGroups} />
               {activeQuests.length > 0 && (
                 <div className="space-y-2">
@@ -271,12 +271,6 @@ export default function App() {
 
           {tab === 'quests' && (
             <div className="space-y-3">
-              {filterStatus === 'limited' && activeLimitedQuests.length > 0 && (
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-3">
-                  <p className="text-xs font-semibold text-orange-300 mb-1">⏰ Active limited-time quests</p>
-                  <p className="text-xs text-slate-400">{activeLimitedQuests.length} not yet completed</p>
-                </div>
-              )}
 
               <div className="flex gap-2 flex-wrap">
                 {/* Per-tab search (mirrors global) */}

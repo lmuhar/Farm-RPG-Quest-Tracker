@@ -103,7 +103,8 @@ export function SkillsPanel() {
               type="number"
               min={0}
               max={999}
-              value={player[key]}
+              value={player[key] || ''}
+              placeholder="0"
               onChange={(e) => {
                 const val = e.target.value === '' ? 0 : parseInt(e.target.value);
                 if (!isNaN(val)) setPlayer({ ...player, [key]: val });
@@ -140,7 +141,8 @@ export function SkillsPanel() {
                   type="number"
                   min={0}
                   max={20}
-                  value={player.npcLevels[npc] ?? 0}
+                  value={player.npcLevels[npc] || ''}
+                  placeholder="0"
                   onChange={(e) => {
                     const val = e.target.value === '' ? 0 : parseInt(e.target.value);
                     if (!isNaN(val)) setNpcLevel(npc, val);

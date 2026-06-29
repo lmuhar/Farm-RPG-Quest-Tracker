@@ -26,35 +26,23 @@ export function QuestLineView({ questline, quests }: Props) {
   const completedCount = statuses.filter((s) => s === 'completed').length;
   const progress = Math.round((completedCount / quests.length) * 100);
 
-  // Aggregate items needed for all non-completed quests
-  const futureItems = (() => {
-    const map = new Map<string, { total: number; quests: string[] }>();
-    quests.forEach((quest, i) => {
-      if (statuses[i] === 'completed') return;
-      for (const { quantity, item } of parseItems(quest.itemsRequired)) {
-        const existing = map.get(item) ?? { total: 0, quests: [] };
-        map.set(item, {
-          total: existing.total + quantity,
-          quests: [...existing.quests, quest.name],
-        });
-      }
-    });
-    return [...map.entries()].map(([item, { total, quests: usedBy }]) => {
-      const have = inventory[item] ?? 0;
-      const need = Math.max(0, total - have);
-      const cropTime = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
-      const grows = cropTime && need > 0 ? calcGrowsNeeded(need, plotCount) : null;
-      const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
-      return { item, total, have, need, usedBy, cropTime, grows, totalTime };
-    }).sort((a, b) => {
-      // crops with times first, then by name
-      if (a.cropTime && !b.cropTime) return -1;
-      if (!a.cropTime && b.cropTime) return 1;
-      return a.item.localeCompare(b.item);
-    });
-  })();
+  // Per-quest item breakdown for non-completed quests
+  const questItemBreakdown = quests
+    .map((quest, i) => {
+      if (statuses[i] === 'completed') return null;
+      const items = parseItems(quest.itemsRequired).map(({ quantity, item }) => {
+        const have = inventory[item] ?? 0;
+        const need = Math.max(0, quantity - have);
+        const cropTime = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
+        const grows = cropTime && need > 0 ? calcGrowsNeeded(need, plotCount) : null;
+        const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
+        return { item, quantity, have, need, cropTime, grows, totalTime };
+      });
+      return { quest, status: statuses[i], items };
+    })
+    .filter((x): x is NonNullable<typeof x> => x !== null);
 
-  const remainingQuests = quests.filter((_, i) => statuses[i] !== 'completed');
+  const remainingQuests = questItemBreakdown.map((x) => x.quest);
   const isFullyCompleted = completedCount === quests.length;
 
   return (
@@ -103,36 +91,52 @@ export function QuestLineView({ questline, quests }: Props) {
 
       {expanded && (
         <div className="border-t border-slate-700/50">
-          {/* Future items summary */}
-          {remainingQuests.length > 0 && futureItems.length > 0 && (
+          {/* Future items summary — per quest */}
+          {questItemBreakdown.length > 0 && (
             <div className="px-4 py-3 bg-slate-900/40 border-b border-slate-700/50">
               <button
                 onClick={(e) => { e.stopPropagation(); setShowFuture(!showFuture); }}
                 className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-slate-100 w-full"
               >
                 {showFuture ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
-                All items needed ({remainingQuests.length} remaining quest{remainingQuests.length !== 1 ? 's' : ''})
-                <span className="ml-auto text-slate-500 font-normal">{futureItems.length} unique items</span>
+                Items needed ({remainingQuests.length} remaining quest{remainingQuests.length !== 1 ? 's' : ''})
               </button>
 
               {showFuture && (
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
-                  {futureItems.map(({ item, total, have, need, grows, totalTime, cropTime }) => (
-                    <div key={item} className="flex items-start justify-between gap-2 text-xs">
-                      <div className="flex-1 min-w-0">
-                        <span className={need === 0 ? 'text-green-400 line-through' : 'text-slate-300'}>
-                          {item}
-                        </span>
-                        {cropTime && need > 0 && grows !== null && totalTime !== null && (
-                          <span className="text-green-300 ml-1.5 flex items-center gap-0.5 inline-flex">
-                            <Clock size={9} />
-                            {grows}x · {formatDuration(totalTime)}
-                          </span>
-                        )}
+                <div className="mt-3 space-y-4">
+                  {questItemBreakdown.map(({ quest, status, items }) => (
+                    <div key={quest.id}>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                          status === 'active' ? 'bg-yellow-400' : status === 'available' ? 'bg-slate-400' : 'bg-slate-700'
+                        }`} />
+                        <span className="text-xs font-medium text-slate-300">{quest.name}</span>
+                        {status === 'active' && <span className="text-xs text-yellow-400">● active</span>}
+                        {status === 'locked' && <span className="text-xs text-slate-600">locked</span>}
                       </div>
-                      <span className={`flex-shrink-0 font-mono ${need === 0 ? 'text-green-400' : have > 0 ? 'text-yellow-400' : 'text-slate-400'}`}>
-                        {have > 0 ? `${have}/${total}` : `×${total}`}
-                      </span>
+                      {items.length === 0 ? (
+                        <p className="text-xs text-slate-600 ml-4">No items required</p>
+                      ) : (
+                        <div className="ml-4 space-y-1">
+                          {items.map(({ item, quantity, have, need, cropTime, grows, totalTime }) => (
+                            <div key={item} className="flex items-center justify-between gap-2 text-xs">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <span className={need === 0 ? 'text-green-400 line-through' : 'text-slate-300'}>
+                                  {quantity}x {item}
+                                </span>
+                                {cropTime && need > 0 && grows !== null && totalTime !== null && (
+                                  <span className="text-green-300 flex items-center gap-0.5">
+                                    <Clock size={9} />{grows}x · {formatDuration(totalTime)}
+                                  </span>
+                                )}
+                              </div>
+                              <span className={`flex-shrink-0 font-mono ${need === 0 ? 'text-green-400' : have > 0 ? 'text-yellow-400' : 'text-slate-500'}`}>
+                                {have > 0 ? `${have}/${quantity}` : ''}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

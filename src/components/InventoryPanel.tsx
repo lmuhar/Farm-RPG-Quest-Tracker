@@ -23,7 +23,7 @@ function parseBulkLine(line: string): { item: string; quantity: number } | null 
 export function InventoryPanel() {
   const { inventory, setInventoryItem } = useStore();
   const [newItem, setNewItem] = useState('');
-  const [newQty, setNewQty] = useState(1);
+  const [newQty, setNewQty] = useState('');
   const [bulkMode, setBulkMode] = useState(false);
   const [bulkText, setBulkText] = useState('');
 
@@ -32,9 +32,10 @@ export function InventoryPanel() {
   const addItem = () => {
     const trimmed = newItem.trim();
     if (!trimmed) return;
-    setInventoryItem(trimmed, (inventory[trimmed] ?? 0) + newQty);
+    const qty = parseInt(newQty) || 1;
+    setInventoryItem(trimmed, (inventory[trimmed] ?? 0) + qty);
     setNewItem('');
-    setNewQty(1);
+    setNewQty('');
   };
 
   const parsedBulk = useMemo(() => {
@@ -101,9 +102,10 @@ export function InventoryPanel() {
           />
           <input
             type="number"
-            min={1}
+            min={0}
+            placeholder="qty"
             value={newQty}
-            onChange={(e) => setNewQty(parseInt(e.target.value) || 1)}
+            onChange={(e) => setNewQty(e.target.value)}
             className="w-16 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
           />
           <button
@@ -125,8 +127,12 @@ export function InventoryPanel() {
               <input
                 type="number"
                 min={0}
-                value={qty}
-                onChange={(e) => setInventoryItem(item, parseInt(e.target.value) || 0)}
+                value={qty || ''}
+                placeholder="0"
+                onChange={(e) => {
+                  const v = e.target.value === '' ? 0 : parseInt(e.target.value);
+                  if (!isNaN(v)) setInventoryItem(item, v);
+                }}
                 className="w-16 bg-slate-700 border border-slate-600 rounded px-2 py-0.5 text-sm text-slate-100 focus:outline-none focus:border-amber-500"
               />
               <button

@@ -1,6 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppState, GrowQueueItem, ParsedItem, PlayerProfile, QuestStatus } from './types';
+import type { AppState, GrowQueueItem, ParsedItem, PlayerProfile, Quest, QuestStatus } from './types';
+import questsData from './data/quests.json';
+import { compareQuests, getQuestStatus } from './utils';
+
+const allQuests = questsData as Quest[];
+
+// Build questline groups sorted by Roman numeral order, for auto-advance
+const questlineMap = new Map<string, Quest[]>();
+for (const q of allQuests) {
+  if (!q.questline) continue;
+  if (!questlineMap.has(q.questline)) questlineMap.set(q.questline, []);
+  questlineMap.get(q.questline)!.push(q);
+}
+for (const [, qs] of questlineMap) qs.sort((a, b) => compareQuests(a.name, b.name));
 
 interface Store extends AppState {
   setQuestStatus: (id: string, status: QuestStatus) => void;
@@ -63,7 +76,25 @@ export const useStore = create<Store>()(
       questNotes: {},
 
       setQuestStatus: (id, status) =>
-        set((s) => ({ questStatuses: { ...s.questStatuses, [id]: status } })),
+        set((s) => {
+          const updated = { ...s.questStatuses, [id]: status };
+
+          // Auto-advance: when completing a quest in a line, activate the next one if requirements met
+          if (status === 'completed') {
+            const quest = allQuests.find((q) => q.id === id);
+            if (quest?.questline) {
+              const line = questlineMap.get(quest.questline) ?? [];
+              const idx = line.findIndex((q) => q.id === id);
+              const next = line[idx + 1];
+              if (next && !updated[next.id]) {
+                const nextStatus = getQuestStatus(next, s.player, updated);
+                if (nextStatus === 'available') updated[next.id] = 'active';
+              }
+            }
+          }
+
+          return { questStatuses: updated };
+        }),
 
       setInventoryItem: (item, qty) =>
         set((s) => ({ inventory: { ...s.inventory, [item]: qty } })),

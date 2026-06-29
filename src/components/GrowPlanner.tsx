@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Sprout, Plus, Minus, Trash2 } from 'lucide-react';
 import questsData from '../data/quests.json';
 import type { Quest } from '../types';
@@ -11,63 +11,98 @@ interface Props {
   questlineGroups: { name: string; quests: Quest[] }[];
 }
 
+type ViewMode = 'total' | 'by-quest';
+
+function buildCropRows(
+  itemMap: Map<string, number>,
+  cropTimes: { item: string; growMinutes: number }[],
+  inventory: Record<string, number>,
+  plotCount: number
+) {
+  return [...itemMap.entries()]
+    .map(([item, totalNeeded]) => {
+      const ct = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase())!;
+      const have = inventory[item] ?? 0;
+      const stillNeed = Math.max(0, totalNeeded - have);
+      const grows = stillNeed === 0 ? 0 : calcGrowsNeeded(stillNeed, plotCount);
+      const totalTime = grows * ct.growMinutes;
+      return { item, have, totalNeeded, stillNeed, grows, timePerGrow: ct.growMinutes, totalTime };
+    })
+    .sort((a, b) => a.totalTime - b.totalTime);
+}
+
 export function GrowPlanner({ questlineGroups }: Props) {
   const { player, questStatuses, inventory, cropTimes, plotCount, growQueue, setGrowQueue } = useStore();
+  const [viewMode, setViewMode] = useState<ViewMode>('total');
+  const [selectedQuestId, setSelectedQuestId] = useState<string>('');
 
   const questsWithStatus = useMemo(
     () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
     [player, questStatuses]
   );
 
-  const activeQuestIds = useMemo(
-    () => new Set(questsWithStatus.filter((q) => q.status === 'active').map((q) => q.quest.id)),
+  const activeQuests = useMemo(
+    () => questsWithStatus.filter((q) => q.status === 'active').map((q) => q.quest),
     [questsWithStatus]
   );
 
-  const cropMap = useMemo(() => {
-    const map = new Map<string, number>();
+  const activeQuestIds = useMemo(() => new Set(activeQuests.map((q) => q.id)), [activeQuests]);
 
-    // Active quests
-    for (const { quest, status } of questsWithStatus) {
-      if (status !== 'active') continue;
+  // Total view: active + upcoming quest line crops aggregated
+  const totalCropMap = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const quest of activeQuests) {
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
-        const ct = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
-        if (!ct) continue;
+        if (!cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase())) continue;
         map.set(item, (map.get(item) ?? 0) + quantity);
       }
     }
-
-    // Upcoming quests in quest lines that have an active quest
     for (const { quests } of questlineGroups) {
       if (!quests.some((q) => activeQuestIds.has(q.id))) continue;
       const lastActiveIdx = quests.reduce((max, q, i) => (activeQuestIds.has(q.id) ? i : max), -1);
       const upcoming = quests.slice(lastActiveIdx + 1).filter((q) => questStatuses[q.id] !== 'completed');
       for (const quest of upcoming) {
         for (const { item, quantity } of parseItems(quest.itemsRequired)) {
-          const ct = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
-          if (!ct) continue;
+          if (!cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase())) continue;
           map.set(item, (map.get(item) ?? 0) + quantity);
         }
       }
     }
-
     return map;
   }, [questsWithStatus, activeQuestIds, questlineGroups, cropTimes, questStatuses]);
 
-  const rows = useMemo(() => {
-    return [...cropMap.entries()]
-      .map(([item, totalNeeded]) => {
-        const ct = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase())!;
-        const have = inventory[item] ?? 0;
-        const stillNeed = Math.max(0, totalNeeded - have);
-        const grows = calcGrowsNeeded(stillNeed, plotCount);
-        const totalTime = grows * ct.growMinutes;
-        return { item, have, totalNeeded, stillNeed, grows, timePerGrow: ct.growMinutes, totalTime };
-      })
-      .sort((a, b) => a.timePerGrow - b.timePerGrow);
-  }, [cropMap, cropTimes, inventory, plotCount]);
+  const totalRows = useMemo(
+    () => buildCropRows(totalCropMap, cropTimes, inventory, plotCount),
+    [totalCropMap, cropTimes, inventory, plotCount]
+  );
 
-  const totalFarmTime = useMemo(() => rows.reduce((sum, r) => sum + r.totalTime, 0), [rows]);
+  const totalFarmTime = useMemo(() => totalRows.reduce((sum, r) => sum + r.totalTime, 0), [totalRows]);
+
+  // Per-quest view
+  const selectedQuest = useMemo(
+    () => activeQuests.find((q) => q.id === selectedQuestId) ?? activeQuests[0] ?? null,
+    [activeQuests, selectedQuestId]
+  );
+
+  const questCropMap = useMemo(() => {
+    const map = new Map<string, number>();
+    if (!selectedQuest) return map;
+    for (const { item, quantity } of parseItems(selectedQuest.itemsRequired)) {
+      if (!cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase())) continue;
+      map.set(item, (map.get(item) ?? 0) + quantity);
+    }
+    return map;
+  }, [selectedQuest, cropTimes]);
+
+  const questRows = useMemo(
+    () => buildCropRows(questCropMap, cropTimes, inventory, plotCount),
+    [questCropMap, cropTimes, inventory, plotCount]
+  );
+
+  const questFarmTime = useMemo(() => questRows.reduce((sum, r) => sum + r.totalTime, 0), [questRows]);
+
+  const rows = viewMode === 'total' ? totalRows : questRows;
+  const farmTime = viewMode === 'total' ? totalFarmTime : questFarmTime;
 
   const addToQueue = (item: string) => {
     const existing = growQueue.find((q) => q.item === item);
@@ -95,9 +130,7 @@ export function GrowPlanner({ questlineGroups }: Props) {
     return growQueue.map(({ item, grows }) => {
       const ct = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
       if (!ct) return null;
-      const timePerGrow = ct.growMinutes;
-      const totalTime = grows * timePerGrow;
-      return { item, grows, timePerGrow, totalTime };
+      return { item, grows, timePerGrow: ct.growMinutes, totalTime: grows * ct.growMinutes };
     }).filter(Boolean) as { item: string; grows: number; timePerGrow: number; totalTime: number }[];
   }, [growQueue, cropTimes]);
 
@@ -108,7 +141,7 @@ export function GrowPlanner({ questlineGroups }: Props) {
     return new Date(Date.now() + queueTotalTime * 60 * 1000);
   }, [queueTotalTime]);
 
-  if (rows.length === 0) {
+  if (activeQuests.length === 0 && totalRows.length === 0) {
     return (
       <div className="bg-slate-800/40 rounded-xl border border-slate-700 p-8 text-center">
         <Sprout size={28} className="text-slate-600 mx-auto mb-2" />
@@ -120,53 +153,98 @@ export function GrowPlanner({ questlineGroups }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
-        <p className="text-sm font-semibold text-green-300">
-          Total farm time: <span className="text-white">{formatDuration(totalFarmTime)}</span>
-        </p>
-        <p className="text-xs text-slate-400 mt-0.5">Across {rows.length} crop type{rows.length !== 1 ? 's' : ''} · {plotCount} plots</p>
+      {/* View toggle */}
+      <div className="flex gap-1 bg-slate-800/60 rounded-lg p-1 border border-slate-700">
+        <button
+          onClick={() => setViewMode('total')}
+          className={`flex-1 py-1.5 px-3 rounded text-sm transition-colors ${viewMode === 'total' ? 'bg-green-700 text-white font-medium' : 'text-slate-400 hover:text-slate-200'}`}
+        >
+          All active + upcoming
+        </button>
+        <button
+          onClick={() => setViewMode('by-quest')}
+          className={`flex-1 py-1.5 px-3 rounded text-sm transition-colors ${viewMode === 'by-quest' ? 'bg-green-700 text-white font-medium' : 'text-slate-400 hover:text-slate-200'}`}
+        >
+          By quest
+        </button>
       </div>
 
-      <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-700 text-xs text-slate-400 uppercase tracking-wider">
-              <th className="text-left px-4 py-3">Crop</th>
-              <th className="text-right px-4 py-3">Have</th>
-              <th className="text-right px-4 py-3">Need</th>
-              <th className="text-right px-4 py-3">Grows</th>
-              <th className="text-right px-4 py-3 hidden sm:table-cell">Per grow</th>
-              <th className="text-right px-4 py-3">Total time</th>
-              <th className="px-4 py-3"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(({ item, have, totalNeeded, stillNeed, grows, timePerGrow, totalTime }) => (
-              <tr key={item} className="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/20">
-                <td className="px-4 py-2.5 text-slate-200 font-medium">{item}</td>
-                <td className={`px-4 py-2.5 text-right font-mono ${have >= totalNeeded ? 'text-green-400' : 'text-yellow-400'}`}>
-                  {have}/{totalNeeded}
-                </td>
-                <td className="px-4 py-2.5 text-right font-mono text-slate-300">{stillNeed}</td>
-                <td className="px-4 py-2.5 text-right font-mono text-purple-300">{stillNeed === 0 ? '—' : grows}</td>
-                <td className="px-4 py-2.5 text-right text-slate-400 text-xs hidden sm:table-cell">{formatDuration(timePerGrow)}</td>
-                <td className={`px-4 py-2.5 text-right text-xs ${stillNeed === 0 ? 'text-green-400' : 'text-green-300'}`}>
-                  {stillNeed === 0 ? '✓ done' : formatDuration(totalTime)}
-                </td>
-                <td className="px-2 py-2.5">
-                  <button
-                    onClick={() => addToQueue(item)}
-                    className="text-slate-500 hover:text-green-400 transition-colors"
-                    title="Add to grow queue"
-                  >
-                    <Plus size={13} />
-                  </button>
-                </td>
+      {/* Quest selector */}
+      {viewMode === 'by-quest' && (
+        <select
+          value={selectedQuestId || selectedQuest?.id || ''}
+          onChange={(e) => setSelectedQuestId(e.target.value)}
+          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-green-500"
+        >
+          {activeQuests.map((q) => (
+            <option key={q.id} value={q.id}>{q.name} — {q.npc}</option>
+          ))}
+          {activeQuests.length === 0 && <option disabled>No active quests</option>}
+        </select>
+      )}
+
+      {/* Summary banner */}
+      {rows.length > 0 && (
+        <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+          <p className="text-sm font-semibold text-green-300">
+            Total farm time: <span className="text-white">{formatDuration(farmTime)}</span>
+          </p>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {rows.length} crop type{rows.length !== 1 ? 's' : ''} · {plotCount} plots
+            {viewMode === 'by-quest' && selectedQuest && ` · ${selectedQuest.name}`}
+          </p>
+        </div>
+      )}
+
+      {rows.length === 0 && viewMode === 'by-quest' && (
+        <div className="bg-slate-800/40 rounded-xl border border-slate-700 p-6 text-center">
+          <p className="text-slate-500 text-sm">No crop items for this quest.</p>
+        </div>
+      )}
+
+      {/* Crop table */}
+      {rows.length > 0 && (
+        <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-700 text-xs text-slate-400 uppercase tracking-wider">
+                <th className="text-left px-4 py-3">Crop</th>
+                <th className="text-right px-4 py-3">Have</th>
+                <th className="text-right px-4 py-3">Need</th>
+                <th className="text-right px-4 py-3">Grows</th>
+                <th className="text-right px-4 py-3 hidden sm:table-cell">Per grow</th>
+                <th className="text-right px-4 py-3">Total time ↑</th>
+                <th className="px-4 py-3"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {rows.map(({ item, have, totalNeeded, stillNeed, grows, timePerGrow, totalTime }) => (
+                <tr key={item} className="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/20">
+                  <td className="px-4 py-2.5 text-slate-200 font-medium">{item}</td>
+                  <td className={`px-4 py-2.5 text-right font-mono ${have >= totalNeeded ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {have}/{totalNeeded}
+                  </td>
+                  <td className="px-4 py-2.5 text-right font-mono text-slate-300">{stillNeed}</td>
+                  <td className="px-4 py-2.5 text-right font-mono text-purple-300">{stillNeed === 0 ? '—' : grows}</td>
+                  <td className="px-4 py-2.5 text-right text-slate-400 text-xs hidden sm:table-cell">{formatDuration(timePerGrow)}</td>
+                  <td className={`px-4 py-2.5 text-right text-xs ${stillNeed === 0 ? 'text-green-400' : 'text-green-300'}`}>
+                    {stillNeed === 0 ? '✓ done' : formatDuration(totalTime)}
+                  </td>
+                  <td className="px-2 py-2.5">
+                    <button
+                      onClick={() => addToQueue(item)}
+                      className="text-slate-500 hover:text-green-400 transition-colors"
+                      title="Add to grow queue"
+                    >
+                      <Plus size={13} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {/* Grow Queue */}
       <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
@@ -174,18 +252,13 @@ export function GrowPlanner({ questlineGroups }: Props) {
           <Sprout size={14} className="text-green-400" />
           <span className="text-sm font-semibold text-slate-200">Grow Queue</span>
           {growQueue.length > 0 && (
-            <button
-              onClick={() => setGrowQueue([])}
-              className="ml-auto text-xs text-slate-500 hover:text-red-400"
-            >
+            <button onClick={() => setGrowQueue([])} className="ml-auto text-xs text-slate-500 hover:text-red-400">
               Clear all
             </button>
           )}
         </div>
         {queueRows.length === 0 ? (
-          <p className="text-xs text-slate-500 text-center py-6">
-            Click + on any crop row above to add to queue
-          </p>
+          <p className="text-xs text-slate-500 text-center py-6">Click + on any crop row above to add to queue</p>
         ) : (
           <>
             <table className="w-full text-sm">
