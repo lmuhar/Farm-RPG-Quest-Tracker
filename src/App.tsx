@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Menu } from 'lucide-react';
+import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Menu, Package } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -15,10 +15,11 @@ import { RecipesPanel } from './components/RecipesPanel';
 import { SetupWizard } from './components/SetupWizard';
 import { GrowPlanner } from './components/GrowPlanner';
 import { StatsTab } from './components/StatsTab';
+import { InventoryPage } from './components/InventoryPage';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'quests' | 'questlines' | 'grow' | 'stats';
+type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'stats';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -237,6 +238,7 @@ export default function App() {
           <div className="flex gap-1 bg-slate-800/60 rounded-lg p-1 border border-slate-700 overflow-x-auto">
             {([
               { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
+              { id: 'inventory', label: 'Inventory', icon: <Package size={14} /> },
               { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
@@ -267,6 +269,10 @@ export default function App() {
                 </div>
               )}
             </div>
+          )}
+
+          {tab === 'inventory' && (
+            <InventoryPage />
           )}
 
           {tab === 'quests' && (
