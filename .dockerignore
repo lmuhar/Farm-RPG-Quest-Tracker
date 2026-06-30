@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-server
+.git
+.gitignore
+.dockerignore
+*.local
+.DS_Store
