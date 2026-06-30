@@ -51,32 +51,24 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
   const upcomingByLine = questlineGroups
     .filter(({ quests: qs }) => qs.some((q) => activeQuestIds.has(q.id)))
     .map(({ name, quests: qs }) => {
-      // Future = not completed and not currently active (i.e. after the active one)
       const lastActiveIdx = qs.reduce((max, q, i) => (activeQuestIds.has(q.id) ? i : max), -1);
       const upcoming = qs.slice(lastActiveIdx + 1).filter((q) => questStatuses[q.id] !== 'completed');
 
-      // Aggregate items for upcoming quests
-      const upMap = new Map<string, { total: number }>();
-      for (const quest of upcoming) {
-        for (const { quantity, item } of parseItems(quest.itemsRequired)) {
-          upMap.set(item, { total: (upMap.get(item)?.total ?? 0) + quantity });
-        }
-      }
-
-      const upItems = [...upMap.entries()].map(([item, { total }]) => {
-        const have = inventory[item] ?? 0;
-        const need = Math.max(0, total - have);
-        const cropTime = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
-        const grows = cropTime && need > 0 ? calcGrowsNeeded(need, plotCount) : null;
-        const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
-        return { item, total, have, need, cropTime, grows, totalTime };
-      }).sort((a, b) => {
-        if (a.cropTime && !b.cropTime) return -1;
-        if (!a.cropTime && b.cropTime) return 1;
-        return a.item.localeCompare(b.item);
+      // Build per-quest item breakdown
+      const questBreakdown = upcoming.map((quest) => {
+        const items = parseItems(quest.itemsRequired).map(({ item, quantity }) => {
+          const have = inventory[item] ?? 0;
+          const need = Math.max(0, quantity - have);
+          const cropTime = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
+          const grows = cropTime && need > 0 ? calcGrowsNeeded(need, plotCount) : null;
+          const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
+          return { item, quantity, have, need, cropTime, grows, totalTime };
+        });
+        const allDone = items.length > 0 && items.every((i) => i.need === 0);
+        return { quest, items, allDone };
       });
 
-      return { name, upcoming, upItems };
+      return { name, upcoming, questBreakdown };
     })
     .filter(({ upcoming }) => upcoming.length > 0);
 
@@ -146,8 +138,8 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
         </div>
       </div>
 
-      {/* Upcoming items per quest line */}
-      {upcomingByLine.map(({ name, upcoming, upItems }) => (
+      {/* Upcoming quests per quest line */}
+      {upcomingByLine.map(({ name, upcoming, questBreakdown }) => (
         <div key={name} className="bg-slate-800/40 rounded-xl border border-slate-600/60 overflow-hidden">
           <button
             onClick={() => toggleLine(name)}
@@ -156,7 +148,7 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
             <GitBranch size={14} className="text-purple-400 flex-shrink-0" />
             <span className="text-sm font-medium text-slate-200">{name}</span>
             <span className="text-xs text-slate-500">
-              — {upcoming.length} quest{upcoming.length !== 1 ? 's' : ''} ahead · {upItems.length} items
+              — {upcoming.length} quest{upcoming.length !== 1 ? 's' : ''} ahead
             </span>
             <span className="ml-auto text-slate-500">
               {expandedLines.has(name) ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -164,29 +156,43 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
           </button>
 
           {expandedLines.has(name) && (
-            <div className="border-t border-slate-700/50 px-4 py-3">
-              <p className="text-xs text-slate-500 mb-3">
-                Next: {upcoming.map((q) => q.name).join(' → ')}
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5">
-                {upItems.map(({ item, total, have, need, grows, totalTime, cropTime }) => (
-                  <div key={item} className="flex items-center justify-between gap-2 text-xs">
-                    <div className="flex-1 min-w-0 flex items-center gap-1.5 flex-wrap">
-                      <span className={need === 0 ? 'text-green-400 line-through' : 'text-slate-300'}>
-                        {item}
-                      </span>
-                      {cropTime && need > 0 && grows !== null && totalTime !== null && (
-                        <span className="text-green-300 flex items-center gap-0.5">
-                          <Clock size={9} />{grows}x · {formatDuration(totalTime)}
-                        </span>
-                      )}
-                    </div>
-                    <span className={`flex-shrink-0 font-mono ${need === 0 ? 'text-green-400' : have > 0 ? 'text-yellow-400' : 'text-slate-400'}`}>
-                      {have > 0 ? `${have}/${total}` : `×${total}`}
+            <div className="border-t border-slate-700/50 divide-y divide-slate-700/40">
+              {questBreakdown.map(({ quest, items, allDone }, idx) => (
+                <div key={quest.id} className={`px-4 py-3 ${allDone ? 'opacity-60' : ''}`}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`text-xs font-semibold px-1.5 py-0.5 rounded ${idx === 0 ? 'bg-purple-600/30 text-purple-300 border border-purple-500/30' : 'bg-slate-700 text-slate-400'}`}>
+                      {idx === 0 ? 'Next' : `+${idx}`}
                     </span>
+                    <span className={`text-xs font-medium ${allDone ? 'text-green-400' : 'text-slate-200'}`}>
+                      {quest.name}
+                    </span>
+                    {allDone && <span className="text-xs text-green-400 ml-auto">✓ ready</span>}
                   </div>
-                ))}
-              </div>
+                  {items.length === 0 ? (
+                    <p className="text-xs text-slate-600 pl-8">No items required</p>
+                  ) : (
+                    <div className="pl-8 space-y-1">
+                      {items.map(({ item, quantity, have, need, cropTime, grows, totalTime }) => (
+                        <div key={item} className="flex items-center justify-between gap-2 text-xs">
+                          <div className="flex-1 flex items-center gap-1.5 flex-wrap">
+                            <span className={need === 0 ? 'text-green-400 line-through' : 'text-slate-300'}>
+                              {item}
+                            </span>
+                            {cropTime && need > 0 && grows !== null && totalTime !== null && (
+                              <span className="text-green-300 flex items-center gap-0.5">
+                                <Clock size={9} />{grows}x · {formatDuration(totalTime)}
+                              </span>
+                            )}
+                          </div>
+                          <span className={`flex-shrink-0 font-mono ${need === 0 ? 'text-green-400' : have > 0 ? 'text-yellow-400' : 'text-slate-400'}`}>
+                            {have > 0 ? `${have}/${quantity}` : `×${quantity}`}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
