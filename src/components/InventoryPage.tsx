@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { Package, Plus, Trash2, Search, X, AlignLeft, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, RefreshCw, BookMarked } from 'lucide-react';
+import { useMemo, useState, useCallback } from 'react';
+import { Package, Plus, Trash2, Search, X, AlignLeft, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, RefreshCw, BookMarked, Copy, Check } from 'lucide-react';
 import questsData from '../data/quests.json';
 import type { Quest } from '../types';
 import { useStore } from '../store';
@@ -31,12 +31,20 @@ export function InventoryPage() {
   const [showFulfilledNeeds, setShowFulfilledNeeds] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'qty' | 'deficit'>('deficit');
   const [showBookmarklet, setShowBookmarklet] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const bookmarkletHref = useMemo(() => {
     const origin = window.location.origin;
     const code = `(function(){var T='${origin}',inv={};document.querySelectorAll('li').forEach(function(li){var n=li.querySelector('.item-title strong'),q=li.querySelector('.item-after');if(!n||!q)return;var name=n.textContent.trim(),qty=parseInt(q.textContent.replace(/,/g,'').trim(),10);if(name&&!isNaN(qty)&&qty>0)inv[name]=qty;});var c=Object.keys(inv).length;if(!c){alert('No items found — make sure you are on the Farm RPG inventory page.');return;}fetch(T+'/api/sync-inventory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({inventory:inv})}).then(function(r){return r.json();}).then(function(d){if(d.ok)alert('Synced '+c+' items to Farm RPG Tracker!');else alert('Error: '+d.error);}).catch(function(e){alert('Failed: '+e.message);});})();`;
     return `javascript:${code}`;
   }, []);
+
+  const copyBookmarklet = useCallback(() => {
+    navigator.clipboard.writeText(bookmarkletHref).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }, [bookmarkletHref]);
 
   // Aggregate items needed from all active quests
   const activeNeeds = useMemo(() => {
@@ -143,32 +151,55 @@ export function InventoryPage() {
 
       {/* Sync from game panel */}
       {showBookmarklet && (
-        <div className="bg-slate-800/60 rounded-xl border border-green-600/30 p-4 space-y-3">
+        <div className="bg-slate-800/60 rounded-xl border border-green-600/30 p-4 space-y-4">
           <div className="flex items-start gap-2">
             <BookMarked size={15} className="text-green-400 flex-shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-slate-200">One-click inventory sync</p>
-              <p className="text-xs text-slate-400">
-                Drag the button below to your browser's bookmarks bar. Then, whenever you want to sync,
-                visit your <span className="text-green-300 font-medium">Farm RPG inventory page</span> and click the bookmark.
-                Your items will be imported here automatically.
+            <div>
+              <p className="text-sm font-medium text-slate-200">One-click sync — one-time setup</p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Add this as a browser bookmark. Then on your Farm RPG inventory page, click it once to import everything.
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line react/jsx-no-script-url */}
-            <a
-              href={bookmarkletHref}
-              onClick={(e) => e.preventDefault()}
-              draggable
-              className="inline-flex items-center gap-1.5 bg-green-700 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg cursor-grab active:cursor-grabbing select-none border border-green-500/40 shadow"
-            >
-              <RefreshCw size={13} /> Sync Farm RPG Inventory
-            </a>
-            <p className="text-xs text-slate-500">← drag this to your bookmarks bar</p>
+
+          {/* Step 1 */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Step 1 — Add the bookmark</p>
+            <div className="flex flex-wrap gap-3 items-center">
+              {/* Drag target */}
+              {/* eslint-disable-next-line react/jsx-no-script-url */}
+              <a
+                href={bookmarkletHref}
+                onClick={(e) => e.preventDefault()}
+                draggable
+                className="inline-flex items-center gap-1.5 bg-green-700 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg cursor-grab active:cursor-grabbing select-none border border-green-500/40 shadow"
+                title="Drag me to your bookmarks bar"
+              >
+                <RefreshCw size={13} /> Sync Farm RPG Inventory
+              </a>
+              <span className="text-xs text-slate-500">drag to bookmarks bar</span>
+              <span className="text-xs text-slate-600">or</span>
+              <button
+                onClick={copyBookmarklet}
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition-colors"
+              >
+                {copied ? <><Check size={12} className="text-green-400" /> Copied!</> : <><Copy size={12} /> Copy URL</>}
+              </button>
+              <span className="text-xs text-slate-500">then right-click bookmarks bar → Add bookmark → paste as URL</span>
+            </div>
           </div>
-          <p className="text-xs text-slate-600">
-            The bookmark reads your inventory page and sends it directly to this tracker. Your login session stays in your browser — nothing is stored here.
+
+          {/* Step 2 */}
+          <div className="space-y-1">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Step 2 — Use it</p>
+            <p className="text-xs text-slate-400">
+              Go to <span className="text-green-300 font-mono">farmrpg.com/inventory.php</span> and click the bookmark.
+              You'll get a confirmation alert and your inventory here updates instantly.
+            </p>
+          </div>
+
+          <p className="text-xs text-slate-600 border-t border-slate-700 pt-3">
+            Your login session stays entirely in your browser — nothing is stored on this server.
           </p>
         </div>
       )}
