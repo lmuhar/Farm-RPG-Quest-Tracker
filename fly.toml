@@ -1,6 +1,6 @@
 # fly.toml — configure app name before deploying
 app = "farm-rpg-tracker"
-primary_region = "syd"
+primary_region = "sin"
 
 [build]
 
