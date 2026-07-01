@@ -35,7 +35,9 @@ export function InventoryPage() {
 
   const bookmarkletHref = useMemo(() => {
     const origin = window.location.origin;
-    const code = `(function(){var T='${origin}',inv={};document.querySelectorAll('li').forEach(function(li){var n=li.querySelector('.item-title strong'),q=li.querySelector('.item-after');if(!n||!q)return;var name=n.textContent.trim(),qty=parseInt(q.textContent.replace(/,/g,'').trim(),10);if(name&&!isNaN(qty)&&qty>0)inv[name]=qty;});var c=Object.keys(inv).length;if(!c){alert('No items found — make sure you are on the Farm RPG inventory page.');return;}fetch(T+'/api/sync-inventory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({inventory:inv})}).then(function(r){return r.json();}).then(function(d){if(d.ok)alert('Synced '+c+' items to Farm RPG Tracker!');else alert('Error: '+d.error);}).catch(function(e){alert('Failed: '+e.message);});})();`;
+    // Opens tracker in a new tab with inventory encoded in the URL hash —
+    // avoids CORS and farmrpg.com CSP entirely.
+    const code = `(function(){var T='${origin}',inv={};document.querySelectorAll('li').forEach(function(li){var n=li.querySelector('.item-title strong'),q=li.querySelector('.item-after');if(!n||!q)return;var name=n.textContent.trim(),qty=parseInt(q.textContent.replace(/,/g,'').trim(),10);if(name&&!isNaN(qty)&&qty>0)inv[name]=qty;});var c=Object.keys(inv).length;if(!c){alert('No items found — make sure you are on the Farm RPG inventory page.');return;}window.open(T+'/#sync-inv='+encodeURIComponent(JSON.stringify(inv)),'_blank');})();`;
     return `javascript:${code}`;
   }, []);
 
@@ -157,7 +159,7 @@ export function InventoryPage() {
             <div>
               <p className="text-sm font-medium text-slate-200">One-click sync — one-time setup</p>
               <p className="text-xs text-slate-400 mt-0.5">
-                Add this as a browser bookmark. Then on your Farm RPG inventory page, click it once to import everything.
+                Add this as a browser bookmark. On your Farm RPG inventory page, click it once — your tracker opens in a new tab with everything imported automatically.
               </p>
             </div>
           </div>
@@ -208,7 +210,7 @@ export function InventoryPage() {
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Then — use it</p>
             <p className="text-xs text-slate-400">
               Go to <span className="text-green-300 font-mono">farmrpg.com/inventory.php</span> and tap/click the bookmark.
-              Your inventory here updates instantly.
+              Your tracker opens in a new tab with inventory already synced — no alerts, no blocked requests.
             </p>
           </div>
 

@@ -22,7 +22,7 @@ type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'stats' |
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
-  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
+  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState, setInventoryItem } = useStore();
   const [tab, setTab] = useState<Tab>('active');
   const [globalSearch, setGlobalSearch] = useState('');
   const [filterNpc, setFilterNpc] = useState('');
@@ -31,12 +31,32 @@ export default function App() {
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
 
-  // Load state from server on mount (server wins over localStorage)
+  // Load state from server on mount; apply any bookmarklet hash-sync after server state loads
   useEffect(() => {
+    const hash = window.location.hash;
+    let hashInv: Record<string, number> | null = null;
+    if (hash.startsWith('#sync-inv=')) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(hash.slice('#sync-inv='.length)));
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          hashInv = parsed as Record<string, number>;
+        }
+      } catch { /* ignore malformed hash */ }
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      setTab('inventory');
+    }
+
+    const applyHashInv = () => {
+      if (!hashInv) return;
+      for (const [item, qty] of Object.entries(hashInv)) {
+        if (typeof qty === 'number' && qty > 0) setInventoryItem(item, qty);
+      }
+    };
+
     fetch('/api/state')
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data) importState(data); })
-      .catch(() => {});
+      .then((data) => { if (data) importState(data); applyHashInv(); })
+      .catch(() => { applyHashInv(); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
