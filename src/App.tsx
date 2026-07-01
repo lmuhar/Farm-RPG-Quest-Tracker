@@ -1,11 +1,10 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Menu, Package } from 'lucide-react';
+import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
 import { useStore } from './store';
 import { SkillsPanel } from './components/SkillsPanel';
-import { InventoryPanel } from './components/InventoryPanel';
 import { CropTimerPanel } from './components/CropTimerPanel';
 import { QuestCard } from './components/QuestCard';
 import { QuestLineView } from './components/QuestLineView';
@@ -19,7 +18,7 @@ import { InventoryPage } from './components/InventoryPage';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'stats';
+type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -31,7 +30,6 @@ export default function App() {
   const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Load state from server on mount (server wins over localStorage)
   useEffect(() => {
@@ -147,13 +145,6 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
           <Sprout size={22} className="text-green-400 flex-shrink-0" />
           <h1 className="text-lg font-bold text-white flex-shrink-0 hidden sm:block">Farm RPG</h1>
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-slate-400 hover:text-slate-200 flex-shrink-0"
-            title="Open sidebar"
-          >
-            <Menu size={18} />
-          </button>
 
           {/* Global search */}
           <div className="relative flex-1 max-w-md mx-2 sm:mx-4">
@@ -197,44 +188,8 @@ export default function App() {
         </div>
       </header>
 
-      {/* Mobile sidebar drawer */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSidebarOpen(false)}
-          />
-          <div className="absolute left-0 top-0 bottom-0 w-80 bg-slate-900 border-r border-slate-700 overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b border-slate-700">
-              <div className="flex items-center gap-2">
-                <Sprout size={18} className="text-green-400" />
-                <span className="font-bold text-white">Farm RPG</span>
-              </div>
-              <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-slate-200">
-                <X size={18} />
-              </button>
-            </div>
-            <div className="p-4 space-y-4">
-              <SkillsPanel />
-              <InventoryPanel />
-              <CropTimerPanel />
-              <ImportExport />
-              <RecipesPanel />
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto px-4 py-6 flex gap-6">
-        <aside className="w-72 flex-shrink-0 space-y-4 hidden lg:block">
-          <SkillsPanel />
-          <InventoryPanel />
-          <CropTimerPanel />
-          <ImportExport />
-          <RecipesPanel />
-        </aside>
-
-        <main className="flex-1 min-w-0 space-y-4">
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <main className="space-y-4">
           <div className="flex gap-1 bg-slate-800/60 rounded-lg p-1 border border-slate-700 overflow-x-auto">
             {([
               { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
@@ -243,6 +198,7 @@ export default function App() {
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
               { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
+            { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
             ] as const).map(({ id, label, icon }) => (
               <button
                 key={id}
@@ -386,6 +342,17 @@ export default function App() {
 
           {tab === 'stats' && (
             <StatsTab questlineGroups={questlineGroups} />
+          )}
+
+          {tab === 'settings' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <SkillsPanel />
+              <div className="space-y-4">
+                <ImportExport />
+                <CropTimerPanel />
+                <RecipesPanel />
+              </div>
+            </div>
           )}
         </main>
       </div>
