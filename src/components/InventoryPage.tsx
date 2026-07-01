@@ -162,11 +162,10 @@ export function InventoryPage() {
             </div>
           </div>
 
-          {/* Step 1 */}
+          {/* Desktop setup */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Step 1 — Add the bookmark</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Desktop — drag to bookmarks bar</p>
             <div className="flex flex-wrap gap-3 items-center">
-              {/* Drag target */}
               {/* eslint-disable-next-line react/jsx-no-script-url */}
               <a
                 href={bookmarkletHref}
@@ -177,24 +176,39 @@ export function InventoryPage() {
               >
                 <RefreshCw size={13} /> Sync Farm RPG Inventory
               </a>
-              <span className="text-xs text-slate-500">drag to bookmarks bar</span>
-              <span className="text-xs text-slate-600">or</span>
+              <span className="text-xs text-slate-500">drag above button to your bookmarks bar</span>
+            </div>
+          </div>
+
+          {/* Mobile setup */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mobile — copy URL &amp; save as bookmark</p>
+            <div className="flex flex-wrap gap-3 items-center">
               <button
                 onClick={copyBookmarklet}
                 className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition-colors"
               >
-                {copied ? <><Check size={12} className="text-green-400" /> Copied!</> : <><Copy size={12} /> Copy URL</>}
+                {copied ? <><Check size={12} className="text-green-400" /> Copied!</> : <><Copy size={12} /> Copy Bookmarklet URL</>}
               </button>
-              <span className="text-xs text-slate-500">then right-click bookmarks bar → Add bookmark → paste as URL</span>
+            </div>
+            <div className="text-xs text-slate-400 space-y-0.5 pl-1">
+              <p className="font-medium text-slate-300">Safari:</p>
+              <p>1. Bookmark any page (Share → Add Bookmark)</p>
+              <p>2. Open Bookmarks, find it, tap Edit</p>
+              <p>3. Replace the URL field with the copied URL → Save</p>
+              <p className="font-medium text-slate-300 pt-1">Chrome:</p>
+              <p>1. Tap the ⋮ menu → Bookmarks → Add Bookmark</p>
+              <p>2. Open Bookmarks, long-press the new bookmark → Edit</p>
+              <p>3. Replace the URL with the copied URL → Save</p>
             </div>
           </div>
 
-          {/* Step 2 */}
-          <div className="space-y-1">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Step 2 — Use it</p>
+          {/* Step 2 — Use it */}
+          <div className="space-y-1 border-t border-slate-700/50 pt-3">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Then — use it</p>
             <p className="text-xs text-slate-400">
-              Go to <span className="text-green-300 font-mono">farmrpg.com/inventory.php</span> and click the bookmark.
-              You'll get a confirmation alert and your inventory here updates instantly.
+              Go to <span className="text-green-300 font-mono">farmrpg.com/inventory.php</span> and tap/click the bookmark.
+              Your inventory here updates instantly.
             </p>
           </div>
 

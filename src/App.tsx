@@ -198,18 +198,18 @@ export default function App() {
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
               { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
-            { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
+              { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
             ] as const).map(({ id, label, icon }) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-2 rounded text-xs sm:text-sm transition-colors whitespace-nowrap ${
+                className={`flex-shrink-0 flex items-center gap-1.5 py-2 px-3 rounded text-xs font-medium transition-colors whitespace-nowrap ${
                   tab === id
-                    ? 'bg-purple-600 text-white font-medium'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-purple-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
                 }`}
               >
-                {icon} <span className="hidden xs:inline sm:inline">{label}</span>
+                {icon} {label}
               </button>
             ))}
           </div>
@@ -234,9 +234,9 @@ export default function App() {
           {tab === 'quests' && (
             <div className="space-y-3">
 
-              <div className="flex gap-2 flex-wrap">
-                {/* Per-tab search (mirrors global) */}
-                <div className="relative flex-1 min-w-48">
+              <div className="space-y-2">
+                {/* Search — full width */}
+                <div className="relative">
                   <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
                   <input
                     type="text"
@@ -246,36 +246,39 @@ export default function App() {
                     className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-8 pr-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500"
                   />
                 </div>
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
-                  className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
-                >
-                  <option value="all">All statuses</option>
-                  <option value="completable">Completable now</option>
-                  <option value="available">Available</option>
-                  <option value="locked">Locked</option>
-                  <option value="completed">Completed</option>
-                  <option value="limited">Limited time</option>
-                </select>
-                <select
-                  value={filterNpc}
-                  onChange={(e) => setFilterNpc(e.target.value)}
-                  className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
-                >
-                  <option value="">All NPCs</option>
-                  {npcs.map((npc) => (
-                    <option key={npc} value={npc}>{npc}</option>
-                  ))}
-                </select>
-                {(globalSearch || filterNpc || filterStatus !== 'all') && (
-                  <button
-                    onClick={() => { setGlobalSearch(''); setFilterNpc(''); setFilterStatus('all'); }}
-                    className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 px-2"
+                {/* Filters row */}
+                <div className="flex gap-2 flex-wrap items-center">
+                  <select
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
+                    className="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
                   >
-                    <X size={12} /> Clear
-                  </button>
-                )}
+                    <option value="all">All statuses</option>
+                    <option value="completable">Completable now</option>
+                    <option value="available">Available</option>
+                    <option value="locked">Locked</option>
+                    <option value="completed">Completed</option>
+                    <option value="limited">Limited time</option>
+                  </select>
+                  <select
+                    value={filterNpc}
+                    onChange={(e) => setFilterNpc(e.target.value)}
+                    className="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
+                  >
+                    <option value="">All NPCs</option>
+                    {npcs.map((npc) => (
+                      <option key={npc} value={npc}>{npc}</option>
+                    ))}
+                  </select>
+                  {(globalSearch || filterNpc || filterStatus !== 'all') && (
+                    <button
+                      onClick={() => { setGlobalSearch(''); setFilterNpc(''); setFilterStatus('all'); }}
+                      className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 px-2 py-2"
+                    >
+                      <X size={12} /> Clear
+                    </button>
+                  )}
+                </div>
               </div>
 
               <p className="text-xs text-slate-500">
