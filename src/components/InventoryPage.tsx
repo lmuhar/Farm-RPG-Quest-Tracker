@@ -262,7 +262,7 @@ export function InventoryPage() {
                     <span className="text-xs font-semibold text-yellow-400">Still needed</span>
                   </div>
                   <div className="divide-y divide-slate-700/40">
-                    {pendingNeeds.sort((a, b) => b.deficit - a.deficit).map(({ item, needed, have, deficit, quests }) => {
+                    {pendingNeeds.sort((a, b) => (b.have / b.needed) - (a.have / a.needed)).map(({ item, needed, have, deficit, quests }) => {
                       const pct = Math.round((have / needed) * 100);
                       return (
                         <div key={item} className="px-4 py-3">
