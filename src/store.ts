@@ -134,7 +134,10 @@ export const useStore = create<Store>()(
 
       importState: (data) =>
         set((s) => ({
-          questStatuses: data.questStatuses ?? s.questStatuses,
+          // Merge questStatuses so importing partial data doesn't wipe active/other quests
+          questStatuses: data.questStatuses
+            ? { ...s.questStatuses, ...data.questStatuses }
+            : s.questStatuses,
           inventory: data.inventory ?? s.inventory,
           player: data.player ?? s.player,
           cropTimes: data.cropTimes ?? s.cropTimes,

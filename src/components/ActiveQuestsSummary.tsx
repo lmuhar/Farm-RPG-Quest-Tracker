@@ -1,6 +1,25 @@
-import { useState } from 'react';
-import { Swords, Clock, ChevronDown, ChevronUp, GitBranch } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Swords, Clock, ChevronDown, ChevronUp, GitBranch, X } from 'lucide-react';
 import type { Quest, QuestStatus } from '../types';
+
+function ItemBreakdown({ have, questBreakdown }: {
+  have: number;
+  questBreakdown: { quest: Quest; quantity: number }[];
+}) {
+  return (
+    <div className="mt-2 ml-1 bg-slate-900/60 rounded-lg border border-slate-600/50 p-2.5 space-y-1.5">
+      <p className="text-xs text-slate-400 font-medium">Needed by {questBreakdown.length} quest{questBreakdown.length !== 1 ? 's' : ''}:</p>
+      {questBreakdown.map(({ quest, quantity }) => (
+        <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+          <span className="text-slate-300 truncate">{quest.name}</span>
+          <span className={`flex-shrink-0 font-mono ${have >= quantity ? 'text-green-400' : 'text-yellow-400'}`}>
+            {have >= quantity ? `✓ ${quantity}` : `${have}/${quantity}`}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 import { parseItems, formatDuration, calcGrowsNeeded } from '../utils';
 import { useStore } from '../store';
 
@@ -18,6 +37,7 @@ interface Props {
 export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: Props) {
   const { inventory, cropTimes, plotCount } = useStore();
   const [expandedLines, setExpandedLines] = useState<Set<string>>(new Set());
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const toggleLine = (name: string) =>
     setExpandedLines((prev) => {
@@ -25,6 +45,21 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
       next.has(name) ? next.delete(name) : next.add(name);
       return next;
     });
+
+  const toggleItem = (item: string) =>
+    setSelectedItem((prev) => (prev === item ? null : item));
+
+  // Per-item quest breakdown: item -> list of {quest, quantity}
+  const itemQuestMap = useMemo(() => {
+    const map = new Map<string, { quest: Quest; quantity: number }[]>();
+    for (const quest of quests) {
+      for (const { quantity, item } of parseItems(quest.itemsRequired)) {
+        if (!map.has(item)) map.set(item, []);
+        map.get(item)!.push({ quest, quantity });
+      }
+    }
+    return map;
+  }, [quests]);
 
   // Aggregate items for active quests
   const itemMap = new Map<string, number>();
@@ -100,22 +135,30 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
                 <Clock size={11} /> Crops to grow
               </p>
               <div className="space-y-2">
-                {cropItems.map(({ item, totalNeeded, have, need, grows, totalTime }) => (
-                  <div key={item} className="bg-slate-700/40 rounded p-2">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-200 font-medium">{item}</span>
-                      <span className={have >= totalNeeded ? 'text-green-400' : 'text-yellow-400'}>
-                        {have}/{totalNeeded}
-                      </span>
-                    </div>
-                    {need > 0 && grows !== null && totalTime !== null && (
-                      <div className="text-xs text-green-300 mt-0.5">
-                        {grows} grow{grows !== 1 ? 's' : ''} needed · {formatDuration(totalTime)} total
+                {cropItems.map(({ item, totalNeeded, have, need, grows, totalTime }) => {
+                  const isSelected = selectedItem === item;
+                  const breakdown = itemQuestMap.get(item) ?? [];
+                  return (
+                    <div key={item} className={`bg-slate-700/40 rounded p-2 cursor-pointer transition-colors hover:bg-slate-700/60 ${isSelected ? 'ring-1 ring-purple-500/50' : ''}`} onClick={() => toggleItem(item)}>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-200 font-medium">{item}</span>
+                        <div className="flex items-center gap-2">
+                          <span className={have >= totalNeeded ? 'text-green-400' : 'text-yellow-400'}>
+                            {have}/{totalNeeded}
+                          </span>
+                          {breakdown.length > 1 && <span className="text-slate-500">{isSelected ? <X size={10} /> : `${breakdown.length} quests`}</span>}
+                        </div>
                       </div>
-                    )}
-                    {need === 0 && <div className="text-xs text-green-400 mt-0.5">✓ Have enough</div>}
-                  </div>
-                ))}
+                      {need > 0 && grows !== null && totalTime !== null && (
+                        <div className="text-xs text-green-300 mt-0.5">
+                          {grows} grow{grows !== 1 ? 's' : ''} needed · {formatDuration(totalTime)} total
+                        </div>
+                      )}
+                      {need === 0 && <div className="text-xs text-green-400 mt-0.5">✓ Have enough</div>}
+                      {isSelected && <ItemBreakdown have={have} questBreakdown={breakdown} />}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -124,14 +167,24 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
             <div>
               <p className="text-xs font-semibold text-red-400 mb-2">Still needed</p>
               <div className="space-y-1">
-                {otherItems.map(({ item, totalNeeded, have }) => (
-                  <div key={item} className="flex justify-between text-xs">
-                    <span className="text-slate-300">{item}</span>
-                    <span className="text-red-400">
-                      {have > 0 ? `${have}/${totalNeeded}` : `${totalNeeded} needed`}
-                    </span>
-                  </div>
-                ))}
+                {otherItems.map(({ item, totalNeeded, have }) => {
+                  const isSelected = selectedItem === item;
+                  const breakdown = itemQuestMap.get(item) ?? [];
+                  return (
+                    <div key={item} className={`rounded px-2 py-1.5 cursor-pointer transition-colors hover:bg-slate-700/40 ${isSelected ? 'bg-slate-700/40 ring-1 ring-purple-500/50' : ''}`} onClick={() => toggleItem(item)}>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-300">{item}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-red-400">
+                            {have > 0 ? `${have}/${totalNeeded}` : `${totalNeeded} needed`}
+                          </span>
+                          {breakdown.length > 1 && <span className="text-slate-500 text-xs">{isSelected ? <X size={10} /> : `${breakdown.length} quests`}</span>}
+                        </div>
+                      </div>
+                      {isSelected && <ItemBreakdown have={have} questBreakdown={breakdown} />}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
