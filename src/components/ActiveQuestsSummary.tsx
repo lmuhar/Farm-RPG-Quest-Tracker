@@ -1,22 +1,50 @@
 import { useState, useMemo } from 'react';
-import { Swords, Clock, ChevronDown, ChevronUp, GitBranch, X } from 'lucide-react';
+import { Swords, Clock, ChevronDown, ChevronUp, GitBranch, X, Hammer } from 'lucide-react';
 import type { Quest, QuestStatus } from '../types';
+import recipesData from '../data/recipes.json';
 
-function ItemBreakdown({ have, questBreakdown }: {
+interface Recipe {
+  id: string;
+  name: string;
+  ingredients: { item: string; quantity: number }[];
+}
+
+const recipeByName = new Map<string, Recipe>(
+  (recipesData as Recipe[]).map((r) => [r.name.toLowerCase(), r])
+);
+
+function ItemBreakdown({ item, have, questBreakdown }: {
+  item: string;
   have: number;
   questBreakdown: { quest: Quest; quantity: number }[];
 }) {
+  const recipe = recipeByName.get(item.toLowerCase());
   return (
-    <div className="mt-2 ml-1 bg-slate-900/60 rounded-lg border border-slate-600/50 p-2.5 space-y-1.5">
-      <p className="text-xs text-slate-400 font-medium">Needed by {questBreakdown.length} quest{questBreakdown.length !== 1 ? 's' : ''}:</p>
-      {questBreakdown.map(({ quest, quantity }) => (
-        <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
-          <span className="text-slate-300 truncate">{quest.name}</span>
-          <span className={`flex-shrink-0 font-mono ${have >= quantity ? 'text-green-400' : 'text-yellow-400'}`}>
-            {have >= quantity ? `✓ ${quantity}` : `${have}/${quantity}`}
-          </span>
+    <div className="mt-2 ml-1 bg-slate-900/60 rounded-lg border border-slate-600/50 p-2.5 space-y-2">
+      <div className="space-y-1.5">
+        <p className="text-xs text-slate-400 font-medium">Needed by {questBreakdown.length} quest{questBreakdown.length !== 1 ? 's' : ''}:</p>
+        {questBreakdown.map(({ quest, quantity }) => (
+          <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+            <span className="text-slate-300 truncate">{quest.name}</span>
+            <span className={`flex-shrink-0 font-mono ${have >= quantity ? 'text-green-400' : 'text-yellow-400'}`}>
+              {have >= quantity ? `✓ ${quantity}` : `${have}/${quantity}`}
+            </span>
+          </div>
+        ))}
+      </div>
+      {recipe && (
+        <div className="border-t border-slate-700/50 pt-2 space-y-1">
+          <p className="text-xs text-slate-400 font-medium flex items-center gap-1">
+            <Hammer size={10} className="text-amber-400" /> Crafted from:
+          </p>
+          {recipe.ingredients.map(({ item: ing, quantity }) => (
+            <div key={ing} className="flex items-center justify-between gap-2 text-xs pl-2">
+              <span className="text-slate-300">{ing}</span>
+              <span className="text-slate-400 font-mono">×{quantity}</span>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -155,7 +183,7 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
                         </div>
                       )}
                       {need === 0 && <div className="text-xs text-green-400 mt-0.5">✓ Have enough</div>}
-                      {isSelected && <ItemBreakdown have={have} questBreakdown={breakdown} />}
+                      {isSelected && <ItemBreakdown item={item} have={have} questBreakdown={breakdown} />}
                     </div>
                   );
                 })}
@@ -181,7 +209,7 @@ export function ActiveQuestsSummary({ quests, questStatuses, questlineGroups }: 
                           {breakdown.length > 1 && <span className="text-slate-500 text-xs">{isSelected ? <X size={10} /> : `${breakdown.length} quests`}</span>}
                         </div>
                       </div>
-                      {isSelected && <ItemBreakdown have={have} questBreakdown={breakdown} />}
+                      {isSelected && <ItemBreakdown item={item} have={have} questBreakdown={breakdown} />}
                     </div>
                   );
                 })}
