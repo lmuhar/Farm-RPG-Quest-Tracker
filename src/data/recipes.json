@@ -1,0 +1,2628 @@
+[
+  {
+    "id": "21",
+    "name": "Board",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 5
+      }
+    ]
+  },
+  {
+    "id": "637",
+    "name": "Cooking Pot",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 25
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "117",
+    "name": "Glass Bottle",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "95",
+    "name": "Iron Ring",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "368",
+    "name": "Lantern",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 3
+      },
+      {
+        "item": "Twine",
+        "quantity": 2
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Coal",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "84",
+    "name": "Orange Juice",
+    "ingredients": [
+      {
+        "item": "Orange",
+        "quantity": 6
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "163",
+    "name": "Twine",
+    "ingredients": [
+      {
+        "item": "Straw",
+        "quantity": 2
+      },
+      {
+        "item": "Wood",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "787",
+    "name": "Acorn Butter",
+    "ingredients": [
+      {
+        "item": "Acorn",
+        "quantity": 75
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "126",
+    "name": "Amethyst Necklace",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Amethyst",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "379",
+    "name": "Apple Cider",
+    "ingredients": [
+      {
+        "item": "Apple",
+        "quantity": 40
+      },
+      {
+        "item": "Orange",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "125",
+    "name": "Aquamarine Ring",
+    "ingredients": [
+      {
+        "item": "Aquamarine",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "844",
+    "name": "Awl",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Wood",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "237",
+    "name": "Axe",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 2
+      },
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1211",
+    "name": "Barbed Wire",
+    "ingredients": [
+      {
+        "item": "Steel Wire",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "677",
+    "name": "Belt Drive",
+    "ingredients": [
+      {
+        "item": "Rope",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "104",
+    "name": "Black Powder",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "1065",
+    "name": "Block of Wood",
+    "ingredients": [
+      {
+        "item": "Axe",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "896",
+    "name": "Blue Diary",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Blue Parchment",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "535",
+    "name": "Blue Dye",
+    "ingredients": [
+      {
+        "item": "Blue Feathers",
+        "quantity": 3
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "895",
+    "name": "Blue Parchment",
+    "ingredients": [
+      {
+        "item": "Blue Feathers",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "899",
+    "name": "Blue Twine",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 1
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "879",
+    "name": "Bone Pickaxe",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Bone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "105",
+    "name": "Bottle Rocket",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 3
+      },
+      {
+        "item": "Feathers",
+        "quantity": 2
+      },
+      {
+        "item": "Black Powder",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "742",
+    "name": "Bouquet of Flowers",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "129",
+    "name": "Broom",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Straw",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "23",
+    "name": "Bucket",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 5
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "660",
+    "name": "Butter",
+    "ingredients": [
+      {
+        "item": "Milk",
+        "quantity": 25
+      },
+      {
+        "item": "Salt",
+        "quantity": 1
+      },
+      {
+        "item": "Butter Churn",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "659",
+    "name": "Butter Churn",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Wooden Barrel",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "978",
+    "name": "Cannon",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 25
+      },
+      {
+        "item": "Board",
+        "quantity": 12
+      },
+      {
+        "item": "Black Powder",
+        "quantity": 10
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 10
+      }
+    ]
+  },
+  {
+    "id": "481",
+    "name": "Chum",
+    "ingredients": [
+      {
+        "item": "Worms",
+        "quantity": 10
+      },
+      {
+        "item": "Grubs",
+        "quantity": 7
+      },
+      {
+        "item": "Minnows",
+        "quantity": 4
+      },
+      {
+        "item": "Bucket",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "122",
+    "name": "Coin Purse",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 2
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "315",
+    "name": "Compass",
+    "ingredients": [
+      {
+        "item": "Small Screw",
+        "quantity": 4
+      },
+      {
+        "item": "Wood",
+        "quantity": 2
+      },
+      {
+        "item": "Aquamarine",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      },
+      {
+        "item": "Ruby",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "681",
+    "name": "Control Box",
+    "ingredients": [
+      {
+        "item": "Moonstone",
+        "quantity": 3
+      },
+      {
+        "item": "Small Spring",
+        "quantity": 3
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "846",
+    "name": "Corn Husk Doll",
+    "ingredients": [
+      {
+        "item": "Corn",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "629",
+    "name": "Corn Oil",
+    "ingredients": [
+      {
+        "item": "Corn",
+        "quantity": 8
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1442",
+    "name": "Crown of Clover",
+    "ingredients": [
+      {
+        "item": "3-leaf Clover",
+        "quantity": 20
+      },
+      {
+        "item": "4-leaf Clover",
+        "quantity": 2
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "921",
+    "name": "Crystal Pickaxe",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "143",
+    "name": "Emerald",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 2
+      },
+      {
+        "item": "Unpolished Emerald",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "146",
+    "name": "Emerald Ring",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Emerald",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "680",
+    "name": "Energy Coil",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "492",
+    "name": "Essence of Slime",
+    "ingredients": [
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "106",
+    "name": "Explosive",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 6
+      },
+      {
+        "item": "Board",
+        "quantity": 3
+      },
+      {
+        "item": "Black Powder",
+        "quantity": 2
+      },
+      {
+        "item": "Feathers",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "393",
+    "name": "Fancy Guitar",
+    "ingredients": [
+      {
+        "item": "Steel Wire",
+        "quantity": 6
+      },
+      {
+        "item": "Iron",
+        "quantity": 4
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "301",
+    "name": "Fancy Pipe",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 3
+      },
+      {
+        "item": "Wood",
+        "quantity": 2
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1089",
+    "name": "Fire Ant Farm",
+    "ingredients": [
+      {
+        "item": "Fire Ant",
+        "quantity": 25
+      },
+      {
+        "item": "Sand",
+        "quantity": 5
+      },
+      {
+        "item": "Board",
+        "quantity": 4
+      },
+      {
+        "item": "Nails",
+        "quantity": 4
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "194",
+    "name": "Fishing Net",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 4
+      },
+      {
+        "item": "Rope",
+        "quantity": 2
+      },
+      {
+        "item": "Antler",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "341",
+    "name": "Flywheel",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 20
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 7
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "653",
+    "name": "Fruit Punch",
+    "ingredients": [
+      {
+        "item": "Apple",
+        "quantity": 25
+      },
+      {
+        "item": "Lemon",
+        "quantity": 25
+      },
+      {
+        "item": "Grapes",
+        "quantity": 25
+      },
+      {
+        "item": "Peach",
+        "quantity": 5
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "317",
+    "name": "Garnet",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "316",
+    "name": "Garnet Ring",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1094",
+    "name": "Glass Jar",
+    "ingredients": [
+      {
+        "item": "Glass Orb",
+        "quantity": 3
+      },
+      {
+        "item": "Shimmer Quartz",
+        "quantity": 1
+      },
+      {
+        "item": "Steel",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "78",
+    "name": "Glass Orb",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "112",
+    "name": "Grape Juice",
+    "ingredients": [
+      {
+        "item": "Grapes",
+        "quantity": 200
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "350",
+    "name": "Green Cloak",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 10
+      },
+      {
+        "item": "Leather",
+        "quantity": 5
+      },
+      {
+        "item": "Cotton",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "82",
+    "name": "Green Diary",
+    "ingredients": [
+      {
+        "item": "Green Parchment",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "203",
+    "name": "Green Dye",
+    "ingredients": [
+      {
+        "item": "Fern Leaf",
+        "quantity": 6
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "74",
+    "name": "Green Parchment",
+    "ingredients": [
+      {
+        "item": "Fern Leaf",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "414",
+    "name": "Green Scarf",
+    "ingredients": [
+      {
+        "item": "Yarn",
+        "quantity": 2
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "204",
+    "name": "Green Shield",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 3
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "976",
+    "name": "Green Twine",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 1
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "236",
+    "name": "Hammer",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1066",
+    "name": "Handsaw",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 1
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "165",
+    "name": "Horn Canteen",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Wood",
+        "quantity": 1
+      },
+      {
+        "item": "Twine",
+        "quantity": 1
+      },
+      {
+        "item": "Horn",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "217",
+    "name": "Horseshoe",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 7
+      },
+      {
+        "item": "Iron",
+        "quantity": 5
+      },
+      {
+        "item": "Stone",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "388",
+    "name": "Hourglass",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 6
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 2
+      },
+      {
+        "item": "Sand",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "185",
+    "name": "Iced Tea",
+    "ingredients": [
+      {
+        "item": "Tea Leaves",
+        "quantity": 3
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "169",
+    "name": "Inferno Sphere",
+    "ingredients": [
+      {
+        "item": "Runestone 01",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 02",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 04",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 05",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 07",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 08",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 10",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "130",
+    "name": "Iron Cup",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 3
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "264",
+    "name": "Jade",
+    "ingredients": [
+      {
+        "item": "Unpolished Jade",
+        "quantity": 2
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "265",
+    "name": "Jade Charm",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 6
+      },
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Jade",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "682",
+    "name": "Kill Switch",
+    "ingredients": [
+      {
+        "item": "Emberstone",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "260",
+    "name": "Ladder",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 8
+      },
+      {
+        "item": "Board",
+        "quantity": 6
+      }
+    ]
+  },
+  {
+    "id": "220",
+    "name": "Lava Sphere",
+    "ingredients": [
+      {
+        "item": "Runestone 11",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 13",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 14",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 15",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 16",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 17",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 18",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 19",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 20",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "110",
+    "name": "Leather",
+    "ingredients": [
+      {
+        "item": "Hide",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "166",
+    "name": "Leather Bag",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 4
+      },
+      {
+        "item": "Leather",
+        "quantity": 2
+      },
+      {
+        "item": "Twine",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "841",
+    "name": "Leather Belt",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "118",
+    "name": "Leather Diary",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Leather",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1329",
+    "name": "Leather Helmet",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 3
+      },
+      {
+        "item": "Hide",
+        "quantity": 2
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "239",
+    "name": "Leather Waterskin",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 2
+      },
+      {
+        "item": "Twine",
+        "quantity": 2
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "124",
+    "name": "Lemon Quartz Ring",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Lemon Quartz",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "86",
+    "name": "Lemonade",
+    "ingredients": [
+      {
+        "item": "Lemon",
+        "quantity": 6
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "837",
+    "name": "Linked Lantern",
+    "ingredients": [
+      {
+        "item": "Aquamarine",
+        "quantity": 1
+      },
+      {
+        "item": "Amethyst",
+        "quantity": 1
+      },
+      {
+        "item": "Ruby",
+        "quantity": 1
+      },
+      {
+        "item": "Magicite",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "79",
+    "name": "Looking Glass",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 3
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "628",
+    "name": "Machine Press",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 10
+      },
+      {
+        "item": "Nails",
+        "quantity": 5
+      },
+      {
+        "item": "Bucket",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "176",
+    "name": "Magicite",
+    "ingredients": [
+      {
+        "item": "Prism Shard",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "340",
+    "name": "Magna Core",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 40
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 25
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 10
+      },
+      {
+        "item": "Small Spring",
+        "quantity": 5
+      },
+      {
+        "item": "Cogwheel",
+        "quantity": 3
+      },
+      {
+        "item": "Flywheel",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "216",
+    "name": "Magnifying Glass",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 3
+      },
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1095",
+    "name": "Mayonnaise",
+    "ingredients": [
+      {
+        "item": "Eggs",
+        "quantity": 25
+      },
+      {
+        "item": "Glass Jar",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "678",
+    "name": "Metal Spool",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 5
+      },
+      {
+        "item": "Nails",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "75",
+    "name": "Mushroom Paste",
+    "ingredients": [
+      {
+        "item": "Mushroom",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "195",
+    "name": "Mystic Ring",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 3
+      },
+      {
+        "item": "Emerald",
+        "quantity": 2
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Aquamarine",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "842",
+    "name": "Nailed Board",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Nails",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "587",
+    "name": "Peach Juice",
+    "ingredients": [
+      {
+        "item": "Peach",
+        "quantity": 10
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "683",
+    "name": "Pear Grease",
+    "ingredients": [
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "196",
+    "name": "Pearl Necklace",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Pearl",
+        "quantity": 1
+      },
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "820",
+    "name": "Pickaxe",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "725",
+    "name": "Pie Pan",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 10
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "1510",
+    "name": "Pine Shavings",
+    "ingredients": [
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      },
+      {
+        "item": "Pine Board",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1137",
+    "name": "Pine Shelf",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Pine Board",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "900",
+    "name": "Pitchfork",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "83",
+    "name": "Purple Diary",
+    "ingredients": [
+      {
+        "item": "Purple Parchment",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "537",
+    "name": "Purple Dye",
+    "ingredients": [
+      {
+        "item": "Purple Flower",
+        "quantity": 10
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "73",
+    "name": "Purple Parchment",
+    "ingredients": [
+      {
+        "item": "Purple Flower",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "977",
+    "name": "Purple Twine",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1131",
+    "name": "Red Brick",
+    "ingredients": [
+      {
+        "item": "Straw",
+        "quantity": 50
+      },
+      {
+        "item": "Sand",
+        "quantity": 50
+      },
+      {
+        "item": "Bucket",
+        "quantity": 5
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "898",
+    "name": "Red Diary",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "536",
+    "name": "Red Dye",
+    "ingredients": [
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1336",
+    "name": "Red Scarf",
+    "ingredients": [
+      {
+        "item": "Yarn",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "788",
+    "name": "Red Twine",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1330",
+    "name": "Reinforced Helmet",
+    "ingredients": [
+      {
+        "item": "Hide",
+        "quantity": 4
+      },
+      {
+        "item": "Steel",
+        "quantity": 4
+      },
+      {
+        "item": "Leather Helmet",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "193",
+    "name": "Rope",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "94",
+    "name": "Ruby",
+    "ingredients": [
+      {
+        "item": "Unpolished Ruby",
+        "quantity": 2
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "96",
+    "name": "Ruby Ring",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Ruby",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1128",
+    "name": "Rucksack",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 8
+      },
+      {
+        "item": "Glass Jar",
+        "quantity": 3
+      },
+      {
+        "item": "Horn Canteen",
+        "quantity": 2
+      },
+      {
+        "item": "Scissors",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1133",
+    "name": "Sail Cloth",
+    "ingredients": [
+      {
+        "item": "Cotton",
+        "quantity": 5
+      }
+    ]
+  },
+  {
+    "id": "305",
+    "name": "Salt",
+    "ingredients": [
+      {
+        "item": "Salt Rock",
+        "quantity": 50
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "387",
+    "name": "Sand",
+    "ingredients": [
+      {
+        "item": "Sandstone",
+        "quantity": 5
+      },
+      {
+        "item": "Leather",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "326",
+    "name": "Scissors",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 2
+      },
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Nails",
+        "quantity": 1
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1327",
+    "name": "Seashell Necklace",
+    "ingredients": [
+      {
+        "item": "Pearl",
+        "quantity": 10
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 4
+      },
+      {
+        "item": "Yarn",
+        "quantity": 4
+      },
+      {
+        "item": "Jade",
+        "quantity": 2
+      },
+      {
+        "item": "Blue Shell",
+        "quantity": 1
+      },
+      {
+        "item": "Clam Shell",
+        "quantity": 1
+      },
+      {
+        "item": "Conch Shell",
+        "quantity": 1
+      },
+      {
+        "item": "Spiked Shell",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1129",
+    "name": "Sewing Needle",
+    "ingredients": [
+      {
+        "item": "Bone",
+        "quantity": 1
+      },
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "249",
+    "name": "Shimmer Ring",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Shimmer Topaz",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "248",
+    "name": "Shimmer Topaz",
+    "ingredients": [
+      {
+        "item": "Shimmer Quartz",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "238",
+    "name": "Shovel",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Board",
+        "quantity": 1
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1135",
+    "name": "Silk",
+    "ingredients": [
+      {
+        "item": "Caterpillar",
+        "quantity": 3
+      },
+      {
+        "item": "Spider",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "595",
+    "name": "Small Bolt",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 5
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1132",
+    "name": "Snow Shoes",
+    "ingredients": [
+      {
+        "item": "Yarn",
+        "quantity": 32
+      },
+      {
+        "item": "Straw",
+        "quantity": 24
+      },
+      {
+        "item": "Leather",
+        "quantity": 5
+      }
+    ]
+  },
+  {
+    "id": "1334",
+    "name": "Spiky Bracelet",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 4
+      },
+      {
+        "item": "Leather",
+        "quantity": 4
+      },
+      {
+        "item": "Sewing Needle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "675",
+    "name": "Spoon",
+    "ingredients": [
+      {
+        "item": "Bone",
+        "quantity": 1
+      },
+      {
+        "item": "Twine",
+        "quantity": 1
+      },
+      {
+        "item": "Axe",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "145",
+    "name": "Steel",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 10
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1
+      },
+      {
+        "item": "Carbon Sphere",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "843",
+    "name": "Steel Buckle",
+    "ingredients": [
+      {
+        "item": "Emberstone",
+        "quantity": 2
+      },
+      {
+        "item": "Steel",
+        "quantity": 1
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1111",
+    "name": "Steel Pickaxe",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 5
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "592",
+    "name": "Steel Plate",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "392",
+    "name": "Steel Wire",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 10
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Carbon Sphere",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "743",
+    "name": "Step Ladder",
+    "ingredients": [
+      {
+        "item": "Ladder",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "456",
+    "name": "Sturdy Bow",
+    "ingredients": [
+      {
+        "item": "Stone",
+        "quantity": 2
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
+        "item": "Twine",
+        "quantity": 2
+      },
+      {
+        "item": "Steel",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "55",
+    "name": "Sturdy Box",
+    "ingredients": [
+      {
+        "item": "Wooden Plank",
+        "quantity": 6
+      },
+      {
+        "item": "Nails",
+        "quantity": 6
+      },
+      {
+        "item": "Iron",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "167",
+    "name": "Sturdy Shield",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 6
+      },
+      {
+        "item": "Nails",
+        "quantity": 6
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "300",
+    "name": "Sturdy Sword",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Leather",
+        "quantity": 1
+      },
+      {
+        "item": "Steel",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "825",
+    "name": "Sunflower Oil",
+    "ingredients": [
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      },
+      {
+        "item": "Twine",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "252",
+    "name": "Treasure Chest",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 22
+      },
+      {
+        "item": "Iron",
+        "quantity": 12
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 6
+      }
+    ]
+  },
+  {
+    "id": "76",
+    "name": "Unpolished Shimmer Stone",
+    "ingredients": [
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      },
+      {
+        "item": "Sandstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1506",
+    "name": "Valve",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 1
+      },
+      {
+        "item": "Cogwheel",
+        "quantity": 1
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "328",
+    "name": "Wagon Wheel",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 14
+      },
+      {
+        "item": "Board",
+        "quantity": 12
+      }
+    ]
+  },
+  {
+    "id": "81",
+    "name": "White Parchment",
+    "ingredients": [
+      {
+        "item": "Feathers",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "id": "121",
+    "name": "Wine",
+    "ingredients": [
+      {
+        "item": "Grapes",
+        "quantity": 100
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "240",
+    "name": "Wizard Hat",
+    "ingredients": [
+      {
+        "item": "Purple Flower",
+        "quantity": 10
+      },
+      {
+        "item": "Twine",
+        "quantity": 3
+      },
+      {
+        "item": "Leather",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "1511",
+    "name": "Wood Planer",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 2
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Steel",
+        "quantity": 1
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "72",
+    "name": "Wooden Barrel",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 10
+      },
+      {
+        "item": "Nails",
+        "quantity": 10
+      },
+      {
+        "item": "Iron",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "id": "455",
+    "name": "Wooden Bow",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 4
+      },
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Twine",
+        "quantity": 2
+      },
+      {
+        "item": "Fern Leaf",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "37",
+    "name": "Wooden Box",
+    "ingredients": [
+      {
+        "item": "Wooden Plank",
+        "quantity": 6
+      },
+      {
+        "item": "Nails",
+        "quantity": 6
+      }
+    ]
+  },
+  {
+    "id": "845",
+    "name": "Wooden Button",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "36",
+    "name": "Wooden Plank",
+    "ingredients": [
+      {
+        "item": "Board",
+        "quantity": 4
+      },
+      {
+        "item": "Nails",
+        "quantity": 4
+      }
+    ]
+  },
+  {
+    "id": "127",
+    "name": "Wooden Shield",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 4
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "894",
+    "name": "Wooden Spear",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 2
+      },
+      {
+        "item": "Wood",
+        "quantity": 1
+      },
+      {
+        "item": "Arrowhead",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "299",
+    "name": "Wooden Sword",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 4
+      },
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Board",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "738",
+    "name": "Wooden Table",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 12
+      },
+      {
+        "item": "Board",
+        "quantity": 8
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "594",
+    "name": "Wrench",
+    "ingredients": [
+      {
+        "item": "Emberstone",
+        "quantity": 5
+      },
+      {
+        "item": "Steel",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "613",
+    "name": "Y73841 Detector",
+    "ingredients": [
+      {
+        "item": "Small Gear",
+        "quantity": 3
+      },
+      {
+        "item": "Pocket Watch",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 17",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "427",
+    "name": "Yarn",
+    "ingredients": [
+      {
+        "item": "Twine",
+        "quantity": 4
+      }
+    ]
+  }
+]
