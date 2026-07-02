@@ -23,9 +23,12 @@ export function ActiveQuestLine({ questline, quests }: Props) {
   const progress = Math.round((completedCount / quests.length) * 100);
 
   const lastActiveIdx = statuses.reduce((max, s, i) => (s === 'active' ? i : max), -1);
-  const nextQuest = lastActiveIdx >= 0 ? quests[lastActiveIdx + 1] : null;
-  const nextStatus = nextQuest ? statuses[lastActiveIdx + 1] : null;
-  const showNext = nextQuest && nextStatus && nextStatus !== 'completed' && nextStatus !== 'active';
+  const upcomingQuests = lastActiveIdx >= 0
+    ? quests
+        .slice(lastActiveIdx + 1)
+        .map((q, i) => ({ quest: q, status: statuses[lastActiveIdx + 1 + i] }))
+        .filter(({ status }) => status !== 'completed' && status !== 'active')
+    : [];
 
   return (
     <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
@@ -62,12 +65,17 @@ export function ActiveQuestLine({ questline, quests }: Props) {
             <QuestCard key={quest.id} quest={quest} status="active" />
           ))}
 
-        {showNext && nextQuest && nextStatus && (
-          <div className="mt-1 opacity-50 hover:opacity-75 transition-opacity">
-            <p className="text-xs text-slate-500 mb-1.5 flex items-center gap-1 pl-1">
-              <ChevronRight size={11} /> Up next
-            </p>
-            <QuestCard key={nextQuest.id} quest={nextQuest} status={nextStatus} />
+        {upcomingQuests.length > 0 && (
+          <div className="mt-1 space-y-2">
+            {upcomingQuests.map(({ quest, status }, i) => (
+              <div key={quest.id} className="opacity-50 hover:opacity-75 transition-opacity">
+                <p className="text-xs text-slate-500 mb-1.5 flex items-center gap-1 pl-1">
+                  <ChevronRight size={11} />
+                  {i === 0 ? 'Up next' : `+${i} ahead`}
+                </p>
+                <QuestCard quest={quest} status={status} />
+              </div>
+            ))}
           </div>
         )}
       </div>
