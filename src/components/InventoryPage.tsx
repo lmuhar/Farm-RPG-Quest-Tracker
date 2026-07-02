@@ -185,6 +185,13 @@ export function InventoryPage() {
               </a>
               <span className="text-xs text-slate-500">drag above button to your bookmarks bar</span>
             </div>
+            <p className="text-xs text-slate-500">Or create a bookmark manually and paste the code as its URL:</p>
+            <button
+              onClick={copyBookmarklet}
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition-colors"
+            >
+              {copied ? <><Check size={12} className="text-green-400" /> Copied!</> : <><Copy size={12} /> Copy Bookmarklet Code</>}
+            </button>
           </div>
 
           {/* Mobile setup */}
