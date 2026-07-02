@@ -1,6 +1,6 @@
-import { GitBranch, ChevronRight, Lock } from 'lucide-react';
+import { GitBranch, ChevronRight } from 'lucide-react';
 import type { Quest } from '../types';
-import { getQuestStatus, npcColor, parseItems } from '../utils';
+import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
 import { QuestCard } from './QuestCard';
 
@@ -63,24 +63,11 @@ export function ActiveQuestLine({ questline, quests }: Props) {
           ))}
 
         {showNext && nextQuest && nextStatus && (
-          <div className="mt-1 opacity-50">
+          <div className="mt-1 opacity-50 hover:opacity-75 transition-opacity">
             <p className="text-xs text-slate-500 mb-1.5 flex items-center gap-1 pl-1">
               <ChevronRight size={11} /> Up next
             </p>
-            <div className="rounded-lg border border-slate-700/60 bg-slate-800/20 px-3 py-2.5">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className={`text-xs px-1.5 py-0.5 rounded border ${npcColor(nextQuest.npc)}`}>
-                  {nextQuest.npc}
-                </span>
-                {nextStatus === 'locked' && <Lock size={11} className="text-slate-600 flex-shrink-0" />}
-                <span className="text-sm font-medium text-slate-300">{nextQuest.name}</span>
-              </div>
-              {parseItems(nextQuest.itemsRequired).length > 0 && (
-                <p className="text-xs text-slate-600 mt-0.5 truncate">
-                  {parseItems(nextQuest.itemsRequired).map((i) => `${i.quantity}x ${i.item}`).join(', ')}
-                </p>
-              )}
-            </div>
+            <QuestCard key={nextQuest.id} quest={nextQuest} status={nextStatus} />
           </div>
         )}
       </div>
