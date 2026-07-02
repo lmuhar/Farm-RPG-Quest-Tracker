@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings } from 'lucide-react';
+import { Sprout, ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -15,10 +15,11 @@ import { SetupWizard } from './components/SetupWizard';
 import { GrowPlanner } from './components/GrowPlanner';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
+import { RecipesPage } from './components/RecipesPage';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'stats' | 'settings';
+type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -217,6 +218,7 @@ export default function App() {
               { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
+              { id: 'recipes', label: 'Recipes', icon: <Hammer size={14} /> },
               { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
               { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
             ] as const).map(({ id, label, icon }) => (
@@ -361,6 +363,10 @@ export default function App() {
 
           {tab === 'grow' && (
             <GrowPlanner questlineGroups={questlineGroups} />
+          )}
+
+          {tab === 'recipes' && (
+            <RecipesPage />
           )}
 
           {tab === 'stats' && (
