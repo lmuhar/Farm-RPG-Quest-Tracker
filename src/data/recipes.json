@@ -864,6 +864,10 @@
       {
         "item": "Cotton",
         "quantity": 1
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 10
       }
     ]
   },
@@ -2230,6 +2234,10 @@
       {
         "item": "Steel",
         "quantity": 1
+      },
+      {
+        "item": "Oak",
+        "quantity": 4
       }
     ]
   },
