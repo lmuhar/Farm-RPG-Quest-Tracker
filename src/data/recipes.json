@@ -20,6 +20,10 @@
       {
         "item": "Moonstone",
         "quantity": 1
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 25
       }
     ]
   },
@@ -230,6 +234,14 @@
       {
         "item": "Rope",
         "quantity": 1
+      },
+      {
+        "item": "Purple Dye",
+        "quantity": 1
+      },
+      {
+        "item": "Pulley",
+        "quantity": 2
       }
     ]
   },
@@ -250,6 +262,14 @@
       {
         "item": "Axe",
         "quantity": 1
+      },
+      {
+        "item": "Pine Tree",
+        "quantity": 1
+      },
+      {
+        "item": "Handsaw",
+        "quantity": 1
       }
     ]
   },
@@ -259,6 +279,10 @@
     "ingredients": [
       {
         "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "White Parchment",
         "quantity": 1
       },
       {
@@ -316,6 +340,10 @@
       {
         "item": "Bone",
         "quantity": 1
+      },
+      {
+        "item": "Pickaxe",
+        "quantity": 1
       }
     ]
   },
@@ -342,8 +370,32 @@
     "name": "Bouquet of Flowers",
     "ingredients": [
       {
+        "item": "White Parchment",
+        "quantity": 1
+      },
+      {
         "item": "Twine",
         "quantity": 1
+      },
+      {
+        "item": "Yellow Flowers",
+        "quantity": 2
+      },
+      {
+        "item": "Red Flowers",
+        "quantity": 2
+      },
+      {
+        "item": "Blue Flowers",
+        "quantity": 2
+      },
+      {
+        "item": "White Flowers",
+        "quantity": 2
+      },
+      {
+        "item": "Orange Flowers",
+        "quantity": 2
       }
     ]
   },
@@ -412,10 +464,6 @@
     "name": "Cannon",
     "ingredients": [
       {
-        "item": "Steel",
-        "quantity": 25
-      },
-      {
         "item": "Board",
         "quantity": 12
       },
@@ -424,8 +472,24 @@
         "quantity": 10
       },
       {
+        "item": "Steel",
+        "quantity": 25
+      },
+      {
         "item": "Emberstone",
         "quantity": 10
+      },
+      {
+        "item": "Wagon Wheel",
+        "quantity": 4
+      },
+      {
+        "item": "Machine Part",
+        "quantity": 6
+      },
+      {
+        "item": "Scrap Metal",
+        "quantity": 25
       }
     ]
   },
@@ -470,10 +534,6 @@
     "name": "Compass",
     "ingredients": [
       {
-        "item": "Small Screw",
-        "quantity": 4
-      },
-      {
         "item": "Wood",
         "quantity": 2
       },
@@ -496,6 +556,14 @@
       {
         "item": "Twine",
         "quantity": 1
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 4
+      },
+      {
+        "item": "Magna Core",
+        "quantity": 1
       }
     ]
   },
@@ -514,6 +582,18 @@
       {
         "item": "Small Screw",
         "quantity": 2
+      },
+      {
+        "item": "Steel Plate",
+        "quantity": 2
+      },
+      {
+        "item": "Broken Pipe",
+        "quantity": 3
+      },
+      {
+        "item": "Machine Part",
+        "quantity": 10
       }
     ]
   },
@@ -524,6 +604,14 @@
       {
         "item": "Corn",
         "quantity": 3
+      },
+      {
+        "item": "Red Twine",
+        "quantity": 5
+      },
+      {
+        "item": "Wooden Button",
+        "quantity": 2
       }
     ]
   },
@@ -537,6 +625,10 @@
       },
       {
         "item": "Glass Bottle",
+        "quantity": 1
+      },
+      {
+        "item": "Machine Press",
         "quantity": 1
       }
     ]
@@ -569,6 +661,18 @@
       },
       {
         "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Pickaxe",
+        "quantity": 1
+      },
+      {
+        "item": "Fairy Crystal",
+        "quantity": 1
+      },
+      {
+        "item": "Lapis Lazuli",
         "quantity": 1
       }
     ]
@@ -610,11 +714,27 @@
     "name": "Energy Coil",
     "ingredients": [
       {
+        "item": "Glass Orb",
+        "quantity": 1
+      },
+      {
         "item": "Steel",
         "quantity": 2
       },
       {
-        "item": "Glass Orb",
+        "item": "Wrench",
+        "quantity": 1
+      },
+      {
+        "item": "Transistor",
+        "quantity": 25
+      },
+      {
+        "item": "Scrap Wire",
+        "quantity": 8
+      },
+      {
+        "item": "Spool of Copper",
         "quantity": 1
       }
     ]
@@ -634,6 +754,10 @@
       {
         "item": "Hammer",
         "quantity": 1
+      },
+      {
+        "item": "Slimestone",
+        "quantity": 2
       }
     ]
   },
@@ -664,16 +788,20 @@
     "name": "Fancy Guitar",
     "ingredients": [
       {
-        "item": "Steel Wire",
-        "quantity": 6
-      },
-      {
         "item": "Iron",
         "quantity": 4
       },
       {
         "item": "Mushroom Paste",
         "quantity": 3
+      },
+      {
+        "item": "Oak",
+        "quantity": 5
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 6
       }
     ]
   },
@@ -766,8 +894,16 @@
         "quantity": 25
       },
       {
+        "item": "Orange",
+        "quantity": 25
+      },
+      {
         "item": "Lemon",
         "quantity": 25
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
       },
       {
         "item": "Grapes",
@@ -776,10 +912,6 @@
       {
         "item": "Peach",
         "quantity": 5
-      },
-      {
-        "item": "Glass Bottle",
-        "quantity": 1
       }
     ]
   },
@@ -790,6 +922,10 @@
       {
         "item": "Stone",
         "quantity": 1
+      },
+      {
+        "item": "Unpolished Garnet",
+        "quantity": 2
       }
     ]
   },
@@ -803,6 +939,10 @@
       },
       {
         "item": "Iron Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Garnet",
         "quantity": 1
       }
     ]
@@ -832,6 +972,10 @@
       {
         "item": "Stone",
         "quantity": 1
+      },
+      {
+        "item": "Shimmer Stone",
+        "quantity": 2
       }
     ]
   },
@@ -881,6 +1025,10 @@
       },
       {
         "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "White Parchment",
         "quantity": 1
       }
     ]
@@ -932,6 +1080,10 @@
         "quantity": 3
       },
       {
+        "item": "Wooden Shield",
+        "quantity": 1
+      },
+      {
         "item": "Green Dye",
         "quantity": 1
       }
@@ -974,6 +1126,10 @@
     "name": "Handsaw",
     "ingredients": [
       {
+        "item": "Wooden Plank",
+        "quantity": 1
+      },
+      {
         "item": "Mushroom Paste",
         "quantity": 2
       },
@@ -982,11 +1138,11 @@
         "quantity": 2
       },
       {
-        "item": "Wooden Plank",
+        "item": "Hammer",
         "quantity": 1
       },
       {
-        "item": "Hammer",
+        "item": "Awl",
         "quantity": 1
       }
     ]
@@ -1170,6 +1326,22 @@
       {
         "item": "Emberstone",
         "quantity": 3
+      },
+      {
+        "item": "Red Dye",
+        "quantity": 1
+      },
+      {
+        "item": "Broken Pipe",
+        "quantity": 1
+      },
+      {
+        "item": "Scrap Wire",
+        "quantity": 2
+      },
+      {
+        "item": "Scrap Metal",
+        "quantity": 5
       }
     ]
   },
@@ -1193,6 +1365,10 @@
     "ingredients": [
       {
         "item": "Runestone 11",
+        "quantity": 1
+      },
+      {
+        "item": "Runestone 12",
         "quantity": 1
       },
       {
@@ -1264,6 +1440,14 @@
       {
         "item": "Leather",
         "quantity": 3
+      },
+      {
+        "item": "Steel Buckle",
+        "quantity": 1
+      },
+      {
+        "item": "Awl",
+        "quantity": 1
       }
     ]
   },
@@ -1273,6 +1457,10 @@
     "ingredients": [
       {
         "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "White Parchment",
         "quantity": 1
       },
       {
@@ -1368,6 +1556,10 @@
       {
         "item": "Magicite",
         "quantity": 1
+      },
+      {
+        "item": "Lantern",
+        "quantity": 1
       }
     ]
   },
@@ -1398,12 +1590,20 @@
         "quantity": 10
       },
       {
+        "item": "Bucket",
+        "quantity": 1
+      },
+      {
         "item": "Nails",
         "quantity": 5
       },
       {
-        "item": "Bucket",
+        "item": "Steel Plate",
         "quantity": 1
+      },
+      {
+        "item": "Machine Part",
+        "quantity": 6
       }
     ]
   },
@@ -1426,20 +1626,24 @@
         "quantity": 40
       },
       {
-        "item": "Magna Quartz",
-        "quantity": 25
-      },
-      {
-        "item": "Small Screw",
-        "quantity": 10
+        "item": "Cogwheel",
+        "quantity": 3
       },
       {
         "item": "Small Spring",
         "quantity": 5
       },
       {
-        "item": "Cogwheel",
-        "quantity": 3
+        "item": "Seeing Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 25
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 10
       },
       {
         "item": "Flywheel",
@@ -1478,6 +1682,14 @@
         "quantity": 25
       },
       {
+        "item": "Sour Root",
+        "quantity": 1
+      },
+      {
+        "item": "Corn Oil",
+        "quantity": 1
+      },
+      {
         "item": "Glass Jar",
         "quantity": 1
       }
@@ -1488,12 +1700,20 @@
     "name": "Metal Spool",
     "ingredients": [
       {
+        "item": "Nails",
+        "quantity": 2
+      },
+      {
         "item": "Coal",
         "quantity": 5
       },
       {
-        "item": "Nails",
-        "quantity": 2
+        "item": "Broken Pipe",
+        "quantity": 1
+      },
+      {
+        "item": "Scrap Metal",
+        "quantity": 12
       }
     ]
   },
@@ -1568,6 +1788,14 @@
       {
         "item": "Glass Bottle",
         "quantity": 1
+      },
+      {
+        "item": "Blue Gel",
+        "quantity": 5
+      },
+      {
+        "item": "Prickly Pear",
+        "quantity": 30
       }
     ]
   },
@@ -1622,6 +1850,10 @@
       {
         "item": "Moonstone",
         "quantity": 2
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 25
       }
     ]
   },
@@ -1646,6 +1878,10 @@
       {
         "item": "Steel",
         "quantity": 2
+      },
+      {
+        "item": "Small Bolt",
+        "quantity": 4
       },
       {
         "item": "Pine Board",
@@ -1690,6 +1926,10 @@
       {
         "item": "Mushroom Paste",
         "quantity": 1
+      },
+      {
+        "item": "White Parchment",
+        "quantity": 1
       }
     ]
   },
@@ -1724,6 +1964,10 @@
       {
         "item": "Twine",
         "quantity": 1
+      },
+      {
+        "item": "Purple Dye",
+        "quantity": 1
       }
     ]
   },
@@ -1731,6 +1975,14 @@
     "id": "1131",
     "name": "Red Brick",
     "ingredients": [
+      {
+        "item": "Bucket",
+        "quantity": 5
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 3
+      },
       {
         "item": "Straw",
         "quantity": 50
@@ -1740,12 +1992,8 @@
         "quantity": 50
       },
       {
-        "item": "Bucket",
+        "item": "Red Dye",
         "quantity": 5
-      },
-      {
-        "item": "Mushroom Paste",
-        "quantity": 3
       }
     ]
   },
@@ -1755,6 +2003,14 @@
     "ingredients": [
       {
         "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "White Parchment",
+        "quantity": 1
+      },
+      {
+        "item": "Red Parchment",
         "quantity": 1
       }
     ]
@@ -1766,6 +2022,10 @@
       {
         "item": "Glass Bottle",
         "quantity": 1
+      },
+      {
+        "item": "Striped Feather",
+        "quantity": 2
       }
     ]
   },
@@ -1785,6 +2045,10 @@
     "ingredients": [
       {
         "item": "Twine",
+        "quantity": 1
+      },
+      {
+        "item": "Red Dye",
         "quantity": 1
       }
     ]
@@ -1858,16 +2122,40 @@
         "quantity": 8
       },
       {
-        "item": "Glass Jar",
-        "quantity": 3
-      },
-      {
         "item": "Horn Canteen",
         "quantity": 2
       },
       {
         "item": "Scissors",
         "quantity": 1
+      },
+      {
+        "item": "Red Twine",
+        "quantity": 4
+      },
+      {
+        "item": "Steel Buckle",
+        "quantity": 1
+      },
+      {
+        "item": "Awl",
+        "quantity": 2
+      },
+      {
+        "item": "Wooden Button",
+        "quantity": 4
+      },
+      {
+        "item": "Blue Twine",
+        "quantity": 4
+      },
+      {
+        "item": "Green Twine",
+        "quantity": 4
+      },
+      {
+        "item": "Glass Jar",
+        "quantity": 3
       }
     ]
   },
@@ -1878,6 +2166,10 @@
       {
         "item": "Cotton",
         "quantity": 5
+      },
+      {
+        "item": "Sewing Needle",
+        "quantity": 3
       }
     ]
   },
@@ -1984,6 +2276,10 @@
       {
         "item": "Twine",
         "quantity": 1
+      },
+      {
+        "item": "Awl",
+        "quantity": 1
       }
     ]
   },
@@ -2048,6 +2344,10 @@
       {
         "item": "Spider",
         "quantity": 2
+      },
+      {
+        "item": "Machine Press",
+        "quantity": 1
       }
     ]
   },
@@ -2074,16 +2374,24 @@
     "name": "Snow Shoes",
     "ingredients": [
       {
-        "item": "Yarn",
-        "quantity": 32
+        "item": "Leather",
+        "quantity": 5
       },
       {
         "item": "Straw",
         "quantity": 24
       },
       {
-        "item": "Leather",
-        "quantity": 5
+        "item": "Oak",
+        "quantity": 20
+      },
+      {
+        "item": "Yarn",
+        "quantity": 32
+      },
+      {
+        "item": "Handsaw",
+        "quantity": 1
       }
     ]
   },
@@ -2164,12 +2472,20 @@
     "name": "Steel Pickaxe",
     "ingredients": [
       {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
         "item": "Steel",
         "quantity": 5
       },
       {
-        "item": "Mushroom Paste",
-        "quantity": 2
+        "item": "Pickaxe",
+        "quantity": 1
+      },
+      {
+        "item": "Flarite",
+        "quantity": 1
       }
     ]
   },
@@ -2184,6 +2500,10 @@
       {
         "item": "Emberstone",
         "quantity": 2
+      },
+      {
+        "item": "Small Bolt",
+        "quantity": 4
       }
     ]
   },
@@ -2211,6 +2531,14 @@
     "ingredients": [
       {
         "item": "Ladder",
+        "quantity": 2
+      },
+      {
+        "item": "Steel Plate",
+        "quantity": 2
+      },
+      {
+        "item": "Small Bolt",
         "quantity": 2
       }
     ]
@@ -2310,6 +2638,10 @@
       {
         "item": "Twine",
         "quantity": 1
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 6
       }
     ]
   },
@@ -2502,6 +2834,10 @@
       {
         "item": "Wood",
         "quantity": 1
+      },
+      {
+        "item": "Awl",
+        "quantity": 1
       }
     ]
   },
@@ -2610,15 +2946,31 @@
     "name": "Y73841 Detector",
     "ingredients": [
       {
-        "item": "Small Gear",
-        "quantity": 3
-      },
-      {
         "item": "Pocket Watch",
         "quantity": 1
       },
       {
         "item": "Runestone 17",
+        "quantity": 1
+      },
+      {
+        "item": "Compass",
+        "quantity": 1
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 3
+      },
+      {
+        "item": "Transistor",
+        "quantity": 50
+      },
+      {
+        "item": "Scrap Wire",
+        "quantity": 50
+      },
+      {
+        "item": "Y73841 Blueprint",
         "quantity": 1
       }
     ]
@@ -2630,6 +2982,462 @@
       {
         "item": "Twine",
         "quantity": 4
+      }
+    ]
+  },
+  {
+    "id": "etl_508",
+    "name": "Arnold Palmer",
+    "ingredients": [
+      {
+        "item": "Lemonade",
+        "quantity": 20
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_781",
+    "name": "Cabbage Stew",
+    "ingredients": [
+      {
+        "item": "Tomato",
+        "quantity": 15
+      },
+      {
+        "item": "Carrot",
+        "quantity": 40
+      },
+      {
+        "item": "Onion",
+        "quantity": 25
+      },
+      {
+        "item": "Potato",
+        "quantity": 40
+      },
+      {
+        "item": "Leek",
+        "quantity": 25
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 250
+      },
+      {
+        "item": "Coal",
+        "quantity": 480
+      },
+      {
+        "item": "Salt",
+        "quantity": 50
+      },
+      {
+        "item": "Herbs",
+        "quantity": 25
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 5
+      }
+    ]
+  },
+  {
+    "id": "etl_643",
+    "name": "Cat's Meow",
+    "ingredients": [
+      {
+        "item": "Onion",
+        "quantity": 5
+      },
+      {
+        "item": "Fish Bones",
+        "quantity": 25
+      },
+      {
+        "item": "Milk",
+        "quantity": 5
+      },
+      {
+        "item": "Coal",
+        "quantity": 120
+      },
+      {
+        "item": "Salt",
+        "quantity": 1
+      },
+      {
+        "item": "Essence of Slime",
+        "quantity": 3
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_408",
+    "name": "Christmas Tree",
+    "ingredients": [
+      {
+        "item": "Orange Ornament",
+        "quantity": 3
+      },
+      {
+        "item": "Green Ornament",
+        "quantity": 3
+      },
+      {
+        "item": "Red Ornament",
+        "quantity": 3
+      },
+      {
+        "item": "Yellow Ornament",
+        "quantity": 3
+      },
+      {
+        "item": "Blue Ornament",
+        "quantity": 3
+      },
+      {
+        "item": "Purple Ornament",
+        "quantity": 3
+      },
+      {
+        "item": "Pine Tree",
+        "quantity": 1
+      },
+      {
+        "item": "Star",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_726",
+    "name": "Concord Grape Pie",
+    "ingredients": [
+      {
+        "item": "Eggs",
+        "quantity": 10
+      },
+      {
+        "item": "Milk",
+        "quantity": 1
+      },
+      {
+        "item": "Sweet Root",
+        "quantity": 100
+      },
+      {
+        "item": "Coal",
+        "quantity": 750
+      },
+      {
+        "item": "Grapes",
+        "quantity": 100
+      },
+      {
+        "item": "Flour",
+        "quantity": 25
+      },
+      {
+        "item": "Salt",
+        "quantity": 10
+      },
+      {
+        "item": "Butter",
+        "quantity": 5
+      },
+      {
+        "item": "Pie Pan",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_1157",
+    "name": "Festive Eggnog",
+    "ingredients": [
+      {
+        "item": "Peppers",
+        "quantity": 50
+      },
+      {
+        "item": "Eggs",
+        "quantity": 50
+      },
+      {
+        "item": "Milk",
+        "quantity": 50
+      },
+      {
+        "item": "Sweet Root",
+        "quantity": 25
+      },
+      {
+        "item": "Coal",
+        "quantity": 30
+      }
+    ]
+  },
+  {
+    "id": "etl_486",
+    "name": "Heart Necklace",
+    "ingredients": [
+      {
+        "item": "Steel Wire",
+        "quantity": 1
+      },
+      {
+        "item": "Heart Necklace Left Piece",
+        "quantity": 1
+      },
+      {
+        "item": "Heart Necklace Right Piece",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_500",
+    "name": "Large Net",
+    "ingredients": [
+      {
+        "item": "Iron Ring",
+        "quantity": 25
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 25
+      }
+    ]
+  },
+  {
+    "id": "etl_623",
+    "name": "Milk Carton",
+    "ingredients": [
+      {
+        "item": "White Parchment",
+        "quantity": 4
+      },
+      {
+        "item": "Milk",
+        "quantity": 1
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_654",
+    "name": "Neigh",
+    "ingredients": [
+      {
+        "item": "Peppers",
+        "quantity": 45
+      },
+      {
+        "item": "Tomato",
+        "quantity": 10
+      },
+      {
+        "item": "Carrot",
+        "quantity": 50
+      },
+      {
+        "item": "Peas",
+        "quantity": 40
+      },
+      {
+        "item": "Cucumber",
+        "quantity": 30
+      },
+      {
+        "item": "Onion",
+        "quantity": 20
+      },
+      {
+        "item": "Coal",
+        "quantity": 180
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_647",
+    "name": "Over The Moon",
+    "ingredients": [
+      {
+        "item": "Leek",
+        "quantity": 3
+      },
+      {
+        "item": "Corn",
+        "quantity": 3
+      },
+      {
+        "item": "Coal",
+        "quantity": 120
+      },
+      {
+        "item": "Steak",
+        "quantity": 3
+      },
+      {
+        "item": "Salt",
+        "quantity": 1
+      },
+      {
+        "item": "Herbs",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_870",
+    "name": "QED Cell",
+    "ingredients": [
+      {
+        "item": "Aquamarine",
+        "quantity": 50
+      },
+      {
+        "item": "Fish Bones",
+        "quantity": 8
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 30
+      },
+      {
+        "item": "Candy",
+        "quantity": 10
+      },
+      {
+        "item": "Candy Corn",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_723",
+    "name": "Red Berry Pie",
+    "ingredients": [
+      {
+        "item": "Eggs",
+        "quantity": 10
+      },
+      {
+        "item": "Milk",
+        "quantity": 1
+      },
+      {
+        "item": "Sweet Root",
+        "quantity": 100
+      },
+      {
+        "item": "Coal",
+        "quantity": 750
+      },
+      {
+        "item": "Flour",
+        "quantity": 25
+      },
+      {
+        "item": "Salt",
+        "quantity": 10
+      },
+      {
+        "item": "Red Berries",
+        "quantity": 200
+      },
+      {
+        "item": "Butter",
+        "quantity": 5
+      },
+      {
+        "item": "Pie Pan",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "etl_616",
+    "name": "Toilet Paper",
+    "ingredients": [
+      {
+        "item": "White Parchment",
+        "quantity": 50
+      }
+    ]
+  },
+  {
+    "id": "etl_488",
+    "name": "Valentines Card",
+    "ingredients": [
+      {
+        "item": "Feathers",
+        "quantity": 3
+      },
+      {
+        "item": "Fish Bones",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "White Parchment",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "etl_666",
+    "name": "Witch's Brew",
+    "ingredients": [
+      {
+        "item": "Bone",
+        "quantity": 5
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 5
+      },
+      {
+        "item": "Frog",
+        "quantity": 5
+      },
+      {
+        "item": "Essence of Slime",
+        "quantity": 5
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bat Wing",
+        "quantity": 5
       }
     ]
   }
