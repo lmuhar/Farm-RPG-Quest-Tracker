@@ -9,6 +9,7 @@ import { CropTimerPanel } from './components/CropTimerPanel';
 import { QuestCard } from './components/QuestCard';
 import { QuestLineView } from './components/QuestLineView';
 import { ActiveQuestsSummary } from './components/ActiveQuestsSummary';
+import { ActiveQuestLine } from './components/ActiveQuestLine';
 import { ImportExport } from './components/ImportExport';
 import { RecipesPanel } from './components/RecipesPanel';
 import { SetupWizard } from './components/SetupWizard';
@@ -84,6 +85,8 @@ export default function App() {
     () => questsWithStatus.filter((q) => q.status === 'active').map((q) => q.quest),
     [questsWithStatus]
   );
+
+  const activeQuestIds = useMemo(() => new Set(activeQuests.map((q) => q.id)), [activeQuests]);
 
   const completedCount = useMemo(
     () => questsWithStatus.filter((q) => q.status === 'completed').length,
@@ -238,14 +241,19 @@ export default function App() {
 
           {tab === 'active' && (
             <div className="space-y-3">
-              <ActiveQuestsSummary quests={activeQuests} questStatuses={questStatuses} questlineGroups={questlineGroups} />
-              {activeQuests.length > 0 && (
-                <div className="space-y-2">
-                  {activeQuests.map((quest) => (
-                    <QuestCard key={quest.id} quest={quest} status="active" />
-                  ))}
-                </div>
-              )}
+              <ActiveQuestsSummary quests={activeQuests} />
+
+              {/* Questlines that have at least one active quest */}
+              {questlineGroups
+                .filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)))
+                .map(({ name, quests }) => (
+                  <ActiveQuestLine key={name} questline={name} quests={quests} />
+                ))}
+
+              {/* Standalone active quests (not part of any questline) */}
+              {activeQuests.filter((q) => !q.questline).map((quest) => (
+                <QuestCard key={quest.id} quest={quest} status="active" />
+              ))}
             </div>
           )}
 

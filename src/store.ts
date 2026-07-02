@@ -4,6 +4,14 @@ import type { AppState, GrowQueueItem, ParsedItem, PlayerProfile, Quest, QuestSt
 import questsData from './data/quests.json';
 import { compareQuests, getQuestStatus } from './utils';
 
+// Set when auto-advance activates the next quest, consumed once by QuestCard on mount
+let _pendingExpandId: string | null = null;
+export const getPendingExpandId = () => {
+  const id = _pendingExpandId;
+  _pendingExpandId = null;
+  return id;
+};
+
 const allQuests = questsData as Quest[];
 
 // Build questline groups sorted by Roman numeral order, for auto-advance
@@ -88,7 +96,10 @@ export const useStore = create<Store>()(
               const next = line[idx + 1];
               if (next && !updated[next.id]) {
                 const nextStatus = getQuestStatus(next, s.player, updated);
-                if (nextStatus === 'available') updated[next.id] = 'active';
+                if (nextStatus === 'available') {
+                  updated[next.id] = 'active';
+                  _pendingExpandId = next.id;
+                }
               }
             }
           }

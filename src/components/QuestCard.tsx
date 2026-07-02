@@ -2,7 +2,7 @@ import { CheckCircle, Circle, Clock, Lock, Play, ChevronDown, ChevronUp, Hammer 
 import { useState } from 'react';
 import type { Quest, QuestStatus } from '../types';
 import { parseItems, npcColor, statusColor, formatDuration, calcGrowsNeeded } from '../utils';
-import { useStore } from '../store';
+import { useStore, getPendingExpandId } from '../store';
 
 interface Props {
   quest: Quest;
@@ -18,7 +18,7 @@ const statusIcon = {
 
 export function QuestCard({ quest, status }: Props) {
   const { setQuestStatus, inventory, cropTimes, plotCount, craftingRecipes, player, questNotes, setQuestNote } = useStore();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(() => getPendingExpandId() === quest.id);
   const [expandedRecipes, setExpandedRecipes] = useState<Set<string>>(new Set());
 
   const toggleRecipe = (item: string) => {
