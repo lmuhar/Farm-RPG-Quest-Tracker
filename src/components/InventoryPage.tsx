@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import { Package, Plus, Trash2, Search, X, AlignLeft, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, RefreshCw, BookMarked, Copy, Check } from 'lucide-react';
 import questsData from '../data/quests.json';
 import type { Quest } from '../types';
@@ -46,6 +46,12 @@ export function InventoryPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
+  }, [bookmarkletHref]);
+
+  // React 19 blocks javascript: href at render time — set it via the DOM directly
+  const bookmarkAnchorRef = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    bookmarkAnchorRef.current?.setAttribute('href', bookmarkletHref);
   }, [bookmarkletHref]);
 
   // Aggregate items needed from all active quests
@@ -168,9 +174,8 @@ export function InventoryPage() {
           <div className="space-y-2">
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Desktop — drag to bookmarks bar</p>
             <div className="flex flex-wrap gap-3 items-center">
-              {/* eslint-disable-next-line react/jsx-no-script-url */}
               <a
-                href={bookmarkletHref}
+                ref={bookmarkAnchorRef}
                 onClick={(e) => e.preventDefault()}
                 draggable
                 className="inline-flex items-center gap-1.5 bg-green-700 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg cursor-grab active:cursor-grabbing select-none border border-green-500/40 shadow"
