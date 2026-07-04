@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AppState, GrowQueueItem, ParsedItem, PlayerProfile, Quest, QuestStatus } from './types';
 import questsData from './data/quests.json';
-import { compareQuests, getQuestStatus } from './utils';
+import { compareQuests } from './utils';
 
 // Set when auto-advance activates the next quest, consumed once by QuestCard on mount
 let _pendingExpandId: string | null = null;
@@ -87,7 +87,9 @@ export const useStore = create<Store>()(
         set((s) => {
           const updated = { ...s.questStatuses, [id]: status };
 
-          // Auto-advance: when completing a quest in a line, activate the next one if requirements met
+          // Auto-advance: when completing a quest in a line, activate the next one.
+          // Completing a quest grants the NPC friendship that unlocks the next tier,
+          // so level-checking here incorrectly blocks quests that just became reachable.
           if (status === 'completed') {
             const quest = allQuests.find((q) => q.id === id);
             if (quest?.questline) {
@@ -95,11 +97,8 @@ export const useStore = create<Store>()(
               const idx = line.findIndex((q) => q.id === id);
               const next = line[idx + 1];
               if (next && !updated[next.id]) {
-                const nextStatus = getQuestStatus(next, s.player, updated);
-                if (nextStatus === 'available') {
-                  updated[next.id] = 'active';
-                  _pendingExpandId = next.id;
-                }
+                updated[next.id] = 'active';
+                _pendingExpandId = next.id;
               }
             }
           }
