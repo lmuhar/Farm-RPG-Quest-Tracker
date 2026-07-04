@@ -125,7 +125,7 @@ export function InventoryPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
         <div className="flex items-center gap-2">
           <Package size={18} className="text-amber-400" />
           <h2 className="text-lg font-bold text-slate-100">Inventory</h2>
@@ -133,10 +133,10 @@ export function InventoryPage() {
             {totalItems} item{totalItems !== 1 ? 's' : ''} tracked
           </span>
         </div>
-        <div className="ml-auto flex gap-2">
+        <div className="flex gap-2 sm:ml-auto">
           <button
             onClick={() => { setShowBookmarklet(!showBookmarklet); setShowBulk(false); }}
-            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded border transition-colors ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded border transition-colors ${
               showBookmarklet
                 ? 'bg-green-600/30 text-green-300 border-green-600/40'
                 : 'text-slate-400 border-slate-600 hover:text-slate-200 hover:border-slate-500'
@@ -146,7 +146,7 @@ export function InventoryPage() {
           </button>
           <button
             onClick={() => { setShowBulk(!showBulk); setShowBookmarklet(false); }}
-            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded border transition-colors ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded border transition-colors ${
               showBulk
                 ? 'bg-amber-600/30 text-amber-300 border-amber-600/40'
                 : 'text-slate-400 border-slate-600 hover:text-slate-200 hover:border-slate-500'
@@ -306,26 +306,28 @@ export function InventoryPage() {
                               <p className="text-xs text-slate-500">need {deficit} more</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-amber-500 rounded-full transition-all"
-                                style={{ width: `${pct}%` }}
-                              />
+                          <div className="flex flex-col gap-1.5">
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-amber-500 rounded-full transition-all"
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-slate-500 w-8 text-right">{pct}%</span>
                             </div>
-                            <span className="text-xs text-slate-500 w-8 text-right">{pct}%</span>
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => setInventoryItem(item, Math.max(0, have - 1))}
-                                className="w-5 h-5 flex items-center justify-center text-slate-500 hover:text-slate-300 bg-slate-700 rounded text-xs"
+                                className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-300 bg-slate-700 rounded text-sm"
                               >−</button>
                               <button
                                 onClick={() => setInventoryItem(item, have + 1)}
-                                className="w-5 h-5 flex items-center justify-center text-slate-500 hover:text-green-400 bg-slate-700 rounded text-xs"
+                                className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-green-400 bg-slate-700 rounded text-sm"
                               >+</button>
                               <button
                                 onClick={() => setInventoryItem(item, needed)}
-                                className="text-xs text-slate-600 hover:text-green-400 px-1"
+                                className="text-xs text-slate-500 hover:text-green-400 px-2 py-1 bg-slate-700 rounded"
                                 title="Mark as fully stocked"
                               >Fill</button>
                             </div>
@@ -447,16 +449,14 @@ export function InventoryPage() {
                   const isMissing = neededFor && neededFor.deficit > 0;
                   const isFulfilled = neededFor && neededFor.deficit === 0;
                   return (
-                    <div key={item} className={`flex items-center gap-3 px-4 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : ''}`}>
+                    <div key={item} className={`flex items-center gap-2 px-3 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : ''}`}>
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm text-slate-200">{item}</span>
+                        <p className="text-sm text-slate-200 truncate">{item}</p>
                         {isMissing && (
-                          <span className="ml-2 text-xs text-yellow-400">
-                            need {neededFor!.needed}
-                          </span>
+                          <p className="text-xs text-yellow-400">need {neededFor!.needed}</p>
                         )}
                         {isFulfilled && (
-                          <span className="ml-2 text-xs text-green-500">✓ stocked</span>
+                          <p className="text-xs text-green-500">✓ stocked</p>
                         )}
                       </div>
                       <input
@@ -468,7 +468,7 @@ export function InventoryPage() {
                           const v = e.target.value === '' ? 0 : parseInt(e.target.value);
                           if (!isNaN(v)) setInventoryItem(item, v);
                         }}
-                        className={`w-20 bg-slate-700 border rounded px-2 py-1 text-sm text-right font-mono focus:outline-none ${
+                        className={`w-16 sm:w-20 bg-slate-700 border rounded px-2 py-1 text-sm text-right font-mono focus:outline-none ${
                           isMissing
                             ? 'border-yellow-600/40 text-yellow-300 focus:border-yellow-500'
                             : isFulfilled
