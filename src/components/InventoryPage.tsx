@@ -30,6 +30,7 @@ export function InventoryPage() {
   const [bulkText, setBulkText] = useState('');
   const [showFulfilledNeeds, setShowFulfilledNeeds] = useState(false);
   const [showFutureNeeds, setShowFutureNeeds] = useState(false);
+  const [lookupItem, setLookupItem] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'name' | 'qty' | 'deficit'>('deficit');
   const [showBookmarklet, setShowBookmarklet] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -118,6 +119,19 @@ export function InventoryPage() {
       }))
       .sort((a, b) => a.minSteps - b.minSteps);
   }, [questStatuses, inventory]);
+
+  // All quests that need the looked-up item, sorted by status priority
+  const lookupResults = useMemo(() => {
+    if (!lookupItem) return null;
+    const statusOrder = { active: 0, available: 1, locked: 2, completed: 3 };
+    return allQuests
+      .flatMap((q) => {
+        const match = parseItems(q.itemsRequired).find((i) => i.item === lookupItem);
+        if (!match) return [];
+        return [{ quest: q, quantity: match.quantity, status: getQuestStatus(q, player, questStatuses) }];
+      })
+      .sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+  }, [lookupItem, player, questStatuses]);
 
   // Full inventory list
   const inventoryItems = useMemo(() => {
@@ -531,22 +545,31 @@ export function InventoryPage() {
                   const isMissing = neededFor && neededFor.deficit > 0;
                   const isFulfilled = neededFor && neededFor.deficit === 0;
                   const futureNeed = !isMissing && !isFulfilled ? futureNeeds.find((n) => n.item === item) : null;
+                  const isLookedUp = lookupItem === item;
+                  const statusColor = { active: 'text-yellow-400', available: 'text-slate-300', locked: 'text-slate-600', completed: 'text-green-500' };
                   return (
-                    <div key={item} className={`flex items-center gap-2 px-3 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : futureNeed ? 'bg-purple-500/5' : ''}`}>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-slate-200 truncate">{item}</p>
-                        {isMissing && (
-                          <p className="text-xs text-yellow-400">need {neededFor!.needed}</p>
-                        )}
-                        {isFulfilled && (
-                          <p className="text-xs text-green-500">✓ stocked</p>
-                        )}
-                        {futureNeed && (
-                          <p className="text-xs text-purple-400 flex items-center gap-1">
-                            <Lock size={9} /> needed in {futureNeed.minSteps} quest{futureNeed.minSteps !== 1 ? 's' : ''}
+                    <div key={item} className={`px-3 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : futureNeed ? 'bg-purple-500/5' : isLookedUp ? 'bg-slate-700/30' : ''}`}>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className="text-sm text-slate-200 truncate cursor-pointer hover:text-purple-300 transition-colors"
+                            onClick={() => setLookupItem(isLookedUp ? null : item)}
+                            title="Click to see which quests need this"
+                          >
+                            {item}
                           </p>
-                        )}
-                      </div>
+                          {isMissing && (
+                            <p className="text-xs text-yellow-400">need {neededFor!.needed}</p>
+                          )}
+                          {isFulfilled && (
+                            <p className="text-xs text-green-500">✓ stocked</p>
+                          )}
+                          {futureNeed && (
+                            <p className="text-xs text-purple-400 flex items-center gap-1">
+                              <Lock size={9} /> needed in {futureNeed.minSteps} quest{futureNeed.minSteps !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                        </div>
                       <input
                         type="number"
                         min={0}
@@ -571,6 +594,21 @@ export function InventoryPage() {
                       >
                         <Trash2 size={13} />
                       </button>
+                      </div>
+                      {isLookedUp && lookupResults && (
+                        <div className="mt-2 border-t border-slate-700/50 pt-2 space-y-1">
+                          {lookupResults.length === 0 ? (
+                            <p className="text-xs text-slate-500">No quests need this item.</p>
+                          ) : (
+                            lookupResults.map(({ quest, quantity, status }) => (
+                              <div key={quest.id} className="flex items-center justify-between text-xs gap-2">
+                                <span className={`truncate ${statusColor[status]}`}>{quest.name}</span>
+                                <span className="text-slate-500 flex-shrink-0 font-mono">×{quantity}</span>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
