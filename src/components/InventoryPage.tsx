@@ -1,9 +1,9 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
-import { Package, Plus, Trash2, Search, X, AlignLeft, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, RefreshCw, BookMarked, Copy, Check } from 'lucide-react';
+import { Package, Plus, Trash2, Search, X, AlignLeft, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, RefreshCw, BookMarked, Copy, Check, Lock } from 'lucide-react';
 import questsData from '../data/quests.json';
 import type { Quest } from '../types';
 import { useStore } from '../store';
-import { parseItems, getQuestStatus } from '../utils';
+import { parseItems, getQuestStatus, compareQuests } from '../utils';
 
 const allQuests = questsData as Quest[];
 
@@ -29,6 +29,7 @@ export function InventoryPage() {
   const [showBulk, setShowBulk] = useState(false);
   const [bulkText, setBulkText] = useState('');
   const [showFulfilledNeeds, setShowFulfilledNeeds] = useState(false);
+  const [showFutureNeeds, setShowFutureNeeds] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'qty' | 'deficit'>('deficit');
   const [showBookmarklet, setShowBookmarklet] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -76,6 +77,47 @@ export function InventoryPage() {
 
   const pendingNeeds = activeNeeds.filter((n) => n.deficit > 0);
   const fulfilledNeeds = activeNeeds.filter((n) => n.deficit === 0);
+
+  // Items needed in the next 5 quests of each active questline
+  const futureNeeds = useMemo(() => {
+    const questlineMap = new Map<string, Quest[]>();
+    for (const q of allQuests) {
+      if (!q.questline) continue;
+      if (!questlineMap.has(q.questline)) questlineMap.set(q.questline, []);
+      questlineMap.get(q.questline)!.push(q);
+    }
+    for (const [, qs] of questlineMap) qs.sort((a, b) => compareQuests(a.name, b.name));
+
+    const itemMap = new Map<string, { needed: number; entries: { questName: string; stepsAhead: number }[] }>();
+
+    for (const quest of allQuests) {
+      if (questStatuses[quest.id] !== 'active') continue;
+      if (!quest.questline) continue;
+      const line = questlineMap.get(quest.questline) ?? [];
+      const idx = line.findIndex((q) => q.id === quest.id);
+      if (idx === -1) continue;
+
+      const upcoming = line.slice(idx + 1, idx + 6);
+      upcoming.forEach((upq, i) => {
+        for (const { item, quantity } of parseItems(upq.itemsRequired)) {
+          if (!itemMap.has(item)) itemMap.set(item, { needed: 0, entries: [] });
+          const entry = itemMap.get(item)!;
+          entry.needed += quantity;
+          entry.entries.push({ questName: upq.name, stepsAhead: i + 1 });
+        }
+      });
+    }
+
+    return [...itemMap.entries()]
+      .map(([item, { needed, entries }]) => ({
+        item,
+        needed,
+        have: inventory[item] ?? 0,
+        entries: entries.sort((a, b) => a.stepsAhead - b.stepsAhead),
+        minSteps: Math.min(...entries.map((e) => e.stepsAhead)),
+      }))
+      .sort((a, b) => a.minSteps - b.minSteps);
+  }, [questStatuses, inventory]);
 
   // Full inventory list
   const inventoryItems = useMemo(() => {
@@ -339,6 +381,46 @@ export function InventoryPage() {
                 </div>
               )}
 
+              {/* Coming up — future quest needs */}
+              {futureNeeds.length > 0 && (
+                <div className="bg-slate-800/40 rounded-xl border border-purple-700/30 overflow-hidden">
+                  <button
+                    onClick={() => setShowFutureNeeds(!showFutureNeeds)}
+                    className="w-full flex items-center gap-2 px-4 py-2.5 bg-purple-500/5 hover:bg-purple-500/10 transition-colors"
+                  >
+                    <Lock size={13} className="text-purple-400" />
+                    <span className="text-xs font-semibold text-purple-400 flex-1 text-left">
+                      {futureNeeds.length} item{futureNeeds.length !== 1 ? 's' : ''} needed in next 5 quests
+                    </span>
+                    {showFutureNeeds ? <ChevronUp size={12} className="text-slate-500" /> : <ChevronDown size={12} className="text-slate-500" />}
+                  </button>
+                  {showFutureNeeds && (
+                    <div className="divide-y divide-slate-700/40">
+                      {futureNeeds.map(({ item, needed, have, entries, minSteps }) => (
+                        <div key={item} className="px-4 py-2.5 flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <Lock size={10} className="text-purple-400 flex-shrink-0" />
+                              <p className="text-sm text-slate-200">{item}</p>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-0.5 truncate">
+                              In {minSteps} quest{minSteps !== 1 ? 's' : ''} — {entries[0].questName}
+                              {entries.length > 1 ? ` +${entries.length - 1} more` : ''}
+                            </p>
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <span className={`text-sm font-mono ${have >= needed ? 'text-green-400' : 'text-slate-300'}`}>
+                              {have}/{needed}
+                            </span>
+                            {have >= needed && <p className="text-xs text-green-500">✓</p>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Fulfilled items (collapsible) */}
               {fulfilledNeeds.length > 0 && (
                 <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
@@ -448,8 +530,9 @@ export function InventoryPage() {
                 {inventoryItems.map(({ item, qty, neededFor }) => {
                   const isMissing = neededFor && neededFor.deficit > 0;
                   const isFulfilled = neededFor && neededFor.deficit === 0;
+                  const futureNeed = !isMissing && !isFulfilled ? futureNeeds.find((n) => n.item === item) : null;
                   return (
-                    <div key={item} className={`flex items-center gap-2 px-3 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : ''}`}>
+                    <div key={item} className={`flex items-center gap-2 px-3 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : futureNeed ? 'bg-purple-500/5' : ''}`}>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-slate-200 truncate">{item}</p>
                         {isMissing && (
@@ -457,6 +540,11 @@ export function InventoryPage() {
                         )}
                         {isFulfilled && (
                           <p className="text-xs text-green-500">✓ stocked</p>
+                        )}
+                        {futureNeed && (
+                          <p className="text-xs text-purple-400 flex items-center gap-1">
+                            <Lock size={9} /> needed in {futureNeed.minSteps} quest{futureNeed.minSteps !== 1 ? 's' : ''}
+                          </p>
                         )}
                       </div>
                       <input

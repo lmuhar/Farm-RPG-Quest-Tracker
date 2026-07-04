@@ -1,4 +1,5 @@
-import { GitBranch, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { GitBranch, ChevronRight, ChevronDown } from 'lucide-react';
 import type { Quest } from '../types';
 import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
@@ -18,6 +19,8 @@ const statusDot = {
 
 export function ActiveQuestLine({ questline, quests }: Props) {
   const { player, questStatuses } = useStore();
+  const [showUpcoming, setShowUpcoming] = useState(true);
+
   const statuses = quests.map((q) => getQuestStatus(q, player, questStatuses));
   const completedCount = statuses.filter((s) => s === 'completed').length;
   const progress = Math.round((completedCount / quests.length) * 100);
@@ -66,16 +69,27 @@ export function ActiveQuestLine({ questline, quests }: Props) {
           ))}
 
         {upcomingQuests.length > 0 && (
-          <div className="mt-1 space-y-2">
-            {upcomingQuests.map(({ quest, status }, i) => (
-              <div key={quest.id} className="opacity-50 hover:opacity-75 transition-opacity">
-                <p className="text-xs text-slate-500 mb-1.5 flex items-center gap-1 pl-1">
-                  <ChevronRight size={11} />
-                  {i === 0 ? 'Up next' : `+${i} ahead`}
-                </p>
-                <QuestCard quest={quest} status={status} />
+          <div className="mt-1">
+            <button
+              onClick={() => setShowUpcoming(!showUpcoming)}
+              className="flex items-center gap-1.5 px-1 py-1 text-xs text-slate-500 hover:text-slate-300 transition-colors w-full"
+            >
+              {showUpcoming ? <ChevronDown size={11} /> : <ChevronRight size={11} />}
+              <span>{upcomingQuests.length} upcoming quest{upcomingQuests.length !== 1 ? 's' : ''}</span>
+            </button>
+            {showUpcoming && (
+              <div className="space-y-2 mt-1">
+                {upcomingQuests.map(({ quest, status }, i) => (
+                  <div key={quest.id} className="opacity-50 hover:opacity-75 transition-opacity">
+                    <p className="text-xs text-slate-500 mb-1.5 flex items-center gap-1 pl-1">
+                      <ChevronRight size={11} />
+                      {i === 0 ? 'Up next' : `+${i} ahead`}
+                    </p>
+                    <QuestCard quest={quest} status={status} />
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>
