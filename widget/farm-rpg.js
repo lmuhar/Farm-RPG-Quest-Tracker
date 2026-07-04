@@ -51,7 +51,7 @@ function addRow(parent, leftText, leftColor, rightText, rightColor, fontSize = 1
   row.addSpacer();
   const r = row.addText(rightText);
   r.textColor = rightColor;
-  r.font = Font.monospacedSystemFont(fontSize);
+  r.font = Font.regularMonospacedSystemFont(fontSize);
   return row;
 }
 
