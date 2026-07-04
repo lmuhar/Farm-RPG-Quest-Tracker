@@ -7,6 +7,35 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STATE_PATH = process.env.STATE_PATH ?? '/data/state.json';
 const PORT = parseInt(process.env.PORT ?? '8080', 10);
 
+interface RawQuest { id: string; itemsRequired: string; }
+interface CropTime { item: string; growMinutes: number; }
+interface GrowQueueItem { item: string; grows: number; }
+interface AppState {
+  questStatuses?: Record<string, string>;
+  inventory?: Record<string, number>;
+  cropTimes?: CropTime[];
+  plotCount?: number;
+  growQueue?: GrowQueueItem[];
+}
+
+function parseItemsServer(raw: string): { item: string; quantity: number }[] {
+  if (!raw || raw.trim() === 'None' || raw.trim() === '') return [];
+  return raw.split(';').map((s) => {
+    const trimmed = s.trim();
+    const match = trimmed.match(/^(\d+)x\s+(.+)$/);
+    if (match) return { quantity: parseInt(match[1]), item: match[2].trim() };
+    return { quantity: 1, item: trimmed };
+  });
+}
+
+let questsCache: RawQuest[] = [];
+try {
+  const questsPath = path.join(__dirname, '../dist/quests.json');
+  questsCache = JSON.parse(fs.readFileSync(questsPath, 'utf-8')) as RawQuest[];
+} catch {
+  // quests.json not available yet (dev mode before build) — widget returns empty data
+}
+
 const app = express();
 app.use(express.json({ limit: '20mb' }));
 
@@ -69,6 +98,41 @@ app.post('/api/sync-inventory', (req, res) => {
   } catch (e) {
     res.status(500).json({ error: String(e) });
   }
+});
+
+app.get('/api/widget', (_req, res) => {
+  const state = readState() as AppState | null;
+  if (!state) {
+    res.json({ activeQuestCount: 0, itemsStillNeeded: [], growQueue: [] });
+    return;
+  }
+
+  const { questStatuses = {}, inventory = {}, cropTimes = [], growQueue = [] } = state;
+
+  const itemMap = new Map<string, number>();
+  for (const quest of questsCache) {
+    if (questStatuses[quest.id] !== 'active') continue;
+    for (const { item, quantity } of parseItemsServer(quest.itemsRequired)) {
+      itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+    }
+  }
+
+  const itemsStillNeeded = [...itemMap.entries()]
+    .map(([item, needed]) => ({ item, needed, have: inventory[item] ?? 0, deficit: Math.max(0, needed - (inventory[item] ?? 0)) }))
+    .filter((i) => i.deficit > 0)
+    .sort((a, b) => b.deficit - a.deficit);
+
+  const enrichedGrowQueue = growQueue.map(({ item, grows }) => {
+    const crop = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
+    return { item, grows, minutesPerGrow: crop?.growMinutes ?? null, totalMinutes: crop ? grows * crop.growMinutes : null };
+  });
+
+  res.json({
+    activeQuestCount: Object.values(questStatuses).filter((s) => s === 'active').length,
+    itemsStillNeeded,
+    growQueue: enrichedGrowQueue,
+    updatedAt: new Date().toISOString(),
+  });
 });
 
 app.get('*', (_req, res) => {
