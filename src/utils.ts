@@ -74,6 +74,27 @@ export function getQuestStatus(
   return 'locked';
 }
 
+export function resolveRawIngredients(
+  item: string,
+  quantity: number,
+  recipeMap: Map<string, { ingredients: { item: string; quantity: number }[] }>,
+  visited = new Set<string>()
+): Map<string, number> {
+  const recipe = recipeMap.get(item.toLowerCase());
+  if (!recipe || visited.has(item.toLowerCase())) {
+    return new Map([[item, quantity]]);
+  }
+  const nextVisited = new Set(visited);
+  nextVisited.add(item.toLowerCase());
+  const result = new Map<string, number>();
+  for (const { item: ing, quantity: ingQty } of recipe.ingredients) {
+    for (const [raw, rawQty] of resolveRawIngredients(ing, ingQty * quantity, recipeMap, nextVisited)) {
+      result.set(raw, (result.get(raw) ?? 0) + rawQty);
+    }
+  }
+  return result;
+}
+
 export function isLimitedTime(quest: Quest): boolean {
   return quest.startDate !== '' || quest.endDate !== '';
 }

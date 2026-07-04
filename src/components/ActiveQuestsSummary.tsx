@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Swords, Clock, X, Hammer } from 'lucide-react';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
-import { parseItems, formatDuration, calcGrowsNeeded } from '../utils';
+import { parseItems, formatDuration, calcGrowsNeeded, resolveRawIngredients } from '../utils';
 import { useStore } from '../store';
 
 interface Recipe {
@@ -11,9 +11,8 @@ interface Recipe {
   ingredients: { item: string; quantity: number }[];
 }
 
-const recipeByName = new Map<string, Recipe>(
-  (recipesData as Recipe[]).map((r) => [r.name.toLowerCase(), r])
-);
+const allRecipes = recipesData as Recipe[];
+const recipeByName = new Map<string, Recipe>(allRecipes.map((r) => [r.name.toLowerCase(), r]));
 
 function ItemBreakdown({
   item,
@@ -65,6 +64,30 @@ function ItemBreakdown({
               </div>
             );
           })}
+
+          {/* Raw materials — shown only when chain goes deeper than one level */}
+          {(() => {
+            const raw = resolveRawIngredients(item, totalNeeded, recipeByName);
+            const isDeep = [...raw.keys()].some((r) => !recipe.ingredients.find((i) => i.item === r));
+            if (!isDeep) return null;
+            return (
+              <div className="border-t border-slate-700/30 pt-2 space-y-1">
+                <p className="text-xs text-slate-500 font-medium">Raw materials needed:</p>
+                {[...raw.entries()].map(([rawItem, rawQty]) => {
+                  const haveRaw = inventory[rawItem] ?? 0;
+                  const stillNeed = Math.max(0, rawQty - haveRaw);
+                  return (
+                    <div key={rawItem} className="pl-2 flex items-center justify-between gap-2 text-xs">
+                      <span className="text-slate-400">{rawItem}</span>
+                      <span className={`font-mono ${stillNeed === 0 ? 'text-green-400' : 'text-orange-400'}`}>
+                        {haveRaw}/{rawQty}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
