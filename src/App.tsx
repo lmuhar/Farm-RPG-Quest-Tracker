@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -26,6 +26,7 @@ type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable'
 export default function App() {
   const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState, setInventoryItem } = useStore();
   const [tab, setTab] = useState<Tab>('active');
+  const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [filterNpc, setFilterNpc] = useState('');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
@@ -189,18 +190,20 @@ export default function App() {
         style={{ background: 'oklch(0.25 0.022 258 / 0.85)', borderBottom: '1px solid var(--border-subtle)' }}
       >
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-          {/* Logo */}
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <span
-              style={{ width: 8, height: 8, borderRadius: 2, background: 'var(--accent-green)', display: 'inline-block', flexShrink: 0 }}
-            />
+          {/* Logo — home button */}
+          <button
+            onClick={() => { setTab('active'); setMenuOpen(false); }}
+            className="flex items-center gap-2 flex-shrink-0 rounded-lg transition-opacity hover:opacity-80"
+            aria-label="Home"
+          >
+            <img src="/favicon.svg" alt="" style={{ width: 26, height: 26, flexShrink: 0 }} />
             <h1
               className="text-base font-bold hidden sm:block"
               style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
             >
               Farm RPG Tracker
             </h1>
-          </div>
+          </button>
 
           {/* Global search */}
           <div className="relative flex-1 max-w-md mx-2 sm:mx-4">
@@ -248,14 +251,72 @@ export default function App() {
             <span style={{ color: 'var(--accent-green)', fontWeight: 600 }}>{stats.completed} done</span>
             <span className="hidden sm:inline" style={{ color: 'var(--text-muted)' }}>{stats.available} available</span>
           </div>
+
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden flex-shrink-0 p-1.5 rounded-lg transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Open menu"
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </header>
 
+      {/* Mobile side drawer */}
+      {menuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-20 md:hidden"
+            style={{ background: 'rgba(0,0,0,0.55)' }}
+            onClick={() => setMenuOpen(false)}
+          />
+          <div
+            className="fixed top-0 left-0 bottom-0 z-30 w-64 flex flex-col md:hidden"
+            style={{ background: 'var(--surface-card)', borderRight: '1px solid var(--border-subtle)' }}
+          >
+            {/* Drawer header */}
+            <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <img src="/favicon.svg" alt="" style={{ width: 24, height: 24 }} />
+              <span className="text-sm font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>Farm RPG Tracker</span>
+            </div>
+            {/* Nav items */}
+            <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
+              {([
+                { id: 'active', label: 'Active', icon: <ListTodo size={16} /> },
+                { id: 'inventory', label: 'Inventory', icon: <Package size={16} /> },
+                { id: 'quests', label: 'All Quests', icon: <Search size={16} /> },
+                { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={16} /> },
+                { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={16} /> },
+                { id: 'recipes', label: 'Recipes', icon: <Hammer size={16} /> },
+                { id: 'stats', label: 'Stats', icon: <BarChart2 size={16} /> },
+                { id: 'settings', label: 'Settings', icon: <Settings size={16} /> },
+              ] as const).map(({ id, label, icon }) => (
+                <button
+                  key={id}
+                  onClick={() => { setTab(id); setMenuOpen(false); }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
+                  style={
+                    tab === id
+                      ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
+                      : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }
+                  }
+                >
+                  {icon}
+                  {label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </>
+      )}
+
       <div className="max-w-7xl mx-auto px-4 py-6">
         <main className="space-y-4">
-          {/* Tab bar */}
+          {/* Tab bar — desktop only */}
           <div
-            className="flex gap-0.5 rounded-xl p-1 overflow-x-auto"
+            className="hidden md:flex gap-0.5 rounded-xl p-1"
             style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
           >
             {([
