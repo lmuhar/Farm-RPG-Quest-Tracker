@@ -133,10 +133,18 @@ export function InventoryPage() {
     return entries.sort((a, b) => {
       if (sortBy === 'name') return a.item.localeCompare(b.item);
       if (sortBy === 'qty') return b.qty - a.qty;
-      // deficit first: items with active deficit, then future need, then rest
-      const aScore = a.activeNeed?.deficit ? 2 : a.futureNeed ? 1 : 0;
-      const bScore = b.activeNeed?.deficit ? 2 : b.futureNeed ? 1 : 0;
-      if (aScore !== bScore) return bScore - aScore;
+      // deficit first: items with active deficit sorted by % complete desc (almost done first), then future need, then rest
+      const aHasDef = !!a.activeNeed?.deficit;
+      const bHasDef = !!b.activeNeed?.deficit;
+      if (aHasDef !== bHasDef) return bHasDef ? 1 : -1;
+      if (aHasDef && bHasDef) {
+        const aPct = a.activeNeed!.have / a.activeNeed!.needed;
+        const bPct = b.activeNeed!.have / b.activeNeed!.needed;
+        if (aPct !== bPct) return bPct - aPct;
+      }
+      const aFuture = !!a.futureNeed;
+      const bFuture = !!b.futureNeed;
+      if (aFuture !== bFuture) return bFuture ? 1 : -1;
       return a.item.localeCompare(b.item);
     });
   }, [inventory, search, sortBy, activeNeeds, futureNeeds]);

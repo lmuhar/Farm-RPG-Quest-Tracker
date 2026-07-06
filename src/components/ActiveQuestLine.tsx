@@ -104,6 +104,70 @@ function ItemProgressRow({
   );
 }
 
+function UpcomingQuestRow({ quest, inventory }: { quest: Quest; inventory: Record<string, number> }) {
+  const [open, setOpen] = useState(false);
+  const items = parseItems(quest.itemsRequired);
+
+  return (
+    <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-3 px-5 py-2.5 text-left transition-colors hover:bg-slate-700/10"
+      >
+        <span className="text-sm truncate" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>
+          {quest.name}
+        </span>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {items.length > 0 && (
+            <span className="text-[11px]" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              {items.length} item{items.length !== 1 ? 's' : ''}
+            </span>
+          )}
+          <ChevronDown
+            size={12}
+            style={{ color: 'var(--text-muted)', transform: open ? 'rotate(180deg)' : 'none', transition: 'var(--transition-fast)' }}
+          />
+        </div>
+      </button>
+      {open && (
+        <div className="px-5 pb-3 space-y-2" style={{ background: 'var(--surface-inset)' }}>
+          {items.length === 0 ? (
+            <p className="text-xs" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>No items required</p>
+          ) : (
+            items.map(({ item, quantity }) => {
+              const have = inventory[item] ?? 0;
+              const done = have >= quantity;
+              const pct = Math.min(100, quantity > 0 ? Math.round((have / quantity) * 100) : 100);
+              const recipe = recipeByName.get(item.toLowerCase());
+              return (
+                <div key={item} className="space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-xs truncate" style={{ color: done ? 'var(--accent-green)' : 'var(--text-secondary)' }}>{item}</span>
+                      {recipe && (
+                        <span className="text-[10px] px-1 rounded" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)' }}>crafted</span>
+                      )}
+                    </div>
+                    <span className="text-[11px] flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                      {have}/{quantity}
+                    </span>
+                  </div>
+                  <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${pct}%`, background: done ? 'var(--accent-green)' : 'var(--accent-purple)' }}
+                    />
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface Props {
   questline: string;
   quests: Quest[];
@@ -209,7 +273,7 @@ export function ActiveQuestLine({ questline, quests }: Props) {
                 ))
               )}
 
-              {/* Complete action */}
+              {/* Complete action — always visible */}
               <div className="pt-1">
                 <button
                   onClick={() => setQuestStatus(quest.id, 'completed')}
@@ -217,10 +281,10 @@ export function ActiveQuestLine({ questline, quests }: Props) {
                   style={
                     canComplete
                       ? { background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }
-                      : { background: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }
+                      : { background: 'var(--surface-inset)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }
                   }
                 >
-                  {canComplete ? '✓ Mark Complete' : 'Mark Complete anyway'}
+                  {canComplete ? '✓ Mark Complete' : 'Mark Complete'}
                 </button>
               </div>
             </div>
@@ -243,11 +307,9 @@ export function ActiveQuestLine({ questline, quests }: Props) {
             />
           </button>
           {showUpcoming && (
-            <div className="px-5 pb-4 space-y-2">
+            <div className="pb-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
               {upcomingQuests.map(({ quest }) => (
-                <p key={quest.id} className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  {quest.name}
-                </p>
+                <UpcomingQuestRow key={quest.id} quest={quest} inventory={inventory} />
               ))}
             </div>
           )}
