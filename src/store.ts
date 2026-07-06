@@ -107,7 +107,14 @@ export const useStore = create<Store>()(
         }),
 
       setInventoryItem: (item, qty) =>
-        set((s) => ({ inventory: { ...s.inventory, [item]: qty } })),
+        set((s) => {
+          if (qty <= 0) {
+            const next = { ...s.inventory };
+            delete next[item];
+            return { inventory: next };
+          }
+          return { inventory: { ...s.inventory, [item]: qty } };
+        }),
 
       setPlayer: (player) => set({ player }),
 
