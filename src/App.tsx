@@ -24,7 +24,7 @@ type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'recipes'
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
-  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState, setInventoryItem } = useStore();
+  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
   const [tab, setTab] = useState<Tab>('active');
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
@@ -70,9 +70,9 @@ export default function App() {
 
     const applyHashInv = () => {
       if (!hashInv) return;
-      for (const [item, qty] of Object.entries(hashInv)) {
-        if (typeof qty === 'number' && qty > 0) setInventoryItem(item, qty);
-      }
+      // Replace the entire inventory so items that dropped to 0 (absent from
+      // the bookmarklet payload) are cleared rather than left at their old value.
+      importState({ inventory: hashInv });
     };
 
     fetch('/api/state')
