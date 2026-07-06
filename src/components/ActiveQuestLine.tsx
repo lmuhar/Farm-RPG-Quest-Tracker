@@ -33,6 +33,9 @@ function ItemProgressRow({
 
   const isHoney = item.toLowerCase() === 'honey';
   const honey = isHoney && !done ? calcHoneyRuns(deficit) : null;
+  const honeyRadishHave = honey ? (inventory['Radish'] ?? 0) : 0;
+  const honeyRadishDeficit = honey ? Math.max(0, honey.radishes - honeyRadishHave) : 0;
+  const honeyGrows = honeyRadishDeficit > 0 ? calcGrowsNeeded(honeyRadishDeficit, plotCount) : 0;
   const recipe = !isHoney ? recipeByName.get(item.toLowerCase()) : undefined;
   const cropTime = !isHoney ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
   const grows = cropTime && !done ? calcGrowsNeeded(deficit, plotCount) : null;
@@ -97,7 +100,11 @@ function ItemProgressRow({
           {isHoney && honey && (
             <span className="text-xs flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
               <Landmark size={10} />
-              {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes · {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+              {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+              {honeyGrows > 0
+                ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})`
+                : ' · radishes stocked'}
+              {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
             </span>
           )}
           {cropTime && grows && totalTime && (
