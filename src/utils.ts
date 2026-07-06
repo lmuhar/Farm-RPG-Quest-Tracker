@@ -116,6 +116,15 @@ export function calcGrowsNeeded(qty: number, plotCount: number): number {
   return Math.ceil(qty / plotCount);
 }
 
+// Honey is obtained by sacrificing 1100 Radishes at the temple once per day → 25 Honey per run
+export const HONEY_PER_RUN = 25;
+export const HONEY_RADISHES_PER_RUN = 1100;
+
+export function calcHoneyRuns(deficit: number): { runs: number; radishes: number } {
+  const runs = Math.ceil(deficit / HONEY_PER_RUN);
+  return { runs, radishes: runs * HONEY_RADISHES_PER_RUN };
+}
+
 export function npcColor(npc: string): string {
   const colors: Record<string, string> = {
     Thomas: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
