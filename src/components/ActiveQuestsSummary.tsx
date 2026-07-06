@@ -53,11 +53,13 @@ export function ActiveQuestsSummary({ quests }: Props) {
       const pct = totalNeeded > 0 ? have / totalNeeded : 1;
       const isHoney = item.toLowerCase() === 'honey';
       const honey = isHoney && deficit > 0 ? calcHoneyRuns(deficit) : null;
+      const honeyRadishHave = honey ? (inventory['Radish'] ?? 0) : 0;
+      const honeyGrows = honey ? calcGrowsNeeded(Math.max(0, honey.radishes - honeyRadishHave), plotCount) : 0;
       const cropTime = !isHoney ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
       const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
       const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
       const recipe = recipeByName.get(item.toLowerCase());
-      return { item, totalNeeded, have, deficit, pct, isHoney, honey, cropTime, grows, totalTime, recipe };
+      return { item, totalNeeded, have, deficit, pct, isHoney, honey, honeyRadishHave, honeyGrows, cropTime, grows, totalTime, recipe };
     });
 
     const needed = all.filter((i) => i.deficit > 0).sort((a, b) => b.pct - a.pct);
@@ -133,7 +135,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
       {/* Items still needed */}
       {neededItems.length > 0 && (
         <div className="divide-y" style={{ borderBottom: stockedItems.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
-          {neededItems.map(({ item, totalNeeded, have, deficit, pct, isHoney, honey, cropTime, grows, totalTime, recipe }) => {
+          {neededItems.map(({ item, totalNeeded, have, deficit, pct, isHoney, honey, honeyRadishHave, honeyGrows, cropTime, grows, totalTime, recipe }) => {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             const pctDisplay = Math.round(pct * 100);
@@ -173,7 +175,11 @@ export function ActiveQuestsSummary({ quests }: Props) {
                       {isHoney && honey && (
                         <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
                           <Landmark size={10} />
-                          {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes · {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                          {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+                          {honeyGrows > 0
+                            ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})`
+                            : ' · radishes stocked'}
+                          {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
                         </p>
                       )}
                       {cropTime && grows && totalTime && (
