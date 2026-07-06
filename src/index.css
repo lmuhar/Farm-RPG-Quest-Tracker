@@ -1,16 +1,62 @@
 @import "tailwindcss";
 
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+:root {
+  /* Surfaces */
+  --surface-app: oklch(0.19 0.022 258);
+  --surface-card: oklch(0.25 0.022 258);
+  --surface-card-hover: oklch(0.28 0.021 258);
+  --surface-inset: oklch(0.15 0.019 258);
+
+  /* Text */
+  --text-primary: oklch(0.93 0.007 258);
+  --text-secondary: oklch(0.74 0.013 258);
+  --text-muted: oklch(0.50 0.017 258);
+
+  /* Borders */
+  --border-subtle: oklch(0.28 0.021 258);
+  --border-default: oklch(0.32 0.020 258);
+
+  /* Accents — equal L/C band so they read the same weight on dark bg */
+  --accent-green:          oklch(0.72 0.17 152);
+  --accent-green-bg:       oklch(0.72 0.17 152 / 0.14);
+  --accent-green-border:   oklch(0.72 0.17 152 / 0.35);
+
+  --accent-orange:         oklch(0.72 0.17 55);
+  --accent-orange-bg:      oklch(0.72 0.17 55 / 0.14);
+  --accent-orange-border:  oklch(0.72 0.17 55 / 0.35);
+
+  --accent-yellow:         oklch(0.80 0.16 95);
+  --accent-yellow-bg:      oklch(0.80 0.16 95 / 0.14);
+  --accent-yellow-border:  oklch(0.80 0.16 95 / 0.35);
+
+  --accent-purple:         oklch(0.72 0.17 300);
+  --accent-purple-bg:      oklch(0.72 0.17 300 / 0.14);
+  --accent-purple-border:  oklch(0.72 0.17 300 / 0.35);
+
+  --accent-blue:           oklch(0.72 0.15 230);
+  --accent-blue-bg:        oklch(0.72 0.15 230 / 0.14);
+  --accent-blue-border:    oklch(0.72 0.15 230 / 0.35);
+
+  --accent-red:            oklch(0.66 0.19 25);
+  --accent-red-bg:         oklch(0.66 0.19 25 / 0.14);
+
+  /* Typography */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Public Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Transitions */
+  --transition-fast: 120ms ease;
+  --transition-default: 180ms ease;
 }
 
 body {
   margin: 0;
-  background: #0f1117;
-  color: #e2e8f0;
-  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--surface-app);
+  color: var(--text-primary);
+  font-family: var(--font-body);
 }
 
-#root {
-  min-height: 100vh;
-}
+#root { min-height: 100vh; }

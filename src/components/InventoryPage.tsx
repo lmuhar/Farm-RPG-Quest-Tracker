@@ -1,5 +1,5 @@
-import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
-import { Package, Plus, Trash2, Search, X, AlignLeft, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, RefreshCw, BookMarked, Copy, Check, Lock } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Package, Plus, Trash2, Search, X, AlignLeft, Lock, ChevronDown } from 'lucide-react';
 import questsData from '../data/quests.json';
 import type { Quest } from '../types';
 import { useStore } from '../store';
@@ -21,6 +21,24 @@ function parseBulkLine(line: string): { item: string; quantity: number } | null 
   return null;
 }
 
+// Inline badge component
+function Badge({ tone, children }: { tone: 'deficit' | 'success' | 'locked' | 'future'; children: React.ReactNode }) {
+  const styles: Record<string, React.CSSProperties> = {
+    deficit: { background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' },
+    success: { background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' },
+    locked: { background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' },
+    future: { background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' },
+  };
+  return (
+    <span
+      className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
+      style={{ fontFamily: 'var(--font-mono)', ...styles[tone] }}
+    >
+      {children}
+    </span>
+  );
+}
+
 export function InventoryPage() {
   const { player, questStatuses, inventory, setInventoryItem } = useStore();
   const [search, setSearch] = useState('');
@@ -28,33 +46,8 @@ export function InventoryPage() {
   const [newQty, setNewQty] = useState('');
   const [showBulk, setShowBulk] = useState(false);
   const [bulkText, setBulkText] = useState('');
-  const [showFulfilledNeeds, setShowFulfilledNeeds] = useState(false);
-  const [showFutureNeeds, setShowFutureNeeds] = useState(false);
   const [lookupItem, setLookupItem] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'name' | 'qty' | 'deficit'>('deficit');
-  const [showBookmarklet, setShowBookmarklet] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  const bookmarkletHref = useMemo(() => {
-    const origin = window.location.origin;
-    // Opens tracker in a new tab with inventory encoded in the URL hash —
-    // avoids CORS and farmrpg.com CSP entirely.
-    const code = `(function(){var T='${origin}',inv={};document.querySelectorAll('li').forEach(function(li){var n=li.querySelector('.item-title strong'),q=li.querySelector('.item-after');if(!n||!q)return;var name=n.textContent.trim(),qty=parseInt(q.textContent.replace(/,/g,'').trim(),10);if(name&&!isNaN(qty)&&qty>0)inv[name]=qty;});var c=Object.keys(inv).length;if(!c){alert('No items found — make sure you are on the Farm RPG inventory page.');return;}window.open(T+'/#sync-inv='+encodeURIComponent(JSON.stringify(inv)),'_blank');})();`;
-    return `javascript:${code}`;
-  }, []);
-
-  const copyBookmarklet = useCallback(() => {
-    navigator.clipboard.writeText(bookmarkletHref).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }, [bookmarkletHref]);
-
-  // React 19 blocks javascript: href at render time — set it via the DOM directly
-  const bookmarkAnchorRef = useRef<HTMLAnchorElement>(null);
-  useEffect(() => {
-    bookmarkAnchorRef.current?.setAttribute('href', bookmarkletHref);
-  }, [bookmarkletHref]);
 
   // Aggregate items needed from all active quests
   const activeNeeds = useMemo(() => {
@@ -69,15 +62,11 @@ export function InventoryPage() {
         map.set(item, entry);
       }
     }
-    return [...map.entries()].map(([item, { needed, quests }]) => {
+    return new Map([...map.entries()].map(([item, { needed, quests }]) => {
       const have = inventory[item] ?? 0;
-      const deficit = Math.max(0, needed - have);
-      return { item, needed, have, deficit, quests };
-    });
+      return [item, { needed, have, deficit: Math.max(0, needed - have), quests }];
+    }));
   }, [player, questStatuses, inventory]);
-
-  const pendingNeeds = activeNeeds.filter((n) => n.deficit > 0);
-  const fulfilledNeeds = activeNeeds.filter((n) => n.deficit === 0);
 
   // Items needed in the next 5 quests of each active questline
   const futureNeeds = useMemo(() => {
@@ -90,16 +79,13 @@ export function InventoryPage() {
     for (const [, qs] of questlineMap) qs.sort((a, b) => compareQuests(a.name, b.name));
 
     const itemMap = new Map<string, { needed: number; entries: { questName: string; stepsAhead: number }[] }>();
-
     for (const quest of allQuests) {
       if (questStatuses[quest.id] !== 'active') continue;
       if (!quest.questline) continue;
       const line = questlineMap.get(quest.questline) ?? [];
       const idx = line.findIndex((q) => q.id === quest.id);
       if (idx === -1) continue;
-
-      const upcoming = line.slice(idx + 1, idx + 6);
-      upcoming.forEach((upq, i) => {
+      line.slice(idx + 1, idx + 6).forEach((upq, i) => {
         for (const { item, quantity } of parseItems(upq.itemsRequired)) {
           if (!itemMap.has(item)) itemMap.set(item, { needed: 0, entries: [] });
           const entry = itemMap.get(item)!;
@@ -108,27 +94,27 @@ export function InventoryPage() {
         }
       });
     }
-
-    return [...itemMap.entries()]
-      .map(([item, { needed, entries }]) => ({
-        item,
+    return new Map([...itemMap.entries()].map(([item, { needed, entries }]) => [
+      item,
+      {
         needed,
         have: inventory[item] ?? 0,
         entries: entries.sort((a, b) => a.stepsAhead - b.stepsAhead),
         minSteps: Math.min(...entries.map((e) => e.stepsAhead)),
-      }))
-      .sort((a, b) => a.minSteps - b.minSteps);
+      },
+    ]));
   }, [questStatuses, inventory]);
 
-  // All quests that need the looked-up item, sorted by status priority
+  // All quests needing a looked-up item
   const lookupResults = useMemo(() => {
     if (!lookupItem) return null;
-    const statusOrder = { active: 0, available: 1, locked: 2, completed: 3 };
+    const statusOrder = { active: 0, available: 1, locked: 2, completed: 3 } as const;
     return allQuests
       .flatMap((q) => {
         const match = parseItems(q.itemsRequired).find((i) => i.item === lookupItem);
         if (!match) return [];
-        return [{ quest: q, quantity: match.quantity, status: getQuestStatus(q, player, questStatuses) }];
+        const status = getQuestStatus(q, player, questStatuses);
+        return [{ quest: q, quantity: match.quantity, status }];
       })
       .sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
   }, [lookupItem, player, questStatuses]);
@@ -139,20 +125,21 @@ export function InventoryPage() {
     const entries = Object.entries(inventory)
       .filter(([item, qty]) => qty > 0 && (!s || item.toLowerCase().includes(s)))
       .map(([item, qty]) => {
-        const neededFor = activeNeeds.find((n) => n.item === item);
-        return { item, qty, neededFor };
+        const activeNeed = activeNeeds.get(item);
+        const futureNeed = !activeNeed ? futureNeeds.get(item) : undefined;
+        return { item, qty, activeNeed, futureNeed };
       });
 
     return entries.sort((a, b) => {
       if (sortBy === 'name') return a.item.localeCompare(b.item);
       if (sortBy === 'qty') return b.qty - a.qty;
-      // deficit: items needed by active quests first, then by name
-      const aHasNeed = a.neededFor ? 1 : 0;
-      const bHasNeed = b.neededFor ? 1 : 0;
-      if (aHasNeed !== bHasNeed) return bHasNeed - aHasNeed;
+      // deficit first: items with active deficit, then future need, then rest
+      const aScore = a.activeNeed?.deficit ? 2 : a.futureNeed ? 1 : 0;
+      const bScore = b.activeNeed?.deficit ? 2 : b.futureNeed ? 1 : 0;
+      if (aScore !== bScore) return bScore - aScore;
       return a.item.localeCompare(b.item);
     });
-  }, [inventory, search, sortBy, activeNeeds]);
+  }, [inventory, search, sortBy, activeNeeds, futureNeeds]);
 
   const parsedBulk = useMemo(
     () => bulkText.split('\n').map(parseBulkLine).filter(Boolean) as { item: string; quantity: number }[],
@@ -177,140 +164,86 @@ export function InventoryPage() {
   };
 
   const totalItems = Object.values(inventory).filter((q) => q > 0).length;
+  const statusColor = { active: 'var(--accent-yellow)', available: 'var(--text-secondary)', locked: 'var(--text-muted)', completed: 'var(--accent-green)' } as const;
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
         <div className="flex items-center gap-2">
-          <Package size={18} className="text-amber-400" />
-          <h2 className="text-lg font-bold text-slate-100">Inventory</h2>
-          <span className="text-xs text-slate-500 bg-slate-800 border border-slate-700 rounded px-2 py-0.5">
-            {totalItems} item{totalItems !== 1 ? 's' : ''} tracked
+          <Package size={18} style={{ color: 'var(--accent-yellow)' }} />
+          <h2
+            className="text-lg font-bold"
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
+          >
+            Inventory
+          </h2>
+          <span
+            className="text-xs px-2 py-0.5 rounded-full"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--text-muted)',
+              background: 'var(--surface-inset)',
+              border: '1px solid var(--border-subtle)',
+            }}
+          >
+            {totalItems} tracked
           </span>
         </div>
         <div className="flex gap-2 sm:ml-auto">
           <button
-            onClick={() => { setShowBookmarklet(!showBookmarklet); setShowBulk(false); }}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded border transition-colors ${
-              showBookmarklet
-                ? 'bg-green-600/30 text-green-300 border-green-600/40'
-                : 'text-slate-400 border-slate-600 hover:text-slate-200 hover:border-slate-500'
-            }`}
-          >
-            <RefreshCw size={12} /> Sync from Game
-          </button>
-          <button
-            onClick={() => { setShowBulk(!showBulk); setShowBookmarklet(false); }}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded border transition-colors ${
+            onClick={() => setShowBulk(!showBulk)}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg transition-colors"
+            style={
               showBulk
-                ? 'bg-amber-600/30 text-amber-300 border-amber-600/40'
-                : 'text-slate-400 border-slate-600 hover:text-slate-200 hover:border-slate-500'
-            }`}
+                ? { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }
+                : { color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
+            }
           >
             <AlignLeft size={12} /> Bulk Add
           </button>
         </div>
       </div>
 
-      {/* Sync from game panel */}
-      {showBookmarklet && (
-        <div className="bg-slate-800/60 rounded-xl border border-green-600/30 p-4 space-y-4">
-          <div className="flex items-start gap-2">
-            <BookMarked size={15} className="text-green-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-medium text-slate-200">One-click sync — one-time setup</p>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Add this as a browser bookmark. On your Farm RPG inventory page, click it once — your tracker opens in a new tab with everything imported automatically.
-              </p>
-            </div>
-          </div>
-
-          {/* Desktop setup */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Desktop — drag to bookmarks bar</p>
-            <div className="flex flex-wrap gap-3 items-center">
-              <a
-                ref={bookmarkAnchorRef}
-                onClick={(e) => e.preventDefault()}
-                draggable
-                className="inline-flex items-center gap-1.5 bg-green-700 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg cursor-grab active:cursor-grabbing select-none border border-green-500/40 shadow"
-                title="Drag me to your bookmarks bar"
-              >
-                <RefreshCw size={13} /> Sync Farm RPG Inventory
-              </a>
-              <span className="text-xs text-slate-500">drag above button to your bookmarks bar</span>
-            </div>
-            <p className="text-xs text-slate-500">Or create a bookmark manually and paste the code as its URL:</p>
-            <button
-              onClick={copyBookmarklet}
-              className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition-colors"
-            >
-              {copied ? <><Check size={12} className="text-green-400" /> Copied!</> : <><Copy size={12} /> Copy Bookmarklet Code</>}
-            </button>
-          </div>
-
-          {/* Mobile setup */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Mobile — copy URL &amp; save as bookmark</p>
-            <div className="flex flex-wrap gap-3 items-center">
-              <button
-                onClick={copyBookmarklet}
-                className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition-colors"
-              >
-                {copied ? <><Check size={12} className="text-green-400" /> Copied!</> : <><Copy size={12} /> Copy Bookmarklet URL</>}
-              </button>
-            </div>
-            <div className="text-xs text-slate-400 space-y-0.5 pl-1">
-              <p className="font-medium text-slate-300">Safari:</p>
-              <p>1. Bookmark any page (Share → Add Bookmark)</p>
-              <p>2. Open Bookmarks, find it, tap Edit</p>
-              <p>3. Replace the URL field with the copied URL → Save</p>
-              <p className="font-medium text-slate-300 pt-1">Chrome:</p>
-              <p>1. Tap the ⋮ menu → Bookmarks → Add Bookmark</p>
-              <p>2. Open Bookmarks, long-press the new bookmark → Edit</p>
-              <p>3. Replace the URL with the copied URL → Save</p>
-            </div>
-          </div>
-
-          {/* Step 2 — Use it */}
-          <div className="space-y-1 border-t border-slate-700/50 pt-3">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Then — use it</p>
-            <p className="text-xs text-slate-400">
-              Go to <span className="text-green-300 font-mono">farmrpg.com/inventory.php</span> and tap/click the bookmark.
-              Your tracker opens in a new tab with inventory already synced — no alerts, no blocked requests.
-            </p>
-          </div>
-
-          <p className="text-xs text-slate-600 border-t border-slate-700 pt-3">
-            Your login session stays entirely in your browser — nothing is stored on this server.
-          </p>
-        </div>
-      )}
-
       {/* Bulk add panel */}
       {showBulk && (
-        <div className="bg-slate-800/60 rounded-xl border border-amber-600/30 p-4 space-y-3">
-          <p className="text-xs text-slate-400">One item per line. Supported formats: <code className="text-amber-300">50x Carrot</code>, <code className="text-amber-300">Carrot: 50</code>, <code className="text-amber-300">50 Carrot</code>, <code className="text-amber-300">Carrot x50</code></p>
+        <div
+          className="rounded-xl p-4 space-y-3"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-yellow-border)' }}
+        >
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            One item per line. Formats: <code className="text-[var(--accent-yellow)]">50x Carrot</code>, <code className="text-[var(--accent-yellow)]">Carrot: 50</code>, <code className="text-[var(--accent-yellow)]">50 Carrot</code>
+          </p>
           <textarea
             value={bulkText}
             onChange={(e) => setBulkText(e.target.value)}
-            rows={6}
-            placeholder={"50x Carrot\nCarrot: 50\n50 Carrot\nCarrot x50"}
-            className="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-500 resize-none font-mono"
+            rows={5}
+            placeholder={"50x Carrot\nCarrot: 50\n50 Carrot"}
+            className="w-full rounded-lg px-3 py-2 text-sm resize-none focus:outline-none"
+            style={{
+              background: 'var(--surface-inset)',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-mono)',
+            }}
           />
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400">
-              {parsedBulk.length > 0 ? `${parsedBulk.length} item${parsedBulk.length !== 1 ? 's' : ''} ready to add` : 'Paste your items above'}
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              {parsedBulk.length > 0 ? `${parsedBulk.length} items ready` : 'Paste items above'}
             </span>
             <div className="flex gap-2">
-              <button onClick={() => { setShowBulk(false); setBulkText(''); }} className="text-xs text-slate-500 hover:text-slate-300 px-3 py-1.5">
+              <button
+                onClick={() => { setShowBulk(false); setBulkText(''); }}
+                className="text-xs px-3 py-1.5"
+                style={{ color: 'var(--text-muted)' }}
+              >
                 Cancel
               </button>
               <button
                 onClick={commitBulk}
                 disabled={parsedBulk.length === 0}
-                className="text-xs bg-amber-600 hover:bg-amber-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded px-4 py-1.5"
+                className="text-xs rounded-lg px-4 py-1.5 font-medium disabled:opacity-40"
+                style={{ background: 'var(--accent-yellow)', color: '#0f172a' }}
               >
                 Add {parsedBulk.length > 0 ? parsedBulk.length : ''} Items
               </button>
@@ -322,152 +255,121 @@ export function InventoryPage() {
       <div className="grid lg:grid-cols-2 gap-4">
         {/* Left: Active Quest Needs */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-            <AlertCircle size={14} className="text-yellow-400" />
+          <h3
+            className="text-[11px] font-semibold uppercase tracking-wider"
+            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
+          >
             Active Quest Needs
-            {pendingNeeds.length > 0 && (
-              <span className="text-xs font-normal text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 rounded px-1.5 py-0.5">
-                {pendingNeeds.length} missing
-              </span>
-            )}
           </h3>
 
-          {activeNeeds.length === 0 ? (
-            <div className="bg-slate-800/40 rounded-xl border border-slate-700 p-6 text-center">
-              <p className="text-slate-500 text-sm">No active quests with item requirements.</p>
-              <p className="text-slate-600 text-xs mt-1">Mark quests as active to see what you need here.</p>
+          {activeNeeds.size === 0 ? (
+            <div
+              className="rounded-xl p-6 text-center"
+              style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+            >
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No active quests with item requirements.</p>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>Mark quests as active to see what you need here.</p>
             </div>
           ) : (
             <div className="space-y-2">
               {/* Pending items */}
-              {pendingNeeds.length > 0 && (
-                <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
-                  <div className="px-4 py-2.5 border-b border-slate-700/50 bg-yellow-500/5">
-                    <span className="text-xs font-semibold text-yellow-400">Still needed</span>
+              {[...activeNeeds.entries()].filter(([, n]) => n.deficit > 0).length > 0 && (
+                <div
+                  className="rounded-xl overflow-hidden"
+                  style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+                >
+                  <div
+                    className="px-4 py-2.5"
+                    style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--accent-orange-bg)' }}
+                  >
+                    <span className="text-xs font-semibold" style={{ color: 'var(--accent-orange)' }}>Still needed</span>
                   </div>
-                  <div className="divide-y divide-slate-700/40">
-                    {pendingNeeds.sort((a, b) => (b.have / b.needed) - (a.have / a.needed)).map(({ item, needed, have, deficit, quests }) => {
-                      const pct = Math.round((have / needed) * 100);
-                      return (
-                        <div key={item} className="px-4 py-3">
-                          <div className="flex items-start justify-between gap-3 mb-1.5">
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-slate-200">{item}</p>
-                              <p className="text-xs text-slate-500 truncate" title={quests.join(', ')}>
-                                {quests.slice(0, 2).join(', ')}{quests.length > 2 ? ` +${quests.length - 2} more` : ''}
-                              </p>
-                            </div>
-                            <div className="text-right flex-shrink-0">
-                              <span className="text-sm font-mono text-red-400">{have}/{needed}</span>
-                              <p className="text-xs text-slate-500">need {deficit} more</p>
-                            </div>
-                          </div>
-                          <div className="flex flex-col gap-1.5">
-                            <div className="flex items-center gap-2">
-                              <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-amber-500 rounded-full transition-all"
-                                  style={{ width: `${pct}%` }}
-                                />
+                  <div>
+                    {[...activeNeeds.entries()]
+                      .filter(([, n]) => n.deficit > 0)
+                      .sort(([, a], [, b]) => b.deficit / b.needed - a.deficit / a.needed)
+                      .map(([item, { needed, have, deficit, quests }]) => {
+                        const pct = Math.round((have / needed) * 100);
+                        return (
+                          <div
+                            key={item}
+                            className="px-4 py-3"
+                            style={{ borderBottom: '1px solid var(--border-subtle)' }}
+                          >
+                            <div className="flex items-start justify-between gap-3 mb-1.5">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
+                                  {item}
+                                </p>
+                                <p
+                                  className="text-xs truncate mt-0.5"
+                                  style={{ color: 'var(--text-muted)' }}
+                                  title={quests.join(', ')}
+                                >
+                                  {quests.slice(0, 2).join(', ')}{quests.length > 2 ? ` +${quests.length - 2} more` : ''}
+                                </p>
                               </div>
-                              <span className="text-xs text-slate-500 w-8 text-right">{pct}%</span>
+                              <div className="text-right flex-shrink-0">
+                                <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+                                  {have}/{needed}
+                                </span>
+                                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>need {deficit} more</p>
+                              </div>
                             </div>
+                            {/* Progress bar */}
+                            <div className="h-1.5 rounded-full overflow-hidden mb-2" style={{ background: 'var(--border-default)' }}>
+                              <div
+                                className="h-full rounded-full"
+                                style={{ width: `${pct}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }}
+                              />
+                            </div>
+                            {/* Stepper */}
                             <div className="flex items-center gap-1">
                               <button
                                 onClick={() => setInventoryItem(item, Math.max(0, have - 1))}
-                                className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-slate-300 bg-slate-700 rounded text-sm"
+                                className="w-7 h-7 flex items-center justify-center rounded text-sm transition-colors"
+                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
                               >−</button>
                               <button
                                 onClick={() => setInventoryItem(item, have + 1)}
-                                className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-green-400 bg-slate-700 rounded text-sm"
+                                className="w-7 h-7 flex items-center justify-center rounded text-sm transition-colors"
+                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
                               >+</button>
                               <button
                                 onClick={() => setInventoryItem(item, needed)}
-                                className="text-xs text-slate-500 hover:text-green-400 px-2 py-1 bg-slate-700 rounded"
+                                className="text-xs px-2 py-1 rounded transition-colors"
+                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
                                 title="Mark as fully stocked"
-                              >Fill</button>
+                              >
+                                Fill
+                              </button>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </div>
               )}
 
-              {/* Coming up — future quest needs */}
-              {futureNeeds.length > 0 && (
-                <div className="bg-slate-800/40 rounded-xl border border-purple-700/30 overflow-hidden">
-                  <button
-                    onClick={() => setShowFutureNeeds(!showFutureNeeds)}
-                    className="w-full flex items-center gap-2 px-4 py-2.5 bg-purple-500/5 hover:bg-purple-500/10 transition-colors"
-                  >
-                    <Lock size={13} className="text-purple-400" />
-                    <span className="text-xs font-semibold text-purple-400 flex-1 text-left">
-                      {futureNeeds.length} item{futureNeeds.length !== 1 ? 's' : ''} needed in next 5 quests
-                    </span>
-                    {showFutureNeeds ? <ChevronUp size={12} className="text-slate-500" /> : <ChevronDown size={12} className="text-slate-500" />}
-                  </button>
-                  {showFutureNeeds && (
-                    <div className="divide-y divide-slate-700/40">
-                      {futureNeeds.map(({ item, needed, have, entries, minSteps }) => (
-                        <div key={item} className="px-4 py-2.5 flex items-start justify-between gap-3">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <Lock size={10} className="text-purple-400 flex-shrink-0" />
-                              <p className="text-sm text-slate-200">{item}</p>
-                            </div>
-                            <p className="text-xs text-slate-500 mt-0.5 truncate">
-                              In {minSteps} quest{minSteps !== 1 ? 's' : ''} — {entries[0].questName}
-                              {entries.length > 1 ? ` +${entries.length - 1} more` : ''}
-                            </p>
-                          </div>
-                          <div className="text-right flex-shrink-0">
-                            <span className={`text-sm font-mono ${have >= needed ? 'text-green-400' : 'text-slate-300'}`}>
-                              {have}/{needed}
-                            </span>
-                            {have >= needed && <p className="text-xs text-green-500">✓</p>}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Future needs */}
+              {futureNeeds.size > 0 && (
+                <FutureNeedsPanel futureNeeds={futureNeeds} />
               )}
 
-              {/* Fulfilled items (collapsible) */}
-              {fulfilledNeeds.length > 0 && (
-                <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
-                  <button
-                    onClick={() => setShowFulfilledNeeds(!showFulfilledNeeds)}
-                    className="w-full flex items-center gap-2 px-4 py-2.5 border-b border-slate-700/50 bg-green-500/5 hover:bg-green-500/10 transition-colors"
-                  >
-                    <CheckCircle2 size={13} className="text-green-400" />
-                    <span className="text-xs font-semibold text-green-400 flex-1 text-left">
-                      {fulfilledNeeds.length} item{fulfilledNeeds.length !== 1 ? 's' : ''} fully stocked
-                    </span>
-                    {showFulfilledNeeds ? <ChevronUp size={12} className="text-slate-500" /> : <ChevronDown size={12} className="text-slate-500" />}
-                  </button>
-                  {showFulfilledNeeds && (
-                    <div className="divide-y divide-slate-700/40">
-                      {fulfilledNeeds.map(({ item, needed, have }) => (
-                        <div key={item} className="px-4 py-2.5 flex items-center justify-between">
-                          <span className="text-sm text-slate-400">{item}</span>
-                          <span className="text-sm font-mono text-green-400">{have}/{needed} ✓</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Fulfilled */}
+              {[...activeNeeds.entries()].filter(([, n]) => n.deficit === 0).length > 0 && (
+                <FulfilledPanel needs={activeNeeds} />
               )}
             </div>
           )}
         </div>
 
-        {/* Right: Full Inventory */}
+        {/* Right: Full inventory */}
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-            <Package size={14} className="text-amber-400" />
+          <h3
+            className="text-[11px] font-semibold uppercase tracking-wider"
+            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
+          >
             Your Items
           </h3>
 
@@ -479,7 +381,13 @@ export function InventoryPage() {
               value={newItem}
               onChange={(e) => setNewItem(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addItem()}
-              className="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+              className="flex-1 rounded-lg px-3 py-2 text-sm focus:outline-none"
+              style={{
+                background: 'var(--surface-card)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-body)',
+              }}
             />
             <input
               type="number"
@@ -488,11 +396,18 @@ export function InventoryPage() {
               value={newQty}
               onChange={(e) => setNewQty(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addItem()}
-              className="w-20 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+              className="w-20 rounded-lg px-3 py-2 text-sm focus:outline-none"
+              style={{
+                background: 'var(--surface-card)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-mono)',
+              }}
             />
             <button
               onClick={addItem}
-              className="bg-amber-600 hover:bg-amber-500 text-white rounded-lg px-3 py-2"
+              className="rounded-lg px-3 py-2 font-medium transition-colors"
+              style={{ background: 'var(--accent-yellow)', color: '#0f172a' }}
             >
               <Plus size={15} />
             </button>
@@ -501,16 +416,26 @@ export function InventoryPage() {
           {/* Search + sort */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
+              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
               <input
                 type="text"
                 placeholder="Search items…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-8 pr-8 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full rounded-lg pl-8 pr-8 py-2 text-sm focus:outline-none"
+                style={{
+                  background: 'var(--surface-card)',
+                  border: '1px solid var(--border-default)',
+                  color: 'var(--text-primary)',
+                  fontFamily: 'var(--font-body)',
+                }}
               />
               {search && (
-                <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2"
+                  style={{ color: 'var(--text-muted)' }}
+                >
                   <X size={12} />
                 </button>
               )}
@@ -518,7 +443,13 @@ export function InventoryPage() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-xs text-slate-300 focus:outline-none focus:border-amber-500"
+              className="rounded-lg px-2 py-2 text-xs focus:outline-none"
+              style={{
+                background: 'var(--surface-card)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-secondary)',
+                fontFamily: 'var(--font-body)',
+              }}
             >
               <option value="deficit">Quest needs first</option>
               <option value="name">Name A–Z</option>
@@ -528,82 +459,134 @@ export function InventoryPage() {
 
           {/* Inventory list */}
           {inventoryItems.length === 0 ? (
-            <div className="bg-slate-800/40 rounded-xl border border-slate-700 p-6 text-center">
+            <div
+              className="rounded-xl p-6 text-center"
+              style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+            >
               {search ? (
-                <p className="text-slate-500 text-sm">No items match "{search}"</p>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No items match "{search}"</p>
               ) : (
                 <>
-                  <p className="text-slate-500 text-sm">No items tracked yet.</p>
-                  <p className="text-slate-600 text-xs mt-1">Add items above or use Bulk Add.</p>
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No items tracked yet.</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>Add items above or use Bulk Add.</p>
                 </>
               )}
             </div>
           ) : (
-            <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
-              <div className="max-h-[480px] overflow-y-auto divide-y divide-slate-700/40">
-                {inventoryItems.map(({ item, qty, neededFor }) => {
-                  const isMissing = neededFor && neededFor.deficit > 0;
-                  const isFulfilled = neededFor && neededFor.deficit === 0;
-                  const futureNeed = !isMissing && !isFulfilled ? futureNeeds.find((n) => n.item === item) : null;
+            <div
+              className="rounded-xl overflow-hidden"
+              style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+            >
+              <div style={{ maxHeight: 520, overflowY: 'auto' }}>
+                {inventoryItems.map(({ item, qty, activeNeed, futureNeed }) => {
+                  const isMissing = activeNeed && activeNeed.deficit > 0;
+                  const isFulfilled = activeNeed && activeNeed.deficit === 0;
                   const isLookedUp = lookupItem === item;
-                  const statusColor = { active: 'text-yellow-400', available: 'text-slate-300', locked: 'text-slate-600', completed: 'text-green-500' };
+
                   return (
-                    <div key={item} className={`px-3 py-2.5 hover:bg-slate-700/20 ${isMissing ? 'bg-yellow-500/5' : futureNeed ? 'bg-purple-500/5' : isLookedUp ? 'bg-slate-700/30' : ''}`}>
-                      <div className="flex items-center gap-2">
+                    <div
+                      key={item}
+                      style={{
+                        borderBottom: '1px solid var(--border-subtle)',
+                        background: isLookedUp ? 'var(--surface-card-hover)' : undefined,
+                      }}
+                    >
+                      <div
+                        className="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
+                        onClick={() => setLookupItem(isLookedUp ? null : item)}
+                        title="Click to see which quests need this"
+                      >
+                        {/* Item name + quest context */}
                         <div className="flex-1 min-w-0">
                           <p
-                            className="text-sm text-slate-200 truncate cursor-pointer hover:text-purple-300 transition-colors"
-                            onClick={() => setLookupItem(isLookedUp ? null : item)}
-                            title="Click to see which quests need this"
+                            className="text-sm font-medium truncate transition-colors"
+                            style={{
+                              fontFamily: 'var(--font-body)',
+                              color: isLookedUp ? 'var(--accent-purple)' : 'var(--text-primary)',
+                            }}
                           >
                             {item}
                           </p>
-                          {isMissing && (
-                            <p className="text-xs text-yellow-400">need {neededFor!.needed}</p>
+                          {/* Inline quest context — visible without clicking */}
+                          {isMissing && activeNeed && (
+                            <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                              {activeNeed.quests.slice(0, 2).join(' · ')}
+                              {activeNeed.quests.length > 2 ? ` +${activeNeed.quests.length - 2}` : ''}
+                            </p>
                           )}
-                          {isFulfilled && (
-                            <p className="text-xs text-green-500">✓ stocked</p>
-                          )}
-                          {futureNeed && (
-                            <p className="text-xs text-purple-400 flex items-center gap-1">
-                              <Lock size={9} /> needed in {futureNeed.minSteps} quest{futureNeed.minSteps !== 1 ? 's' : ''}
+                          {futureNeed && !isMissing && !isFulfilled && (
+                            <p className="text-[11px] mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-purple)' }}>
+                              <Lock size={9} />
+                              in {futureNeed.minSteps} quest{futureNeed.minSteps !== 1 ? 's' : ''} — {futureNeed.entries[0].questName}
                             </p>
                           )}
                         </div>
-                      <input
-                        type="number"
-                        min={0}
-                        value={qty || ''}
-                        placeholder="0"
-                        onChange={(e) => {
-                          const v = e.target.value === '' ? 0 : parseInt(e.target.value);
-                          if (!isNaN(v)) setInventoryItem(item, v);
-                        }}
-                        className={`w-16 sm:w-20 bg-slate-700 border rounded px-2 py-1 text-sm text-right font-mono focus:outline-none ${
-                          isMissing
-                            ? 'border-yellow-600/40 text-yellow-300 focus:border-yellow-500'
-                            : isFulfilled
-                            ? 'border-green-700/40 text-green-400 focus:border-green-500'
-                            : 'border-slate-600 text-slate-100 focus:border-amber-500'
-                        }`}
-                      />
-                      <button
-                        onClick={() => setInventoryItem(item, 0)}
-                        className="text-slate-600 hover:text-red-400 transition-colors flex-shrink-0"
-                        title="Remove item"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+
+                        {/* Qty + badges */}
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {isMissing && activeNeed && <Badge tone="deficit">−{activeNeed.deficit}</Badge>}
+                          {isFulfilled && <Badge tone="success">✓</Badge>}
+                          {futureNeed && !isMissing && !isFulfilled && (
+                            <Badge tone="future">
+                              <Lock size={9} />
+                            </Badge>
+                          )}
+                          <input
+                            type="number"
+                            min={0}
+                            value={qty || ''}
+                            placeholder="0"
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => {
+                              const v = e.target.value === '' ? 0 : parseInt(e.target.value);
+                              if (!isNaN(v)) setInventoryItem(item, v);
+                            }}
+                            className="w-16 sm:w-20 rounded px-2 py-1 text-sm text-right focus:outline-none"
+                            style={{
+                              fontFamily: 'var(--font-mono)',
+                              background: 'var(--surface-inset)',
+                              border: `1px solid ${isMissing ? 'var(--accent-orange-border)' : isFulfilled ? 'var(--accent-green-border)' : 'var(--border-default)'}`,
+                              color: isMissing ? 'var(--accent-orange)' : isFulfilled ? 'var(--accent-green)' : 'var(--text-primary)',
+                            }}
+                          />
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setInventoryItem(item, 0); }}
+                            title="Remove item"
+                            style={{ color: 'var(--text-muted)' }}
+                            className="flex-shrink-0 hover:text-red-400 transition-colors"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                          <ChevronDown
+                            size={13}
+                            style={{
+                              color: 'var(--text-muted)',
+                              transform: isLookedUp ? 'rotate(180deg)' : 'none',
+                              transition: 'var(--transition-fast)',
+                              flexShrink: 0,
+                            }}
+                          />
+                        </div>
                       </div>
+
+                      {/* Expanded quest lookup */}
                       {isLookedUp && lookupResults && (
-                        <div className="mt-2 border-t border-slate-700/50 pt-2 space-y-1">
+                        <div
+                          className="px-4 pb-3 pt-2 space-y-1.5"
+                          style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}
+                        >
+                          <p className="text-[11px] font-semibold uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
+                            Used in
+                          </p>
                           {lookupResults.length === 0 ? (
-                            <p className="text-xs text-slate-500">No quests need this item.</p>
+                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>No quests need this item.</p>
                           ) : (
                             lookupResults.map(({ quest, quantity, status }) => (
-                              <div key={quest.id} className="flex items-center justify-between text-xs gap-2">
-                                <span className={`truncate ${statusColor[status]}`}>{quest.name}</span>
-                                <span className="text-slate-500 flex-shrink-0 font-mono">×{quantity}</span>
+                              <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                                <span className="truncate" style={{ color: statusColor[status] }}>{quest.name}</span>
+                                <span className="flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                                  ×{quantity}
+                                </span>
                               </div>
                             ))
                           )}
@@ -613,15 +596,114 @@ export function InventoryPage() {
                   );
                 })}
               </div>
-              {inventoryItems.length > 0 && (
-                <div className="px-4 py-2 bg-slate-900/40 border-t border-slate-700/50">
-                  <span className="text-xs text-slate-500">{inventoryItems.length} item{inventoryItems.length !== 1 ? 's' : ''}{search ? ' matching search' : ''}</span>
-                </div>
-              )}
+              <div
+                className="px-4 py-2"
+                style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}
+              >
+                <span className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  {inventoryItems.length} item{inventoryItems.length !== 1 ? 's' : ''}{search ? ' matching' : ''}
+                </span>
+              </div>
             </div>
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// Sub-components for collapsible sections
+function FutureNeedsPanel({ futureNeeds }: { futureNeeds: Map<string, { needed: number; have: number; entries: { questName: string; stepsAhead: number }[]; minSteps: number }> }) {
+  const [open, setOpen] = useState(false);
+  const items = [...futureNeeds.entries()];
+  return (
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center gap-2 px-4 py-2.5 transition-colors"
+        style={{ background: 'var(--accent-purple-bg)' }}
+      >
+        <Lock size={12} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
+        <span className="flex-1 text-left text-xs font-semibold" style={{ color: 'var(--accent-purple)' }}>
+          {items.length} item{items.length !== 1 ? 's' : ''} needed in next 5 quests
+        </span>
+        <ChevronDown
+          size={12}
+          style={{ color: 'var(--text-muted)', transform: open ? 'rotate(180deg)' : 'none', transition: 'var(--transition-fast)' }}
+        />
+      </button>
+      {open && (
+        <div>
+          {items.map(([item, { needed, have, entries, minSteps }]) => (
+            <div
+              key={item}
+              className="px-4 py-2.5 flex items-start justify-between gap-3"
+              style={{ borderTop: '1px solid var(--border-subtle)' }}
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <Lock size={10} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
+                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</p>
+                </div>
+                <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
+                  In {minSteps} quest{minSteps !== 1 ? 's' : ''} — {entries[0].questName}
+                  {entries.length > 1 ? ` +${entries.length - 1} more` : ''}
+                </p>
+              </div>
+              <span
+                className="text-sm font-semibold flex-shrink-0"
+                style={{ fontFamily: 'var(--font-mono)', color: have >= needed ? 'var(--accent-green)' : 'var(--text-secondary)' }}
+              >
+                {have}/{needed}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FulfilledPanel({ needs }: { needs: Map<string, { needed: number; have: number; deficit: number; quests: string[] }> }) {
+  const [open, setOpen] = useState(false);
+  const items = [...needs.entries()].filter(([, n]) => n.deficit === 0);
+  return (
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center gap-2 px-4 py-2.5 transition-colors"
+        style={{ background: 'var(--accent-green-bg)' }}
+      >
+        <span className="flex-1 text-left text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
+          ✓ {items.length} item{items.length !== 1 ? 's' : ''} fully stocked
+        </span>
+        <ChevronDown
+          size={12}
+          style={{ color: 'var(--text-muted)', transform: open ? 'rotate(180deg)' : 'none', transition: 'var(--transition-fast)' }}
+        />
+      </button>
+      {open && (
+        <div>
+          {items.map(([item, { needed, have }]) => (
+            <div
+              key={item}
+              className="px-4 py-2.5 flex items-center justify-between"
+              style={{ borderTop: '1px solid var(--border-subtle)' }}
+            >
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+              <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                {have}/{needed} ✓
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
