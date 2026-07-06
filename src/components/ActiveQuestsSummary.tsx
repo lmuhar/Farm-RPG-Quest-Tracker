@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, Hammer, X } from 'lucide-react';
+import { Swords, Clock, ChevronDown, Hammer, X, Landmark } from 'lucide-react';
 import type { Quest } from '../types';
-import { parseItems, formatDuration, calcGrowsNeeded } from '../utils';
+import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
@@ -51,11 +51,13 @@ export function ActiveQuestsSummary({ quests }: Props) {
       const have = inventory[item] ?? 0;
       const deficit = Math.max(0, totalNeeded - have);
       const pct = totalNeeded > 0 ? have / totalNeeded : 1;
-      const cropTime = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
+      const isHoney = item.toLowerCase() === 'honey';
+      const honey = isHoney && deficit > 0 ? calcHoneyRuns(deficit) : null;
+      const cropTime = !isHoney ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
       const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
       const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
       const recipe = recipeByName.get(item.toLowerCase());
-      return { item, totalNeeded, have, deficit, pct, cropTime, grows, totalTime, recipe };
+      return { item, totalNeeded, have, deficit, pct, isHoney, honey, cropTime, grows, totalTime, recipe };
     });
 
     const needed = all.filter((i) => i.deficit > 0).sort((a, b) => b.pct - a.pct);
@@ -131,7 +133,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
       {/* Items still needed */}
       {neededItems.length > 0 && (
         <div className="divide-y" style={{ borderBottom: stockedItems.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
-          {neededItems.map(({ item, totalNeeded, have, deficit, pct, cropTime, grows, totalTime, recipe }) => {
+          {neededItems.map(({ item, totalNeeded, have, deficit, pct, isHoney, honey, cropTime, grows, totalTime, recipe }) => {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             const pctDisplay = Math.round(pct * 100);
@@ -151,7 +153,15 @@ export function ActiveQuestsSummary({ quests }: Props) {
                         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
                           {item}
                         </span>
-                        {recipe && (
+                        {isHoney && (
+                          <span
+                            className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                            style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}
+                          >
+                            <Landmark size={9} /> temple
+                          </span>
+                        )}
+                        {recipe && !isHoney && (
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
                             style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
@@ -160,6 +170,12 @@ export function ActiveQuestsSummary({ quests }: Props) {
                           </span>
                         )}
                       </div>
+                      {isHoney && honey && (
+                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                          <Landmark size={10} />
+                          {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes · {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                        </p>
+                      )}
                       {cropTime && grows && totalTime && (
                         <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
                           <Clock size={10} />

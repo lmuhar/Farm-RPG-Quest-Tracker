@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, CheckCircle2, Clock, Hammer } from 'lucide-react';
+import { ChevronDown, CheckCircle2, Clock, Hammer, Landmark } from 'lucide-react';
 import type { Quest } from '../types';
-import { getQuestStatus, parseItems, formatDuration, calcGrowsNeeded, compareQuests } from '../utils';
+import { getQuestStatus, parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, compareQuests } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
@@ -31,8 +31,10 @@ function ItemProgressRow({
   const deficit = Math.max(0, quantity - have);
   const pct = Math.min(100, quantity > 0 ? Math.round((have / quantity) * 100) : 100);
 
-  const recipe = recipeByName.get(item.toLowerCase());
-  const cropTime = cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase());
+  const isHoney = item.toLowerCase() === 'honey';
+  const honey = isHoney && !done ? calcHoneyRuns(deficit) : null;
+  const recipe = !isHoney ? recipeByName.get(item.toLowerCase()) : undefined;
+  const cropTime = !isHoney ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
   const grows = cropTime && !done ? calcGrowsNeeded(deficit, plotCount) : null;
   const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
 
@@ -53,6 +55,11 @@ function ItemProgressRow({
       <div className="flex items-center justify-between gap-3 mb-1.5">
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className="text-sm text-slate-200 truncate">{item}</span>
+          {isHoney && (
+            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+              <Landmark size={9} /> temple
+            </span>
+          )}
           {recipe && (
             <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[var(--accent-blue-bg)] text-[var(--accent-blue)] border border-[var(--accent-blue-border)]">
               <Hammer size={9} /> crafted
@@ -87,6 +94,12 @@ function ItemProgressRow({
       {/* Sub-hints */}
       {!done && (
         <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5">
+          {isHoney && honey && (
+            <span className="text-xs flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+              <Landmark size={10} />
+              {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes · {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+            </span>
+          )}
           {cropTime && grows && totalTime && (
             <span className="text-xs text-slate-400 flex items-center gap-1">
               <Clock size={10} className="text-green-400/70" />
