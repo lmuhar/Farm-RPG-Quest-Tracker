@@ -9,6 +9,7 @@ import { CropTimerPanel } from './components/CropTimerPanel';
 import { QuestCard } from './components/QuestCard';
 import { QuestLineView } from './components/QuestLineView';
 import { ActiveQuestsSummary } from './components/ActiveQuestsSummary';
+import { NextUpSummary } from './components/NextUpSummary';
 import { ActiveQuestLine } from './components/ActiveQuestLine';
 import { ImportExport } from './components/ImportExport';
 import { RecipesPanel } from './components/RecipesPanel';
@@ -152,6 +153,24 @@ export default function App() {
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, []);
+
+  const nextUpQuests = useMemo(() => {
+    return questlineGroups
+      .filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)))
+      .flatMap(({ quests }) => {
+        const sorted = [...quests].sort((a, b) => compareQuests(a.name, b.name));
+        const statuses = sorted.map((q) => getQuestStatus(q, player, questStatuses));
+        const lastActiveIdx = statuses.reduce((max, s, i) => (s === 'active' ? i : max), -1);
+        if (lastActiveIdx < 0) return [];
+        const remaining = sorted.slice(lastActiveIdx + 1);
+        const nextIdx = remaining.findIndex((_, i) => {
+          const st = statuses[lastActiveIdx + 1 + i];
+          return st !== 'completed' && st !== 'active';
+        });
+        if (nextIdx < 0) return [];
+        return [remaining[nextIdx]];
+      });
+  }, [questlineGroups, activeQuestIds, player, questStatuses]);
 
   const filteredQuestlines = useMemo(() => {
     if (!questlineSearch) return questlineGroups;
@@ -347,6 +366,7 @@ export default function App() {
           {tab === 'active' && (
             <div className="space-y-3">
               <ActiveQuestsSummary quests={activeQuests} />
+              <NextUpSummary quests={nextUpQuests} />
 
               {/* Questlines that have at least one active quest */}
               {questlineGroups
