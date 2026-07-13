@@ -1,0 +1,1688 @@
+{
+  "Drum": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Iron": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    },
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    },
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Nails": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    },
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Yellow Perch": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Feathers": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    },
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Yellow Ornament": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Largemouth Bass": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Crappie": [
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Apple": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    },
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    },
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    },
+    {
+      "name": "Apple Bobbing",
+      "type": "fishing"
+    }
+  ],
+  "Stone": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    },
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    },
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    },
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    },
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    },
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Spectacles": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    }
+  ],
+  "Fish Bones": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Board": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Pearl": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Fern Leaf": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    },
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Bone": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    }
+  ],
+  "Glass Bottle": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Conch Shell": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Amethyst": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Glass Orb": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Sea Turtle": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Clownfish": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Blue Ornament": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "MIAB": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    },
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Giant Squid": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Runestone 09": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Hide": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    }
+  ],
+  "Puffer": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Straw": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Skipjack": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Bird Egg": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    }
+  ],
+  "Bluegill": [
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    }
+  ],
+  "Stingray": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Runestone 04": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    }
+  ],
+  "Runestone 05": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Model Ship": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    }
+  ],
+  "Flier": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Strange Letter": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Scrap Wire": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Seahorse": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Orange": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Gold Feather": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Magicite": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "3-leaf Clover": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "4-leaf Clover": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Bacon": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Lemon": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Moonstone": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Sandstone": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Red Starfish": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Blue Feathers": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Mackerel": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Fluorifish": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Marlin": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Runestone 17": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Snail": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    }
+  ],
+  "Grab Bag 02": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    }
+  ],
+  "Shiny Beetle": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Torch Fish": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Flamejack": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Grab Bag 01": [
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    }
+  ],
+  "Lima Bean": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    }
+  ],
+  "Seaweed": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Antler": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Red Berries": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Small Chest 01": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    }
+  ],
+  "Thorns": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Spider": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Herbs": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Jack-o-lantern": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Green Ornament": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Piece 30": [
+    {
+      "name": "Gary's Crushroom",
+      "type": "explore"
+    }
+  ],
+  "Candy": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Candy Corn": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Taffy": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Ruby Scorpion": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Trout": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    },
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Gold Drum": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    }
+  ],
+  "Goldjack": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Sand": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Gold Sea Bass": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Gold Catfish": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Star": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Goldray": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Flarefin": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Raptor Egg": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Candy Roll": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Arrowhead": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    }
+  ],
+  "Treat Bag 03": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Medium Chest 02": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Goldfin": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Mystical Chest 02": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Milk and Cookies": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Square Key": [
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    }
+  ],
+  "Water Lily": [
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    }
+  ],
+  "Mushroom": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    },
+    {
+      "name": "Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    },
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    },
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Gary's Crushroom",
+      "type": "explore"
+    }
+  ],
+  "Rudolph": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Broken Pipe": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Chattering Teeth": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Red Ornament": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Small Bolt": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Large Chest 03": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Gold Flier": [
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Emberstone": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Prickly Pear": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Bullfish": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Glassback": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Shimmer Quartz": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Mussel": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Gold Sea Crest": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Monster Skull": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Crowfish": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Ice Shark": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Large Chest 02": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Fire Ant": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    }
+  ],
+  "Horn": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Runestone 14": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Wood": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    },
+    {
+      "name": "Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    },
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    },
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    },
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Gold Leaf": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    }
+  ],
+  "Oak": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Gold Boot": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Spiral Shell": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Octopus": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Skull Coin": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    }
+  ],
+  "Amber": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Stone Jelly": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Pine Cone": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Sweet Root": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Ruby Fish": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Blue Sea Bass": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Treat Bag 01": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Hockey Mask": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Runestone 18": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Small Chest 02": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Magna Quartz": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Starfish": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Green Jellyfish": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Coal": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    },
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Orange Ornament": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Frosteye": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Spiked Shell": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Old Boot": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Tea Leaves": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    }
+  ],
+  "Runestone 08": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    }
+  ],
+  "Clam Shell": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Diamond": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Horned Beetle": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    }
+  ],
+  "Sunfish": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Gold Trout": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    }
+  ],
+  "Ruby Coral": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Heart Necklace Left Piece": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Dragon Skull": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Skeleton Key": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    }
+  ],
+  "Runestone 13": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Yarn": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Onyx Scorpion": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Runestone 15": [
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    }
+  ],
+  "Sour Root": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Tribal Staff": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Gold Jelly": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Redgill": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Frost Snapper Shell": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Globber": [
+    {
+      "name": "Lake Tempest",
+      "type": "fishing"
+    },
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Strange Ring": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Giant Centipede": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Medium Chest 01": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Runestone 12": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Gold Coral": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Purple Flower": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Green Chromis": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Bone Fish": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Catfish": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    }
+  ],
+  "Runestone 19": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Unpolished Garnet": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Sea Crest": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Witch Hat": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Cogwheel": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    }
+  ],
+  "Grab Bag 08": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Diving Helmet": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Copper Wire": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Transistor": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Small Key": [
+    {
+      "name": "Small Pond",
+      "type": "fishing"
+    }
+  ],
+  "Treat Bag 02": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Jellyfish": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Small Prawn": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Crab Claw": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Goldgill": [
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    }
+  ],
+  "Orange Gecko": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    }
+  ],
+  "Orcafish": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Unpolished Emerald": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Purple Ornament": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Serpent Eel": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Blue Gel": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Shrimp": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Runestone 03": [
+    {
+      "name": "Forest Pond",
+      "type": "fishing"
+    }
+  ],
+  "Blue Catfish": [
+    {
+      "name": "Crystal River",
+      "type": "fishing"
+    }
+  ],
+  "Unpolished Ruby": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Barracuda": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Sea Catfish": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Carbon Sphere": [
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    },
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Blue Shell": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Salt Rock": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    },
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Large Chest 01": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Carp": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    }
+  ],
+  "Swordfish": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Treasure Key": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing"
+    }
+  ],
+  "Ancient Coin": [
+    {
+      "name": "Black Rock Canyon",
+      "type": "explore"
+    },
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Langstaff Crest": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Runestone 02": [
+    {
+      "name": "Farm Pond",
+      "type": "fishing"
+    }
+  ],
+  "Lollipop": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Prism Shard": [
+    {
+      "name": "Ember Lagoon",
+      "type": "explore"
+    }
+  ],
+  "Crab": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Aquamarine": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    }
+  ],
+  "Slimestone": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Plumbfish": [
+    {
+      "name": "Large Island",
+      "type": "fishing"
+    }
+  ],
+  "Caterpillar": [
+    {
+      "name": "Highland Hills",
+      "type": "explore"
+    }
+  ],
+  "Unpolished Shimmer Stone": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    },
+    {
+      "name": "Mount Banon",
+      "type": "explore"
+    }
+  ],
+  "Machine Part": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Seeker": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing"
+    }
+  ],
+  "Lemon Quartz": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    }
+  ],
+  "Striped Feather": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Blue Crab": [
+    {
+      "name": "Small Island",
+      "type": "fishing"
+    }
+  ],
+  "Acorn": [
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Scrap Metal": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Blue Tiger Fish": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Pirate Hook": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Frog": [
+    {
+      "name": "Forest",
+      "type": "explore"
+    },
+    {
+      "name": "Misty Forest",
+      "type": "explore"
+    }
+  ],
+  "Raptor Claw": [
+    {
+      "name": "Whispering Creek",
+      "type": "explore"
+    }
+  ],
+  "Candy Cane": [
+    {
+      "name": "Santa's Workshop",
+      "type": "explore"
+    }
+  ],
+  "Sea Dragon": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing"
+    }
+  ],
+  "Bat Wing": [
+    {
+      "name": "Haunted House",
+      "type": "explore"
+    }
+  ],
+  "Gary's Diary Page 36": [
+    {
+      "name": "Gary's Crushroom",
+      "type": "explore"
+    }
+  ],
+  "Gary's Diary Page 77": [
+    {
+      "name": "Gary's Crushroom",
+      "type": "explore"
+    }
+  ],
+  "Pocket Watch": [
+    {
+      "name": "Cane Pole Ridge",
+      "type": "explore"
+    }
+  ],
+  "Magic Conch Shell": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing"
+    }
+  ],
+  "Dice": [
+    {
+      "name": "Small Spring",
+      "type": "explore"
+    }
+  ],
+  "Wooden Mask": [
+    {
+      "name": "Small Cave",
+      "type": "explore"
+    }
+  ],
+  "Jumbo Fish": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Pulley": [
+    {
+      "name": "Jundland Desert",
+      "type": "explore"
+    }
+  ],
+  "Green Barracuda": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Mulberry Snapper": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Purple Butterfly Fish": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ],
+  "Speckled Grouper": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing"
+    }
+  ]
+}

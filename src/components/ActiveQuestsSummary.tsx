@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, Hammer, X, Landmark } from 'lucide-react';
+import { Swords, Clock, ChevronDown, Hammer, X, Landmark, MapPin } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
+import { ItemLocationPanel } from './ItemLocationPanel';
 
 interface Recipe {
   id: string;
@@ -22,10 +23,16 @@ interface Props {
 export function ActiveQuestsSummary({ quests }: Props) {
   const { inventory, cropTimes, plotCount } = useStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [locationItem, setLocationItem] = useState<string | null>(null);
   const [showStocked, setShowStocked] = useState(false);
 
   const toggleItem = (item: string) =>
     setSelectedItem((prev) => (prev === item ? null : item));
+
+  const toggleLocation = (item: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLocationItem((prev) => (prev === item ? null : item));
+  };
 
   // Per-item quest breakdown map
   const itemQuestMap = useMemo(() => {
@@ -155,6 +162,14 @@ export function ActiveQuestsSummary({ quests }: Props) {
                         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
                           {item}
                         </span>
+                        <button
+                          onClick={(e) => toggleLocation(item, e)}
+                          className="flex-shrink-0 p-0.5 rounded transition-opacity hover:opacity-80"
+                          style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }}
+                          aria-label="Show locations"
+                        >
+                          <MapPin size={11} />
+                        </button>
                         {isHoney && (
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
@@ -213,6 +228,14 @@ export function ActiveQuestsSummary({ quests }: Props) {
                       style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }}
                     />
                   </div>
+                  {locationItem === item && (
+                    <div className="mt-2">
+                      <ItemLocationPanel
+                        item={item}
+                        allNeededItems={neededItems.map((i) => i.item)}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {/* Expanded breakdown */}
