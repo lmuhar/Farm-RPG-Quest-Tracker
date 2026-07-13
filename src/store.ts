@@ -72,6 +72,14 @@ const defaultPlayer: PlayerProfile = {
   npcLevels: {},
 };
 
+// Merge saved crop times with defaults: saved entries win, new defaults fill gaps
+function mergeCropTimes(
+  saved: { item: string; growMinutes: number }[]
+): { item: string; growMinutes: number }[] {
+  const savedItems = new Set(saved.map((c) => c.item));
+  return [...defaultCropTimes.filter((d) => !savedItems.has(d.item)), ...saved];
+}
+
 export const useStore = create<Store>()(
   persist(
     (set) => ({
@@ -158,7 +166,7 @@ export const useStore = create<Store>()(
             : s.questStatuses,
           inventory: data.inventory ?? s.inventory,
           player: data.player ?? s.player,
-          cropTimes: data.cropTimes ?? s.cropTimes,
+          cropTimes: data.cropTimes ? mergeCropTimes(data.cropTimes) : s.cropTimes,
           plotCount: data.plotCount ?? s.plotCount,
           craftingRecipes: data.craftingRecipes ?? s.craftingRecipes,
           growQueue: data.growQueue ?? s.growQueue,
@@ -180,6 +188,16 @@ export const useStore = create<Store>()(
       setQuestNote: (id, note) =>
         set((s) => ({ questNotes: { ...s.questNotes, [id]: note } })),
     }),
-    { name: 'farm-rpg-tracker' }
+    {
+      name: 'farm-rpg-tracker',
+      merge: (persisted, current) => {
+        const p = persisted as Partial<AppState>;
+        return {
+          ...(current as Store),
+          ...(p as object),
+          cropTimes: p.cropTimes ? mergeCropTimes(p.cropTimes) : (current as Store).cropTimes,
+        };
+      },
+    }
   )
 );
