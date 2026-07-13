@@ -61,6 +61,7 @@ const defaultCropTimes = [
   { item: 'Wheat',       growMinutes: 288 },    // 4h 48m
   { item: 'Broccoli',    growMinutes: 576 },    // 9h 36m
   { item: 'Cotton',      growMinutes: 1152 },   // 19h 12m
+  { item: 'Sunflower',  growMinutes: 1728 },   // 1d 4h 48m
 ];
 
 const defaultPlayer: PlayerProfile = {
