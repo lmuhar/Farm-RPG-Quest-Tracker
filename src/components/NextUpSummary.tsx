@@ -51,8 +51,10 @@ export function NextUpSummary({ quests }: Props) {
         const cropTime = !isHoney && !isCutlass ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
         const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
         const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
+        const seedsHave = cropTime && grows ? (inventory[`${item} Seed`] ?? 0) : 0;
+        const seedsToBuy = cropTime && grows ? Math.max(0, grows * plotCount - seedsHave) : 0;
         const recipe = !isHoney && !isCutlass ? recipeByName.get(item.toLowerCase()) : undefined;
-        return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, recipe };
+        return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe };
       })
       .sort((a, b) => b.pct - a.pct);
   }, [quests, inventory, cropTimes, plotCount]);
@@ -107,7 +109,7 @@ export function NextUpSummary({ quests }: Props) {
               No items required for next quests
             </p>
           ) : (
-            items.map(({ item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, recipe }) => {
+            items.map(({ item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe }) => {
               const pctDisplay = Math.round(pct * 100);
               const done = deficit === 0;
               return (
@@ -165,6 +167,13 @@ export function NextUpSummary({ quests }: Props) {
                         <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
                           <Clock size={10} />
                           {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                        </p>
+                      )}
+                      {cropTime && grows && (
+                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--text-muted)' }}>
+                          {seedsToBuy > 0
+                            ? <>buy {seedsToBuy} seed{seedsToBuy !== 1 ? 's' : ''}{seedsHave > 0 ? ` (have ${seedsHave})` : ''}</>
+                            : <>seeds stocked{seedsHave > 0 ? ` (have ${seedsHave})` : ''}</>}
                         </p>
                       )}
                     </div>
