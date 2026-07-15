@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Swords, Clock, ChevronDown, Hammer, X, Landmark, MapPin } from 'lucide-react';
 import type { Quest } from '../types';
-import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns } from '../utils';
+import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
@@ -59,14 +59,17 @@ export function ActiveQuestsSummary({ quests }: Props) {
       const deficit = Math.max(0, totalNeeded - have);
       const pct = totalNeeded > 0 ? have / totalNeeded : 1;
       const isHoney = item.toLowerCase() === 'honey';
+      const isCutlass = item.toLowerCase() === 'cutlass';
       const honey = isHoney && deficit > 0 ? calcHoneyRuns(deficit) : null;
       const honeyRadishHave = honey ? (inventory['Radish'] ?? 0) : 0;
       const honeyGrows = honey ? calcGrowsNeeded(Math.max(0, honey.radishes - honeyRadishHave), plotCount) : 0;
-      const cropTime = !isHoney ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
+      const cutlass = isCutlass && deficit > 0 ? calcCutlassRuns(deficit) : null;
+      const cutlassStaffHave = cutlass ? (inventory['Tribal Staff'] ?? 0) : 0;
+      const cropTime = !isHoney && !isCutlass ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
       const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
       const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
       const recipe = recipeByName.get(item.toLowerCase());
-      return { item, totalNeeded, have, deficit, pct, isHoney, honey, honeyRadishHave, honeyGrows, cropTime, grows, totalTime, recipe };
+      return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, recipe };
     });
 
     const needed = all.filter((i) => i.deficit > 0).sort((a, b) => b.pct - a.pct);
@@ -142,7 +145,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
       {/* Items still needed */}
       {neededItems.length > 0 && (
         <div className="divide-y" style={{ borderBottom: stockedItems.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
-          {neededItems.map(({ item, totalNeeded, have, deficit, pct, isHoney, honey, honeyRadishHave, honeyGrows, cropTime, grows, totalTime, recipe }) => {
+          {neededItems.map(({ item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, recipe }) => {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             const pctDisplay = Math.round(pct * 100);
@@ -170,7 +173,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                         >
                           <MapPin size={11} />
                         </button>
-                        {isHoney && (
+                        {(isHoney || isCutlass) && (
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
                             style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}
@@ -178,7 +181,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                             <Landmark size={9} /> temple
                           </span>
                         )}
-                        {recipe && !isHoney && (
+                        {recipe && !isHoney && !isCutlass && (
                           <span
                             className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
                             style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
@@ -195,6 +198,14 @@ export function ActiveQuestsSummary({ quests }: Props) {
                             ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})`
                             : ' · radishes stocked'}
                           {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                        </p>
+                      )}
+                      {isCutlass && cutlass && (
+                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                          <Landmark size={10} />
+                          {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
+                          {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
+                          {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
                         </p>
                       )}
                       {cropTime && grows && totalTime && (
