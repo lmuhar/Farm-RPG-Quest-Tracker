@@ -125,9 +125,9 @@ export function calcHoneyRuns(deficit: number): { runs: number; radishes: number
   return { runs, radishes: runs * HONEY_RADISHES_PER_RUN };
 }
 
-// Cutlass is obtained via a daily exchange: 12 Tribal Staff → 3 Cutlass per day
+// Cutlass is obtained via the temple daily: 55 Tribal Staff → 3 Cutlass per run
 export const CUTLASS_PER_RUN = 3;
-export const CUTLASS_TRIBAL_STAFF_PER_RUN = 12;
+export const CUTLASS_TRIBAL_STAFF_PER_RUN = 55;
 
 export function calcCutlassRuns(deficit: number): { runs: number; tribalStaff: number } {
   const runs = Math.ceil(deficit / CUTLASS_PER_RUN);
