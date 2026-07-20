@@ -46,7 +46,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
     return map;
   }, [quests]);
 
-  const { turnInQuests, craftableItems, collectingItems, stockedItems, templeRecommendation } = useMemo(() => {
+  const { turnInQuests, directCraftItems, rawCraftItems, collectingItems, stockedItems, templeRecommendation } = useMemo(() => {
     // Aggregate item totals across all active quests
     const itemMap = new Map<string, number>();
     for (const quest of quests) {
@@ -72,11 +72,18 @@ export function ActiveQuestsSummary({ quests }: Props) {
       const seedsHave = cropTime && grows ? (inventory[`${item} Seed`] ?? 0) : 0;
       const seedsToBuy = cropTime && grows ? Math.max(0, grows * plotCount - seedsHave) : 0;
       const recipe = recipeByName.get(item.toLowerCase());
-      // Craft-now: has recipe, not a temple item, has a deficit, and ALL raw materials are in inventory
+      // Direct craft: all immediate recipe ingredients are in inventory (one crafting step)
+      const directIngredients = recipe && deficit > 0
+        ? new Map(recipe.ingredients.map(({ item: ing, quantity: ingQty }) => [ing, ingQty * deficit]))
+        : null;
+      const isDirectCraftNow = !isHoney && !isCutlass && recipe != null && directIngredients != null && deficit > 0 &&
+        [...directIngredients.entries()].every(([ing, qty]) => (inventory[ing] ?? 0) >= qty);
+      // Raw craft: base materials are in inventory but intermediate crafting steps are needed first
       const rawMaterials = recipe && deficit > 0 ? resolveRawIngredients(item, deficit, recipeByName) : null;
-      const isCraftNow = !isHoney && !isCutlass && recipe != null && rawMaterials != null && deficit > 0 &&
+      const isRawCraftNow = !isHoney && !isCutlass && !isDirectCraftNow && recipe != null && rawMaterials != null && deficit > 0 &&
         [...rawMaterials.entries()].every(([ri, rq]) => (inventory[ri] ?? 0) >= rq);
-      return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe, rawMaterials, isCraftNow };
+      const isCraftNow = isDirectCraftNow || isRawCraftNow;
+      return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe, directIngredients, rawMaterials, isDirectCraftNow, isRawCraftNow, isCraftNow };
     });
 
     // Tier 1: quests where every item is fully stocked
@@ -85,7 +92,8 @@ export function ActiveQuestsSummary({ quests }: Props) {
     );
 
     const needed = all.filter((i) => i.deficit > 0);
-    const craftableItems = needed.filter((i) => i.isCraftNow).sort((a, b) => b.pct - a.pct);
+    const directCraftItems = needed.filter((i) => i.isDirectCraftNow).sort((a, b) => b.pct - a.pct);
+    const rawCraftItems = needed.filter((i) => i.isRawCraftNow).sort((a, b) => b.pct - a.pct);
     const collectingItems = needed.filter((i) => !i.isCraftNow).sort((a, b) => b.pct - a.pct);
     const stockedItems = all.filter((i) => i.deficit === 0);
 
@@ -101,7 +109,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
       else templeRecommendation = honeyNeeded.deficit >= cutlassNeeded.deficit ? 'honey' : 'cutlass';
     }
 
-    return { turnInQuests, craftableItems, collectingItems, stockedItems, templeRecommendation };
+    return { turnInQuests, directCraftItems, rawCraftItems, collectingItems, stockedItems, templeRecommendation };
   }, [quests, inventory, cropTimes, plotCount]);
 
   // Inventory pressure
@@ -109,7 +117,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
   const slotPct = inventoryMax > 0 ? usedSlots / inventoryMax : 0;
   const slotColor = slotPct >= 0.9 ? 'var(--accent-orange)' : slotPct >= 0.75 ? 'var(--accent-yellow)' : 'var(--accent-green)';
 
-  const totalNeeded = collectingItems.length + craftableItems.length;
+  const totalNeeded = collectingItems.length + directCraftItems.length + rawCraftItems.length;
 
   if (quests.length === 0) {
     return (
@@ -151,13 +159,22 @@ export function ActiveQuestsSummary({ quests }: Props) {
             {turnInQuests.length} ready to turn in
           </span>
         )}
-        {craftableItems.length > 0 && (
+        {directCraftItems.length > 0 && (
           <span
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
             style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
           >
             <Hammer size={11} />
-            {craftableItems.length} craft now
+            {directCraftItems.length} craft now
+          </span>
+        )}
+        {rawCraftItems.length > 0 && (
+          <span
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
+            style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
+          >
+            <Hammer size={11} />
+            {rawCraftItems.length} craft with prep
           </span>
         )}
         {totalNeeded === 0 && turnInQuests.length === 0 && (
@@ -234,8 +251,8 @@ export function ActiveQuestsSummary({ quests }: Props) {
         </div>
       )}
 
-      {/* TIER 2 — Craft now */}
-      {craftableItems.length > 0 && (
+      {/* TIER 2a — Craft now (direct ingredients in inventory) */}
+      {directCraftItems.length > 0 && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -246,10 +263,10 @@ export function ActiveQuestsSummary({ quests }: Props) {
               Craft now
             </span>
             <span className="text-[11px]" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>
-              — all materials in inventory
+              — all ingredients in inventory
             </span>
           </div>
-          {craftableItems.map(({ item, totalNeeded, have, deficit, rawMaterials }) => {
+          {directCraftItems.map(({ item, totalNeeded, have, deficit, directIngredients }) => {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             return (
@@ -283,14 +300,13 @@ export function ActiveQuestsSummary({ quests }: Props) {
                       </span>
                     </div>
                   </div>
-                  {/* Raw materials inline */}
-                  {rawMaterials && (
+                  {directIngredients && (
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-                      {[...rawMaterials.entries()].map(([ri, rq]) => {
-                        const haveRaw = inventory[ri] ?? 0;
+                      {[...directIngredients.entries()].map(([ing, qty]) => {
+                        const haveIng = inventory[ing] ?? 0;
                         return (
-                          <span key={ri} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
-                            ✓ {ri} {haveRaw}/{rq}
+                          <span key={ing} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+                            ✓ {ing} {haveIng}/{qty}
                           </span>
                         );
                       })}
@@ -300,7 +316,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                     <div className="mt-2">
                       <ItemLocationPanel
                         item={item}
-                        allNeededItems={[...craftableItems, ...collectingItems].map((i) => i.item)}
+                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...collectingItems].map((i) => i.item)}
                       />
                     </div>
                   )}
@@ -327,6 +343,129 @@ export function ActiveQuestsSummary({ quests }: Props) {
         </div>
       )}
 
+      {/* TIER 2b — Craft with prep (base materials in inventory, intermediate crafting needed) */}
+      {rawCraftItems.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <div
+            className="px-5 py-2 flex items-center gap-2"
+            style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}
+          >
+            <Hammer size={11} style={{ color: 'var(--accent-purple)' }} />
+            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-purple)' }}>
+              Craft with prep
+            </span>
+            <span className="text-[11px]" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>
+              — base materials ready, craft intermediates first
+            </span>
+          </div>
+          {rawCraftItems.map(({ item, totalNeeded, have, deficit, recipe, directIngredients, rawMaterials }) => {
+            const isSelected = selectedItem === item;
+            const breakdown = itemQuestMap.get(item) ?? [];
+            return (
+              <div
+                key={item}
+                style={{ borderBottom: '1px solid var(--border-subtle)', background: isSelected ? 'var(--surface-card-hover)' : undefined }}
+              >
+                <div className="px-5 py-3 cursor-pointer" onClick={() => toggleItem(item)}>
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <button
+                        onClick={(e) => toggleLocation(item, e)}
+                        className="flex-shrink-0 p-0.5 rounded transition-opacity hover:opacity-80"
+                        style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }}
+                        aria-label="Show locations"
+                      >
+                        <MapPin size={11} />
+                      </button>
+                      <span
+                        className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                        style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
+                      >
+                        <Hammer size={9} /> craft ×{deficit}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
+                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>
+                        {have}/{totalNeeded}
+                      </span>
+                    </div>
+                  </div>
+                  {/* Direct recipe ingredients — show which need crafting */}
+                  {directIngredients && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1">
+                      {[...directIngredients.entries()].map(([ing, qty]) => {
+                        const haveIng = inventory[ing] ?? 0;
+                        const ok = haveIng >= qty;
+                        return (
+                          <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
+                            {ok ? '✓' : '→'} {ing} {haveIng}/{qty}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {/* Base materials — all in inventory */}
+                  {rawMaterials && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                      {[...rawMaterials.entries()].map(([ri, rq]) => {
+                        const haveRaw = inventory[ri] ?? 0;
+                        return (
+                          <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            ✓ {ri} {haveRaw}/{rq}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+                  {locationItem === item && (
+                    <div className="mt-2">
+                      <ItemLocationPanel
+                        item={item}
+                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...collectingItems].map((i) => i.item)}
+                      />
+                    </div>
+                  )}
+                </div>
+                {isSelected && (
+                  <div
+                    className="px-5 pb-3 space-y-1"
+                    style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}
+                  >
+                    <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
+                      Needed by
+                    </p>
+                    {breakdown.map(({ quest, quantity }) => (
+                      <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                        <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
+                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                      </div>
+                    ))}
+                    {recipe && rawMaterials && (
+                      <div className="pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                        <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Base materials (all stocked)</p>
+                        {[...rawMaterials.entries()].map(([rawItem, rawQty]) => {
+                          const haveRaw = inventory[rawItem] ?? 0;
+                          return (
+                            <div key={rawItem} className="flex items-center justify-between text-xs gap-2">
+                              <span style={{ color: 'var(--text-secondary)' }}>{rawItem}</span>
+                              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', flexShrink: 0 }}>
+                                {haveRaw}/{rawQty}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* TIER 3 — Still collecting */}
       {collectingItems.length > 0 && (
         <div style={{ borderBottom: stockedItems.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
@@ -339,7 +478,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
               Still collecting
             </span>
           </div>
-          {collectingItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe, rawMaterials }) => {
+          {collectingItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe, rawMaterials, directIngredients }) => {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             const pctDisplay = Math.round(pct * 100);
@@ -435,7 +574,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                     <div className="mt-2">
                       <ItemLocationPanel
                         item={item}
-                        allNeededItems={[...craftableItems, ...collectingItems].map((i) => i.item)}
+                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...collectingItems].map((i) => i.item)}
                       />
                     </div>
                   )}
@@ -455,12 +594,29 @@ export function ActiveQuestsSummary({ quests }: Props) {
                         <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
                       </div>
                     ))}
+                    {recipe && directIngredients && (
+                      <div className="pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                        <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Recipe ingredients</p>
+                        {[...directIngredients.entries()].map(([ing, qty]) => {
+                          const haveIng = inventory[ing] ?? 0;
+                          const ok = haveIng >= qty;
+                          return (
+                            <div key={ing} className="flex items-center justify-between text-xs gap-2">
+                              <span style={{ color: 'var(--text-secondary)' }}>{ing}</span>
+                              <span style={{ fontFamily: 'var(--font-mono)', color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', flexShrink: 0 }}>
+                                {haveIng}/{qty}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                     {recipe && rawMaterials && (() => {
                       const isDeep = [...rawMaterials.keys()].some((r) => !recipe.ingredients.find((i) => i.item === r));
                       if (!isDeep) return null;
                       return (
                         <div className="pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Raw materials needed</p>
+                          <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Base materials needed</p>
                           {[...rawMaterials.entries()].map(([rawItem, rawQty]) => {
                             const haveRaw = inventory[rawItem] ?? 0;
                             const ok = haveRaw >= rawQty;
