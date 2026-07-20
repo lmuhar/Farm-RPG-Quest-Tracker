@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Swords, Clock, ChevronDown, Hammer, X, Landmark, MapPin } from 'lucide-react';
 import type { Quest } from '../types';
-import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns } from '../utils';
+import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
@@ -47,7 +47,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
   }, [quests]);
 
   // Aggregated totals sorted by completion % desc (almost done first)
-  const { neededItems, stockedItems, stats } = useMemo(() => {
+  const { neededItems, stockedItems, stats, templeRecommendation } = useMemo(() => {
     const itemMap = new Map<string, number>();
     for (const quest of quests) {
       for (const { quantity, item } of parseItems(quest.itemsRequired)) {
@@ -76,9 +76,23 @@ export function ActiveQuestsSummary({ quests }: Props) {
 
     const needed = all.filter((i) => i.deficit > 0).sort((a, b) => b.pct - a.pct);
     const stocked = all.filter((i) => i.deficit === 0);
+
+    // Temple priority: both honey and cutlass needed → recommend which to do today
+    const honeyNeeded = needed.find((i) => i.isHoney);
+    const cutlassNeeded = needed.find((i) => i.isCutlass);
+    let templeRecommendation: 'honey' | 'cutlass' | null = null;
+    if (honeyNeeded && cutlassNeeded) {
+      const canDoHoney = (inventory['Radish'] ?? 0) >= HONEY_RADISHES_PER_RUN;
+      const canDoCutlass = (inventory['Tribal Staff'] ?? 0) >= CUTLASS_TRIBAL_STAFF_PER_RUN;
+      if (canDoHoney && !canDoCutlass) templeRecommendation = 'honey';
+      else if (canDoCutlass && !canDoHoney) templeRecommendation = 'cutlass';
+      else templeRecommendation = honeyNeeded.deficit >= cutlassNeeded.deficit ? 'honey' : 'cutlass';
+    }
+
     return {
       neededItems: needed,
       stockedItems: stocked,
+      templeRecommendation,
       stats: {
         missingItems: needed.length,
         cropsNeeded: needed.filter((i) => i.cropTime).length,
@@ -143,6 +157,21 @@ export function ActiveQuestsSummary({ quests }: Props) {
           </span>
         )}
       </div>
+
+      {/* Temple priority banner */}
+      {templeRecommendation && (
+        <div
+          className="px-5 py-2 flex items-center gap-2 text-xs"
+          style={{ background: 'var(--accent-yellow-bg)', borderBottom: '1px solid var(--accent-yellow-border)' }}
+        >
+          <Landmark size={11} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+          <span style={{ color: 'var(--accent-yellow)' }}>
+            <strong>Do {templeRecommendation === 'honey' ? 'Honey' : 'Cutlass'} today</strong>
+            {' '}— temple resets once daily;{' '}
+            {templeRecommendation === 'honey' ? 'Cutlass' : 'Honey'} can wait until tomorrow
+          </span>
+        </div>
+      )}
 
       {/* Items still needed */}
       {neededItems.length > 0 && (
