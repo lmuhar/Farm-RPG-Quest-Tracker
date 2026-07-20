@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, Hammer, X, Landmark, MapPin, CheckCircle2, Package } from 'lucide-react';
+import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN } from '../utils';
 import { useStore } from '../store';
@@ -18,9 +18,10 @@ const recipeByName = new Map<string, Recipe>(allRecipes.map((r) => [r.name.toLow
 
 interface Props {
   quests: Quest[];
+  nextUpQuests?: Quest[];
 }
 
-export function ActiveQuestsSummary({ quests }: Props) {
+export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
   const { inventory, cropTimes, plotCount, inventoryMax } = useStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [locationItem, setLocationItem] = useState<string | null>(null);
@@ -34,7 +35,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
     setLocationItem((prev) => (prev === item ? null : item));
   };
 
-  // Per-item quest breakdown map
+  // Per-item quest breakdown map (active quests only)
   const itemQuestMap = useMemo(() => {
     const map = new Map<string, { quest: Quest; quantity: number }[]>();
     for (const quest of quests) {
@@ -46,57 +47,54 @@ export function ActiveQuestsSummary({ quests }: Props) {
     return map;
   }, [quests]);
 
-  const { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation } = useMemo(() => {
-    // Aggregate item totals across all active quests
-    const itemMap = new Map<string, number>();
-    for (const quest of quests) {
-      for (const { quantity, item } of parseItems(quest.itemsRequired)) {
-        itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+  const { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp } = useMemo(() => {
+    // Shared item computation for any set of quests
+    const computeAll = (questsToProcess: Quest[]) => {
+      const itemMap = new Map<string, number>();
+      for (const quest of questsToProcess) {
+        for (const { quantity, item } of parseItems(quest.itemsRequired)) {
+          itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+        }
       }
-    }
+      return [...itemMap.entries()].map(([item, totalNeeded]) => {
+        const have = inventory[item] ?? 0;
+        const deficit = Math.max(0, totalNeeded - have);
+        const pct = totalNeeded > 0 ? have / totalNeeded : 1;
+        const isHoney = item.toLowerCase() === 'honey';
+        const isCutlass = item.toLowerCase() === 'cutlass';
+        const honey = isHoney && deficit > 0 ? calcHoneyRuns(deficit) : null;
+        const honeyRadishHave = honey ? (inventory['Radish'] ?? 0) : 0;
+        const honeyGrows = honey ? calcGrowsNeeded(Math.max(0, honey.radishes - honeyRadishHave), plotCount) : 0;
+        const cutlass = isCutlass && deficit > 0 ? calcCutlassRuns(deficit) : null;
+        const cutlassStaffHave = cutlass ? (inventory['Tribal Staff'] ?? 0) : 0;
+        const cropTime = !isHoney && !isCutlass ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
+        const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
+        const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
+        const seedsHave = cropTime && grows ? (inventory[`${item} Seed`] ?? 0) : 0;
+        const seedsToBuy = cropTime && grows ? Math.max(0, grows * plotCount - seedsHave) : 0;
+        const recipe = recipeByName.get(item.toLowerCase());
+        const directIngredients = recipe && deficit > 0
+          ? new Map(recipe.ingredients.map(({ item: ing, quantity: ingQty }) => [ing, ingQty * deficit]))
+          : null;
+        const isDirectCraftNow = !isHoney && !isCutlass && recipe != null && directIngredients != null && deficit > 0 &&
+          [...directIngredients.entries()].every(([ing, qty]) => (inventory[ing] ?? 0) >= qty);
+        const rawMaterials = recipe && deficit > 0 ? resolveRawIngredients(item, deficit, recipeByName) : null;
+        const isRawCraftNow = !isHoney && !isCutlass && !isDirectCraftNow && recipe != null && rawMaterials != null && deficit > 0 &&
+          [...rawMaterials.entries()].every(([ri, rq]) => (inventory[ri] ?? 0) >= rq);
+        const isCraftNow = isDirectCraftNow || isRawCraftNow;
+        return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe, directIngredients, rawMaterials, isDirectCraftNow, isRawCraftNow, isCraftNow };
+      });
+    };
 
-    const all = [...itemMap.entries()].map(([item, totalNeeded]) => {
-      const have = inventory[item] ?? 0;
-      const deficit = Math.max(0, totalNeeded - have);
-      const pct = totalNeeded > 0 ? have / totalNeeded : 1;
-      const isHoney = item.toLowerCase() === 'honey';
-      const isCutlass = item.toLowerCase() === 'cutlass';
-      const honey = isHoney && deficit > 0 ? calcHoneyRuns(deficit) : null;
-      const honeyRadishHave = honey ? (inventory['Radish'] ?? 0) : 0;
-      const honeyGrows = honey ? calcGrowsNeeded(Math.max(0, honey.radishes - honeyRadishHave), plotCount) : 0;
-      const cutlass = isCutlass && deficit > 0 ? calcCutlassRuns(deficit) : null;
-      const cutlassStaffHave = cutlass ? (inventory['Tribal Staff'] ?? 0) : 0;
-      const cropTime = !isHoney && !isCutlass ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
-      const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
-      const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
-      const seedsHave = cropTime && grows ? (inventory[`${item} Seed`] ?? 0) : 0;
-      const seedsToBuy = cropTime && grows ? Math.max(0, grows * plotCount - seedsHave) : 0;
-      const recipe = recipeByName.get(item.toLowerCase());
-      // Direct craft: all immediate recipe ingredients are in inventory (one crafting step)
-      const directIngredients = recipe && deficit > 0
-        ? new Map(recipe.ingredients.map(({ item: ing, quantity: ingQty }) => [ing, ingQty * deficit]))
-        : null;
-      const isDirectCraftNow = !isHoney && !isCutlass && recipe != null && directIngredients != null && deficit > 0 &&
-        [...directIngredients.entries()].every(([ing, qty]) => (inventory[ing] ?? 0) >= qty);
-      // Raw craft: base materials are in inventory but intermediate crafting steps are needed first
-      const rawMaterials = recipe && deficit > 0 ? resolveRawIngredients(item, deficit, recipeByName) : null;
-      const isRawCraftNow = !isHoney && !isCutlass && !isDirectCraftNow && recipe != null && rawMaterials != null && deficit > 0 &&
-        [...rawMaterials.entries()].every(([ri, rq]) => (inventory[ri] ?? 0) >= rq);
-      const isCraftNow = isDirectCraftNow || isRawCraftNow;
-      return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe, directIngredients, rawMaterials, isDirectCraftNow, isRawCraftNow, isCraftNow };
-    });
-
-    // Tier 1: quests where every item is fully stocked
+    // Active quest tiers
+    const all = computeAll(quests);
     const turnInQuests = quests.filter((quest) =>
       parseItems(quest.itemsRequired).every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity)
     );
-
     const needed = all.filter((i) => i.deficit > 0);
     const directCraftItems = needed.filter((i) => i.isDirectCraftNow).sort((a, b) => b.pct - a.pct);
     const rawCraftItems = needed.filter((i) => i.isRawCraftNow).sort((a, b) => b.pct - a.pct);
-    // Items with a recipe but missing some ingredients — show as a dedicated crafting queue
     const gatherForCraftItems = needed.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass).sort((a, b) => b.pct - a.pct);
-    // Non-craftable items only: crops, temple, explore, fish
     const collectingItems = needed.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)).sort((a, b) => b.pct - a.pct);
     const stockedItems = all.filter((i) => i.deficit === 0);
 
@@ -112,8 +110,19 @@ export function ActiveQuestsSummary({ quests }: Props) {
       else templeRecommendation = honeyNeeded.deficit >= cutlassNeeded.deficit ? 'honey' : 'cutlass';
     }
 
-    return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation };
-  }, [quests, inventory, cropTimes, plotCount]);
+    // Next-up quest tiers (same logic, separate quantities)
+    const nextUpAll = computeAll(nextUpQuests);
+    const nextUpNeeded = nextUpAll.filter((i) => i.deficit > 0);
+    const nextUp = {
+      directCraft: nextUpNeeded.filter((i) => i.isDirectCraftNow).sort((a, b) => b.pct - a.pct),
+      rawCraft: nextUpNeeded.filter((i) => i.isRawCraftNow).sort((a, b) => b.pct - a.pct),
+      gatherForCraft: nextUpNeeded.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass).sort((a, b) => b.pct - a.pct),
+      collecting: nextUpNeeded.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)).sort((a, b) => b.pct - a.pct),
+      stocked: nextUpAll.filter((i) => i.deficit === 0),
+    };
+
+    return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp };
+  }, [quests, nextUpQuests, inventory, cropTimes, plotCount]);
 
   // Inventory pressure
   const usedSlots = Object.keys(inventory).length;
@@ -121,6 +130,22 @@ export function ActiveQuestsSummary({ quests }: Props) {
   const slotColor = slotPct >= 0.9 ? 'var(--accent-orange)' : slotPct >= 0.75 ? 'var(--accent-yellow)' : 'var(--accent-green)';
 
   const totalNeeded = collectingItems.length + directCraftItems.length + rawCraftItems.length + gatherForCraftItems.length;
+
+  // All item keys for location panel context
+  const allNeededItems = [...directCraftItems, ...rawCraftItems, ...gatherForCraftItems, ...collectingItems].map((i) => i.item);
+
+  // Reusable "Next up" divider row
+  const NextUpDivider = () => (
+    <div
+      className="px-5 py-1.5 flex items-center gap-1.5"
+      style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--accent-purple-bg)' }}
+    >
+      <ChevronRight size={10} style={{ color: 'var(--accent-purple)' }} />
+      <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-purple)' }}>
+        Next up
+      </span>
+    </div>
+  );
 
   if (quests.length === 0) {
     return (
@@ -153,6 +178,15 @@ export function ActiveQuestsSummary({ quests }: Props) {
           <Swords size={11} />
           {quests.length} quest{quests.length !== 1 ? 's' : ''} active
         </span>
+        {nextUpQuests.length > 0 && (
+          <span
+            className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
+            style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
+          >
+            <ChevronRight size={11} />
+            {nextUpQuests.length} next up
+          </span>
+        )}
         {turnInQuests.length > 0 && (
           <span
             className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full"
@@ -226,7 +260,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
         </div>
       )}
 
-      {/* TIER 1 — Turn in now */}
+      {/* TIER 1 — Turn in now (active quests only) */}
       {turnInQuests.length > 0 && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
@@ -263,8 +297,8 @@ export function ActiveQuestsSummary({ quests }: Props) {
         </div>
       )}
 
-      {/* TIER 2a — Craft now (direct ingredients in inventory) */}
-      {directCraftItems.length > 0 && (
+      {/* TIER 2a — Craft now */}
+      {(directCraftItems.length > 0 || nextUp.directCraft.length > 0) && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -290,57 +324,29 @@ export function ActiveQuestsSummary({ quests }: Props) {
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                      <button
-                        onClick={(e) => toggleLocation(item, e)}
-                        className="flex-shrink-0 p-0.5 rounded transition-opacity hover:opacity-80"
-                        style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }}
-                        aria-label="Show locations"
-                      >
-                        <MapPin size={11} />
-                      </button>
-                      <span
-                        className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                        style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
-                      >
+                      <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
                         <Hammer size={9} /> craft ×{deficit}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
-                        {have}/{totalNeeded}
-                      </span>
+                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>{have}/{totalNeeded}</span>
                     </div>
                   </div>
                   {directIngredients && (
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5">
                       {[...directIngredients.entries()].map(([ing, qty]) => {
                         const haveIng = inventory[ing] ?? 0;
-                        return (
-                          <span key={ing} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
-                            ✓ {ing} {haveIng}/{qty}
-                          </span>
-                        );
+                        return <span key={ing} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>✓ {ing} {haveIng}/{qty}</span>;
                       })}
                     </div>
                   )}
-                  {locationItem === item && (
-                    <div className="mt-2">
-                      <ItemLocationPanel
-                        item={item}
-                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...gatherForCraftItems, ...collectingItems].map((i) => i.item)}
-                      />
-                    </div>
-                  )}
+                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
                 </div>
                 {isSelected && (
-                  <div
-                    className="px-5 pb-3 space-y-1"
-                    style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
-                      Needed by
-                    </p>
+                  <div className="px-5 pb-3 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Needed by</p>
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
@@ -352,11 +358,39 @@ export function ActiveQuestsSummary({ quests }: Props) {
               </div>
             );
           })}
+          {nextUp.directCraft.length > 0 && (
+            <>
+              <NextUpDivider />
+              {nextUp.directCraft.map(({ item, totalNeeded, have, deficit, directIngredients }) => (
+                <div key={`next-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                      <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
+                        <Hammer size={9} /> craft ×{deficit}
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                  </div>
+                  {directIngredients && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                      {[...directIngredients.entries()].map(([ing, qty]) => {
+                        const haveIng = inventory[ing] ?? 0;
+                        return <span key={ing} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>✓ {ing} {haveIng}/{qty}</span>;
+                      })}
+                    </div>
+                  )}
+                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       )}
 
-      {/* TIER 2b — Craft with prep (base materials in inventory, intermediate crafting needed) */}
-      {rawCraftItems.length > 0 && (
+      {/* TIER 2b — Craft with prep */}
+      {(rawCraftItems.length > 0 || nextUp.rawCraft.length > 0) && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -382,72 +416,38 @@ export function ActiveQuestsSummary({ quests }: Props) {
                   <div className="flex items-center justify-between gap-3 mb-2">
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                      <button
-                        onClick={(e) => toggleLocation(item, e)}
-                        className="flex-shrink-0 p-0.5 rounded transition-opacity hover:opacity-80"
-                        style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }}
-                        aria-label="Show locations"
-                      >
-                        <MapPin size={11} />
-                      </button>
-                      <span
-                        className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                        style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
-                      >
+                      <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                         <Hammer size={9} /> craft ×{deficit}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>
-                        {have}/{totalNeeded}
-                      </span>
+                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
                     </div>
                   </div>
-                  {/* Direct recipe ingredients — show which need crafting */}
                   {directIngredients && (
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1">
                       {[...directIngredients.entries()].map(([ing, qty]) => {
                         const haveIng = inventory[ing] ?? 0;
                         const ok = haveIng >= qty;
-                        return (
-                          <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
-                            {ok ? '✓' : '→'} {ing} {haveIng}/{qty}
-                          </span>
-                        );
+                        return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '→'} {ing} {haveIng}/{qty}</span>;
                       })}
                     </div>
                   )}
-                  {/* Base materials — all in inventory */}
                   {rawMaterials && (
                     <div className="flex flex-wrap gap-x-3 gap-y-0.5">
                       {[...rawMaterials.entries()].map(([ri, rq]) => {
                         const haveRaw = inventory[ri] ?? 0;
-                        return (
-                          <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                            ✓ {ri} {haveRaw}/{rq}
-                          </span>
-                        );
+                        return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>✓ {ri} {haveRaw}/{rq}</span>;
                       })}
                     </div>
                   )}
-                  {locationItem === item && (
-                    <div className="mt-2">
-                      <ItemLocationPanel
-                        item={item}
-                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...gatherForCraftItems, ...collectingItems].map((i) => i.item)}
-                      />
-                    </div>
-                  )}
+                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
                 </div>
                 {isSelected && (
-                  <div
-                    className="px-5 pb-3 space-y-1"
-                    style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>
-                      Needed by
-                    </p>
+                  <div className="px-5 pb-3 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Needed by</p>
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
@@ -462,9 +462,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                           return (
                             <div key={rawItem} className="flex items-center justify-between text-xs gap-2">
                               <span style={{ color: 'var(--text-secondary)' }}>{rawItem}</span>
-                              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', flexShrink: 0 }}>
-                                {haveRaw}/{rawQty}
-                              </span>
+                              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)', flexShrink: 0 }}>{haveRaw}/{rawQty}</span>
                             </div>
                           );
                         })}
@@ -475,11 +473,48 @@ export function ActiveQuestsSummary({ quests }: Props) {
               </div>
             );
           })}
+          {nextUp.rawCraft.length > 0 && (
+            <>
+              <NextUpDivider />
+              {nextUp.rawCraft.map(({ item, totalNeeded, have, deficit, directIngredients, rawMaterials }) => (
+                <div key={`next-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                      <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                        <Hammer size={9} /> craft ×{deficit}
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                  </div>
+                  {directIngredients && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1">
+                      {[...directIngredients.entries()].map(([ing, qty]) => {
+                        const haveIng = inventory[ing] ?? 0;
+                        const ok = haveIng >= qty;
+                        return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '→'} {ing} {haveIng}/{qty}</span>;
+                      })}
+                    </div>
+                  )}
+                  {rawMaterials && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                      {[...rawMaterials.entries()].map(([ri, rq]) => {
+                        const haveRaw = inventory[ri] ?? 0;
+                        return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>✓ {ri} {haveRaw}/{rq}</span>;
+                      })}
+                    </div>
+                  )}
+                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       )}
 
-      {/* TIER 3 — Crafting queue (has recipe, collecting ingredients) */}
-      {gatherForCraftItems.length > 0 && (
+      {/* TIER 3 — Crafting queue */}
+      {(gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0) && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -507,66 +542,34 @@ export function ActiveQuestsSummary({ quests }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                        <button
-                          onClick={(e) => toggleLocation(item, e)}
-                          className="flex-shrink-0 p-0.5 rounded transition-opacity hover:opacity-80"
-                          style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }}
-                          aria-label="Show locations"
-                        >
-                          <MapPin size={11} />
-                        </button>
-                        <span
-                          className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                          style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}
-                        >
+                        <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                           <Hammer size={9} /> crafted
                         </span>
                       </div>
-                      {/* Ingredient breakdown — green if stocked, orange if missing */}
                       {directIngredients && (
                         <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
                           {[...directIngredients.entries()].map(([ing, qty]) => {
                             const haveIng = inventory[ing] ?? 0;
                             const ok = haveIng >= qty;
-                            return (
-                              <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
-                                {ok ? '✓' : '✗'} {ing} {haveIng}/{qty}
-                              </span>
-                            );
+                            return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '✗'} {ing} {haveIng}/{qty}</span>;
                           })}
                         </div>
                       )}
                     </div>
                     <div className="text-right flex-shrink-0 flex items-center gap-2">
                       {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-yellow)' }}>
-                        {have}/{totalNeeded}
-                      </span>
+                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-yellow)' }}>{have}/{totalNeeded}</span>
                     </div>
                   </div>
                   <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${pctDisplay}%`, background: 'var(--accent-yellow)', transition: 'var(--transition-default)' }}
-                    />
+                    <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-yellow)', transition: 'var(--transition-default)' }} />
                   </div>
-                  {locationItem === item && (
-                    <div className="mt-2">
-                      <ItemLocationPanel
-                        item={item}
-                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...gatherForCraftItems, ...collectingItems].map((i) => i.item)}
-                      />
-                    </div>
-                  )}
+                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
                 </div>
                 {isSelected && (
-                  <div
-                    className="px-5 pb-3 space-y-2"
-                    style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                      Needed by
-                    </p>
+                  <div className="px-5 pb-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Needed by</p>
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
@@ -582,9 +585,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                           return (
                             <div key={rawItem} className="flex items-center justify-between text-xs gap-2">
                               <span style={{ color: 'var(--text-secondary)' }}>{rawItem}</span>
-                              <span style={{ fontFamily: 'var(--font-mono)', color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', flexShrink: 0 }}>
-                                {haveRaw}/{rawQty}
-                              </span>
+                              <span style={{ fontFamily: 'var(--font-mono)', color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', flexShrink: 0 }}>{haveRaw}/{rawQty}</span>
                             </div>
                           );
                         })}
@@ -595,12 +596,49 @@ export function ActiveQuestsSummary({ quests }: Props) {
               </div>
             );
           })}
+          {nextUp.gatherForCraft.length > 0 && (
+            <>
+              <NextUpDivider />
+              {nextUp.gatherForCraft.map(({ item, totalNeeded, have, pct, directIngredients }) => {
+                const pctDisplay = Math.round(pct * 100);
+                return (
+                  <div key={`next-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                    <div className="flex items-start justify-between gap-3 mb-1.5">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                          <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                            <Hammer size={9} /> crafted
+                          </span>
+                        </div>
+                        {directIngredients && (
+                          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+                            {[...directIngredients.entries()].map(([ing, qty]) => {
+                              const haveIng = inventory[ing] ?? 0;
+                              const ok = haveIng >= qty;
+                              return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '✗'} {ing} {haveIng}/{qty}</span>;
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                    </div>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                    </div>
+                    {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       )}
 
       {/* TIER 4 — Still collecting (non-craftable: crops, temple, fish, explore) */}
-      {collectingItems.length > 0 && (
-        <div style={{ borderBottom: stockedItems.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
+      {(collectingItems.length > 0 || nextUp.collecting.length > 0) && (
+        <div style={{ borderBottom: stockedItems.length > 0 || nextUp.stocked.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
             style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}
@@ -614,7 +652,6 @@ export function ActiveQuestsSummary({ quests }: Props) {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             const pctDisplay = Math.round(pct * 100);
-
             return (
               <div
                 key={item}
@@ -624,22 +661,10 @@ export function ActiveQuestsSummary({ quests }: Props) {
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
-                          {item}
-                        </span>
-                        <button
-                          onClick={(e) => toggleLocation(item, e)}
-                          className="flex-shrink-0 p-0.5 rounded transition-opacity hover:opacity-80"
-                          style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }}
-                          aria-label="Show locations"
-                        >
-                          <MapPin size={11} />
-                        </button>
+                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>{item}</span>
+                        <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
                         {(isHoney || isCutlass) && (
-                          <span
-                            className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                            style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}
-                          >
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                             <Landmark size={9} /> temple
                           </span>
                         )}
@@ -648,9 +673,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
                         <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
                           <Landmark size={10} />
                           {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
-                          {honeyGrows > 0
-                            ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})`
-                            : ' · radishes stocked'}
+                          {honeyGrows > 0 ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})` : ' · radishes stocked'}
                           {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
                         </p>
                       )}
@@ -678,40 +701,20 @@ export function ActiveQuestsSummary({ quests }: Props) {
                     </div>
                     <div className="text-right flex-shrink-0 flex items-center gap-2">
                       {breakdown.length > 1 && !isSelected && (
-                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                          {breakdown.length} quests
-                        </span>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{breakdown.length} quests</span>
                       )}
                       {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
-                        {have}/{totalNeeded}
-                      </span>
+                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
                     </div>
                   </div>
                   <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }}
-                    />
+                    <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }} />
                   </div>
-                  {locationItem === item && (
-                    <div className="mt-2">
-                      <ItemLocationPanel
-                        item={item}
-                        allNeededItems={[...directCraftItems, ...rawCraftItems, ...gatherForCraftItems, ...collectingItems].map((i) => i.item)}
-                      />
-                    </div>
-                  )}
+                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
                 </div>
-
                 {isSelected && (
-                  <div
-                    className="px-5 pb-3 space-y-2"
-                    style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}
-                  >
-                    <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-                      Needed by
-                    </p>
+                  <div className="px-5 pb-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Needed by</p>
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
@@ -723,11 +726,70 @@ export function ActiveQuestsSummary({ quests }: Props) {
               </div>
             );
           })}
+          {nextUp.collecting.length > 0 && (
+            <>
+              <NextUpDivider />
+              {nextUp.collecting.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyGrows, honeyRadishHave, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy }) => {
+                const pctDisplay = Math.round(pct * 100);
+                return (
+                  <div key={`next-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                    <div className="flex items-start justify-between gap-3 mb-1.5">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                          <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                          {(isHoney || isCutlass) && (
+                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                              <Landmark size={9} /> temple
+                            </span>
+                          )}
+                        </div>
+                        {isHoney && honey && (
+                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                            <Landmark size={10} />
+                            {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+                            {honeyGrows > 0 ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})` : ' · radishes stocked'}
+                            {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                          </p>
+                        )}
+                        {isCutlass && cutlass && (
+                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                            <Landmark size={10} />
+                            {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
+                            {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
+                            {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
+                          </p>
+                        )}
+                        {cropTime && grows && totalTime && (
+                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+                            <Clock size={10} />
+                            {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                          </p>
+                        )}
+                        {cropTime && grows && (
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                            {seedsToBuy > 0
+                              ? `buy ${seedsToBuy} seed${seedsToBuy !== 1 ? 's' : ''}${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`
+                              : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                    </div>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                    </div>
+                    {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                  </div>
+                );
+              })}
+            </>
+          )}
         </div>
       )}
 
-      {/* Stocked items — collapsible */}
-      {stockedItems.length > 0 && (
+      {/* Stocked items — collapsible (includes next-up stocked) */}
+      {(stockedItems.length > 0 || nextUp.stocked.length > 0) && (
         <div>
           <button
             onClick={() => setShowStocked((v) => !v)}
@@ -735,7 +797,7 @@ export function ActiveQuestsSummary({ quests }: Props) {
             style={{ background: 'var(--accent-green-bg)' }}
           >
             <span className="flex-1 text-left text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
-              ✓ {stockedItems.length} item{stockedItems.length !== 1 ? 's' : ''} fully stocked
+              ✓ {stockedItems.length + nextUp.stocked.length} item{stockedItems.length + nextUp.stocked.length !== 1 ? 's' : ''} fully stocked
             </span>
             <ChevronDown
               size={12}
@@ -745,17 +807,24 @@ export function ActiveQuestsSummary({ quests }: Props) {
           {showStocked && (
             <div>
               {stockedItems.map(({ item, totalNeeded, have }) => (
-                <div
-                  key={item}
-                  className="px-5 py-2 flex items-center justify-between"
-                  style={{ borderTop: '1px solid var(--border-subtle)' }}
-                >
+                <div key={item} className="px-5 py-2 flex items-center justify-between" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                   <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{item}</span>
-                  <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
-                    {have}/{totalNeeded} ✓
-                  </span>
+                  <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>{have}/{totalNeeded} ✓</span>
                 </div>
               ))}
+              {nextUp.stocked.length > 0 && (
+                <>
+                  {nextUp.stocked.map(({ item, totalNeeded, have }) => (
+                    <div key={`next-stocked-${item}`} className="px-5 py-2 flex items-center justify-between" style={{ borderTop: '1px solid var(--border-subtle)', opacity: 0.75 }}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{item}</span>
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>next</span>
+                      </div>
+                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>{have}/{totalNeeded} ✓</span>
+                    </div>
+                  ))}
+                </>
+              )}
             </div>
           )}
         </div>
