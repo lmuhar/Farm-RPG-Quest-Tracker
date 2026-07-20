@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package } from 'lucide-react';
+import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN } from '../utils';
 import { useStore } from '../store';
@@ -636,107 +636,145 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         </div>
       )}
 
-      {/* TIER 4 — Still collecting (non-craftable: crops, temple, fish, explore) */}
-      {(collectingItems.length > 0 || nextUp.collecting.length > 0) && (
-        <div style={{ borderBottom: stockedItems.length > 0 || nextUp.stocked.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
-          <div
-            className="px-5 py-2 flex items-center gap-2"
-            style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}
-          >
-            <Swords size={11} style={{ color: 'var(--accent-orange)' }} />
-            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-orange)' }}>
-              Still collecting
-            </span>
-          </div>
-          {collectingItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy }) => {
-            const isSelected = selectedItem === item;
-            const breakdown = itemQuestMap.get(item) ?? [];
-            const pctDisplay = Math.round(pct * 100);
-            return (
-              <div
-                key={item}
-                style={{ borderBottom: '1px solid var(--border-subtle)', background: isSelected ? 'var(--surface-card-hover)' : undefined }}
-              >
-                <div className="px-5 py-3 cursor-pointer" onClick={() => toggleItem(item)}>
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>{item}</span>
-                        <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
-                        {(isHoney || isCutlass) && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
-                            <Landmark size={9} /> temple
-                          </span>
-                        )}
-                      </div>
-                      {isHoney && honey && (
-                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
-                          <Landmark size={10} />
-                          {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
-                          {honeyGrows > 0 ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})` : ' · radishes stocked'}
-                          {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
-                        </p>
-                      )}
-                      {isCutlass && cutlass && (
-                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
-                          <Landmark size={10} />
-                          {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
-                          {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
-                          {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
-                        </p>
-                      )}
-                      {cropTime && grows && totalTime && (
-                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
-                          <Clock size={10} />
-                          {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
-                        </p>
-                      )}
-                      {cropTime && grows && (
-                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                          {seedsToBuy > 0
-                            ? `buy ${seedsToBuy} seed${seedsToBuy !== 1 ? 's' : ''}${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`
-                            : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
-                        </p>
-                      )}
-                    </div>
-                    <div className="text-right flex-shrink-0 flex items-center gap-2">
-                      {breakdown.length > 1 && !isSelected && (
-                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{breakdown.length} quests</span>
-                      )}
-                      {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
-                    </div>
-                  </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                    <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }} />
-                  </div>
-                  {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
-                </div>
-                {isSelected && (
-                  <div className="px-5 pb-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
-                    <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Needed by</p>
-                    {breakdown.map(({ quest, quantity }) => (
-                      <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
-                        <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-          {nextUp.collecting.length > 0 && (
-            <>
-              <NextUpDivider />
-              {nextUp.collecting.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyGrows, honeyRadishHave, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy }) => {
-                const pctDisplay = Math.round(pct * 100);
-                return (
-                  <div key={`next-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
-                    <div className="flex items-start justify-between gap-3 mb-1.5">
+      {/* TIER 4a — Grow crops */}
+      {(() => {
+        const cropItems = collectingItems.filter((i) => i.cropTime);
+        const nextUpCropItems = nextUp.collecting.filter((i) => i.cropTime);
+        if (cropItems.length === 0 && nextUpCropItems.length === 0) return null;
+        return (
+          <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+            <div
+              className="px-5 py-2 flex items-center gap-2"
+              style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}
+            >
+              <Sprout size={11} style={{ color: 'var(--accent-green)' }} />
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-green)' }}>
+                Grow crops
+              </span>
+            </div>
+            {cropItems.map(({ item, totalNeeded, have, pct, cropTime, grows, totalTime, seedsHave, seedsToBuy }) => {
+              const isSelected = selectedItem === item;
+              const breakdown = itemQuestMap.get(item) ?? [];
+              const pctDisplay = Math.round(pct * 100);
+              return (
+                <div key={item} style={{ borderBottom: '1px solid var(--border-subtle)', background: isSelected ? 'var(--surface-card-hover)' : undefined }}>
+                  <div className="px-5 py-3 cursor-pointer" onClick={() => toggleItem(item)}>
+                    <div className="flex items-start justify-between gap-3 mb-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                        </div>
+                        {cropTime && grows && totalTime && (
+                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+                            <Clock size={10} />
+                            {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                          </p>
+                        )}
+                        {cropTime && grows && (
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                            {seedsToBuy > 0
+                              ? `buy ${seedsToBuy} seed${seedsToBuy !== 1 ? 's' : ''}${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`
+                              : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {breakdown.length > 1 && !isSelected && (
+                          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{breakdown.length} quests</span>
+                        )}
+                        {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
+                        <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                    </div>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }} />
+                    </div>
+                    {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                  </div>
+                  {isSelected && (
+                    <div className="px-5 pb-3 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Needed by</p>
+                      {breakdown.map(({ quest, quantity }) => (
+                        <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                          <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
+                          <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {nextUpCropItems.length > 0 && (
+              <>
+                <NextUpDivider />
+                {nextUpCropItems.map(({ item, totalNeeded, have, pct, cropTime, grows, totalTime, seedsHave, seedsToBuy }) => {
+                  const pctDisplay = Math.round(pct * 100);
+                  return (
+                    <div key={`next-crop-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                            <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                          </div>
+                          {cropTime && grows && totalTime && (
+                            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+                              <Clock size={10} />
+                              {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                            </p>
+                          )}
+                          {cropTime && grows && (
+                            <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                              {seedsToBuy > 0
+                                ? `buy ${seedsToBuy} seed${seedsToBuy !== 1 ? 's' : ''}${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`
+                                : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                        <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                      </div>
+                      {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+        );
+      })()}
+
+      {/* TIER 4b — Still collecting (temple, fish, explore — non-crop) */}
+      {(() => {
+        const otherItems = collectingItems.filter((i) => !i.cropTime);
+        const nextUpOtherItems = nextUp.collecting.filter((i) => !i.cropTime);
+        if (otherItems.length === 0 && nextUpOtherItems.length === 0) return null;
+        return (
+          <div style={{ borderBottom: stockedItems.length > 0 || nextUp.stocked.length > 0 ? '1px solid var(--border-subtle)' : undefined }}>
+            <div
+              className="px-5 py-2 flex items-center gap-2"
+              style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}
+            >
+              <Swords size={11} style={{ color: 'var(--accent-orange)' }} />
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-orange)' }}>
+                Still collecting
+              </span>
+            </div>
+            {otherItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave }) => {
+              const isSelected = selectedItem === item;
+              const breakdown = itemQuestMap.get(item) ?? [];
+              const pctDisplay = Math.round(pct * 100);
+              return (
+                <div key={item} style={{ borderBottom: '1px solid var(--border-subtle)', background: isSelected ? 'var(--surface-card-hover)' : undefined }}>
+                  <div className="px-5 py-3 cursor-pointer" onClick={() => toggleItem(item)}>
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                           <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
                           {(isHoney || isCutlass) && (
                             <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
@@ -760,33 +798,83 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                             {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
                           </p>
                         )}
-                        {cropTime && grows && totalTime && (
-                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
-                            <Clock size={10} />
-                            {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
-                          </p>
-                        )}
-                        {cropTime && grows && (
-                          <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                            {seedsToBuy > 0
-                              ? `buy ${seedsToBuy} seed${seedsToBuy !== 1 ? 's' : ''}${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`
-                              : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
-                          </p>
-                        )}
                       </div>
-                      <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {breakdown.length > 1 && !isSelected && (
+                          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{breakdown.length} quests</span>
+                        )}
+                        {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
+                        <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                      </div>
                     </div>
                     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                      <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                      <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }} />
                     </div>
                     {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
                   </div>
-                );
-              })}
-            </>
-          )}
-        </div>
-      )}
+                  {isSelected && (
+                    <div className="px-5 pb-3 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Needed by</p>
+                      {breakdown.map(({ quest, quantity }) => (
+                        <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                          <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
+                          <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {nextUpOtherItems.length > 0 && (
+              <>
+                <NextUpDivider />
+                {nextUpOtherItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyGrows, honeyRadishHave, cutlass, cutlassStaffHave }) => {
+                  const pctDisplay = Math.round(pct * 100);
+                  return (
+                    <div key={`next-other-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                            <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                            {(isHoney || isCutlass) && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                                <Landmark size={9} /> temple
+                              </span>
+                            )}
+                          </div>
+                          {isHoney && honey && (
+                            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                              <Landmark size={10} />
+                              {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+                              {honeyGrows > 0 ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})` : ' · radishes stocked'}
+                              {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                          {isCutlass && cutlass && (
+                            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                              <Landmark size={10} />
+                              {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
+                              {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
+                              {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                        <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                      </div>
+                      {locationItem === item && <div className="mt-2"><ItemLocationPanel item={item} allNeededItems={allNeededItems} /></div>}
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Stocked items — collapsible (includes next-up stocked) */}
       {(stockedItems.length > 0 || nextUp.stocked.length > 0) && (
