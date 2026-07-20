@@ -9,7 +9,6 @@ import { CropTimerPanel } from './components/CropTimerPanel';
 import { QuestCard } from './components/QuestCard';
 import { QuestLineView } from './components/QuestLineView';
 import { ActiveQuestsSummary } from './components/ActiveQuestsSummary';
-import { NextUpSummary } from './components/NextUpSummary';
 import { ActiveQuestLine } from './components/ActiveQuestLine';
 import { ImportExport } from './components/ImportExport';
 import { RecipesPanel } from './components/RecipesPanel';
@@ -365,8 +364,7 @@ export default function App() {
 
           {tab === 'active' && (
             <div className="space-y-3">
-              <ActiveQuestsSummary quests={activeQuests} />
-              <NextUpSummary quests={nextUpQuests} />
+              <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
 
               {/* Questlines that have at least one active quest */}
               {questlineGroups
