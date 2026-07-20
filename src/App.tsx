@@ -10,6 +10,8 @@ import { QuestCard } from './components/QuestCard';
 import { QuestLineView } from './components/QuestLineView';
 import { ActiveQuestsSummary } from './components/ActiveQuestsSummary';
 import { ActiveQuestLine } from './components/ActiveQuestLine';
+import { SyncSection } from './components/SyncSection';
+import { useSync } from './hooks/useSync';
 import { ImportExport } from './components/ImportExport';
 import { RecipesPanel } from './components/RecipesPanel';
 import { SetupWizard } from './components/SetupWizard';
@@ -25,6 +27,7 @@ type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable'
 
 export default function App() {
   const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
+  const sync = useSync();
   const [tab, setTab] = useState<Tab>('active');
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
@@ -507,6 +510,15 @@ export default function App() {
           {tab === 'settings' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="space-y-4">
+                <SyncSection
+                  user={sync.user}
+                  authLoading={sync.authLoading}
+                  syncStatus={sync.syncStatus}
+                  lastSynced={sync.lastSynced}
+                  signIn={sync.signIn}
+                  signOut={sync.signOut}
+                  pullNow={sync.pullNow}
+                />
                 <SkillsPanel />
                 {/* Sync from Game */}
                 <div
