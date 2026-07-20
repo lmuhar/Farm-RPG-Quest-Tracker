@@ -3,6 +3,9 @@ app = "farm-rpg-tracker"
 primary_region = "sin"
 
 [build]
+  [build.args]
+    VITE_SUPABASE_URL = "https://vxpumllfhlzpnveulojg.supabase.co"
+    VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4cHVtbGxmaGx6cG52ZXVsb2pnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NDA3MzIsImV4cCI6MjEwMDExNjczMn0.bMdk70r6p6WF-q8wpp_sliTKmPski_IaK7hF-4suFGM"
 
 [http_service]
   internal_port = 8080
