@@ -31,6 +31,7 @@ interface Store extends AppState {
   setCropTime: (item: string, growMinutes: number) => void;
   removeCropTime: (item: string) => void;
   setPlotCount: (count: number) => void;
+  setInventoryMax: (max: number) => void;
   resetAll: () => void;
   importState: (data: Partial<AppState>) => void;
   setCraftingRecipe: (item: string, ingredients: ParsedItem[]) => void;
@@ -88,6 +89,7 @@ export const useStore = create<Store>()(
       player: defaultPlayer,
       cropTimes: defaultCropTimes,
       plotCount: 36,
+      inventoryMax: 654,
       craftingRecipes: {},
       growQueue: [],
       questNotes: {},
@@ -145,6 +147,7 @@ export const useStore = create<Store>()(
         set((s) => ({ cropTimes: s.cropTimes.filter((c) => c.item !== item) })),
 
       setPlotCount: (plotCount) => set({ plotCount }),
+      setInventoryMax: (inventoryMax) => set({ inventoryMax }),
 
       resetAll: () =>
         set({
@@ -153,6 +156,7 @@ export const useStore = create<Store>()(
           player: defaultPlayer,
           cropTimes: defaultCropTimes,
           plotCount: 36,
+          inventoryMax: 654,
           craftingRecipes: {},
           growQueue: [],
           questNotes: {},
@@ -168,6 +172,7 @@ export const useStore = create<Store>()(
           player: data.player ?? s.player,
           cropTimes: data.cropTimes ? mergeCropTimes(data.cropTimes) : s.cropTimes,
           plotCount: data.plotCount ?? s.plotCount,
+          inventoryMax: data.inventoryMax ?? s.inventoryMax,
           craftingRecipes: data.craftingRecipes ?? s.craftingRecipes,
           growQueue: data.growQueue ?? s.growQueue,
           questNotes: data.questNotes ?? s.questNotes,

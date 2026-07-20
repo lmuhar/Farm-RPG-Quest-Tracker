@@ -46,6 +46,7 @@ export interface AppState {
   player: PlayerProfile;
   cropTimes: CropTime[];
   plotCount: number;
+  inventoryMax: number;
   craftingRecipes: Record<string, ParsedItem[]>;
   growQueue: GrowQueueItem[];
   questNotes: Record<string, string>;

@@ -4,7 +4,7 @@ import { useStore } from '../store';
 import { formatDuration } from '../utils';
 
 export function CropTimerPanel() {
-  const { cropTimes, setCropTime, removeCropTime, plotCount, setPlotCount } = useStore();
+  const { cropTimes, setCropTime, removeCropTime, plotCount, setPlotCount, inventoryMax, setInventoryMax } = useStore();
   const [newCrop, setNewCrop] = useState('');
   const [newMinutes, setNewMinutes] = useState(60);
 
@@ -23,15 +23,27 @@ export function CropTimerPanel() {
         <h2 className="text-sm font-semibold text-slate-200 uppercase tracking-wider">Crop Grow Times</h2>
       </div>
 
-      <div className="mb-3">
-        <label className="text-xs text-slate-400 mb-1 block">Plots available</label>
-        <input
-          type="number"
-          min={1}
-          value={plotCount}
-          onChange={(e) => setPlotCount(parseInt(e.target.value) || 1)}
-          className="w-24 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-100 focus:outline-none focus:border-green-500"
-        />
+      <div className="mb-3 flex gap-4">
+        <div>
+          <label className="text-xs text-slate-400 mb-1 block">Plots available</label>
+          <input
+            type="number"
+            min={1}
+            value={plotCount}
+            onChange={(e) => setPlotCount(parseInt(e.target.value) || 1)}
+            className="w-24 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-100 focus:outline-none focus:border-green-500"
+          />
+        </div>
+        <div>
+          <label className="text-xs text-slate-400 mb-1 block">Inventory max slots</label>
+          <input
+            type="number"
+            min={1}
+            value={inventoryMax}
+            onChange={(e) => setInventoryMax(parseInt(e.target.value) || 1)}
+            className="w-24 bg-slate-700 border border-slate-600 rounded px-2 py-1 text-sm text-slate-100 focus:outline-none focus:border-green-500"
+          />
+        </div>
       </div>
 
       <div className="flex gap-2 mb-3">
