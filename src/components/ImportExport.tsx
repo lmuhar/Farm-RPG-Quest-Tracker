@@ -14,6 +14,7 @@ export function ImportExport() {
       player: store.player,
       cropTimes: store.cropTimes,
       plotCount: store.plotCount,
+      inventoryMax: store.inventoryMax,
       craftingRecipes: store.craftingRecipes,
       growQueue: store.growQueue,
       questNotes: store.questNotes,
