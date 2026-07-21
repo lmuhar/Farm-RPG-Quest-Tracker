@@ -532,6 +532,13 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
             const isSelected = selectedItem === item;
             const breakdown = itemQuestMap.get(item) ?? [];
             const pctDisplay = Math.round(pct * 100);
+            // Only show raw materials section when there are intermediate crafting steps
+            const rawDiffersFromDirect = rawMaterials && directIngredients &&
+              ([...rawMaterials.keys()].some((k) => !directIngredients.has(k)) ||
+               [...directIngredients.keys()].some((k) => !rawMaterials.has(k)));
+            const missingRaw = rawDiffersFromDirect
+              ? [...rawMaterials!.entries()].filter(([ri, rq]) => (inventory[ri] ?? 0) < rq)
+              : [];
             return (
               <div
                 key={item}
@@ -553,6 +560,15 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                             const haveIng = inventory[ing] ?? 0;
                             const ok = haveIng >= qty;
                             return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '✗'} {ing} {haveIng}/{qty}</span>;
+                          })}
+                        </div>
+                      )}
+                      {missingRaw.length > 0 && (
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider w-full" style={{ color: 'var(--text-muted)' }}>collect:</span>
+                          {missingRaw.map(([ri, rq]) => {
+                            const haveRaw = inventory[ri] ?? 0;
+                            return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{ri} {haveRaw}/{rq}</span>;
                           })}
                         </div>
                       )}
@@ -599,8 +615,14 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
           {nextUp.gatherForCraft.length > 0 && (
             <>
               <NextUpDivider />
-              {nextUp.gatherForCraft.map(({ item, totalNeeded, have, pct, directIngredients }) => {
+              {nextUp.gatherForCraft.map(({ item, totalNeeded, have, pct, directIngredients, rawMaterials }) => {
                 const pctDisplay = Math.round(pct * 100);
+                const rawDiffersFromDirect = rawMaterials && directIngredients &&
+                  ([...rawMaterials.keys()].some((k) => !directIngredients.has(k)) ||
+                   [...directIngredients.keys()].some((k) => !rawMaterials.has(k)));
+                const missingRaw = rawDiffersFromDirect
+                  ? [...rawMaterials!.entries()].filter(([ri, rq]) => (inventory[ri] ?? 0) < rq)
+                  : [];
                 return (
                   <div key={`next-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
                     <div className="flex items-start justify-between gap-3 mb-1.5">
@@ -618,6 +640,15 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                               const haveIng = inventory[ing] ?? 0;
                               const ok = haveIng >= qty;
                               return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '✗'} {ing} {haveIng}/{qty}</span>;
+                            })}
+                          </div>
+                        )}
+                        {missingRaw.length > 0 && (
+                          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider w-full" style={{ color: 'var(--text-muted)' }}>collect:</span>
+                            {missingRaw.map(([ri, rq]) => {
+                              const haveRaw = inventory[ri] ?? 0;
+                              return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{ri} {haveRaw}/{rq}</span>;
                             })}
                           </div>
                         )}
