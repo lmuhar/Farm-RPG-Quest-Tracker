@@ -51,7 +51,7 @@ export function NextUpSummary({ quests }: Props) {
         const cropTime = !isHoney && !isCutlass ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
         const grows = cropTime && deficit > 0 ? calcGrowsNeeded(deficit, plotCount) : null;
         const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
-        const seedsHave = cropTime && grows ? (inventory[`${item} Seed`] ?? 0) : 0;
+        const seedsHave = cropTime && grows ? (inventory[`${item} Seeds`] ?? 0) : 0;
         const seedsToBuy = cropTime && grows ? Math.max(0, grows * plotCount - seedsHave) : 0;
         const recipe = !isHoney && !isCutlass ? recipeByName.get(item.toLowerCase()) : undefined;
         return { item, totalNeeded, have, deficit, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave, cropTime, grows, totalTime, seedsHave, seedsToBuy, recipe };
