@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout } from 'lucide-react';
+import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout, AlertTriangle } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN } from '../utils';
 import { useStore } from '../store';
@@ -572,6 +572,17 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                           })}
                         </div>
                       )}
+                      {breakdown.length > 0 && (
+                        <p className="text-xs mt-1.5 truncate" style={{ color: 'var(--text-muted)' }}>
+                          {breakdown.map(({ quest, quantity }) => `${quest.name} ×${quantity}`).join(' · ')}
+                        </p>
+                      )}
+                      {totalNeeded > inventoryMax && (
+                        <p className="text-xs mt-1 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
+                          <AlertTriangle size={10} />
+                          needs {totalNeeded.toLocaleString()} — over your max ({inventoryMax})
+                        </p>
+                      )}
                     </div>
                     <div className="text-right flex-shrink-0 flex items-center gap-2">
                       {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
@@ -709,6 +720,17 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                               : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
                           </p>
                         )}
+                        {breakdown.length > 0 && (
+                          <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
+                            {breakdown.map(({ quest, quantity }) => `${quest.name} ×${quantity}`).join(' · ')}
+                          </p>
+                        )}
+                        {totalNeeded > inventoryMax && (
+                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
+                            <AlertTriangle size={10} />
+                            needs {totalNeeded.toLocaleString()} — over your max ({inventoryMax})
+                          </p>
+                        )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {breakdown.length > 1 && !isSelected && (
@@ -827,6 +849,12 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                             {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
                             {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
                             {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
+                          </p>
+                        )}
+                        {totalNeeded > inventoryMax && (
+                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
+                            <AlertTriangle size={10} />
+                            needs {totalNeeded.toLocaleString()} — over your max ({inventoryMax})
                           </p>
                         )}
                       </div>
