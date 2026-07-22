@@ -350,7 +350,10 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                          <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -451,7 +454,10 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                          <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
+                        </div>
                       </div>
                     ))}
                     {recipe && rawMaterials && (
@@ -577,12 +583,6 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                           {breakdown.map(({ quest, quantity }) => `${quest.name} ×${quantity}`).join(' · ')}
                         </p>
                       )}
-                      {totalNeeded > inventoryMax && (
-                        <p className="text-xs mt-1 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
-                          <AlertTriangle size={10} />
-                          needs {totalNeeded.toLocaleString()} — over your max ({inventoryMax})
-                        </p>
-                      )}
                     </div>
                     <div className="text-right flex-shrink-0 flex items-center gap-2">
                       {isSelected && <X size={12} style={{ color: 'var(--text-muted)' }} />}
@@ -600,7 +600,10 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                     {breakdown.map(({ quest, quantity }) => (
                       <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                         <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                          <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
+                        </div>
                       </div>
                     ))}
                     {recipe && rawMaterials && (
@@ -725,12 +728,6 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                             {breakdown.map(({ quest, quantity }) => `${quest.name} ×${quantity}`).join(' · ')}
                           </p>
                         )}
-                        {totalNeeded > inventoryMax && (
-                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
-                            <AlertTriangle size={10} />
-                            needs {totalNeeded.toLocaleString()} — over your max ({inventoryMax})
-                          </p>
-                        )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {breakdown.length > 1 && !isSelected && (
@@ -751,7 +748,10 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                       {breakdown.map(({ quest, quantity }) => (
                         <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                           <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                          <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                            <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -851,12 +851,6 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                             {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
                           </p>
                         )}
-                        {totalNeeded > inventoryMax && (
-                          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
-                            <AlertTriangle size={10} />
-                            needs {totalNeeded.toLocaleString()} — over your max ({inventoryMax})
-                          </p>
-                        )}
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {breakdown.length > 1 && !isSelected && (
@@ -877,7 +871,10 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                       {breakdown.map(({ quest, quantity }) => (
                         <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
                           <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                          <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', flexShrink: 0 }}>×{quantity}</span>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                            <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
+                          </div>
                         </div>
                       ))}
                     </div>
