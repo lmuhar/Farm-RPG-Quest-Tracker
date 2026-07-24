@@ -86,16 +86,24 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       });
     };
 
+    // Sort: achievable items (totalNeeded <= inventoryMax) first, then by progress
+    const sortItems = (a: { totalNeeded: number; pct: number }, b: { totalNeeded: number; pct: number }) => {
+      const aOver = a.totalNeeded > inventoryMax;
+      const bOver = b.totalNeeded > inventoryMax;
+      if (aOver !== bOver) return aOver ? 1 : -1;
+      return b.pct - a.pct;
+    };
+
     // Active quest tiers
     const all = computeAll(quests);
     const turnInQuests = quests.filter((quest) =>
       parseItems(quest.itemsRequired).every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity)
     );
     const needed = all.filter((i) => i.deficit > 0);
-    const directCraftItems = needed.filter((i) => i.isDirectCraftNow).sort((a, b) => b.pct - a.pct);
-    const rawCraftItems = needed.filter((i) => i.isRawCraftNow).sort((a, b) => b.pct - a.pct);
-    const gatherForCraftItems = needed.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass).sort((a, b) => b.pct - a.pct);
-    const collectingItems = needed.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)).sort((a, b) => b.pct - a.pct);
+    const directCraftItems = needed.filter((i) => i.isDirectCraftNow).sort(sortItems);
+    const rawCraftItems = needed.filter((i) => i.isRawCraftNow).sort(sortItems);
+    const gatherForCraftItems = needed.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass).sort(sortItems);
+    const collectingItems = needed.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)).sort(sortItems);
     const stockedItems = all.filter((i) => i.deficit === 0);
 
     // Temple priority recommendation
@@ -114,15 +122,15 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     const nextUpAll = computeAll(nextUpQuests);
     const nextUpNeeded = nextUpAll.filter((i) => i.deficit > 0);
     const nextUp = {
-      directCraft: nextUpNeeded.filter((i) => i.isDirectCraftNow).sort((a, b) => b.pct - a.pct),
-      rawCraft: nextUpNeeded.filter((i) => i.isRawCraftNow).sort((a, b) => b.pct - a.pct),
-      gatherForCraft: nextUpNeeded.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass).sort((a, b) => b.pct - a.pct),
-      collecting: nextUpNeeded.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)).sort((a, b) => b.pct - a.pct),
+      directCraft: nextUpNeeded.filter((i) => i.isDirectCraftNow).sort(sortItems),
+      rawCraft: nextUpNeeded.filter((i) => i.isRawCraftNow).sort(sortItems),
+      gatherForCraft: nextUpNeeded.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass).sort(sortItems),
+      collecting: nextUpNeeded.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)).sort(sortItems),
       stocked: nextUpAll.filter((i) => i.deficit === 0),
     };
 
     return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp };
-  }, [quests, nextUpQuests, inventory, cropTimes, plotCount]);
+  }, [quests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax]);
 
   // Inventory pressure
   const usedSlots = Object.keys(inventory).length;
