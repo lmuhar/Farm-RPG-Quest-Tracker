@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -19,10 +19,11 @@ import { GrowPlanner } from './components/GrowPlanner';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
+import { LocationsTab } from './components/LocationsTab';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
+type Tab = 'active' | 'locations' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -306,6 +307,7 @@ export default function App() {
             <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
               {([
                 { id: 'active', label: 'Active', icon: <ListTodo size={16} /> },
+                { id: 'locations', label: 'Locations', icon: <MapPin size={16} /> },
                 { id: 'inventory', label: 'Inventory', icon: <Package size={16} /> },
                 { id: 'quests', label: 'All Quests', icon: <Search size={16} /> },
                 { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={16} /> },
@@ -342,6 +344,7 @@ export default function App() {
           >
             {([
               { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
+              { id: 'locations', label: 'Locations', icon: <MapPin size={14} /> },
               { id: 'inventory', label: 'Inventory', icon: <Package size={14} /> },
               { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
@@ -381,6 +384,10 @@ export default function App() {
                 <QuestCard key={quest.id} quest={quest} status="active" />
               ))}
             </div>
+          )}
+
+          {tab === 'locations' && (
+            <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
           )}
 
           {tab === 'inventory' && (
