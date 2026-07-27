@@ -37,6 +37,7 @@ export default function App() {
   const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
+  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'questlines'>('plan');
   const [copied, setCopied] = useState(false);
 
   const bookmarkletHref = useMemo(() => {
@@ -370,19 +371,59 @@ export default function App() {
 
           {tab === 'active' && (
             <div className="space-y-3">
-              <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
-
-              {/* Questlines that have at least one active quest */}
-              {questlineGroups
-                .filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)))
-                .map(({ name, quests }) => (
-                  <ActiveQuestLine key={name} questline={name} quests={quests} />
+              {/* Sub-tab pills */}
+              <div
+                className="flex gap-1 p-1 rounded-lg"
+                style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}
+              >
+                {([
+                  { id: 'plan', label: 'Action Plan', icon: <ListTodo size={13} /> },
+                  { id: 'questlines', label: 'Questlines', icon: <GitBranch size={13} /> },
+                ] as const).map(({ id, label, icon }) => (
+                  <button
+                    key={id}
+                    onClick={() => setActiveSubTab(id)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap"
+                    style={
+                      activeSubTab === id
+                        ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
+                        : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
+                    }
+                  >
+                    {icon}
+                    {label}
+                    {id === 'questlines' && (
+                      <span
+                        className="ml-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                        style={
+                          activeSubTab === 'questlines'
+                            ? { background: 'rgba(255,255,255,0.2)', color: '#fff' }
+                            : { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)' }
+                        }
+                      >
+                        {questlineGroups.filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id))).length}
+                      </span>
+                    )}
+                  </button>
                 ))}
+              </div>
 
-              {/* Standalone active quests (not part of any questline) */}
-              {activeQuests.filter((q) => !q.questline).map((quest) => (
-                <QuestCard key={quest.id} quest={quest} status="active" />
-              ))}
+              {activeSubTab === 'plan' && (
+                <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
+              )}
+
+              {activeSubTab === 'questlines' && (
+                <>
+                  {questlineGroups
+                    .filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)))
+                    .map(({ name, quests }) => (
+                      <ActiveQuestLine key={name} questline={name} quests={quests} />
+                    ))}
+                  {activeQuests.filter((q) => !q.questline).map((quest) => (
+                    <QuestCard key={quest.id} quest={quest} status="active" />
+                  ))}
+                </>
+              )}
             </div>
           )}
 
