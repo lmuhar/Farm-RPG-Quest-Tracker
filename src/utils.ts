@@ -149,6 +149,17 @@ export function npcColor(npc: string): string {
   return colors[npc] ?? 'bg-slate-500/20 text-slate-300 border-slate-500/30';
 }
 
+export function formatDoneBy(totalMinutes: number): string {
+  const doneAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const time = doneAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  if (doneAt.toDateString() === now.toDateString()) return `today ${time}`;
+  if (doneAt.toDateString() === tomorrow.toDateString()) return `tomorrow ${time}`;
+  return `${doneAt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} ${time}`;
+}
+
 export function isCompletable(quest: Quest, inventory: Record<string, number>): boolean {
   const items = parseItems(quest.itemsRequired);
   if (items.length === 0) return true;

@@ -21,6 +21,7 @@ import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
 import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
+import { DailyActionCard } from './components/DailyActionCard';
 
 const allQuests = questsData as Quest[];
 
@@ -374,6 +375,9 @@ export default function App() {
 
           {tab === 'active' && (
             <div className="space-y-3">
+              {/* Daily action card */}
+              <DailyActionCard activeQuests={activeQuests} />
+
               {/* Sub-tab pills */}
               <div
                 className="flex gap-1 p-1 rounded-lg"
