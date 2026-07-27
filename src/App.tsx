@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -23,6 +23,8 @@ import { LocationsTab } from './components/LocationsTab';
 import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
 import { DailyActionCard } from './components/DailyActionCard';
 import { PetsPage } from './components/PetsPage';
+import { NeedsTab } from './components/NeedsTab';
+import { NpcGatesCard } from './components/NpcGatesCard';
 
 const allQuests = questsData as Quest[];
 
@@ -40,7 +42,7 @@ export default function App() {
   const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
-  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'questlines'>('plan');
+  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'needs' | 'questlines'>('plan');
   const [copied, setCopied] = useState(false);
 
   const bookmarkletHref = useMemo(() => {
@@ -388,6 +390,7 @@ export default function App() {
               >
                 {([
                   { id: 'plan', label: 'Action Plan', icon: <ListTodo size={13} /> },
+                  { id: 'needs', label: 'Needs', icon: <ShoppingCart size={13} /> },
                   { id: 'questlines', label: 'Questlines', icon: <GitBranch size={13} /> },
                 ] as const).map(({ id, label, icon }) => (
                   <button
@@ -419,7 +422,14 @@ export default function App() {
               </div>
 
               {activeSubTab === 'plan' && (
-                <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
+                <>
+                  <NpcGatesCard activeQuests={activeQuests} questlineGroups={questlineGroups} />
+                  <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
+                </>
+              )}
+
+              {activeSubTab === 'needs' && (
+                <NeedsTab activeQuests={activeQuests} />
               )}
 
               {activeSubTab === 'questlines' && (

@@ -205,6 +205,24 @@ export function GrowPlanner({ questlineGroups }: Props) {
       {/* Crop table */}
       {rows.length > 0 && (
         <div className="bg-slate-800/40 rounded-xl border border-slate-700 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-slate-700/50">
+            <span className="text-xs text-slate-400">{rows.filter((r) => r.stillNeed > 0).length} crops needed</span>
+            {rows.some((r) => r.stillNeed > 0) && (
+              <button
+                onClick={() => {
+                  const needed = rows.filter((r) => r.stillNeed > 0);
+                  const next = [...growQueue];
+                  for (const { item } of needed) {
+                    if (!next.find((q) => q.item === item)) next.push({ item, grows: 1 });
+                  }
+                  setGrowQueue(next);
+                }}
+                className="text-xs text-green-400 hover:text-green-300 font-medium flex items-center gap-1"
+              >
+                <Plus size={11} /> Queue all needed
+              </button>
+            )}
+          </div>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-700 text-xs text-slate-400 uppercase tracking-wider">
