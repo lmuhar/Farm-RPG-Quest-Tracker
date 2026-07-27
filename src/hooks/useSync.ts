@@ -19,6 +19,7 @@ function snapshotState(): AppState {
     growQueue: s.growQueue,
     questNotes: s.questNotes,
     pinnedQuestline: s.pinnedQuestline,
+    ownedPets: s.ownedPets,
   };
 }
 

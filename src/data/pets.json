@@ -1,0 +1,870 @@
+[
+  {
+    "id": 1,
+    "name": "Cat",
+    "cost": 10000,
+    "order": 10,
+    "requiredFarmingLevel": 10,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Feathers",
+        "Carp",
+        "Drum",
+        "Crappie"
+      ],
+      "3": [
+        "Blue Feathers",
+        "Blue Catfish",
+        "Blue Shell",
+        "Bluegill"
+      ],
+      "6": [
+        "Gold Feather",
+        "Pearl",
+        "Globber",
+        "Shinefish"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "name": "Dog",
+    "cost": 100000,
+    "order": 20,
+    "requiredFarmingLevel": 20,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 20,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Wood",
+        "Stone",
+        "Fish Bones",
+        "Bone"
+      ],
+      "3": [
+        "Unpolished Shimmer Stone",
+        "Horn",
+        "Antler",
+        "Rope"
+      ],
+      "6": [
+        "Amethyst",
+        "Cogwheel",
+        "Small Spring",
+        "Large Clam Shell"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "Squirrel",
+    "cost": 500000,
+    "order": 30,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 30,
+    "requiredExploringLevel": 30,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Mushroom",
+        "Fern Leaf",
+        "Purple Flower",
+        "Acorn"
+      ],
+      "3": [
+        "Arrowhead",
+        "Leather",
+        "Coin Purse",
+        "Ancient Coin"
+      ],
+      "6": [
+        "4-leaf Clover",
+        "Dice",
+        "Runestone 20",
+        "Gold Crab"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "name": "Owl",
+    "cost": 1000000,
+    "order": 40,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 40,
+    "requiredCraftingLevel": 40,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Apple",
+        "Orange",
+        "Lemon",
+        "Hide"
+      ],
+      "3": [
+        "Eggs",
+        "Bird Egg",
+        "Grapes",
+        "Honey"
+      ],
+      "6": [
+        "Prism Shard",
+        "Gold Cucumber",
+        "Runestone 11",
+        "Goldfish"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "Swine",
+    "cost": 5000000,
+    "order": 50,
+    "requiredFarmingLevel": 30,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 40,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Coal",
+        "Carbon Sphere",
+        "3-leaf Clover",
+        "Green Dye"
+      ],
+      "3": [
+        "Hammer",
+        "Axe",
+        "Shovel",
+        "Ladder"
+      ],
+      "6": [
+        "Steak",
+        "Steel",
+        "Moonstone",
+        "Jade"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "name": "Snake",
+    "cost": 10000000,
+    "order": 60,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 40,
+    "requiredExploringLevel": 50,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Iron",
+        "Hops",
+        "Glass Orb",
+        "Horseshoe"
+      ],
+      "3": [
+        "Bucket",
+        "Shimmer Quartz",
+        "Steel",
+        "Wizard Hat"
+      ],
+      "6": [
+        "Wine",
+        "Gold Carrot",
+        "Runestone 15",
+        "Skull Coin"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "name": "Lemur",
+    "cost": 35000000,
+    "order": 70,
+    "requiredFarmingLevel": 50,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 50,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Giant Centipede",
+        "Snail",
+        "Caterpillar",
+        "Fire Ant"
+      ],
+      "3": [
+        "Shiny Beetle",
+        "Ruby Scorpion",
+        "Spider",
+        "Horned Beetle"
+      ],
+      "6": [
+        "Dragonfly",
+        "Grasshopper",
+        "Cyclops Spider",
+        "Amber"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "name": "Baboon",
+    "cost": 50000000,
+    "order": 80,
+    "requiredFarmingLevel": 65,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 65,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Corn",
+        "Glass Bottle",
+        "Sturdy Shield",
+        "Shimmer Topaz"
+      ],
+      "3": [
+        "Lemonade",
+        "Bone Fish",
+        "Cotton",
+        "Gold Eggplant"
+      ],
+      "6": [
+        "Grape Juice",
+        "Runestone 03",
+        "Gold Peppers",
+        "Redgill"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "name": "Frog",
+    "cost": 75000000,
+    "order": 90,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 65,
+    "requiredCraftingLevel": 65,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Peas",
+        "Cucumber",
+        "Hops",
+        "Cabbage"
+      ],
+      "3": [
+        "Green Chromis",
+        "Puffer",
+        "Green Jellyfish",
+        "Skipjack"
+      ],
+      "6": [
+        "Runestone 05",
+        "Gold Feather",
+        "Runestone 19",
+        "Gold Leaf"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "name": "Hedgehog",
+    "cost": 100000000,
+    "order": 100,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 75,
+    "requiredCraftingLevel": 75,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Cabbage",
+        "Explosive",
+        "Straw",
+        "Cheese"
+      ],
+      "3": [
+        "Orange Juice",
+        "Twine",
+        "Gold Cucumber",
+        "Broccoli"
+      ],
+      "6": [
+        "Runestone 07",
+        "Gold Peas",
+        "Green Shield",
+        "Torch Fish"
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "name": "Fox",
+    "cost": 400000000,
+    "order": 101,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Cotton",
+        "Lemon Quartz",
+        "Green Cloak",
+        "Leather"
+      ],
+      "3": [
+        "Runestone 12",
+        "Peach",
+        "Canoe",
+        "Pine Tree"
+      ],
+      "6": [
+        "Skeleton Key",
+        "Treasure Key",
+        "Diamond",
+        "Runestone 17"
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "name": "Armadillo",
+    "cost": 125000000,
+    "order": 105,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 75,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Iron Ring",
+        "Iron Cup",
+        "Board",
+        "Feathers"
+      ],
+      "3": [
+        "Steel",
+        "Magna Quartz",
+        "Mushroom Paste",
+        "Leather"
+      ],
+      "6": [
+        "Small Spring",
+        "Small Screw",
+        "Small Gear",
+        "Steel Wire"
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "name": "Spider",
+    "cost": 125000000,
+    "order": 110,
+    "requiredFarmingLevel": 75,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 75,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Eggplant",
+        "Amethyst",
+        "Emberstone",
+        "Giant Centipede"
+      ],
+      "3": [
+        "Ruby Ring",
+        "Emerald Ring",
+        "Mystic Ring",
+        "Shimmer Ring"
+      ],
+      "6": [
+        "Runestone 05",
+        "Runestone 10",
+        "Runestone 15",
+        "Runestone 20"
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "name": "Pet Rock",
+    "cost": 250000000,
+    "order": 115,
+    "requiredFarmingLevel": 75,
+    "requiredFishingLevel": 75,
+    "requiredCraftingLevel": 75,
+    "requiredExploringLevel": 75,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Unpolished Emerald",
+        "Unpolished Garnet",
+        "Unpolished Jade",
+        "Unpolished Ruby"
+      ],
+      "3": [
+        "Amethyst",
+        "Shimmer Topaz",
+        "Lemon Quartz",
+        "Jade"
+      ],
+      "6": [
+        "Shimmer Stone",
+        "Glass Orb",
+        "Carbon Sphere",
+        "Diamond"
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "name": "Bird",
+    "cost": 400000000,
+    "order": 117,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 80,
+    "requiredCraftingLevel": 70,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Clownfish",
+        "Fishing Net",
+        "Eye Patch",
+        "Plumbfish"
+      ],
+      "3": [
+        "Pirate Bandana",
+        "Large Chest 02",
+        "Pirate Flag",
+        "Blue Dye"
+      ],
+      "6": [
+        "Crab Claw",
+        "Large Net",
+        "Skeleton Key",
+        "Anglerfish"
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "name": "Penguin",
+    "cost": 250000000,
+    "order": 120,
+    "requiredFarmingLevel": 0,
+    "requiredFishingLevel": 85,
+    "requiredCraftingLevel": 85,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Marlin",
+        "Skipjack",
+        "Seahorse",
+        "Octopus"
+      ],
+      "3": [
+        "Giant Squid",
+        "Blue Tiger Fish",
+        "Fluorifish",
+        "Barracuda"
+      ],
+      "6": [
+        "Swordfish",
+        "Sea Catfish",
+        "Serpent Eel",
+        "Ruby Coral"
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "name": "Green Dragon",
+    "cost": 1000000000,
+    "order": 130,
+    "requiredFarmingLevel": 85,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 85,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Runestone 01",
+        "Runestone 02",
+        "Runestone 03",
+        "Runestone 04"
+      ],
+      "3": [
+        "Runestone 05",
+        "Runestone 06",
+        "Runestone 07",
+        "Runestone 08"
+      ],
+      "6": [
+        "Runestone 09",
+        "Runestone 10",
+        "Runestone 11",
+        "Runestone 12"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "name": "Red Dragon",
+    "cost": 1000000000,
+    "order": 140,
+    "requiredFarmingLevel": 85,
+    "requiredFishingLevel": 85,
+    "requiredCraftingLevel": 85,
+    "requiredExploringLevel": 85,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Sour Root",
+        "Unpolished Garnet",
+        "Slimestone",
+        "Runestone 13"
+      ],
+      "3": [
+        "Lantern",
+        "Green Cloak",
+        "Runestone 14",
+        "Runestone 16"
+      ],
+      "6": [
+        "Salt",
+        "Herbs",
+        "Runestone 17",
+        "Runestone 18"
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "name": "Blue Dragon",
+    "cost": 3000000000,
+    "order": 150,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Runestone 01",
+        "Runestone 02",
+        "Runestone 04",
+        "Runestone 06"
+      ],
+      "3": [
+        "Runestone 08",
+        "Runestone 09",
+        "Runestone 13",
+        "Runestone 14"
+      ],
+      "6": [
+        "Runestone 16",
+        "Runestone 18",
+        "Runestone 19",
+        "Lava Sphere"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "name": "Bear",
+    "cost": 2000000000,
+    "order": 160,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Honey",
+        "Trout",
+        "Crappie",
+        "Small Key"
+      ],
+      "3": [
+        "Sunflower",
+        "Square Key",
+        "Grab Bag 04",
+        "Medium Chest 02"
+      ],
+      "6": [
+        "Treasure Key",
+        "Grab Bag 05",
+        "Large Chest 01",
+        "Inferno Sphere"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "name": "Capybara",
+    "cost": 5000000000,
+    "order": 170,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Cabbage",
+        "Broccoli",
+        "Beet",
+        "Gold Peas"
+      ],
+      "3": [
+        "Apple Cider",
+        "Orange Juice",
+        "Lemonade",
+        "Water Lily"
+      ],
+      "6": [
+        "Herbs",
+        "Grab Bag 04",
+        "Grab Bag 05",
+        "Grab Bag 07"
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "name": "Strange Onion",
+    "cost": 10000000000,
+    "order": 180,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Tomato",
+        "Potato",
+        "Hops",
+        "Onion"
+      ],
+      "3": [
+        "Cabbage",
+        "Corn",
+        "Watermelon",
+        "Leek"
+      ],
+      "6": [
+        "Mega Beet Seeds",
+        "Mega Sunflower Seeds",
+        "Broccoli",
+        "Pumpkin"
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "name": "Seal",
+    "cost": 4000000000,
+    "order": 190,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Moonstone",
+        "Runestone 06",
+        "Snowball",
+        "Blue Purse"
+      ],
+      "3": [
+        "Mittens",
+        "Seaweed",
+        "Rice",
+        "Iced Tea"
+      ],
+      "6": [
+        "Frost Snapper Shell",
+        "Glacierstone",
+        "Blue Gel",
+        "Gold Sea Crest"
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "name": "Critter",
+    "cost": 10000000000,
+    "order": 200,
+    "requiredFarmingLevel": 99,
+    "requiredFishingLevel": 99,
+    "requiredCraftingLevel": 99,
+    "requiredExploringLevel": 99,
+    "requiredCookingLevel": 25,
+    "loot": {
+      "1": [
+        "Cooking Pot",
+        "Herbs",
+        "Onion",
+        "Leek"
+      ],
+      "3": [
+        "Salt",
+        "Sweet Root",
+        "Pie Pan",
+        "Flour"
+      ],
+      "6": [
+        "Peach",
+        "Bone Broth",
+        "Corn Oil",
+        "Butter"
+      ]
+    }
+  },
+  {
+    "id": 25,
+    "name": "Polar Bear",
+    "cost": 1000,
+    "order": 300,
+    "requiredFarmingLevel": 10,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Frozen Radish",
+        "Frozen Catfish",
+        "Frozen Bones",
+        "Frozen Peas"
+      ],
+      "3": [
+        "Frozen Tomato",
+        "Frozen Boot",
+        "Frozen Sheepshead",
+        "Frozen Squid"
+      ],
+      "6": [
+        "Frozen Pine",
+        "Frozen Crab Claw",
+        "Frozen Corn",
+        "Cooked Fish"
+      ]
+    }
+  },
+  {
+    "id": 26,
+    "name": "Hummingbird",
+    "cost": 1000,
+    "order": 310,
+    "requiredFarmingLevel": 10,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "3-leaf Clover",
+        "Purple Flower",
+        "Yellow Flowers",
+        "Orange Flowers"
+      ],
+      "3": [
+        "4-leaf Clover",
+        "Spring Seeds",
+        "White Flowers",
+        "Blue Flowers"
+      ],
+      "6": [
+        "Red Flowers",
+        "Honeysuckle",
+        "Oak",
+        "Potted Flower"
+      ]
+    }
+  },
+  {
+    "id": 27,
+    "name": "Shark",
+    "cost": 1000,
+    "order": 320,
+    "requiredFarmingLevel": 10,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Barnacle Shell",
+        "Shrimp",
+        "Starfish",
+        "Red Starfish"
+      ],
+      "3": [
+        "Sea Urchin",
+        "Puffer",
+        "Ruby Coral",
+        "Purple Butterfly Fish"
+      ],
+      "6": [
+        "Ghost Jelly",
+        "Large Clam Shell",
+        "Large Net",
+        "Marlin"
+      ]
+    }
+  },
+  {
+    "id": 28,
+    "name": "Wolf",
+    "cost": 1000,
+    "order": 330,
+    "requiredFarmingLevel": 10,
+    "requiredFishingLevel": 0,
+    "requiredCraftingLevel": 0,
+    "requiredExploringLevel": 0,
+    "requiredCookingLevel": 0,
+    "loot": {
+      "1": [
+        "Bone",
+        "Feathers",
+        "Pumpkin",
+        "Bitten Apple"
+      ],
+      "3": [
+        "Straw",
+        "Acorn",
+        "Blue Feathers",
+        "Fall Leaves"
+      ],
+      "6": [
+        "Striped Feather",
+        "Gold Leaf",
+        "Raw Meat",
+        "Green Rubee"
+      ]
+    }
+  }
+]
