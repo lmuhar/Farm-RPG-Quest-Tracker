@@ -30,7 +30,7 @@ type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable'
 export default function App() {
   const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
   const sync = useSync();
-  const [tab, setTab] = useState<Tab>('active');
+  const [tab, setTab] = useState<Tab>('tower');
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [filterNpc, setFilterNpc] = useState('');
