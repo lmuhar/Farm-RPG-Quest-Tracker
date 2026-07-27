@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2 } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -22,10 +22,11 @@ import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
 import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
 import { DailyActionCard } from './components/DailyActionCard';
+import { PetsPage } from './components/PetsPage';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'locations' | 'tower' | 'inventory' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
+type Tab = 'active' | 'locations' | 'tower' | 'inventory' | 'pets' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -313,6 +314,7 @@ export default function App() {
                 { id: 'locations', label: 'Locations', icon: <MapPin size={16} /> },
                 { id: 'tower', label: 'Tower', icon: <Building2 size={16} /> },
                 { id: 'inventory', label: 'Inventory', icon: <Package size={16} /> },
+                { id: 'pets', label: 'Pets', icon: <PawPrint size={16} /> },
                 { id: 'quests', label: 'All Quests', icon: <Search size={16} /> },
                 { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={16} /> },
                 { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={16} /> },
@@ -351,6 +353,7 @@ export default function App() {
               { id: 'locations', label: 'Locations', icon: <MapPin size={14} /> },
               { id: 'tower', label: 'Tower', icon: <Building2 size={14} /> },
               { id: 'inventory', label: 'Inventory', icon: <Package size={14} /> },
+              { id: 'pets', label: 'Pets', icon: <PawPrint size={14} /> },
               { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
@@ -444,6 +447,10 @@ export default function App() {
 
           {tab === 'inventory' && (
             <InventoryPage />
+          )}
+
+          {tab === 'pets' && (
+            <PetsPage activeQuests={activeQuests} />
           )}
 
           {tab === 'quests' && (

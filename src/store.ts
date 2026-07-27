@@ -39,6 +39,7 @@ interface Store extends AppState {
   setGrowQueue: (queue: GrowQueueItem[]) => void;
   setQuestNote: (id: string, note: string) => void;
   setPinnedQuestline: (name: string | null) => void;
+  setOwnedPetLevel: (petId: number, level: number) => void;
 }
 
 const defaultCropTimes = [
@@ -97,6 +98,7 @@ export const useStore = create<Store>()(
       growQueue: [],
       questNotes: {},
       pinnedQuestline: null,
+      ownedPets: {},
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -165,6 +167,7 @@ export const useStore = create<Store>()(
           growQueue: [],
           questNotes: {},
           pinnedQuestline: null,
+          ownedPets: {},
         }),
 
       importState: (data) =>
@@ -182,6 +185,7 @@ export const useStore = create<Store>()(
           growQueue: data.growQueue ?? s.growQueue,
           questNotes: data.questNotes ?? s.questNotes,
           pinnedQuestline: data.pinnedQuestline ?? s.pinnedQuestline,
+          ownedPets: data.ownedPets ?? s.ownedPets,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -200,6 +204,16 @@ export const useStore = create<Store>()(
         set((s) => ({ questNotes: { ...s.questNotes, [id]: note } })),
 
       setPinnedQuestline: (pinnedQuestline) => set({ pinnedQuestline }),
+
+      setOwnedPetLevel: (petId, level) =>
+        set((s) => {
+          if (level <= 0) {
+            const next = { ...s.ownedPets };
+            delete next[petId];
+            return { ownedPets: next };
+          }
+          return { ownedPets: { ...s.ownedPets, [petId]: level } };
+        }),
     }),
     {
       name: 'farm-rpg-tracker',

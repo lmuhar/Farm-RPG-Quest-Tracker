@@ -40,6 +40,19 @@ export interface GrowQueueItem {
   grows: number;
 }
 
+export interface Pet {
+  id: number;
+  name: string;
+  cost: number;
+  order: number;
+  requiredFarmingLevel: number;
+  requiredFishingLevel: number;
+  requiredCraftingLevel: number;
+  requiredExploringLevel: number;
+  requiredCookingLevel: number;
+  loot: Record<string, string[]>;
+}
+
 export interface AppState {
   questStatuses: Record<string, QuestStatus>;
   inventory: Record<string, number>;
@@ -51,4 +64,5 @@ export interface AppState {
   growQueue: GrowQueueItem[];
   questNotes: Record<string, string>;
   pinnedQuestline: string | null;
+  ownedPets: Record<number, number>;
 }
