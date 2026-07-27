@@ -38,6 +38,7 @@ interface Store extends AppState {
   removeCraftingRecipe: (item: string) => void;
   setGrowQueue: (queue: GrowQueueItem[]) => void;
   setQuestNote: (id: string, note: string) => void;
+  setPinnedQuestline: (name: string | null) => void;
 }
 
 const defaultCropTimes = [
@@ -95,6 +96,7 @@ export const useStore = create<Store>()(
       craftingRecipes: {},
       growQueue: [],
       questNotes: {},
+      pinnedQuestline: null,
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -162,6 +164,7 @@ export const useStore = create<Store>()(
           craftingRecipes: {},
           growQueue: [],
           questNotes: {},
+          pinnedQuestline: null,
         }),
 
       importState: (data) =>
@@ -178,6 +181,7 @@ export const useStore = create<Store>()(
           craftingRecipes: data.craftingRecipes ?? s.craftingRecipes,
           growQueue: data.growQueue ?? s.growQueue,
           questNotes: data.questNotes ?? s.questNotes,
+          pinnedQuestline: data.pinnedQuestline ?? s.pinnedQuestline,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -194,6 +198,8 @@ export const useStore = create<Store>()(
 
       setQuestNote: (id, note) =>
         set((s) => ({ questNotes: { ...s.questNotes, [id]: note } })),
+
+      setPinnedQuestline: (pinnedQuestline) => set({ pinnedQuestline }),
     }),
     {
       name: 'farm-rpg-tracker',

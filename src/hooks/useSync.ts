@@ -18,6 +18,7 @@ function snapshotState(): AppState {
     craftingRecipes: s.craftingRecipes,
     growQueue: s.growQueue,
     questNotes: s.questNotes,
+    pinnedQuestline: s.pinnedQuestline,
   };
 }
 

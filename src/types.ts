@@ -50,4 +50,5 @@ export interface AppState {
   craftingRecipes: Record<string, ParsedItem[]>;
   growQueue: GrowQueueItem[];
   questNotes: Record<string, string>;
+  pinnedQuestline: string | null;
 }
