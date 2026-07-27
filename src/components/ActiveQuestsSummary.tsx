@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout, AlertTriangle, Pin } from 'lucide-react';
+import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout, AlertTriangle, Pin, Building2 } from 'lucide-react';
 import type { Quest } from '../types';
-import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN } from '../utils';
+import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN, compareQuests } from '../utils';
+import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
+import questsData from '../data/quests.json';
 
 interface Recipe {
   id: string;
@@ -22,7 +24,7 @@ interface Props {
 }
 
 export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline, player, questStatuses } = useStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [locationItem, setLocationItem] = useState<string | null>(null);
   const [showStocked, setShowStocked] = useState(false);
@@ -34,6 +36,32 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     e.stopPropagation();
     setLocationItem((prev) => (prev === item ? null : item));
   };
+
+  // Items needed by active + next Tower quests — used to badge conflicting items in the summary
+  const towerItemSet = useMemo(() => {
+    const towerQuests = (questsData as Quest[])
+      .filter(q => q.questline === 'A Towering Investment')
+      .sort((a, b) => compareQuests(a.name, b.name));
+    const towerStatuses = towerQuests.map(q => getQuestStatus(q, player, questStatuses));
+    const items = new Set<string>();
+    // Active tower quests
+    towerQuests.forEach((q, i) => {
+      if (towerStatuses[i] === 'active') {
+        parseItems(q.itemsRequired).forEach(({ item }) => items.add(item));
+      }
+    });
+    // Next upcoming tower quest
+    const lastActiveIdx = towerStatuses.reduce((max, s, i) => s === 'active' ? i : max, -1);
+    if (lastActiveIdx >= 0) {
+      for (let i = lastActiveIdx + 1; i < towerQuests.length; i++) {
+        if (towerStatuses[i] !== 'completed' && towerStatuses[i] !== 'active') {
+          parseItems(towerQuests[i].itemsRequired).forEach(({ item }) => items.add(item));
+          break;
+        }
+      }
+    }
+    return items;
+  }, [player, questStatuses]);
 
   // Per-item quest breakdown map (active quests only)
   const itemQuestMap = useMemo(() => {
@@ -365,6 +393,11 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                       {priorityItemSet.has(item) && (
                         <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
                       )}
+                      {towerItemSet.has(item) && (
+                        <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                          <Building2 size={9} /> Tower
+                        </span>
+                      )}
                       <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
                         <Hammer size={9} /> craft ×{deficit}
                       </span>
@@ -467,6 +500,11 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                       <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
                       {priorityItemSet.has(item) && (
                         <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
+                      )}
+                      {towerItemSet.has(item) && (
+                        <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                          <Building2 size={9} /> Tower
+                        </span>
                       )}
                       <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                         <Hammer size={9} /> craft ×{deficit}
