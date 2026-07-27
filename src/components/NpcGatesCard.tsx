@@ -1,11 +1,13 @@
-import { useMemo } from 'react';
-import { Users } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Users, ChevronDown, ChevronRight } from 'lucide-react';
 import type { Quest } from '../types';
 import { useStore } from '../store';
 import { getQuestStatus, compareQuests } from '../utils';
 import questsData from '../data/quests.json';
+import npcsData from '../data/npcs.json';
 
 const allQuests = questsData as Quest[];
+const npcFavorites = npcsData as { name: string; items: string[] }[];
 
 interface GateEntry {
   npc: string;
@@ -21,7 +23,8 @@ interface Props {
 }
 
 export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
-  const { player, questStatuses } = useStore();
+  const { player, questStatuses, inventory } = useStore();
+  const [expandedNpc, setExpandedNpc] = useState<string | null>(null);
 
   const gates = useMemo((): GateEntry[] => {
     const activeIds = new Set(activeQuests.map((q) => q.id));
@@ -113,39 +116,87 @@ export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
         NPC levels needed to unlock your next quests.
       </p>
       <div className="space-y-2">
-        {gates.map((g) => (
-          <div
-            key={`${g.npc}-${g.neededLevel}`}
-            className="flex items-center gap-3 rounded-lg px-3 py-2"
-            style={{ background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)' }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{g.npc}</span>
-                <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>→ {g.questName}</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span
-                className="text-xs font-mono font-semibold px-2 py-0.5 rounded"
-                style={{ background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
+        {gates.map((g) => {
+          const favorites = npcFavorites.find((n) => n.name === g.npc)?.items ?? [];
+          const isExpanded = expandedNpc === g.npc;
+          const inStock = favorites.filter((item) => (inventory[item] ?? 0) > 0);
+          return (
+            <div
+              key={`${g.npc}-${g.neededLevel}`}
+              className="rounded-lg overflow-hidden"
+              style={{ background: 'var(--surface-raised)', border: '1px solid var(--border-subtle)' }}
+            >
+              <button
+                className="w-full flex items-center gap-3 px-3 py-2 text-left"
+                onClick={() => setExpandedNpc(isExpanded ? null : g.npc)}
               >
-                Lv {g.currentLevel}
-              </span>
-              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>→</span>
-              <span
-                className="text-xs font-mono font-semibold px-2 py-0.5 rounded"
-                style={
-                  g.levelsAway <= 2
-                    ? { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }
-                    : { background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }
-                }
-              >
-                Lv {g.neededLevel}
-              </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{g.npc}</span>
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>→ {g.questName}</span>
+                    {inStock.length > 0 && (
+                      <span
+                        className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                        style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
+                      >
+                        {inStock.length} in stock
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <span
+                    className="text-xs font-mono font-semibold px-2 py-0.5 rounded"
+                    style={{ background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
+                  >
+                    Lv {g.currentLevel}
+                  </span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>→</span>
+                  <span
+                    className="text-xs font-mono font-semibold px-2 py-0.5 rounded"
+                    style={
+                      g.levelsAway <= 2
+                        ? { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }
+                        : { background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }
+                    }
+                  >
+                    Lv {g.neededLevel}
+                  </span>
+                  {favorites.length > 0 && (
+                    isExpanded
+                      ? <ChevronDown size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                      : <ChevronRight size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                  )}
+                </div>
+              </button>
+              {isExpanded && favorites.length > 0 && (
+                <div className="px-3 pb-3 pt-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                  <p className="text-[10px] font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--text-muted)' }}>
+                    Favourite items
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {favorites.map((item) => {
+                      const have = inventory[item] ?? 0;
+                      return (
+                        <span
+                          key={item}
+                          className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                          style={
+                            have > 0
+                              ? { background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }
+                              : { background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }
+                          }
+                        >
+                          {item}{have > 0 ? ` ×${have}` : ''}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
