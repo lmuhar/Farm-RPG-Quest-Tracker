@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout, AlertTriangle } from 'lucide-react';
+import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout, AlertTriangle, Pin } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN } from '../utils';
 import { useStore } from '../store';
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline } = useStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [locationItem, setLocationItem] = useState<string | null>(null);
   const [showStocked, setShowStocked] = useState(false);
@@ -47,7 +47,19 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     return map;
   }, [quests]);
 
-  const { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp } = useMemo(() => {
+  const { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp, priorityItemSet } = useMemo(() => {
+    // Items needed by active quests in the pinned questline
+    const priorityItemSet = new Set<string>();
+    if (pinnedQuestline) {
+      for (const quest of quests) {
+        if (quest.questline === pinnedQuestline) {
+          for (const { item } of parseItems(quest.itemsRequired)) {
+            priorityItemSet.add(item);
+          }
+        }
+      }
+    }
+
     // Shared item computation for any set of quests
     const computeAll = (questsToProcess: Quest[]) => {
       const itemMap = new Map<string, number>();
@@ -86,11 +98,15 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       });
     };
 
-    // Sort: achievable items (totalNeeded <= inventoryMax) first, then by progress
-    const sortItems = (a: { totalNeeded: number; pct: number }, b: { totalNeeded: number; pct: number }) => {
+    // Sort: priority+achievable → achievable → priority+over-cap → over-cap, then by progress
+    const sortItems = (a: { item: string; totalNeeded: number; pct: number }, b: { item: string; totalNeeded: number; pct: number }) => {
       const aOver = a.totalNeeded > inventoryMax;
       const bOver = b.totalNeeded > inventoryMax;
-      if (aOver !== bOver) return aOver ? 1 : -1;
+      const aPri = priorityItemSet.has(a.item);
+      const bPri = priorityItemSet.has(b.item);
+      const aRank = aPri && !aOver ? 0 : !aPri && !aOver ? 1 : aPri && aOver ? 2 : 3;
+      const bRank = bPri && !bOver ? 0 : !bPri && !bOver ? 1 : bPri && bOver ? 2 : 3;
+      if (aRank !== bRank) return aRank - bRank;
       return b.pct - a.pct;
     };
 
@@ -129,8 +145,8 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       stocked: nextUpAll.filter((i) => i.deficit === 0),
     };
 
-    return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp };
-  }, [quests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax]);
+    return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp, priorityItemSet };
+  }, [quests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline]);
 
   // Inventory pressure
   const usedSlots = Object.keys(inventory).length;
@@ -254,6 +270,19 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         </div>
       </div>
 
+      {/* Priority questline banner */}
+      {pinnedQuestline && (
+        <div
+          className="px-5 py-2 flex items-center gap-2 text-xs"
+          style={{ background: 'var(--accent-yellow-bg)', borderBottom: '1px solid var(--accent-yellow-border)' }}
+        >
+          <Pin size={11} style={{ color: 'var(--accent-yellow)', fill: 'currentColor', flexShrink: 0 }} />
+          <span style={{ color: 'var(--accent-yellow)' }}>
+            <strong>Priority: {pinnedQuestline}</strong> — save resources for this questline first; items marked ⚡ are needed here
+          </span>
+        </div>
+      )}
+
       {/* Temple priority banner */}
       {templeRecommendation && (
         <div
@@ -333,6 +362,9 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                       <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                      {priorityItemSet.has(item) && (
+                        <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
+                      )}
                       <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
                         <Hammer size={9} /> craft ×{deficit}
                       </span>
@@ -355,15 +387,20 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                 {isSelected && (
                   <div className="px-5 pb-3 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
                     <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Needed by</p>
-                    {breakdown.map(({ quest, quantity }) => (
-                      <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
-                        <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
-                          <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
-                        </div>
-                      </div>
-                    ))}
+                    {breakdown.map(({ quest, quantity }) => {
+                        const qIsPriority = pinnedQuestline !== null && quest.questline === pinnedQuestline;
+                        return (
+                          <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                            <span className="truncate" style={{ color: qIsPriority ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>
+                              {qIsPriority ? '⚡ ' : ''}{quest.name}
+                            </span>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                              <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : qIsPriority ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>×{quantity}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 )}
               </div>
@@ -428,6 +465,9 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                       <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                       <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                      {priorityItemSet.has(item) && (
+                        <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
+                      )}
                       <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                         <Hammer size={9} /> craft ×{deficit}
                       </span>
@@ -459,15 +499,20 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                 {isSelected && (
                   <div className="px-5 pb-3 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
                     <p className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Needed by</p>
-                    {breakdown.map(({ quest, quantity }) => (
-                      <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
-                        <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
-                          <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
-                        </div>
-                      </div>
-                    ))}
+                    {breakdown.map(({ quest, quantity }) => {
+                        const qIsPriority = pinnedQuestline !== null && quest.questline === pinnedQuestline;
+                        return (
+                          <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                            <span className="truncate" style={{ color: qIsPriority ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>
+                              {qIsPriority ? '⚡ ' : ''}{quest.name}
+                            </span>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                              <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : qIsPriority ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>×{quantity}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     {recipe && rawMaterials && (
                       <div className="pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Base materials (all stocked)</p>
@@ -564,6 +609,9 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                         <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                        {priorityItemSet.has(item) && (
+                          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
+                        )}
                         <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                           <Hammer size={9} /> crafted
                         </span>
@@ -605,15 +653,20 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                 {isSelected && (
                   <div className="px-5 pb-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)', paddingTop: 10 }}>
                     <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Needed by</p>
-                    {breakdown.map(({ quest, quantity }) => (
-                      <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
-                        <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{quest.name}</span>
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
-                          <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : 'var(--text-muted)' }}>×{quantity}</span>
-                        </div>
-                      </div>
-                    ))}
+                    {breakdown.map(({ quest, quantity }) => {
+                        const qIsPriority = pinnedQuestline !== null && quest.questline === pinnedQuestline;
+                        return (
+                          <div key={quest.id} className="flex items-center justify-between gap-2 text-xs">
+                            <span className="truncate" style={{ color: qIsPriority ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>
+                              {qIsPriority ? '⚡ ' : ''}{quest.name}
+                            </span>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              {quantity > inventoryMax && <AlertTriangle size={10} style={{ color: 'var(--accent-orange)' }} />}
+                              <span style={{ fontFamily: 'var(--font-mono)', color: quantity > inventoryMax ? 'var(--accent-orange)' : qIsPriority ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>×{quantity}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
                     {recipe && rawMaterials && (
                       <div className="pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                         <p className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Base materials needed</p>
@@ -717,6 +770,9 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                           <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                          {priorityItemSet.has(item) && (
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
+                          )}
                         </div>
                         {cropTime && grows && totalTime && (
                           <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
@@ -837,6 +893,9 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                           <button onClick={(e) => toggleLocation(item, e)} className="flex-shrink-0 p-0.5 rounded" style={{ color: locationItem === item ? 'var(--accent-purple)' : 'var(--text-muted)' }} aria-label="Show locations"><MapPin size={11} /></button>
+                          {priorityItemSet.has(item) && (
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>⚡ priority</span>
+                          )}
                           {(isHoney || isCutlass) && (
                             <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                               <Landmark size={9} /> temple

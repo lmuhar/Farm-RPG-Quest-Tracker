@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, CheckCircle2, Clock, Hammer, Landmark } from 'lucide-react';
+import { ChevronDown, CheckCircle2, Clock, Hammer, Landmark, Pin } from 'lucide-react';
 import type { Quest } from '../types';
 import { getQuestStatus, parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, compareQuests } from '../utils';
 import { useStore } from '../store';
@@ -194,7 +194,8 @@ interface Props {
 }
 
 export function ActiveQuestLine({ questline, quests }: Props) {
-  const { player, questStatuses, inventory, setQuestStatus } = useStore();
+  const { player, questStatuses, inventory, setQuestStatus, pinnedQuestline, setPinnedQuestline } = useStore();
+  const isPinned = pinnedQuestline === questline;
   const [showUpcoming, setShowUpcoming] = useState(false);
 
   const sortedQuests = useMemo(
@@ -233,16 +234,23 @@ export function ActiveQuestLine({ questline, quests }: Props) {
       {/* Card header */}
       <div
         className="px-5 pt-4 pb-3"
-        style={{ borderBottom: '1px solid var(--border-subtle)' }}
+        style={{ borderBottom: '1px solid var(--border-subtle)', background: isPinned ? 'var(--accent-yellow-bg)' : undefined }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <p
-              className="text-[11px] font-semibold uppercase tracking-wider mb-1"
-              style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
-            >
-              {questline}
-            </p>
+            <div className="flex items-center gap-2 mb-1">
+              <p
+                className="text-[11px] font-semibold uppercase tracking-wider"
+                style={{ color: isPinned ? 'var(--accent-yellow)' : 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
+              >
+                {questline}
+              </p>
+              {isPinned && (
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow)', color: '#0f172a' }}>
+                  ⚡ priority
+                </span>
+              )}
+            </div>
             {activeQuestsInLine.map((q) => (
               <h3
                 key={q.id}
@@ -254,12 +262,20 @@ export function ActiveQuestLine({ questline, quests }: Props) {
             ))}
           </div>
           <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-            <span
-              className="text-xs"
-              style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}
-            >
-              {completedCount}/{sortedQuests.length}
-            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPinnedQuestline(isPinned ? null : questline)}
+                className="p-1 rounded transition-opacity hover:opacity-80"
+                style={{ color: isPinned ? 'var(--accent-yellow)' : 'var(--text-muted)' }}
+                aria-label={isPinned ? 'Unpin priority' : 'Pin as priority'}
+                title={isPinned ? 'Remove priority' : 'Set as top priority'}
+              >
+                <Pin size={13} style={{ fill: isPinned ? 'currentColor' : 'none' }} />
+              </button>
+              <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                {completedCount}/{sortedQuests.length}
+              </span>
+            </div>
             <div className="w-16 h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
               <div
                 className="h-full rounded-full"
