@@ -6,7 +6,8 @@ import { useStore } from '../store';
 import { parseItems } from '../utils';
 
 const allPets = petsData as Pet[];
-const PET_LEVELS = [1, 3, 6] as const;
+const LOOT_TIERS = [1, 3, 6] as const;
+const ALL_LEVELS = [1, 2, 3, 4, 5, 6] as const;
 
 function formatCost(n: number): string {
   if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(n % 1_000_000_000 === 0 ? 0 : 1)}B`;
@@ -17,12 +18,20 @@ function formatCost(n: number): string {
 
 function petLootAtLevel(pet: Pet, level: number): string[] {
   const items: string[] = [];
-  for (const tier of PET_LEVELS) {
+  for (const tier of LOOT_TIERS) {
     if (tier > level) break;
     const tierItems = pet.loot[String(tier)] ?? [];
     items.push(...tierItems);
   }
   return items;
+}
+
+// Returns the next loot-unlock tier above the current level, or null if already max
+function nextLootTier(currentLevel: number): number | null {
+  if (currentLevel < 1) return 1;
+  if (currentLevel < 3) return 3;
+  if (currentLevel < 6) return 6;
+  return null;
 }
 
 function petRequirements(pet: Pet): string[] {
@@ -75,10 +84,10 @@ export function PetsPage({ activeQuests }: Props) {
     for (const pet of allPets) {
       const currentLevel = ownedPets[pet.id] ?? 0;
 
-      if (currentLevel === 6) continue;
+      const nextTier = nextLootTier(currentLevel);
+      if (nextTier === null) continue;
 
-      const nextLevel = currentLevel === 0 ? 1 : currentLevel === 1 ? 3 : 6;
-      const itemsAtNextLevel = petLootAtLevel(pet, nextLevel);
+      const itemsAtNextLevel = petLootAtLevel(pet, nextTier);
       const itemsAtCurrentLevel = currentLevel > 0 ? petLootAtLevel(pet, currentLevel) : [];
       const newItems = itemsAtNextLevel.filter((item) => !itemsAtCurrentLevel.includes(item));
 
@@ -89,7 +98,7 @@ export function PetsPage({ activeQuests }: Props) {
         pet,
         matchCount: matchItems.length,
         matchItems,
-        targetLevel: nextLevel,
+        targetLevel: nextTier,
         isUpgrade: currentLevel > 0,
         currentLevel,
       });
@@ -246,13 +255,13 @@ export function PetsPage({ activeQuests }: Props) {
                         {loot.length > 4 && ` +${loot.length - 4}`}
                       </p>
                     </div>
-                    {/* Level buttons */}
-                    <div className="flex gap-1">
-                      {PET_LEVELS.map((lv) => (
+                    {/* Level buttons 1–6 */}
+                    <div className="flex gap-0.5">
+                      {ALL_LEVELS.map((lv) => (
                         <button
                           key={lv}
                           onClick={() => setOwnedPetLevel(pet.id, lv)}
-                          className="text-[10px] w-6 h-6 rounded font-semibold transition-colors flex items-center justify-center"
+                          className="text-[10px] w-5 h-5 rounded font-semibold transition-colors flex items-center justify-center"
                           style={
                             level === lv
                               ? { background: 'var(--accent-purple)', color: '#fff' }
@@ -282,7 +291,7 @@ export function PetsPage({ activeQuests }: Props) {
 
                   {isExpanded && (
                     <div className="px-3 pb-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                      {PET_LEVELS.map((lv) => {
+                      {LOOT_TIERS.map((lv) => {
                         const tierItems = pet.loot[String(lv)] ?? [];
                         const unlocked = lv <= level;
                         return (
@@ -381,7 +390,7 @@ export function PetsPage({ activeQuests }: Props) {
 
                   {/* Loot by tier */}
                   <div className="space-y-1">
-                    {PET_LEVELS.map((lv) => {
+                    {LOOT_TIERS.map((lv) => {
                       const tierItems = pet.loot[String(lv)] ?? [];
                       const unlocked = isOwned && (owned ?? 0) >= lv;
                       return (
