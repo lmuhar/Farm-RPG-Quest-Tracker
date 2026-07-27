@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
-  parseItems, formatDuration, calcGrowsNeeded, compareQuests,
+  parseItems, formatDuration, formatDoneBy, calcGrowsNeeded, compareQuests,
   calcHoneyRuns, calcCutlassRuns,
 } from '../utils';
 import { getQuestStatus } from '../utils';
@@ -224,7 +224,7 @@ function TierItemRow({
             <>
               <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
                 <Clock size={10} />
-                {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)} · done {formatDoneBy(totalTime)}
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 {seedsToBuy > 0
@@ -268,6 +268,125 @@ function TierItemRow({
       {openLoc && (
         <div className="mt-2">
           <ItemLocationPanel item={item} allNeededItems={allNeededItems} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Aggregate summary panel ───────────────────────────────────────────────────
+
+function SummaryPanel({
+  questsWithStatus, inventory, cropTimes, plotCount, allNeededItems,
+}: {
+  questsWithStatus: { quest: Quest; status: string }[];
+  inventory: Record<string, number>;
+  cropTimes: { item: string; growMinutes: number }[];
+  plotCount: number;
+  allNeededItems: string[];
+}) {
+  const [openLocations, setOpenLocations] = useState<Set<string>>(new Set());
+  const toggleLoc = (item: string) => setOpenLocations(prev => {
+    const next = new Set(prev);
+    if (next.has(item)) next.delete(item); else next.add(item);
+    return next;
+  });
+
+  const tiers = useMemo(() => {
+    const itemMap = new Map<string, number>();
+    questsWithStatus
+      .filter(({ status }) => status !== 'completed')
+      .forEach(({ quest }) => {
+        parseItems(quest.itemsRequired).forEach(({ item, quantity }) => {
+          itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+        });
+      });
+    const all = [...itemMap.entries()].map(([item, quantity]) =>
+      getItemTierData(item, quantity, inventory, cropTimes, plotCount)
+    );
+    return {
+      done:         all.filter(i => i.done),
+      directCraft:  all.filter(i => !i.done && i.isDirectCraftNow),
+      rawCraft:     all.filter(i => !i.done && i.isRawCraftNow),
+      craftingQueue:all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass),
+      crops:        all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass),
+      collecting:   all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime),
+    };
+  }, [questsWithStatus, inventory, cropTimes, plotCount]);
+
+  const totalNeeded = tiers.directCraft.length + tiers.rawCraft.length + tiers.craftingQueue.length + tiers.crops.length + tiers.collecting.length;
+
+  if (totalNeeded === 0 && tiers.done.length > 0) {
+    return (
+      <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+        <CheckCircle2 size={24} className="mx-auto mb-2" style={{ color: 'var(--accent-green)' }} />
+        <p className="text-sm font-semibold" style={{ color: 'var(--accent-green)' }}>All Tower items stocked!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+      {tiers.directCraft.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Craft now" hint="— ingredients ready" accent="blue" icon={<Hammer size={11} />} />
+          {tiers.directCraft.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier="directCraft"
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.rawCraft.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Craft with prep" hint="— base materials ready" accent="purple" icon={<Hammer size={11} />} />
+          {tiers.rawCraft.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier="rawCraft"
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.craftingQueue.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Crafting queue" hint="— collecting ingredients" accent="yellow" icon={<Hammer size={11} />} />
+          {tiers.craftingQueue.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier="craftingQueue"
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.crops.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Grow crops" accent="green" icon={<Sprout size={11} />} />
+          {tiers.crops.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier="crop"
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.collecting.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
+          {tiers.collecting.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory}
+              tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.done.length > 0 && (
+        <div className="px-5 py-2.5 flex flex-wrap gap-x-4 gap-y-0.5"
+          style={{ background: 'var(--accent-green-bg)' }}>
+          <span className="text-[10px] font-semibold uppercase tracking-wider w-full" style={{ color: 'var(--accent-green)', opacity: 0.7 }}>stocked</span>
+          {tiers.done.map(({ item, quantity }) => (
+            <span key={item} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+              ✓ {item} ×{quantity.toLocaleString()}
+            </span>
+          ))}
         </div>
       )}
     </div>
@@ -477,9 +596,12 @@ function QuestSection({
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+type TowerSubTab = 'summary' | 'quests';
+
 export function ToweringInvestmentPage() {
   const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus } = useStore();
   const [filter, setFilter] = useState<QuestFilter>('incomplete');
+  const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
   const quests = useMemo(
     () =>
@@ -544,19 +666,17 @@ export function ToweringInvestmentPage() {
         </div>
       </div>
 
-      {/* Filter pills */}
+      {/* Sub-tabs: Summary / Quests */}
       <div className="flex gap-1 p-1 rounded-lg"
         style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}>
         {([
-          { id: 'incomplete', label: `In Progress (${incompleteCount})` },
-          { id: 'active',     label: `Active (${activeCount})` },
-          { id: 'upcoming',   label: `Upcoming (${upcomingCount})` },
-          { id: 'completed',  label: `Done (${completedCount})` },
+          { id: 'summary', label: 'Summary' },
+          { id: 'quests',  label: 'Quests' },
         ] as const).map(({ id, label }) => (
-          <button key={id} onClick={() => setFilter(id)}
+          <button key={id} onClick={() => setTowerSubTab(id)}
             className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap"
             style={
-              filter === id
+              towerSubTab === id
                 ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
                 : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
             }
@@ -566,26 +686,64 @@ export function ToweringInvestmentPage() {
         ))}
       </div>
 
-      {/* Quest accordions */}
-      <div className="space-y-2">
-        {filtered.map(({ quest, status }) => (
-          <QuestSection
-            key={quest.id}
-            quest={quest}
-            status={status}
-            inventory={inventory}
-            plotCount={plotCount}
-            cropTimes={cropTimes}
-            allNeededItems={allNeededItems}
-            setQuestStatus={setQuestStatus}
-          />
-        ))}
-        {filtered.length === 0 && (
-          <p className="text-sm text-center py-8" style={{ color: 'var(--text-muted)' }}>
-            No quests match this filter.
-          </p>
-        )}
-      </div>
+      {/* Summary sub-tab — aggregate resource view */}
+      {towerSubTab === 'summary' && (
+        <SummaryPanel
+          questsWithStatus={questsWithStatus}
+          inventory={inventory}
+          cropTimes={cropTimes}
+          plotCount={plotCount}
+          allNeededItems={allNeededItems}
+        />
+      )}
+
+      {/* Quests sub-tab — filter pills + accordions */}
+      {towerSubTab === 'quests' && (
+        <>
+          {/* Filter pills */}
+          <div className="flex gap-1 p-1 rounded-lg"
+            style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}>
+            {([
+              { id: 'incomplete', label: `In Progress (${incompleteCount})` },
+              { id: 'active',     label: `Active (${activeCount})` },
+              { id: 'upcoming',   label: `Upcoming (${upcomingCount})` },
+              { id: 'completed',  label: `Done (${completedCount})` },
+            ] as const).map(({ id, label }) => (
+              <button key={id} onClick={() => setFilter(id)}
+                className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap"
+                style={
+                  filter === id
+                    ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
+                    : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
+                }
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Quest accordions */}
+          <div className="space-y-2">
+            {filtered.map(({ quest, status }) => (
+              <QuestSection
+                key={quest.id}
+                quest={quest}
+                status={status}
+                inventory={inventory}
+                plotCount={plotCount}
+                cropTimes={cropTimes}
+                allNeededItems={allNeededItems}
+                setQuestStatus={setQuestStatus}
+              />
+            ))}
+            {filtered.length === 0 && (
+              <p className="text-sm text-center py-8" style={{ color: 'var(--text-muted)' }}>
+                No quests match this filter.
+              </p>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

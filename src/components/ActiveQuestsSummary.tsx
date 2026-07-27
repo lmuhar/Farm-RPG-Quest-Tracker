@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Swords, Clock, ChevronDown, ChevronRight, Hammer, X, Landmark, MapPin, CheckCircle2, Package, Sprout, AlertTriangle, Pin, Building2 } from 'lucide-react';
 import type { Quest } from '../types';
-import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN, compareQuests } from '../utils';
+import { parseItems, formatDuration, formatDoneBy, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns, HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN, compareQuests } from '../utils';
 import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
@@ -815,7 +815,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                         {cropTime && grows && totalTime && (
                           <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
                             <Clock size={10} />
-                            {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                            {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)} · done {formatDoneBy(totalTime)}
                           </p>
                         )}
                         {cropTime && grows && (
@@ -877,7 +877,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                           {cropTime && grows && totalTime && (
                             <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
                               <Clock size={10} />
-                              {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)}
+                              {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)} · done {formatDoneBy(totalTime)}
                             </p>
                           )}
                           {cropTime && grows && (
