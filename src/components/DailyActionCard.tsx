@@ -3,7 +3,8 @@ import { CheckCircle2, Hammer, Landmark, Sprout } from 'lucide-react';
 import { useStore } from '../store';
 import {
   parseItems, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns,
-  HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN, formatDoneBy,
+  HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN,
+  formatDoneBy,
 } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
@@ -13,6 +14,22 @@ const recipeByName = new Map<string, Recipe>(
   (recipesData as Recipe[]).map(r => [r.name.toLowerCase(), r])
 );
 
+interface TempleInfo {
+  type: 'honey' | 'cutlass';
+  runs: number;
+  doneBy: string;
+  materialsReady: boolean;
+  materialName: string;
+  materialHave: number;
+  materialNeeded: number;
+}
+
+interface CropAction {
+  item: string;
+  grows: number;
+  doneBy: string;
+}
+
 interface Props {
   activeQuests: Quest[];
 }
@@ -20,7 +37,7 @@ interface Props {
 export function DailyActionCard({ activeQuests }: Props) {
   const { inventory, cropTimes, plotCount } = useStore();
 
-  const { turnInReady, craftNow, templeReady, cropActions } = useMemo(() => {
+  const { turnInReady, craftNow, templeItems, cropActions } = useMemo(() => {
     const turnInReady = activeQuests.filter(quest =>
       parseItems(quest.itemsRequired).every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity)
     );
@@ -33,9 +50,8 @@ export function DailyActionCard({ activeQuests }: Props) {
     });
 
     const craftNow: string[] = [];
-    let honeyReady = false;
-    let cutlassReady = false;
-    const cropActions: { item: string; grows: number; doneBy: string }[] = [];
+    const templeItems: TempleInfo[] = [];
+    const cropActions: CropAction[] = [];
 
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;
@@ -47,10 +63,29 @@ export function DailyActionCard({ activeQuests }: Props) {
 
       if (isHoney) {
         const honey = calcHoneyRuns(deficit);
-        honeyReady = (inventory['Radish'] ?? 0) >= honey.radishes / honey.runs;
+        const radishHave = inventory['Radish'] ?? 0;
+        templeItems.push({
+          type: 'honey',
+          runs: honey.runs,
+          // 1 temple run per day
+          doneBy: formatDoneBy(honey.runs * 24 * 60),
+          materialsReady: radishHave >= HONEY_RADISHES_PER_RUN,
+          materialName: 'radishes',
+          materialHave: radishHave,
+          materialNeeded: HONEY_RADISHES_PER_RUN,
+        });
       } else if (isCutlass) {
         const cutlass = calcCutlassRuns(deficit);
-        cutlassReady = (inventory['Tribal Staff'] ?? 0) >= cutlass.tribalStaff / cutlass.runs;
+        const staffHave = inventory['Tribal Staff'] ?? 0;
+        templeItems.push({
+          type: 'cutlass',
+          runs: cutlass.runs,
+          doneBy: formatDoneBy(cutlass.runs * 24 * 60),
+          materialsReady: staffHave >= CUTLASS_TRIBAL_STAFF_PER_RUN,
+          materialName: 'tribal staff',
+          materialHave: staffHave,
+          materialNeeded: CUTLASS_TRIBAL_STAFF_PER_RUN,
+        });
       } else {
         const recipe = recipeByName.get(item.toLowerCase());
         if (recipe) {
@@ -61,36 +96,26 @@ export function DailyActionCard({ activeQuests }: Props) {
           const cropTime = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
           if (cropTime) {
             const grows = calcGrowsNeeded(deficit, plotCount);
-            const totalTime = grows * cropTime.growMinutes;
-            cropActions.push({ item, grows, doneBy: formatDoneBy(totalTime) });
+            cropActions.push({ item, grows, doneBy: formatDoneBy(grows * cropTime.growMinutes) });
           }
         }
       }
     }
 
-    // Sort crops shortest-grow-time first so most actionable appear first
+    // Shortest grow time first
     cropActions.sort((a, b) => a.grows - b.grows);
 
-    const honeyNeeded = [...itemMap.keys()].some(k => k.toLowerCase() === 'honey');
-    const cutlassNeeded = [...itemMap.keys()].some(k => k.toLowerCase() === 'cutlass');
-    let templeReady: 'honey' | 'cutlass' | null = null;
-    if (honeyNeeded && honeyReady && (inventory['Radish'] ?? 0) >= HONEY_RADISHES_PER_RUN) {
-      templeReady = 'honey';
-    } else if (cutlassNeeded && cutlassReady && (inventory['Tribal Staff'] ?? 0) >= CUTLASS_TRIBAL_STAFF_PER_RUN) {
-      templeReady = 'cutlass';
-    }
-
-    return { turnInReady, craftNow, templeReady, cropActions };
+    return { turnInReady, craftNow, templeItems, cropActions };
   }, [activeQuests, inventory, cropTimes, plotCount]);
 
   const hasActions =
-    turnInReady.length > 0 || craftNow.length > 0 || templeReady !== null || cropActions.length > 0;
+    turnInReady.length > 0 || craftNow.length > 0 || templeItems.length > 0 || cropActions.length > 0;
 
   if (!hasActions) return null;
 
   return (
     <div
-      className="rounded-xl px-5 py-4 space-y-2.5"
+      className="rounded-xl px-5 py-4 space-y-3"
       style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
     >
       <p
@@ -100,6 +125,7 @@ export function DailyActionCard({ activeQuests }: Props) {
         Do now
       </p>
 
+      {/* Turn in ready */}
       {turnInReady.length > 0 && (
         <div className="flex items-start gap-2">
           <CheckCircle2 size={13} style={{ color: 'var(--accent-green)', flexShrink: 0, marginTop: 1 }} />
@@ -114,6 +140,7 @@ export function DailyActionCard({ activeQuests }: Props) {
         </div>
       )}
 
+      {/* Craft now */}
       {craftNow.length > 0 && (
         <div className="flex items-start gap-2">
           <Hammer size={13} style={{ color: 'var(--accent-blue)', flexShrink: 0, marginTop: 1 }} />
@@ -124,26 +151,48 @@ export function DailyActionCard({ activeQuests }: Props) {
         </div>
       )}
 
-      {templeReady && (
-        <div className="flex items-center gap-2">
-          <Landmark size={13} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
-          <p className="text-xs font-semibold" style={{ color: 'var(--accent-yellow)' }}>
-            Temple run ready — do {templeReady === 'honey' ? 'Honey' : 'Cutlass'} today
-          </p>
+      {/* Temple runs */}
+      {templeItems.length > 0 && (
+        <div className="flex items-start gap-2">
+          <Landmark size={13} style={{ color: 'var(--accent-yellow)', flexShrink: 0, marginTop: 1 }} />
+          <div className="flex-1 min-w-0 space-y-1.5">
+            <span className="text-xs font-semibold" style={{ color: 'var(--accent-yellow)' }}>Temple</span>
+            {templeItems.map(({ type, runs, doneBy, materialsReady, materialName, materialHave, materialNeeded }) => (
+              <div key={type} className="pl-0">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {type === 'honey' ? 'Honey' : 'Cutlass'}
+                  </span>
+                  <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-yellow)' }}>
+                    {runs} run{runs !== 1 ? 's' : ''} · {runs} day{runs !== 1 ? 's' : ''} · {doneBy}
+                  </span>
+                </div>
+                <p className="text-[11px] mt-0.5" style={{ color: materialsReady ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                  {materialsReady
+                    ? `✓ ${materialNeeded.toLocaleString()} ${materialName} ready — do today's run`
+                    : `${materialHave.toLocaleString()} / ${materialNeeded.toLocaleString()} ${materialName} for next run`}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
+      {/* Grow crops — vertical list, fastest first */}
       {cropActions.length > 0 && (
         <div className="flex items-start gap-2">
           <Sprout size={13} style={{ color: 'var(--accent-green)', flexShrink: 0, marginTop: 1 }} />
-          <p className="text-xs leading-snug">
-            <span className="font-semibold" style={{ color: 'var(--accent-green)' }}>Plant today:</span>
-            <span className="ml-1" style={{ color: 'var(--text-secondary)' }}>
-              {cropActions.map(({ item, grows, doneBy }) =>
-                `${item} (${grows} grow${grows !== 1 ? 's' : ''}, done ${doneBy})`
-              ).join(' · ')}
-            </span>
-          </p>
+          <div className="flex-1 min-w-0 space-y-1">
+            <span className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>Plant today</span>
+            {cropActions.map(({ item, grows, doneBy }) => (
+              <div key={item} className="flex items-baseline justify-between gap-2">
+                <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                <span className="text-[11px] flex-shrink-0 text-right" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                  {grows} grow{grows !== 1 ? 's' : ''} · {doneBy}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>
