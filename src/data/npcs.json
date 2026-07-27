@@ -1,0 +1,579 @@
+[
+  {
+    "name": "Baba Gec",
+    "items": [
+      "Cabbage",
+      "Frozen Cabbage",
+      "Onion",
+      "Rope",
+      "Snail",
+      "Leek",
+      "Worms",
+      "Horned Beetle",
+      "Stone",
+      "Peach Juice",
+      "Wooden Button",
+      "Cabbage Stew"
+    ]
+  },
+  {
+    "name": "Beatrix",
+    "items": [
+      "Bird Egg",
+      "Iced Tea",
+      "Fire Ant",
+      "Grubs",
+      "Horned Beetle",
+      "Carbon Sphere",
+      "Hops",
+      "Coal",
+      "Oak",
+      "Hammer",
+      "Worms",
+      "Bottle Rocket",
+      "Explosive",
+      "Black Powder",
+      "Fireworks"
+    ]
+  },
+  {
+    "name": "Borgen",
+    "items": [
+      "Ancient Coin",
+      "Cheese",
+      "Old Boot",
+      "Milk",
+      "Purple Flower",
+      "Valentines Card",
+      "Slimestone",
+      "Gold Carrot",
+      "Gold Cucumber",
+      "Green Dye",
+      "Glass Orb",
+      "Worms",
+      "Gold Peas",
+      "Grubs",
+      "Gold Catfish",
+      "Skull Coin",
+      "Wooden Box"
+    ]
+  },
+  {
+    "name": "Buddy",
+    "items": [
+      "Mushroom",
+      "Gummy Worms",
+      "Snail",
+      "Bone",
+      "Giant Centipede",
+      "Bucket",
+      "Gold Peppers",
+      "Lemon",
+      "Lemonade",
+      "Crappie",
+      "Snowball",
+      "Spider",
+      "Peppers",
+      "Drum",
+      "Worms",
+      "Grubs",
+      "Buddystone",
+      "Pirate Bandana",
+      "Purple Flower",
+      "Valentines Card",
+      "Pirate Flag"
+    ]
+  },
+  {
+    "name": "Captain Logan",
+    "items": []
+  },
+  {
+    "name": "Captain Thomas",
+    "items": [
+      "Radish",
+      "Spider",
+      "Worms",
+      "Blue Crab",
+      "Minnows",
+      "Large Net",
+      "Gold Catfish",
+      "Gold Trout",
+      "Fishing Net",
+      "Gold Drum"
+    ]
+  },
+  {
+    "name": "Cecil",
+    "items": [
+      "Snail",
+      "Slimestone",
+      "Mushroom",
+      "Grapes",
+      "Feathers",
+      "Worms",
+      "Giant Centipede",
+      "Ladder",
+      "Milk",
+      "Aquamarine",
+      "Old Boot",
+      "Yarn",
+      "MIAB",
+      "Shiny Beetle",
+      "Horned Beetle",
+      "Grasshopper",
+      "Leather"
+    ]
+  },
+  {
+    "name": "Charles Horsington III",
+    "items": [
+      "4-leaf Clover",
+      "Horseshoe",
+      "Snail",
+      "Sugar Cube",
+      "Spider",
+      "Lemonade",
+      "Blue Crab",
+      "3-leaf Clover",
+      "Bone",
+      "Twine",
+      "Green Chromis",
+      "Stone",
+      "Grasshopper",
+      "Cheese",
+      "Grubs",
+      "Worms",
+      "Lemon",
+      "Carrot",
+      "Valentines Card",
+      "Apple Cider",
+      "Peach",
+      "Apple",
+      "Gold Carrot",
+      "Box of Chocolate 01"
+    ]
+  },
+  {
+    "name": "Cid",
+    "items": [
+      "Explosive",
+      "Diamonds",
+      "Mushroom Stew",
+      "Spider",
+      "Bomb",
+      "Safety Goggles",
+      "Stone",
+      "Shimmer Stone",
+      "Black Powder",
+      "Blue Feathers",
+      "Worms",
+      "Cheese"
+    ]
+  },
+  {
+    "name": "FR4NK",
+    "items": [
+      "Worms"
+    ]
+  },
+  {
+    "name": "Gary Bearson V",
+    "items": [
+      "Gold Trout",
+      "You Rock Card",
+      "Hide",
+      "Trout",
+      "Oak",
+      "Feathers",
+      "Tomato",
+      "Radish",
+      "Black Powder",
+      "Bucket",
+      "Worms",
+      "Yarn",
+      "Apple Cider"
+    ]
+  },
+  {
+    "name": "Geist",
+    "items": [
+      "Worms",
+      "Blue Crab",
+      "Green Chromis",
+      "Stingray",
+      "Yellow Perch",
+      "Axe",
+      "Gummy Worms",
+      "Black Powder",
+      "Explosive",
+      "Shrimp-a-Plenty",
+      "Sea Pincher Special",
+      "Gold Catfish",
+      "Goldgill"
+    ]
+  },
+  {
+    "name": "George",
+    "items": [
+      "Apple Cider",
+      "Orange Juice",
+      "Bone",
+      "Hops",
+      "Glass Orb",
+      "Arrowhead",
+      "Bird Egg",
+      "Worms",
+      "Cheese",
+      "Fish Bones",
+      "Mushroom Stew",
+      "Mug of Beer",
+      "Spider",
+      "Carbon Sphere",
+      "Hide"
+    ]
+  },
+  {
+    "name": "Ghorgen",
+    "items": []
+  },
+  {
+    "name": "Goostav",
+    "items": [
+      "Snail",
+      "Salt",
+      "Swamp Algae",
+      "Sporefly",
+      "Green Butterfly",
+      "Worms",
+      "Frog",
+      "Glowshroom",
+      "Gold Slimeback",
+      "Salt Rock",
+      "Slimestone",
+      "Sand",
+      "Swamp Gourd",
+      "Slime Egg Shell",
+      "Mini Slime Squid",
+      "Essence of Slime",
+      "Welcome Card"
+    ]
+  },
+  {
+    "name": "Holger",
+    "items": [
+      "Cheese",
+      "Mushroom Stew",
+      "Milk",
+      "Trout",
+      "Horn",
+      "Peach",
+      "Worms",
+      "Apple Cider",
+      "Largemouth Bass",
+      "Valentines Card",
+      "Arrowhead",
+      "Bluegill",
+      "Carp",
+      "Aquamarine",
+      "Peas",
+      "Marlin",
+      "Mug of Beer",
+      "Gold Trout",
+      "Potato",
+      "Wooden Table"
+    ]
+  },
+  {
+    "name": "Jill",
+    "items": [
+      "Peach",
+      "Old Boot",
+      "Tomato",
+      "Grubs",
+      "Scrap Metal",
+      "Stingray",
+      "Spider",
+      "Hops",
+      "Snowball",
+      "Cheese",
+      "Milk",
+      "Grapes",
+      "Worms",
+      "Yellow Perch",
+      "Corn Husk Doll",
+      "MIAB",
+      "Mushroom Paste",
+      "Leather",
+      "Corn"
+    ]
+  },
+  {
+    "name": "Leafy McLucky",
+    "items": [
+      "3-leaf Clover",
+      "Green Parchment",
+      "Green Dye",
+      "Apple",
+      "Worms",
+      "5 Gold",
+      "4-leaf Clover"
+    ]
+  },
+  {
+    "name": "Lorn",
+    "items": [
+      "Gold Peas",
+      "Iced Tea",
+      "Iron Cup",
+      "Old Boot",
+      "Purple Parchment",
+      "Green Parchment",
+      "3-leaf Clover",
+      "Snail",
+      "Worms",
+      "Bucket",
+      "Spider",
+      "Peas",
+      "Crappie",
+      "Apple Cider",
+      "Shrimp",
+      "Glass Orb",
+      "Milk",
+      "Small Prawn"
+    ]
+  },
+  {
+    "name": "Mariya",
+    "items": [
+      "Radish",
+      "Worms",
+      "Spider",
+      "Black Powder",
+      "Explosive",
+      "Iced Tea",
+      "Milk",
+      "Eggs",
+      "Peach",
+      "Eggplant",
+      "Cucumber",
+      "Onion Soup",
+      "Shrimp-a-Plenty",
+      "Cat's Meow",
+      "Quandary Chowder",
+      "Sea Pincher Special",
+      "Over The Moon",
+      "Leather Diary",
+      "Mushroom Stew"
+    ]
+  },
+  {
+    "name": "Mummy",
+    "items": [
+      "Pumpkin Spiced Milk",
+      "Toilet Paper",
+      "Cheese",
+      "Fish Bones",
+      "Coal",
+      "Drum",
+      "Hammer",
+      "Yarn",
+      "Treat Bag 01",
+      "Box of Chocolate 01",
+      "Snowball",
+      "Worms",
+      "Treat Bag 02",
+      "Bone",
+      "Valentines Card",
+      "Treat Bag 03",
+      "Spider"
+    ]
+  },
+  {
+    "name": "ROOMBA",
+    "items": [
+      "Arrowhead",
+      "Scrap Metal",
+      "Acorn",
+      "Worms",
+      "3-leaf Clover",
+      "Scrap Wire",
+      "Bird Egg",
+      "Milk",
+      "Snowball",
+      "Glass Orb",
+      "Hammer",
+      "Carbon Sphere"
+    ]
+  },
+  {
+    "name": "Ragvin",
+    "items": [
+      "Marlin",
+      "Orange",
+      "Pirate Bandana",
+      "Mushroom",
+      "Worms",
+      "Ancient Coin"
+    ]
+  },
+  {
+    "name": "Ric Ryph",
+    "items": [
+      "Cheese",
+      "Bucket",
+      "Unpolished Shimmer Stone",
+      "Milk",
+      "Ladder",
+      "Valentines Card",
+      "Carbon Sphere",
+      "Coal",
+      "Caterpillar",
+      "Arrowhead",
+      "Green Parchment",
+      "Old Boot",
+      "Aquamarine",
+      "Worms",
+      "Black Powder",
+      "5 Gold",
+      "Mushroom Paste",
+      "Shovel",
+      "Hammer"
+    ]
+  },
+  {
+    "name": "Rosalie",
+    "items": [
+      "Worms",
+      "Fish Bones",
+      "Spider",
+      "Fireworks",
+      "Iced Tea",
+      "Garnet Ring",
+      "Ruby Ring",
+      "Carrot",
+      "Purple Flower",
+      "Carp",
+      "Grubs",
+      "Horned Beetle",
+      "Apple Cider",
+      "Aquamarine",
+      "Coal",
+      "Apple",
+      "Caterpillar",
+      "Iron Cup",
+      "Fire Ant",
+      "Old Boot",
+      "Gold Carrot",
+      "Valentines Card",
+      "Box of Chocolate 01",
+      "Blue Dye",
+      "Green Dye",
+      "Purple Dye",
+      "Red Dye"
+    ]
+  },
+  {
+    "name": "Santa",
+    "items": [
+      "Milk",
+      "Spider",
+      "Coal",
+      "Worms",
+      "Snowball",
+      "Vixen",
+      "Cupid",
+      "Dasher",
+      "Blitzen",
+      "Dancer",
+      "Prancer",
+      "Comet",
+      "Donner"
+    ]
+  },
+  {
+    "name": "Star Meerif",
+    "items": [
+      "Eggs",
+      "Worms",
+      "Grubs",
+      "Lemon",
+      "Bone",
+      "Lemonade",
+      "Linked Lantern",
+      "Cheese",
+      "Iron Cup",
+      "Feathers",
+      "Blue Feathers",
+      "Gold Feather"
+    ]
+  },
+  {
+    "name": "Thomas",
+    "items": [
+      "Chum",
+      "Worms",
+      "Iced Tea",
+      "Gummy Worms",
+      "Minnows",
+      "Largemouth Bass",
+      "Mealworms",
+      "Green Dye",
+      "Carp",
+      "Leek",
+      "Drum",
+      "Eggs",
+      "Fishing Net",
+      "Gold Catfish",
+      "Goldgill",
+      "Gold Trout",
+      "Flier"
+    ]
+  },
+  {
+    "name": "Vincent",
+    "items": [
+      "Wooden Box",
+      "Hops",
+      "Worms",
+      "Valentines Card",
+      "Aquamarine",
+      "Leather Diary",
+      "Purple Flower",
+      "Horn",
+      "Apple",
+      "Purple Parchment",
+      "Acorn",
+      "Cheese",
+      "Shovel",
+      "Shrimp",
+      "Mushroom Paste",
+      "5 Gold",
+      "Apple Cider",
+      "Lemonade",
+      "Axe",
+      "Orange Juice",
+      "Onion Soup"
+    ]
+  },
+  {
+    "name": "frank",
+    "items": [
+      "Feathers",
+      "Bucket",
+      "Caterpillar",
+      "Grasshopper",
+      "Blue Feathers",
+      "Blue Dye",
+      "Worms",
+      "Mushroom",
+      "Eggs",
+      "Trout",
+      "Peas",
+      "Fire Ant",
+      "Gold Carrot",
+      "Cabbage",
+      "Carrot"
+    ]
+  }
+]
