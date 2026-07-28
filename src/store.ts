@@ -59,7 +59,7 @@ const defaultCropTimes = [
   { item: 'Corn',        growMinutes: 38.4 },   // 38m 24s
   { item: 'Sugar Cane',  growMinutes: 90 },
   { item: 'Cabbage',     growMinutes: 96 },
-  { item: 'Pine',        growMinutes: 96 },
+  { item: 'Pine Tree',   growMinutes: 96 },
   { item: 'Pumpkin',     growMinutes: 144 },
   { item: 'Wheat',       growMinutes: 288 },    // 4h 48m
   { item: 'Broccoli',    growMinutes: 576 },    // 9h 36m
