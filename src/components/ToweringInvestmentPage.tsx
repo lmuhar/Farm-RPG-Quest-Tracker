@@ -434,7 +434,7 @@ function GatheringPanel({
     return next;
   });
 
-  const { fishing, explore } = useMemo(() => {
+  const locationGroups = useMemo(() => {
     const itemMap = new Map<string, number>();
     questsWithStatus
       .filter(({ status }) => status !== 'completed')
@@ -444,28 +444,22 @@ function GatheringPanel({
         });
       });
 
-    const fishing: { item: string; quantity: number; have: number; sources: string[] }[] = [];
-    const explore: { item: string; quantity: number; have: number; sources: string[] }[] = [];
-
+    const locMap = new Map<string, { type: string; items: { item: string; quantity: number; have: number }[] }>();
     for (const [item, quantity] of itemMap) {
       const have = inventory[item] ?? 0;
       if (have >= quantity) continue;
-      const locs = itemLocations[item] ?? [];
-      const fishingSources = locs.filter(l => l.type === 'fishing').map(l => l.name);
-      const exploreSources = locs.filter(l => l.type === 'explore').map(l => l.name);
-      if (fishingSources.length > 0) {
-        fishing.push({ item, quantity, have, sources: fishingSources });
-      } else if (exploreSources.length > 0) {
-        explore.push({ item, quantity, have, sources: exploreSources });
+      for (const loc of itemLocations[item] ?? []) {
+        if (!locMap.has(loc.name)) locMap.set(loc.name, { type: loc.type, items: [] });
+        locMap.get(loc.name)!.items.push({ item, quantity, have });
       }
     }
 
-    fishing.sort((a, b) => a.item.localeCompare(b.item));
-    explore.sort((a, b) => a.item.localeCompare(b.item));
-    return { fishing, explore };
+    return [...locMap.entries()]
+      .map(([name, { type, items }]) => ({ name, type, items: items.sort((a, b) => a.item.localeCompare(b.item)) }))
+      .sort((a, b) => b.items.length - a.items.length);
   }, [questsWithStatus, inventory]);
 
-  if (fishing.length === 0 && explore.length === 0) {
+  if (locationGroups.length === 0) {
     return (
       <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
         <CheckCircle2 size={24} className="mx-auto mb-2" style={{ color: 'var(--accent-green)' }} />
@@ -474,55 +468,48 @@ function GatheringPanel({
     );
   }
 
-  const GatherRow = ({ item, quantity, have, sources, accent }: {
-    item: string; quantity: number; have: number; sources: string[]; accent: string;
-  }) => (
-    <div className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-      <div className="flex items-start justify-between gap-3 mb-1.5">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-            <button onClick={() => toggleLoc(item)} className="p-0.5 rounded"
-              style={{ color: openLocations.has(item) ? 'var(--accent-purple)' : 'var(--text-muted)' }}
-              aria-label="Show locations">
-              <MapPin size={11} />
-            </button>
-          </div>
-          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: `var(--accent-${accent})` }}>
-            {accent === 'blue' ? <Fish size={10} /> : <Compass size={10} />}
-            {sources.join(' · ')}
-          </p>
-        </div>
-        <span className="text-sm font-semibold flex-shrink-0"
-          style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
-          {have.toLocaleString()}/{quantity.toLocaleString()}
-        </span>
-      </div>
-      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-        <div className="h-full rounded-full" style={{ width: `${Math.round(Math.min(1, have / quantity) * 100)}%`, background: `var(--accent-${accent})` }} />
-      </div>
-      {openLocations.has(item) && (
-        <div className="mt-2">
-          <ItemLocationPanel item={item} allNeededItems={allNeededItems} />
-        </div>
-      )}
-    </div>
-  );
-
   return (
-    <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
-      {fishing.length > 0 && (
-        <div style={explore.length > 0 ? { borderBottom: '1px solid var(--border-subtle)' } : {}}>
-          <TierHeader label="Go fishing" accent="blue" icon={<Fish size={11} />} />
-          {fishing.map(d => <GatherRow key={d.item} {...d} accent="blue" />)}
-        </div>
-      )}
-      {explore.length > 0 && (
-        <div>
-          <TierHeader label="Explore" accent="purple" icon={<Compass size={11} />} />
-          {explore.map(d => <GatherRow key={d.item} {...d} accent="purple" />)}
-        </div>
-      )}
+    <div className="space-y-3">
+      {locationGroups.map(({ name, type, items }) => {
+        const accent = type === 'fishing' ? 'blue' : 'purple';
+        return (
+          <div key={name} className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <TierHeader
+              label={name}
+              hint={`— ${items.length} item${items.length !== 1 ? 's' : ''}`}
+              accent={accent}
+              icon={type === 'fishing' ? <Fish size={11} /> : <Compass size={11} />}
+            />
+            {items.map(({ item, quantity, have }) => (
+              <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <div className="flex items-center justify-between gap-3 mb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    <button onClick={() => toggleLoc(item)} className="p-0.5 rounded"
+                      style={{ color: openLocations.has(item) ? 'var(--accent-purple)' : 'var(--text-muted)' }}
+                      aria-label="Show all locations">
+                      <MapPin size={11} />
+                    </button>
+                  </div>
+                  <span className="text-sm font-semibold flex-shrink-0"
+                    style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+                    {have.toLocaleString()}/{quantity.toLocaleString()}
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                  <div className="h-full rounded-full"
+                    style={{ width: `${Math.round(Math.min(1, have / quantity) * 100)}%`, background: `var(--accent-${accent})` }} />
+                </div>
+                {openLocations.has(item) && (
+                  <div className="mt-2">
+                    <ItemLocationPanel item={item} allNeededItems={allNeededItems} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
