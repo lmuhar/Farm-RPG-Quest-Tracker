@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -14,6 +14,9 @@ import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
 import questsData from '../data/quests.json';
+import itemLocationsData from '../data/item-locations.json';
+
+const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
 const QUESTLINE = 'A Towering Investment';
 const allQuestsData = questsData as Quest[];
@@ -60,12 +63,16 @@ function getItemTierData(
   const honeyGrows = honey ? calcGrowsNeeded(Math.max(0, honey.radishes - honeyRadishHave), plotCount) : 0;
   const cutlass = isCutlass && deficit > 0 ? calcCutlassRuns(deficit) : null;
   const cutlassStaffHave = cutlass ? (inventory['Tribal Staff'] ?? 0) : 0;
+  const allLocs = itemLocations[item] ?? [];
+  const fishingSources = allLocs.filter(l => l.type === 'fishing').map(l => l.name);
+  const exploreSources = allLocs.filter(l => l.type === 'explore').map(l => l.name);
   return {
     item, quantity, have, deficit, pct, done,
     recipe, directIngredients, rawMaterials,
     isDirectCraftNow, isRawCraftNow, isCraftNow,
     cropTime, grows, totalTime, seedsHave, seedsToBuy,
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave,
+    fishingSources, exploreSources,
   };
 }
 
@@ -93,7 +100,7 @@ function TierItemRow({
 }: {
   data: ItemData;
   inventory: Record<string, number>;
-  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple';
+  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore';
   openLoc: boolean;
   onToggleLoc: () => void;
   allNeededItems: string[];
@@ -108,6 +115,8 @@ function TierItemRow({
     tier === 'rawCraft' ? 'var(--accent-purple)' :
     tier === 'craftingQueue' ? 'var(--accent-yellow)' :
     tier === 'crop' ? 'var(--accent-green)' :
+    tier === 'fishing' ? 'var(--accent-blue)' :
+    tier === 'explore' ? 'var(--accent-purple)' :
     'var(--accent-orange)';
 
   const valueColor =
@@ -234,6 +243,22 @@ function TierItemRow({
             </>
           )}
 
+          {/* Fishing locations */}
+          {tier === 'fishing' && data.fishingSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-blue)' }}>
+              <Fish size={10} />
+              {data.fishingSources.join(' · ')}
+            </p>
+          )}
+
+          {/* Explore locations */}
+          {tier === 'explore' && data.exploreSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-purple)' }}>
+              <Compass size={10} />
+              {data.exploreSources.join(' · ')}
+            </p>
+          )}
+
           {/* Temple items */}
           {isHoney && honey && (
             <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
@@ -304,17 +329,20 @@ function SummaryPanel({
     const all = [...itemMap.entries()].map(([item, quantity]) =>
       getItemTierData(item, quantity, inventory, cropTimes, plotCount)
     );
+    const notCollectable = (i: ItemData) => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime;
     return {
       done:         all.filter(i => i.done),
       directCraft:  all.filter(i => !i.done && i.isDirectCraftNow),
       rawCraft:     all.filter(i => !i.done && i.isRawCraftNow),
       craftingQueue:all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass),
       crops:        all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass),
-      collecting:   all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime),
+      fishing:      all.filter(i => notCollectable(i) && i.fishingSources.length > 0),
+      explore:      all.filter(i => notCollectable(i) && i.fishingSources.length === 0 && i.exploreSources.length > 0),
+      collecting:   all.filter(i => notCollectable(i) && i.fishingSources.length === 0 && i.exploreSources.length === 0),
     };
   }, [questsWithStatus, inventory, cropTimes, plotCount]);
 
-  const totalNeeded = tiers.directCraft.length + tiers.rawCraft.length + tiers.craftingQueue.length + tiers.crops.length + tiers.collecting.length;
+  const totalNeeded = tiers.directCraft.length + tiers.rawCraft.length + tiers.craftingQueue.length + tiers.crops.length + tiers.fishing.length + tiers.explore.length + tiers.collecting.length;
 
   if (totalNeeded === 0 && tiers.done.length > 0) {
     return (
@@ -362,6 +390,26 @@ function SummaryPanel({
           <TierHeader label="Grow crops" accent="green" icon={<Sprout size={11} />} />
           {tiers.crops.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory} tier="crop"
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.fishing.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Go fishing" accent="blue" icon={<Fish size={11} />} />
+          {tiers.fishing.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier="fishing"
+              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
+              allNeededItems={allNeededItems} />
+          ))}
+        </div>
+      )}
+      {tiers.explore.length > 0 && (
+        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+          <TierHeader label="Explore" accent="purple" icon={<Compass size={11} />} />
+          {tiers.explore.map(d => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier="explore"
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
               allNeededItems={allNeededItems} />
           ))}
@@ -428,9 +476,12 @@ function QuestSection({
     const rawCraft = all.filter(i => !i.done && i.isRawCraftNow);
     const craftingQueue = all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass);
     const crops = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass);
-    const collecting = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime);
+    const notCollectable = (i: ItemData) => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime;
+    const fishing   = all.filter(i => notCollectable(i) && i.fishingSources.length > 0);
+    const explore   = all.filter(i => notCollectable(i) && i.fishingSources.length === 0 && i.exploreSources.length > 0);
+    const collecting = all.filter(i => notCollectable(i) && i.fishingSources.length === 0 && i.exploreSources.length === 0);
     return {
-      tiers: { done, directCraft, rawCraft, craftingQueue, crops, collecting },
+      tiers: { done, directCraft, rawCraft, craftingQueue, crops, fishing, explore, collecting },
       canComplete: done.length === all.length && all.length > 0,
       stockedCount: done.length,
     };
@@ -540,6 +591,30 @@ function QuestSection({
                   <TierHeader label="Grow crops" accent="green" icon={<Sprout size={11} />} />
                   {tiers.crops.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory} tier="crop"
+                      openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
+                      allNeededItems={allNeededItems} />
+                  ))}
+                </div>
+              )}
+
+              {/* Go fishing (blue) */}
+              {tiers.fishing.length > 0 && (
+                <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                  <TierHeader label="Go fishing" accent="blue" icon={<Fish size={11} />} />
+                  {tiers.fishing.map(d => (
+                    <TierItemRow key={d.item} data={d} inventory={inventory} tier="fishing"
+                      openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
+                      allNeededItems={allNeededItems} />
+                  ))}
+                </div>
+              )}
+
+              {/* Explore (purple) */}
+              {tiers.explore.length > 0 && (
+                <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                  <TierHeader label="Explore" accent="purple" icon={<Compass size={11} />} />
+                  {tiers.explore.map(d => (
+                    <TierItemRow key={d.item} data={d} inventory={inventory} tier="explore"
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
                       allNeededItems={allNeededItems} />
                   ))}
