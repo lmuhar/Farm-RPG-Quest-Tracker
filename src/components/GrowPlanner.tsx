@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Sprout, Plus, Minus, Trash2 } from 'lucide-react';
+import { Sprout, Plus, Minus, Trash2, AlertTriangle } from 'lucide-react';
 import questsData from '../data/quests.json';
+import itemLocationsData from '../data/item-locations.json';
 import type { Quest } from '../types';
 import { parseItems, getQuestStatus, calcGrowsNeeded, formatDuration } from '../utils';
 import { useStore } from '../store';
 
 const allQuests = questsData as Quest[];
+const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
 interface Props {
   questlineGroups: { name: string; quests: Quest[] }[];
@@ -47,6 +49,35 @@ export function GrowPlanner({ questlineGroups }: Props) {
   );
 
   const activeQuestIds = useMemo(() => new Set(activeQuests.map((q) => q.id)), [activeQuests]);
+
+  // Items in active/upcoming quests that have no grow time AND no known fishing/explore source
+  // These are silently ignored by the planner and may be crops the user hasn't configured yet
+  const missingCropTimes = useMemo(() => {
+    const cropSet = new Set(cropTimes.map((c) => c.item.toLowerCase()));
+    const missing = new Map<string, string[]>(); // item → quest names
+
+    const check = (quest: Quest) => {
+      for (const { item } of parseItems(quest.itemsRequired)) {
+        if (cropSet.has(item.toLowerCase())) continue; // already tracked
+        if (itemLocations[item]) continue; // has a known fishing/explore source — not a crop
+        if (!missing.has(item)) missing.set(item, []);
+        if (!missing.get(item)!.includes(quest.name)) missing.get(item)!.push(quest.name);
+      }
+    };
+
+    for (const quest of activeQuests) check(quest);
+
+    for (const { quests } of questlineGroups) {
+      if (!quests.some((q) => activeQuestIds.has(q.id))) continue;
+      const lastActiveIdx = quests.reduce((max, q, i) => (activeQuestIds.has(q.id) ? i : max), -1);
+      for (const quest of quests.slice(lastActiveIdx + 1)) {
+        if (questStatuses[quest.id] === 'completed') continue;
+        check(quest);
+      }
+    }
+
+    return [...missing.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+  }, [activeQuests, activeQuestIds, questlineGroups, questStatuses, cropTimes]);
 
   // Total view: active + upcoming quest line crops aggregated
   const totalCropMap = useMemo(() => {
@@ -153,6 +184,30 @@ export function GrowPlanner({ questlineGroups }: Props) {
 
   return (
     <div className="space-y-4">
+      {/* Missing grow times warning */}
+      {missingCropTimes.length > 0 && (
+        <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.3)' }}>
+          <div className="flex items-center gap-2">
+            <AlertTriangle size={13} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+            <p className="text-xs font-semibold" style={{ color: 'var(--accent-yellow)' }}>
+              {missingCropTimes.length} item{missingCropTimes.length !== 1 ? 's' : ''} from your quests have no grow time — if any are crops, add them in Settings → Crop Grow Times
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {missingCropTimes.map(([item, quests]) => (
+              <span
+                key={item}
+                className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                style={{ background: 'rgba(251,191,36,0.12)', color: 'var(--accent-yellow)', border: '1px solid rgba(251,191,36,0.3)' }}
+                title={quests.join(', ')}
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* View toggle */}
       <div className="flex gap-1 bg-slate-800/60 rounded-lg p-1 border border-slate-700">
         <button
