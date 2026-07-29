@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -14,6 +14,9 @@ import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
 import questsData from '../data/quests.json';
+import itemLocationsData from '../data/item-locations.json';
+
+const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
 const QUESTLINE = 'A Towering Investment';
 const allQuestsData = questsData as Quest[];
@@ -60,12 +63,16 @@ function getItemTierData(
   const honeyGrows = honey ? calcGrowsNeeded(Math.max(0, honey.radishes - honeyRadishHave), plotCount) : 0;
   const cutlass = isCutlass && deficit > 0 ? calcCutlassRuns(deficit) : null;
   const cutlassStaffHave = cutlass ? (inventory['Tribal Staff'] ?? 0) : 0;
+  const allLocs = itemLocations[item] ?? [];
+  const fishingSources = allLocs.filter(l => l.type === 'fishing').map(l => l.name);
+  const exploreSources = allLocs.filter(l => l.type === 'explore').map(l => l.name);
   return {
     item, quantity, have, deficit, pct, done,
     recipe, directIngredients, rawMaterials,
     isDirectCraftNow, isRawCraftNow, isCraftNow,
     cropTime, grows, totalTime, seedsHave, seedsToBuy,
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave,
+    fishingSources, exploreSources,
   };
 }
 
@@ -93,7 +100,7 @@ function TierItemRow({
 }: {
   data: ItemData;
   inventory: Record<string, number>;
-  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple';
+  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore';
   openLoc: boolean;
   onToggleLoc: () => void;
   allNeededItems: string[];
@@ -108,6 +115,8 @@ function TierItemRow({
     tier === 'rawCraft' ? 'var(--accent-purple)' :
     tier === 'craftingQueue' ? 'var(--accent-yellow)' :
     tier === 'crop' ? 'var(--accent-green)' :
+    tier === 'fishing' ? 'var(--accent-blue)' :
+    tier === 'explore' ? 'var(--accent-purple)' :
     'var(--accent-orange)';
 
   const valueColor =
@@ -232,6 +241,22 @@ function TierItemRow({
                   : `seeds stocked${seedsHave > 0 ? ` (have ${seedsHave})` : ''}`}
               </p>
             </>
+          )}
+
+          {/* Fishing locations */}
+          {tier === 'fishing' && data.fishingSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-blue)' }}>
+              <Fish size={10} />
+              {data.fishingSources.join(' · ')}
+            </p>
+          )}
+
+          {/* Explore locations */}
+          {tier === 'explore' && data.exploreSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-purple)' }}>
+              <Compass size={10} />
+              {data.exploreSources.join(' · ')}
+            </p>
           )}
 
           {/* Temple items */}
@@ -387,6 +412,115 @@ function SummaryPanel({
               ✓ {item} ×{quantity.toLocaleString()}
             </span>
           ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Gathering panel ───────────────────────────────────────────────────────────
+
+function GatheringPanel({
+  questsWithStatus, inventory, allNeededItems,
+}: {
+  questsWithStatus: { quest: Quest; status: string }[];
+  inventory: Record<string, number>;
+  allNeededItems: string[];
+}) {
+  const [openLocations, setOpenLocations] = useState<Set<string>>(new Set());
+  const toggleLoc = (item: string) => setOpenLocations(prev => {
+    const next = new Set(prev);
+    if (next.has(item)) next.delete(item); else next.add(item);
+    return next;
+  });
+
+  const { fishing, explore } = useMemo(() => {
+    const itemMap = new Map<string, number>();
+    questsWithStatus
+      .filter(({ status }) => status !== 'completed')
+      .forEach(({ quest }) => {
+        parseItems(quest.itemsRequired).forEach(({ item, quantity }) => {
+          itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+        });
+      });
+
+    const fishing: { item: string; quantity: number; have: number; sources: string[] }[] = [];
+    const explore: { item: string; quantity: number; have: number; sources: string[] }[] = [];
+
+    for (const [item, quantity] of itemMap) {
+      const have = inventory[item] ?? 0;
+      if (have >= quantity) continue;
+      const locs = itemLocations[item] ?? [];
+      const fishingSources = locs.filter(l => l.type === 'fishing').map(l => l.name);
+      const exploreSources = locs.filter(l => l.type === 'explore').map(l => l.name);
+      if (fishingSources.length > 0) {
+        fishing.push({ item, quantity, have, sources: fishingSources });
+      } else if (exploreSources.length > 0) {
+        explore.push({ item, quantity, have, sources: exploreSources });
+      }
+    }
+
+    fishing.sort((a, b) => a.item.localeCompare(b.item));
+    explore.sort((a, b) => a.item.localeCompare(b.item));
+    return { fishing, explore };
+  }, [questsWithStatus, inventory]);
+
+  if (fishing.length === 0 && explore.length === 0) {
+    return (
+      <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+        <CheckCircle2 size={24} className="mx-auto mb-2" style={{ color: 'var(--accent-green)' }} />
+        <p className="text-sm font-semibold" style={{ color: 'var(--accent-green)' }}>All fishing & explore items stocked!</p>
+      </div>
+    );
+  }
+
+  const GatherRow = ({ item, quantity, have, sources, accent }: {
+    item: string; quantity: number; have: number; sources: string[]; accent: string;
+  }) => (
+    <div className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+      <div className="flex items-start justify-between gap-3 mb-1.5">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+            <button onClick={() => toggleLoc(item)} className="p-0.5 rounded"
+              style={{ color: openLocations.has(item) ? 'var(--accent-purple)' : 'var(--text-muted)' }}
+              aria-label="Show locations">
+              <MapPin size={11} />
+            </button>
+          </div>
+          <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: `var(--accent-${accent})` }}>
+            {accent === 'blue' ? <Fish size={10} /> : <Compass size={10} />}
+            {sources.join(' · ')}
+          </p>
+        </div>
+        <span className="text-sm font-semibold flex-shrink-0"
+          style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+          {have.toLocaleString()}/{quantity.toLocaleString()}
+        </span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+        <div className="h-full rounded-full" style={{ width: `${Math.round(Math.min(1, have / quantity) * 100)}%`, background: `var(--accent-${accent})` }} />
+      </div>
+      {openLocations.has(item) && (
+        <div className="mt-2">
+          <ItemLocationPanel item={item} allNeededItems={allNeededItems} />
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+      {fishing.length > 0 && (
+        <div style={explore.length > 0 ? { borderBottom: '1px solid var(--border-subtle)' } : {}}>
+          <TierHeader label="Go fishing" accent="blue" icon={<Fish size={11} />} />
+          {fishing.map(d => <GatherRow key={d.item} {...d} accent="blue" />)}
+        </div>
+      )}
+      {explore.length > 0 && (
+        <div>
+          <TierHeader label="Explore" accent="purple" icon={<Compass size={11} />} />
+          {explore.map(d => <GatherRow key={d.item} {...d} accent="purple" />)}
         </div>
       )}
     </div>
@@ -596,7 +730,7 @@ function QuestSection({
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-type TowerSubTab = 'summary' | 'quests';
+type TowerSubTab = 'summary' | 'quests' | 'gathering';
 
 export function ToweringInvestmentPage() {
   const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus } = useStore();
@@ -670,8 +804,9 @@ export function ToweringInvestmentPage() {
       <div className="flex gap-1 p-1 rounded-lg"
         style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}>
         {([
-          { id: 'summary', label: 'Summary' },
-          { id: 'quests',  label: 'Quests' },
+          { id: 'summary',   label: 'Summary' },
+          { id: 'quests',    label: 'Quests' },
+          { id: 'gathering', label: 'Fishing & Explore' },
         ] as const).map(({ id, label }) => (
           <button key={id} onClick={() => setTowerSubTab(id)}
             className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap"
@@ -693,6 +828,15 @@ export function ToweringInvestmentPage() {
           inventory={inventory}
           cropTimes={cropTimes}
           plotCount={plotCount}
+          allNeededItems={allNeededItems}
+        />
+      )}
+
+      {/* Gathering sub-tab — fishing & explore items */}
+      {towerSubTab === 'gathering' && (
+        <GatheringPanel
+          questsWithStatus={questsWithStatus}
+          inventory={inventory}
           allNeededItems={allNeededItems}
         />
       )}
