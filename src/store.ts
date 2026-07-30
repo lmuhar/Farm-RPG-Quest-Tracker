@@ -40,6 +40,7 @@ interface Store extends AppState {
   setQuestNote: (id: string, note: string) => void;
   setPinnedQuestline: (name: string | null) => void;
   setOwnedPetLevel: (petId: number, level: number) => void;
+  setTowerLevel: (level: number) => void;
 }
 
 const defaultCropTimes = [
@@ -99,6 +100,7 @@ export const useStore = create<Store>()(
       questNotes: {},
       pinnedQuestline: null,
       ownedPets: {},
+      towerLevel: 0,
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -168,6 +170,7 @@ export const useStore = create<Store>()(
           questNotes: {},
           pinnedQuestline: null,
           ownedPets: {},
+          towerLevel: 0,
         }),
 
       importState: (data) =>
@@ -186,6 +189,7 @@ export const useStore = create<Store>()(
           questNotes: data.questNotes ?? s.questNotes,
           pinnedQuestline: data.pinnedQuestline ?? s.pinnedQuestline,
           ownedPets: data.ownedPets ?? s.ownedPets,
+          towerLevel: data.towerLevel ?? s.towerLevel,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -214,6 +218,8 @@ export const useStore = create<Store>()(
           }
           return { ownedPets: { ...s.ownedPets, [petId]: level } };
         }),
+
+      setTowerLevel: (towerLevel) => set({ towerLevel }),
     }),
     {
       name: 'farm-rpg-tracker',

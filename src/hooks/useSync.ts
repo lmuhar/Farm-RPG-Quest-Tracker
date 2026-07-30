@@ -20,6 +20,7 @@ function snapshotState(): AppState {
     questNotes: s.questNotes,
     pinnedQuestline: s.pinnedQuestline,
     ownedPets: s.ownedPets,
+    towerLevel: s.towerLevel,
   };
 }
 
