@@ -1,0 +1,6490 @@
+[
+  {
+    "level": 1,
+    "silverCost": 50000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 100
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 100
+      },
+      {
+        "item": "Gold",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "silverCost": 100000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 100
+      },
+      {
+        "item": "Ancient Coin",
+        "quantity": 100
+      },
+      {
+        "item": "Silver",
+        "quantity": 1000000
+      }
+    ]
+  },
+  {
+    "level": 3,
+    "silverCost": 150000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 01",
+        "quantity": 100
+      },
+      {
+        "item": "Runestone 02",
+        "quantity": 100
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 4,
+    "silverCost": 200000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Fishing Net",
+        "quantity": 100
+      },
+      {
+        "item": "Cotton",
+        "quantity": 100
+      },
+      {
+        "item": "Gold Peppers",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 5,
+    "silverCost": 250000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Blue Tiger Fish",
+        "quantity": 100
+      },
+      {
+        "item": "Flarefin",
+        "quantity": 100
+      },
+      {
+        "item": "Plumbfish",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 6,
+    "silverCost": 300000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Jade",
+        "quantity": 100
+      },
+      {
+        "item": "Garnet",
+        "quantity": 100
+      },
+      {
+        "item": "Emerald",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 7,
+    "silverCost": 350000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Beet",
+        "quantity": 100
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 100
+      },
+      {
+        "item": "Cotton",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 8,
+    "silverCost": 400000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Fancy Guitar",
+        "quantity": 100
+      },
+      {
+        "item": "Chum",
+        "quantity": 100
+      },
+      {
+        "item": "Salt",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 9,
+    "silverCost": 450000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grasshopper",
+        "quantity": 100
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 100
+      },
+      {
+        "item": "Dragonfly",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 10,
+    "silverCost": 500000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Diary of O'Dynn",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 100
+      },
+      {
+        "item": "Silver",
+        "quantity": 10000000
+      }
+    ]
+  },
+  {
+    "level": 11,
+    "silverCost": 550000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 110
+      },
+      {
+        "item": "Grapes",
+        "quantity": 110
+      },
+      {
+        "item": "Tea Leaves",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 12,
+    "silverCost": 600000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Honey",
+        "quantity": 110
+      },
+      {
+        "item": "Pine Tree",
+        "quantity": 110
+      },
+      {
+        "item": "Carbon Sphere",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 13,
+    "silverCost": 650000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 04",
+        "quantity": 110
+      },
+      {
+        "item": "Runestone 05",
+        "quantity": 110
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 14,
+    "silverCost": 700000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Tomato",
+        "quantity": 110
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 110
+      },
+      {
+        "item": "Watermelon",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 15,
+    "silverCost": 750000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Blue Sea Bass",
+        "quantity": 110
+      },
+      {
+        "item": "Bone Fish",
+        "quantity": 110
+      },
+      {
+        "item": "Fluorifish",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 16,
+    "silverCost": 800000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Amethyst Necklace",
+        "quantity": 110
+      },
+      {
+        "item": "Jade Charm",
+        "quantity": 110
+      },
+      {
+        "item": "Mystic Ring",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 17,
+    "silverCost": 850000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Treasure Key",
+        "quantity": 110
+      },
+      {
+        "item": "Square Key",
+        "quantity": 110
+      },
+      {
+        "item": "Small Key",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 18,
+    "silverCost": 900000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Small Spring",
+        "quantity": 110
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 110
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 19,
+    "silverCost": 950000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Bacon",
+        "quantity": 110
+      },
+      {
+        "item": "Steak",
+        "quantity": 110
+      },
+      {
+        "item": "Steak Kabob",
+        "quantity": 110
+      }
+    ]
+  },
+  {
+    "level": 20,
+    "silverCost": 1000000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Bahltruvian Scales",
+        "quantity": 1
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 110
+      },
+      {
+        "item": "Silver",
+        "quantity": 20000000
+      }
+    ]
+  },
+  {
+    "level": 21,
+    "silverCost": 1050000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 120
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 120
+      },
+      {
+        "item": "Ancient Coin",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 22,
+    "silverCost": 1100000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grab Bag 01",
+        "quantity": 120
+      },
+      {
+        "item": "Grab Bag 02",
+        "quantity": 120
+      },
+      {
+        "item": "Grab Bag 03",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 23,
+    "silverCost": 1150000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 07",
+        "quantity": 120
+      },
+      {
+        "item": "Runestone 08",
+        "quantity": 120
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 24,
+    "silverCost": 1200000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Cotton",
+        "quantity": 120
+      },
+      {
+        "item": "Beet",
+        "quantity": 120
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 25,
+    "silverCost": 1250000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Large Clam Shell",
+        "quantity": 120
+      },
+      {
+        "item": "Ruby Coral",
+        "quantity": 120
+      },
+      {
+        "item": "Serpent Eel",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 26,
+    "silverCost": 1300000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Lava Sphere",
+        "quantity": 120
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 120
+      },
+      {
+        "item": "Sturdy Bow",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 27,
+    "silverCost": 1350000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Small Chest 01",
+        "quantity": 120
+      },
+      {
+        "item": "Medium Chest 01",
+        "quantity": 120
+      },
+      {
+        "item": "Large Chest 01",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 28,
+    "silverCost": 1400000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Lantern",
+        "quantity": 120
+      },
+      {
+        "item": "Garnet Ring",
+        "quantity": 120
+      },
+      {
+        "item": "Hourglass",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 29,
+    "silverCost": 1450000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Cyclops Spider",
+        "quantity": 120
+      },
+      {
+        "item": "Frog",
+        "quantity": 120
+      },
+      {
+        "item": "Water Lily",
+        "quantity": 120
+      }
+    ]
+  },
+  {
+    "level": 30,
+    "silverCost": 1500000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Odthorin's Charm",
+        "quantity": 1
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 120
+      },
+      {
+        "item": "Silver",
+        "quantity": 30000000
+      }
+    ]
+  },
+  {
+    "level": 31,
+    "silverCost": 1550000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Wine",
+        "quantity": 130
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 130
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 32,
+    "silverCost": 1600000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Yarn",
+        "quantity": 130
+      },
+      {
+        "item": "Crab Claw",
+        "quantity": 130
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 33,
+    "silverCost": 1650000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 10",
+        "quantity": 130
+      },
+      {
+        "item": "Runestone 11",
+        "quantity": 130
+      },
+      {
+        "item": "Runestone 12",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 34,
+    "silverCost": 1700000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Gold Carrot",
+        "quantity": 130
+      },
+      {
+        "item": "Gold Cucumber",
+        "quantity": 130
+      },
+      {
+        "item": "Gold Eggplant",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 35,
+    "silverCost": 1750000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Flarefin",
+        "quantity": 130
+      },
+      {
+        "item": "Redgill",
+        "quantity": 130
+      },
+      {
+        "item": "Flamejack",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 36,
+    "silverCost": 1800000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Pearl Necklace",
+        "quantity": 130
+      },
+      {
+        "item": "Shimmer Ring",
+        "quantity": 130
+      },
+      {
+        "item": "Lemon Quartz Ring",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 37,
+    "silverCost": 1850000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Corn",
+        "quantity": 130
+      },
+      {
+        "item": "Potato",
+        "quantity": 130
+      },
+      {
+        "item": "Wheat",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 38,
+    "silverCost": 1900000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Steel",
+        "quantity": 130
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 130
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 39,
+    "silverCost": 1950000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Cheese",
+        "quantity": 130
+      },
+      {
+        "item": "Gouda",
+        "quantity": 130
+      },
+      {
+        "item": "Grapes",
+        "quantity": 130
+      }
+    ]
+  },
+  {
+    "level": 40,
+    "silverCost": 2000000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Stones of Gallodor",
+        "quantity": 1
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 130
+      },
+      {
+        "item": "Silver",
+        "quantity": 40000000
+      }
+    ]
+  },
+  {
+    "level": 41,
+    "silverCost": 2050000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 140
+      },
+      {
+        "item": "Orange",
+        "quantity": 140
+      },
+      {
+        "item": "Lemon",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 42,
+    "silverCost": 2100000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Slimestone",
+        "quantity": 140
+      },
+      {
+        "item": "Sea Dragon",
+        "quantity": 140
+      },
+      {
+        "item": "Ruby Scorpion",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 43,
+    "silverCost": 2150000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 13",
+        "quantity": 140
+      },
+      {
+        "item": "Runestone 14",
+        "quantity": 140
+      },
+      {
+        "item": "Runestone 15",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 44,
+    "silverCost": 2200000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grab Bag 04",
+        "quantity": 140
+      },
+      {
+        "item": "Grab Bag 05",
+        "quantity": 140
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 45,
+    "silverCost": 2250000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Small Chest 02",
+        "quantity": 140
+      },
+      {
+        "item": "Medium Chest 02",
+        "quantity": 140
+      },
+      {
+        "item": "Large Chest 02",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 46,
+    "silverCost": 2300000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Diamond",
+        "quantity": 140
+      },
+      {
+        "item": "Green Cloak",
+        "quantity": 140
+      },
+      {
+        "item": "Broccoli",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 47,
+    "silverCost": 2350000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Goldray",
+        "quantity": 140
+      },
+      {
+        "item": "Goldgill",
+        "quantity": 140
+      },
+      {
+        "item": "Gold Crab",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 48,
+    "silverCost": 2400000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Lava Sphere",
+        "quantity": 140
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 140
+      },
+      {
+        "item": "Large Clam Shell",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 49,
+    "silverCost": 2450000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Goldfish",
+        "quantity": 140
+      },
+      {
+        "item": "Spiked Shell",
+        "quantity": 140
+      },
+      {
+        "item": "Skull Coin",
+        "quantity": 140
+      }
+    ]
+  },
+  {
+    "level": 50,
+    "silverCost": 2500000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runecube",
+        "quantity": 1
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 140
+      },
+      {
+        "item": "Silver",
+        "quantity": 50000000
+      }
+    ]
+  },
+  {
+    "level": 51,
+    "silverCost": 2550000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Ancient Coin",
+        "quantity": 150
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 150
+      },
+      {
+        "item": "Gold",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 52,
+    "silverCost": 2600000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Fancy Drum",
+        "quantity": 150
+      },
+      {
+        "item": "Oak",
+        "quantity": 150
+      },
+      {
+        "item": "Unpolished Jade",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 53,
+    "silverCost": 2650000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 16",
+        "quantity": 150
+      },
+      {
+        "item": "Runestone 17",
+        "quantity": 150
+      },
+      {
+        "item": "Runestone 18",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 54,
+    "silverCost": 2700000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Gold Leaf",
+        "quantity": 150
+      },
+      {
+        "item": "Gold Feather",
+        "quantity": 150
+      },
+      {
+        "item": "Gold Peas",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 55,
+    "silverCost": 2750000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Barracuda",
+        "quantity": 150
+      },
+      {
+        "item": "Plumbfish",
+        "quantity": 150
+      },
+      {
+        "item": "Octopus",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 56,
+    "silverCost": 2800000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Ruby",
+        "quantity": 150
+      },
+      {
+        "item": "Emerald",
+        "quantity": 150
+      },
+      {
+        "item": "Jade",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 57,
+    "silverCost": 2850000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Fancy Guitar",
+        "quantity": 150
+      },
+      {
+        "item": "Feed",
+        "quantity": 150
+      },
+      {
+        "item": "Flour",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 58,
+    "silverCost": 2900000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grab Bag 07",
+        "quantity": 150
+      },
+      {
+        "item": "Green Shield",
+        "quantity": 150
+      },
+      {
+        "item": "Herbs",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 59,
+    "silverCost": 2950000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Large Net",
+        "quantity": 150
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 150
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 60,
+    "silverCost": 3000000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Growth Medallion I",
+        "quantity": 1
+      },
+      {
+        "item": "Beet",
+        "quantity": 150
+      },
+      {
+        "item": "Silver",
+        "quantity": 60000000
+      }
+    ]
+  },
+  {
+    "level": 61,
+    "silverCost": 3050000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 160
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 160
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 62,
+    "silverCost": 3100000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Steel Wire",
+        "quantity": 160
+      },
+      {
+        "item": "Steel",
+        "quantity": 160
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 63,
+    "silverCost": 3150000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 19",
+        "quantity": 160
+      },
+      {
+        "item": "Runestone 20",
+        "quantity": 160
+      },
+      {
+        "item": "Runestone 01",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 64,
+    "silverCost": 3200000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Pine Tree",
+        "quantity": 160
+      },
+      {
+        "item": "Jack-o-lantern",
+        "quantity": 160
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 65,
+    "silverCost": 3250000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Gold Coral",
+        "quantity": 160
+      },
+      {
+        "item": "Gold Drum",
+        "quantity": 160
+      },
+      {
+        "item": "Gold Sea Bass",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 66,
+    "silverCost": 3300000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Emerald Ring",
+        "quantity": 160
+      },
+      {
+        "item": "Garnet Ring",
+        "quantity": 160
+      },
+      {
+        "item": "Jade Charm",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 67,
+    "silverCost": 3350000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Fancy Box",
+        "quantity": 160
+      },
+      {
+        "item": "Fancy Pipe",
+        "quantity": 160
+      },
+      {
+        "item": "Fancy Guitar",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 68,
+    "silverCost": 3400000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Fishing Net",
+        "quantity": 160
+      },
+      {
+        "item": "Treasure Key",
+        "quantity": 160
+      },
+      {
+        "item": "Bottle Rocket",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 69,
+    "silverCost": 3450000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Large Clam Shell",
+        "quantity": 160
+      },
+      {
+        "item": "Red Starfish",
+        "quantity": 160
+      },
+      {
+        "item": "Spiral Shell",
+        "quantity": 160
+      }
+    ]
+  },
+  {
+    "level": 70,
+    "silverCost": 3500000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Trigon Knot",
+        "quantity": 1
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 160
+      },
+      {
+        "item": "Silver",
+        "quantity": 70000000
+      }
+    ]
+  },
+  {
+    "level": 71,
+    "silverCost": 3550000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 170
+      },
+      {
+        "item": "Large Net",
+        "quantity": 170
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 72,
+    "silverCost": 3600000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 170
+      },
+      {
+        "item": "Rope",
+        "quantity": 170
+      },
+      {
+        "item": "Carbon Sphere",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 73,
+    "silverCost": 3650000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 02",
+        "quantity": 170
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 170
+      },
+      {
+        "item": "Runestone 04",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 74,
+    "silverCost": 3700000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Steak",
+        "quantity": 170
+      },
+      {
+        "item": "Bacon",
+        "quantity": 170
+      },
+      {
+        "item": "Honey",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 75,
+    "silverCost": 3750000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Goldfish",
+        "quantity": 170
+      },
+      {
+        "item": "Serpent Eel",
+        "quantity": 170
+      },
+      {
+        "item": "Catfish",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 76,
+    "silverCost": 3800000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Magicite",
+        "quantity": 170
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 170
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 77,
+    "silverCost": 3850000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Mystical Chest 01",
+        "quantity": 170
+      },
+      {
+        "item": "Large Chest 01",
+        "quantity": 170
+      },
+      {
+        "item": "Gift Basket 01",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 78,
+    "silverCost": 3900000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Giant Centipede",
+        "quantity": 170
+      },
+      {
+        "item": "Horned Beetle",
+        "quantity": 170
+      },
+      {
+        "item": "Dragonfly",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 79,
+    "silverCost": 3950000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Gold Feather",
+        "quantity": 170
+      },
+      {
+        "item": "Gold Leaf",
+        "quantity": 170
+      },
+      {
+        "item": "Grab Bag 01",
+        "quantity": 170
+      }
+    ]
+  },
+  {
+    "level": 80,
+    "silverCost": 4000000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Friendship Bracelet",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 170
+      },
+      {
+        "item": "Silver",
+        "quantity": 80000000
+      }
+    ]
+  },
+  {
+    "level": 81,
+    "silverCost": 4050000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grape Juice",
+        "quantity": 180
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 180
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 82,
+    "silverCost": 4100000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Amethyst Necklace",
+        "quantity": 180
+      },
+      {
+        "item": "Pearl Necklace",
+        "quantity": 180
+      },
+      {
+        "item": "Mystic Ring",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 83,
+    "silverCost": 4150000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 05",
+        "quantity": 180
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 180
+      },
+      {
+        "item": "Runestone 07",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 84,
+    "silverCost": 4200000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Beet",
+        "quantity": 180
+      },
+      {
+        "item": "Cotton",
+        "quantity": 180
+      },
+      {
+        "item": "Broccoli",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 85,
+    "silverCost": 4250000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Chum",
+        "quantity": 180
+      },
+      {
+        "item": "Giant Squid",
+        "quantity": 180
+      },
+      {
+        "item": "Octopus",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 86,
+    "silverCost": 4300000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Ancient Coin",
+        "quantity": 180
+      },
+      {
+        "item": "Bird Egg",
+        "quantity": 180
+      },
+      {
+        "item": "Blue Gel",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 87,
+    "silverCost": 4350000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Candy Cane",
+        "quantity": 180
+      },
+      {
+        "item": "Candy Corn",
+        "quantity": 180
+      },
+      {
+        "item": "Candy Roll",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 88,
+    "silverCost": 4400000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Caterpillar",
+        "quantity": 180
+      },
+      {
+        "item": "Feed",
+        "quantity": 180
+      },
+      {
+        "item": "Flour",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 89,
+    "silverCost": 4450000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grab Bag 07",
+        "quantity": 180
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 180
+      },
+      {
+        "item": "Grab Bag 05",
+        "quantity": 180
+      }
+    ]
+  },
+  {
+    "level": 90,
+    "silverCost": 4500000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Headdress of Luna",
+        "quantity": 1
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 180
+      },
+      {
+        "item": "Silver",
+        "quantity": 90000000
+      }
+    ]
+  },
+  {
+    "level": 91,
+    "silverCost": 4550000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Grapes",
+        "quantity": 190
+      },
+      {
+        "item": "Orange",
+        "quantity": 190
+      },
+      {
+        "item": "Lemon",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 92,
+    "silverCost": 4600000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Small Screw",
+        "quantity": 190
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 190
+      },
+      {
+        "item": "Small Spring",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 93,
+    "silverCost": 4650000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Runestone 08",
+        "quantity": 190
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 190
+      },
+      {
+        "item": "Runestone 10",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 94,
+    "silverCost": 4700000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Gold Eggplant",
+        "quantity": 190
+      },
+      {
+        "item": "Gold Cucumber",
+        "quantity": 190
+      },
+      {
+        "item": "Gold Peas",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 95,
+    "silverCost": 4750000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Barracuda",
+        "quantity": 190
+      },
+      {
+        "item": "Ruby Coral",
+        "quantity": 190
+      },
+      {
+        "item": "Swordfish",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 96,
+    "silverCost": 4800000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Carbon Sphere",
+        "quantity": 190
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 190
+      },
+      {
+        "item": "Lava Sphere",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 97,
+    "silverCost": 4850000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Diamond",
+        "quantity": 190
+      },
+      {
+        "item": "Hourglass",
+        "quantity": 190
+      },
+      {
+        "item": "Sturdy Bow",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 98,
+    "silverCost": 4900000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Large Net",
+        "quantity": 190
+      },
+      {
+        "item": "Square Key",
+        "quantity": 190
+      },
+      {
+        "item": "Large Chest 02",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 99,
+    "silverCost": 4950000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Ancient Coin",
+        "quantity": 190
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 190
+      },
+      {
+        "item": "Yarn",
+        "quantity": 190
+      }
+    ]
+  },
+  {
+    "level": 100,
+    "silverCost": 5000000000,
+    "megaMasteries": 0,
+    "items": [
+      {
+        "item": "Strange Gem",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 1000
+      },
+      {
+        "item": "Gold",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 101,
+    "silverCost": 10100000000,
+    "megaMasteries": 1,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 1000
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 1000
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 102,
+    "silverCost": 10200000000,
+    "megaMasteries": 1,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 1000
+      },
+      {
+        "item": "Ancient Coin",
+        "quantity": 1000
+      },
+      {
+        "item": "Silver",
+        "quantity": 10000000
+      }
+    ]
+  },
+  {
+    "level": 103,
+    "silverCost": 10300000000,
+    "megaMasteries": 1,
+    "items": [
+      {
+        "item": "Runestone 01",
+        "quantity": 1000
+      },
+      {
+        "item": "Runestone 02",
+        "quantity": 1000
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 104,
+    "silverCost": 10400000000,
+    "megaMasteries": 1,
+    "items": [
+      {
+        "item": "Fishing Net",
+        "quantity": 1000
+      },
+      {
+        "item": "Cotton",
+        "quantity": 1000
+      },
+      {
+        "item": "Gold Peppers",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 105,
+    "silverCost": 10500000000,
+    "megaMasteries": 2,
+    "items": [
+      {
+        "item": "Blue Tiger Fish",
+        "quantity": 1000
+      },
+      {
+        "item": "Flarefin",
+        "quantity": 1000
+      },
+      {
+        "item": "Plumbfish",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 106,
+    "silverCost": 10600000000,
+    "megaMasteries": 2,
+    "items": [
+      {
+        "item": "Jade",
+        "quantity": 1000
+      },
+      {
+        "item": "Garnet",
+        "quantity": 1000
+      },
+      {
+        "item": "Emerald",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 107,
+    "silverCost": 10700000000,
+    "megaMasteries": 2,
+    "items": [
+      {
+        "item": "Beet",
+        "quantity": 1000
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 1000
+      },
+      {
+        "item": "Cotton",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 108,
+    "silverCost": 10800000000,
+    "megaMasteries": 2,
+    "items": [
+      {
+        "item": "Fancy Guitar",
+        "quantity": 1000
+      },
+      {
+        "item": "Chum",
+        "quantity": 1000
+      },
+      {
+        "item": "Salt",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 109,
+    "silverCost": 10900000000,
+    "megaMasteries": 3,
+    "items": [
+      {
+        "item": "Grasshopper",
+        "quantity": 1000
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 1000
+      },
+      {
+        "item": "Dragonfly",
+        "quantity": 1000
+      }
+    ]
+  },
+  {
+    "level": 110,
+    "silverCost": 11000000000,
+    "megaMasteries": 3,
+    "items": [
+      {
+        "item": "Growth Medallion II",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 1000
+      },
+      {
+        "item": "Silver",
+        "quantity": 100000000
+      }
+    ]
+  },
+  {
+    "level": 111,
+    "silverCost": 11100000000,
+    "megaMasteries": 3,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 1100
+      },
+      {
+        "item": "Grapes",
+        "quantity": 1100
+      },
+      {
+        "item": "Tea Leaves",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 112,
+    "silverCost": 11200000000,
+    "megaMasteries": 3,
+    "items": [
+      {
+        "item": "Honey",
+        "quantity": 1100
+      },
+      {
+        "item": "Pine Tree",
+        "quantity": 1100
+      },
+      {
+        "item": "Carbon Sphere",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 113,
+    "silverCost": 11300000000,
+    "megaMasteries": 4,
+    "items": [
+      {
+        "item": "Runestone 04",
+        "quantity": 1100
+      },
+      {
+        "item": "Runestone 05",
+        "quantity": 1100
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 114,
+    "silverCost": 11400000000,
+    "megaMasteries": 4,
+    "items": [
+      {
+        "item": "Tomato",
+        "quantity": 1100
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 1100
+      },
+      {
+        "item": "Watermelon",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 115,
+    "silverCost": 11500000000,
+    "megaMasteries": 4,
+    "items": [
+      {
+        "item": "Blue Sea Bass",
+        "quantity": 1100
+      },
+      {
+        "item": "Bone Fish",
+        "quantity": 1100
+      },
+      {
+        "item": "Fluorifish",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 116,
+    "silverCost": 11600000000,
+    "megaMasteries": 4,
+    "items": [
+      {
+        "item": "Amethyst Necklace",
+        "quantity": 1100
+      },
+      {
+        "item": "Jade Charm",
+        "quantity": 1100
+      },
+      {
+        "item": "Mystic Ring",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 117,
+    "silverCost": 11700000000,
+    "megaMasteries": 5,
+    "items": [
+      {
+        "item": "Treasure Key",
+        "quantity": 1100
+      },
+      {
+        "item": "Square Key",
+        "quantity": 1100
+      },
+      {
+        "item": "Small Key",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 118,
+    "silverCost": 11800000000,
+    "megaMasteries": 5,
+    "items": [
+      {
+        "item": "Small Spring",
+        "quantity": 1100
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 1100
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 119,
+    "silverCost": 11900000000,
+    "megaMasteries": 5,
+    "items": [
+      {
+        "item": "Bacon",
+        "quantity": 1100
+      },
+      {
+        "item": "Steak",
+        "quantity": 1100
+      },
+      {
+        "item": "Steak Kabob",
+        "quantity": 1100
+      }
+    ]
+  },
+  {
+    "level": 120,
+    "silverCost": 12000000000,
+    "megaMasteries": 5,
+    "items": [
+      {
+        "item": "Ashes of Pentagorn",
+        "quantity": 1
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 1000
+      },
+      {
+        "item": "Silver",
+        "quantity": 200000000
+      }
+    ]
+  },
+  {
+    "level": 121,
+    "silverCost": 12100000000,
+    "megaMasteries": 6,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 1200
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 1200
+      },
+      {
+        "item": "Ancient Coin",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 122,
+    "silverCost": 12200000000,
+    "megaMasteries": 6,
+    "items": [
+      {
+        "item": "Grab Bag 01",
+        "quantity": 1200
+      },
+      {
+        "item": "Grab Bag 02",
+        "quantity": 1200
+      },
+      {
+        "item": "Grab Bag 03",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 123,
+    "silverCost": 12300000000,
+    "megaMasteries": 6,
+    "items": [
+      {
+        "item": "Runestone 07",
+        "quantity": 1200
+      },
+      {
+        "item": "Runestone 08",
+        "quantity": 1200
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 124,
+    "silverCost": 12400000000,
+    "megaMasteries": 6,
+    "items": [
+      {
+        "item": "Cotton",
+        "quantity": 1200
+      },
+      {
+        "item": "Beet",
+        "quantity": 1200
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 125,
+    "silverCost": 12500000000,
+    "megaMasteries": 7,
+    "items": [
+      {
+        "item": "Large Clam Shell",
+        "quantity": 1200
+      },
+      {
+        "item": "Ruby Coral",
+        "quantity": 1200
+      },
+      {
+        "item": "Serpent Eel",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 126,
+    "silverCost": 12600000000,
+    "megaMasteries": 7,
+    "items": [
+      {
+        "item": "Lava Sphere",
+        "quantity": 1200
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 1200
+      },
+      {
+        "item": "Sturdy Bow",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 127,
+    "silverCost": 12700000000,
+    "megaMasteries": 7,
+    "items": [
+      {
+        "item": "Small Chest 01",
+        "quantity": 1200
+      },
+      {
+        "item": "Medium Chest 01",
+        "quantity": 1200
+      },
+      {
+        "item": "Large Chest 01",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 128,
+    "silverCost": 12800000000,
+    "megaMasteries": 7,
+    "items": [
+      {
+        "item": "Lantern",
+        "quantity": 1200
+      },
+      {
+        "item": "Garnet Ring",
+        "quantity": 1200
+      },
+      {
+        "item": "Hourglass",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 129,
+    "silverCost": 12900000000,
+    "megaMasteries": 8,
+    "items": [
+      {
+        "item": "Cyclops Spider",
+        "quantity": 1200
+      },
+      {
+        "item": "Frog",
+        "quantity": 1200
+      },
+      {
+        "item": "Water Lily",
+        "quantity": 1200
+      }
+    ]
+  },
+  {
+    "level": 130,
+    "silverCost": 13000000000,
+    "megaMasteries": 8,
+    "items": [
+      {
+        "item": "Dragon Heart",
+        "quantity": 1
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 1000
+      },
+      {
+        "item": "Silver",
+        "quantity": 300000000
+      }
+    ]
+  },
+  {
+    "level": 131,
+    "silverCost": 13100000000,
+    "megaMasteries": 8,
+    "items": [
+      {
+        "item": "Wine",
+        "quantity": 1300
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 1300
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 132,
+    "silverCost": 13200000000,
+    "megaMasteries": 8,
+    "items": [
+      {
+        "item": "Yarn",
+        "quantity": 1300
+      },
+      {
+        "item": "Crab Claw",
+        "quantity": 1300
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 133,
+    "silverCost": 13300000000,
+    "megaMasteries": 9,
+    "items": [
+      {
+        "item": "Runestone 10",
+        "quantity": 1300
+      },
+      {
+        "item": "Runestone 11",
+        "quantity": 1300
+      },
+      {
+        "item": "Runestone 12",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 134,
+    "silverCost": 13400000000,
+    "megaMasteries": 9,
+    "items": [
+      {
+        "item": "Gold Carrot",
+        "quantity": 1300
+      },
+      {
+        "item": "Gold Cucumber",
+        "quantity": 1300
+      },
+      {
+        "item": "Gold Eggplant",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 135,
+    "silverCost": 13500000000,
+    "megaMasteries": 9,
+    "items": [
+      {
+        "item": "Flarefin",
+        "quantity": 1300
+      },
+      {
+        "item": "Redgill",
+        "quantity": 1300
+      },
+      {
+        "item": "Flamejack",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 136,
+    "silverCost": 13600000000,
+    "megaMasteries": 9,
+    "items": [
+      {
+        "item": "Pearl Necklace",
+        "quantity": 1300
+      },
+      {
+        "item": "Shimmer Ring",
+        "quantity": 1300
+      },
+      {
+        "item": "Lemon Quartz Ring",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 137,
+    "silverCost": 13700000000,
+    "megaMasteries": 10,
+    "items": [
+      {
+        "item": "Corn",
+        "quantity": 1300
+      },
+      {
+        "item": "Potato",
+        "quantity": 1300
+      },
+      {
+        "item": "Wheat",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 138,
+    "silverCost": 13800000000,
+    "megaMasteries": 10,
+    "items": [
+      {
+        "item": "Steel",
+        "quantity": 1300
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 1300
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 139,
+    "silverCost": 13900000000,
+    "megaMasteries": 10,
+    "items": [
+      {
+        "item": "Cheese",
+        "quantity": 1300
+      },
+      {
+        "item": "Gouda",
+        "quantity": 1300
+      },
+      {
+        "item": "Grapes",
+        "quantity": 1300
+      }
+    ]
+  },
+  {
+    "level": 140,
+    "silverCost": 14000000000,
+    "megaMasteries": 10,
+    "items": [
+      {
+        "item": "Magic Mirror",
+        "quantity": 1
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 1000
+      },
+      {
+        "item": "Silver",
+        "quantity": 400000000
+      }
+    ]
+  },
+  {
+    "level": 141,
+    "silverCost": 14100000000,
+    "megaMasteries": 11,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 1400
+      },
+      {
+        "item": "Orange",
+        "quantity": 1400
+      },
+      {
+        "item": "Lemon",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 142,
+    "silverCost": 14200000000,
+    "megaMasteries": 11,
+    "items": [
+      {
+        "item": "Slimestone",
+        "quantity": 1400
+      },
+      {
+        "item": "Sea Dragon",
+        "quantity": 1400
+      },
+      {
+        "item": "Ruby Scorpion",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 143,
+    "silverCost": 14300000000,
+    "megaMasteries": 11,
+    "items": [
+      {
+        "item": "Runestone 13",
+        "quantity": 1400
+      },
+      {
+        "item": "Runestone 14",
+        "quantity": 1400
+      },
+      {
+        "item": "Runestone 15",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 144,
+    "silverCost": 14400000000,
+    "megaMasteries": 11,
+    "items": [
+      {
+        "item": "Grab Bag 04",
+        "quantity": 1400
+      },
+      {
+        "item": "Grab Bag 05",
+        "quantity": 1400
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 145,
+    "silverCost": 14500000000,
+    "megaMasteries": 12,
+    "items": [
+      {
+        "item": "Small Chest 02",
+        "quantity": 1400
+      },
+      {
+        "item": "Medium Chest 02",
+        "quantity": 1400
+      },
+      {
+        "item": "Large Chest 02",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 146,
+    "silverCost": 14600000000,
+    "megaMasteries": 12,
+    "items": [
+      {
+        "item": "Diamond",
+        "quantity": 1400
+      },
+      {
+        "item": "Green Cloak",
+        "quantity": 1400
+      },
+      {
+        "item": "Broccoli",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 147,
+    "silverCost": 14700000000,
+    "megaMasteries": 12,
+    "items": [
+      {
+        "item": "Goldray",
+        "quantity": 1400
+      },
+      {
+        "item": "Goldgill",
+        "quantity": 1400
+      },
+      {
+        "item": "Gold Crab",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 148,
+    "silverCost": 14800000000,
+    "megaMasteries": 12,
+    "items": [
+      {
+        "item": "Lava Sphere",
+        "quantity": 1400
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 1400
+      },
+      {
+        "item": "Large Clam Shell",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 149,
+    "silverCost": 14900000000,
+    "megaMasteries": 13,
+    "items": [
+      {
+        "item": "Goldfish",
+        "quantity": 1400
+      },
+      {
+        "item": "Spiked Shell",
+        "quantity": 1400
+      },
+      {
+        "item": "Skull Coin",
+        "quantity": 1400
+      }
+    ]
+  },
+  {
+    "level": 150,
+    "silverCost": 15000000000,
+    "megaMasteries": 13,
+    "items": [
+      {
+        "item": "Maduin's Cup",
+        "quantity": 1
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 1400
+      },
+      {
+        "item": "Silver",
+        "quantity": 500000000
+      }
+    ]
+  },
+  {
+    "level": 151,
+    "silverCost": 15100000000,
+    "megaMasteries": 13,
+    "items": [
+      {
+        "item": "Ancient Coin",
+        "quantity": 1500
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 1500
+      },
+      {
+        "item": "Raptor Claw",
+        "quantity": 150
+      }
+    ]
+  },
+  {
+    "level": 152,
+    "silverCost": 15200000000,
+    "megaMasteries": 13,
+    "items": [
+      {
+        "item": "Fancy Drum",
+        "quantity": 1500
+      },
+      {
+        "item": "Oak",
+        "quantity": 1500
+      },
+      {
+        "item": "Unpolished Jade",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 153,
+    "silverCost": 15300000000,
+    "megaMasteries": 14,
+    "items": [
+      {
+        "item": "Runestone 16",
+        "quantity": 1500
+      },
+      {
+        "item": "Runestone 17",
+        "quantity": 1500
+      },
+      {
+        "item": "Runestone 18",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 154,
+    "silverCost": 15400000000,
+    "megaMasteries": 14,
+    "items": [
+      {
+        "item": "Gold Leaf",
+        "quantity": 1500
+      },
+      {
+        "item": "Gold Feather",
+        "quantity": 1500
+      },
+      {
+        "item": "Gold Peas",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 155,
+    "silverCost": 15500000000,
+    "megaMasteries": 14,
+    "items": [
+      {
+        "item": "Barracuda",
+        "quantity": 1500
+      },
+      {
+        "item": "Plumbfish",
+        "quantity": 1500
+      },
+      {
+        "item": "Octopus",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 156,
+    "silverCost": 15600000000,
+    "megaMasteries": 14,
+    "items": [
+      {
+        "item": "Ruby",
+        "quantity": 1500
+      },
+      {
+        "item": "Emerald",
+        "quantity": 1500
+      },
+      {
+        "item": "Jade",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 157,
+    "silverCost": 15700000000,
+    "megaMasteries": 15,
+    "items": [
+      {
+        "item": "Fancy Guitar",
+        "quantity": 1500
+      },
+      {
+        "item": "Feed",
+        "quantity": 1500
+      },
+      {
+        "item": "Corn Oil",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 158,
+    "silverCost": 15800000000,
+    "megaMasteries": 15,
+    "items": [
+      {
+        "item": "Grab Bag 07",
+        "quantity": 1500
+      },
+      {
+        "item": "Green Shield",
+        "quantity": 1500
+      },
+      {
+        "item": "Herbs",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 159,
+    "silverCost": 15900000000,
+    "megaMasteries": 15,
+    "items": [
+      {
+        "item": "Large Net",
+        "quantity": 1500
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 1500
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 1500
+      }
+    ]
+  },
+  {
+    "level": 160,
+    "silverCost": 16000000000,
+    "megaMasteries": 15,
+    "items": [
+      {
+        "item": "Serpent of Trym",
+        "quantity": 1
+      },
+      {
+        "item": "Beet",
+        "quantity": 1500
+      },
+      {
+        "item": "Silver",
+        "quantity": 600000000
+      }
+    ]
+  },
+  {
+    "level": 161,
+    "silverCost": 16100000000,
+    "megaMasteries": 16,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 1600
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 1600
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 162,
+    "silverCost": 16200000000,
+    "megaMasteries": 16,
+    "items": [
+      {
+        "item": "Steel Wire",
+        "quantity": 1600
+      },
+      {
+        "item": "Steel",
+        "quantity": 1600
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 163,
+    "silverCost": 16300000000,
+    "megaMasteries": 16,
+    "items": [
+      {
+        "item": "Runestone 19",
+        "quantity": 1600
+      },
+      {
+        "item": "Runestone 20",
+        "quantity": 1600
+      },
+      {
+        "item": "Runestone 01",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 164,
+    "silverCost": 16400000000,
+    "megaMasteries": 16,
+    "items": [
+      {
+        "item": "Pine Tree",
+        "quantity": 1600
+      },
+      {
+        "item": "Corn",
+        "quantity": 1600
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 165,
+    "silverCost": 16500000000,
+    "megaMasteries": 17,
+    "items": [
+      {
+        "item": "Gold Coral",
+        "quantity": 1600
+      },
+      {
+        "item": "Gold Drum",
+        "quantity": 1600
+      },
+      {
+        "item": "Gold Sea Bass",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 166,
+    "silverCost": 16600000000,
+    "megaMasteries": 17,
+    "items": [
+      {
+        "item": "Emerald Ring",
+        "quantity": 1600
+      },
+      {
+        "item": "Machine Press",
+        "quantity": 1600
+      },
+      {
+        "item": "Jade Charm",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 167,
+    "silverCost": 16700000000,
+    "megaMasteries": 17,
+    "items": [
+      {
+        "item": "Spool of Copper",
+        "quantity": 1600
+      },
+      {
+        "item": "Fancy Pipe",
+        "quantity": 1600
+      },
+      {
+        "item": "Fancy Guitar",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 168,
+    "silverCost": 16800000000,
+    "megaMasteries": 17,
+    "items": [
+      {
+        "item": "Fishing Net",
+        "quantity": 1600
+      },
+      {
+        "item": "Treasure Key",
+        "quantity": 1600
+      },
+      {
+        "item": "Bottle Rocket",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 169,
+    "silverCost": 16900000000,
+    "megaMasteries": 18,
+    "items": [
+      {
+        "item": "Large Clam Shell",
+        "quantity": 1600
+      },
+      {
+        "item": "Red Starfish",
+        "quantity": 1600
+      },
+      {
+        "item": "Spiral Shell",
+        "quantity": 1600
+      }
+    ]
+  },
+  {
+    "level": 170,
+    "silverCost": 17000000000,
+    "megaMasteries": 18,
+    "items": [
+      {
+        "item": "Spring Bangle",
+        "quantity": 1
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 1600
+      },
+      {
+        "item": "Silver",
+        "quantity": 700000000
+      }
+    ]
+  },
+  {
+    "level": 171,
+    "silverCost": 17100000000,
+    "megaMasteries": 18,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 1700
+      },
+      {
+        "item": "Large Net",
+        "quantity": 1700
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 172,
+    "silverCost": 17200000000,
+    "megaMasteries": 18,
+    "items": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1700
+      },
+      {
+        "item": "Rope",
+        "quantity": 1700
+      },
+      {
+        "item": "Polished Boot",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 173,
+    "silverCost": 17300000000,
+    "megaMasteries": 19,
+    "items": [
+      {
+        "item": "Runestone 02",
+        "quantity": 1700
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 1700
+      },
+      {
+        "item": "Runestone 04",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 174,
+    "silverCost": 17400000000,
+    "megaMasteries": 19,
+    "items": [
+      {
+        "item": "Frozen Peas",
+        "quantity": 100
+      },
+      {
+        "item": "Frozen Cabbage",
+        "quantity": 25
+      },
+      {
+        "item": "Frozen Pine",
+        "quantity": 25
+      }
+    ]
+  },
+  {
+    "level": 175,
+    "silverCost": 17500000000,
+    "megaMasteries": 19,
+    "items": [
+      {
+        "item": "Frosteye",
+        "quantity": 1700
+      },
+      {
+        "item": "Serpent Eel",
+        "quantity": 1700
+      },
+      {
+        "item": "Catfish",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 176,
+    "silverCost": 17600000000,
+    "megaMasteries": 19,
+    "items": [
+      {
+        "item": "Magicite",
+        "quantity": 1700
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 1700
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 177,
+    "silverCost": 17700000000,
+    "megaMasteries": 20,
+    "items": [
+      {
+        "item": "Mystical Chest 01",
+        "quantity": 1700
+      },
+      {
+        "item": "Large Chest 01",
+        "quantity": 1700
+      },
+      {
+        "item": "Gift Basket 01",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 178,
+    "silverCost": 17800000000,
+    "megaMasteries": 20,
+    "items": [
+      {
+        "item": "Giant Centipede",
+        "quantity": 1700
+      },
+      {
+        "item": "Horned Beetle",
+        "quantity": 1700
+      },
+      {
+        "item": "Dragonfly",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 179,
+    "silverCost": 17900000000,
+    "megaMasteries": 20,
+    "items": [
+      {
+        "item": "Gold Feather",
+        "quantity": 1700
+      },
+      {
+        "item": "Pair of Boots",
+        "quantity": 1700
+      },
+      {
+        "item": "Grab Bag 01",
+        "quantity": 1700
+      }
+    ]
+  },
+  {
+    "level": 180,
+    "silverCost": 18000000000,
+    "megaMasteries": 20,
+    "items": [
+      {
+        "item": "Inferno Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 1700
+      },
+      {
+        "item": "Silver",
+        "quantity": 800000000
+      }
+    ]
+  },
+  {
+    "level": 181,
+    "silverCost": 18100000000,
+    "megaMasteries": 21,
+    "items": [
+      {
+        "item": "Grape Juice",
+        "quantity": 1800
+      },
+      {
+        "item": "Iced Tea",
+        "quantity": 1800
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 182,
+    "silverCost": 18200000000,
+    "megaMasteries": 21,
+    "items": [
+      {
+        "item": "Energy Coil",
+        "quantity": 1800
+      },
+      {
+        "item": "Pearl Necklace",
+        "quantity": 1800
+      },
+      {
+        "item": "Mystic Ring",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 183,
+    "silverCost": 18300000000,
+    "megaMasteries": 21,
+    "items": [
+      {
+        "item": "Runestone 05",
+        "quantity": 1800
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 1800
+      },
+      {
+        "item": "Runestone 07",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 184,
+    "silverCost": 18400000000,
+    "megaMasteries": 21,
+    "items": [
+      {
+        "item": "Beet",
+        "quantity": 1800
+      },
+      {
+        "item": "Cotton",
+        "quantity": 1800
+      },
+      {
+        "item": "Broccoli",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 185,
+    "silverCost": 18500000000,
+    "megaMasteries": 22,
+    "items": [
+      {
+        "item": "Chum",
+        "quantity": 1800
+      },
+      {
+        "item": "Giant Squid",
+        "quantity": 1800
+      },
+      {
+        "item": "Octopus",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 186,
+    "silverCost": 18600000000,
+    "megaMasteries": 22,
+    "items": [
+      {
+        "item": "Ancient Coin",
+        "quantity": 1800
+      },
+      {
+        "item": "Bird Egg",
+        "quantity": 1800
+      },
+      {
+        "item": "Blue Gel",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 187,
+    "silverCost": 18700000000,
+    "megaMasteries": 22,
+    "items": [
+      {
+        "item": "Candy Cane",
+        "quantity": 1800
+      },
+      {
+        "item": "Candy Corn",
+        "quantity": 1800
+      },
+      {
+        "item": "Candy Roll",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 188,
+    "silverCost": 18800000000,
+    "megaMasteries": 22,
+    "items": [
+      {
+        "item": "Caterpillar",
+        "quantity": 1800
+      },
+      {
+        "item": "Feed",
+        "quantity": 1800
+      },
+      {
+        "item": "Flour",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 189,
+    "silverCost": 18900000000,
+    "megaMasteries": 23,
+    "items": [
+      {
+        "item": "Grab Bag 07",
+        "quantity": 1800
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 1800
+      },
+      {
+        "item": "Grab Bag 05",
+        "quantity": 1800
+      }
+    ]
+  },
+  {
+    "level": 190,
+    "silverCost": 19000000000,
+    "megaMasteries": 23,
+    "items": [
+      {
+        "item": "Lava Ring",
+        "quantity": 1
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 1800
+      },
+      {
+        "item": "Silver",
+        "quantity": 900000000
+      }
+    ]
+  },
+  {
+    "level": 191,
+    "silverCost": 19100000000,
+    "megaMasteries": 23,
+    "items": [
+      {
+        "item": "Grapes",
+        "quantity": 1900
+      },
+      {
+        "item": "Orange",
+        "quantity": 1900
+      },
+      {
+        "item": "Lemon",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 192,
+    "silverCost": 19200000000,
+    "megaMasteries": 23,
+    "items": [
+      {
+        "item": "Small Screw",
+        "quantity": 1900
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 1900
+      },
+      {
+        "item": "Control Box",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 193,
+    "silverCost": 19300000000,
+    "megaMasteries": 24,
+    "items": [
+      {
+        "item": "Runestone 08",
+        "quantity": 1900
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 1900
+      },
+      {
+        "item": "Runestone 10",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 194,
+    "silverCost": 19400000000,
+    "megaMasteries": 24,
+    "items": [
+      {
+        "item": "Gold Eggplant",
+        "quantity": 1900
+      },
+      {
+        "item": "Gold Cucumber",
+        "quantity": 1900
+      },
+      {
+        "item": "Gold Sea Crest",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 195,
+    "silverCost": 19500000000,
+    "megaMasteries": 24,
+    "items": [
+      {
+        "item": "Barracuda",
+        "quantity": 1900
+      },
+      {
+        "item": "Ruby Coral",
+        "quantity": 1900
+      },
+      {
+        "item": "Swordfish",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 196,
+    "silverCost": 19600000000,
+    "megaMasteries": 24,
+    "items": [
+      {
+        "item": "Carbon Sphere",
+        "quantity": 1900
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 1900
+      },
+      {
+        "item": "Lava Sphere",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 197,
+    "silverCost": 19700000000,
+    "megaMasteries": 25,
+    "items": [
+      {
+        "item": "Broccoli",
+        "quantity": 1900
+      },
+      {
+        "item": "Hourglass",
+        "quantity": 1900
+      },
+      {
+        "item": "Sturdy Bow",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 198,
+    "silverCost": 19800000000,
+    "megaMasteries": 25,
+    "items": [
+      {
+        "item": "Large Net",
+        "quantity": 1900
+      },
+      {
+        "item": "Square Key",
+        "quantity": 1900
+      },
+      {
+        "item": "Large Chest 03",
+        "quantity": 1900
+      }
+    ]
+  },
+  {
+    "level": 199,
+    "silverCost": 19900000000,
+    "megaMasteries": 25,
+    "items": [
+      {
+        "item": "Ancient Coin",
+        "quantity": 1900
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 1900
+      },
+      {
+        "item": "Piece of Heart",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "level": 200,
+    "silverCost": 20000000000,
+    "megaMasteries": 25,
+    "items": [
+      {
+        "item": "Unusual Gem",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 2000
+      },
+      {
+        "item": "Void Bag 01",
+        "quantity": 100
+      }
+    ]
+  },
+  {
+    "level": 201,
+    "silverCost": 30150000000,
+    "megaMasteries": 26,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 2000
+      },
+      {
+        "item": "Peach Juice",
+        "quantity": 2000
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 202,
+    "silverCost": 30300000000,
+    "megaMasteries": 26,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 2000
+      },
+      {
+        "item": "Ancient Coin",
+        "quantity": 2000
+      },
+      {
+        "item": "Re'taw",
+        "quantity": 200
+      }
+    ]
+  },
+  {
+    "level": 203,
+    "silverCost": 30450000000,
+    "megaMasteries": 26,
+    "items": [
+      {
+        "item": "Runestone 01",
+        "quantity": 2000
+      },
+      {
+        "item": "Runestone 02",
+        "quantity": 2000
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 204,
+    "silverCost": 30600000000,
+    "megaMasteries": 26,
+    "items": [
+      {
+        "item": "Fishing Net",
+        "quantity": 2000
+      },
+      {
+        "item": "Cotton",
+        "quantity": 2000
+      },
+      {
+        "item": "Gold Peppers",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 205,
+    "silverCost": 30750000000,
+    "megaMasteries": 27,
+    "items": [
+      {
+        "item": "Peach",
+        "quantity": 500
+      },
+      {
+        "item": "Flarefin",
+        "quantity": 2000
+      },
+      {
+        "item": "Plumbfish",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 206,
+    "silverCost": 30900000000,
+    "megaMasteries": 27,
+    "items": [
+      {
+        "item": "Jade",
+        "quantity": 2000
+      },
+      {
+        "item": "Garnet",
+        "quantity": 2000
+      },
+      {
+        "item": "Emerald",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 207,
+    "silverCost": 31050000000,
+    "megaMasteries": 27,
+    "items": [
+      {
+        "item": "Beet",
+        "quantity": 2000
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 2000
+      },
+      {
+        "item": "Cotton",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 208,
+    "silverCost": 31200000000,
+    "megaMasteries": 27,
+    "items": [
+      {
+        "item": "Fancy Guitar",
+        "quantity": 2000
+      },
+      {
+        "item": "Gold Feather",
+        "quantity": 2000
+      },
+      {
+        "item": "Salt",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 209,
+    "silverCost": 31350000000,
+    "megaMasteries": 28,
+    "items": [
+      {
+        "item": "Grasshopper",
+        "quantity": 2000
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 2000
+      },
+      {
+        "item": "Dragonfly",
+        "quantity": 2000
+      }
+    ]
+  },
+  {
+    "level": 210,
+    "silverCost": 31500000000,
+    "megaMasteries": 28,
+    "items": [
+      {
+        "item": "Borgen Buck",
+        "quantity": 21
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 2100
+      },
+      {
+        "item": "Silver",
+        "quantity": 210000000
+      }
+    ]
+  },
+  {
+    "level": 211,
+    "silverCost": 31650000000,
+    "megaMasteries": 28,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 2100
+      },
+      {
+        "item": "Grapes",
+        "quantity": 2100
+      },
+      {
+        "item": "Tea Leaves",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 212,
+    "silverCost": 31800000000,
+    "megaMasteries": 28,
+    "items": [
+      {
+        "item": "Honey",
+        "quantity": 2100
+      },
+      {
+        "item": "Pine Tree",
+        "quantity": 2100
+      },
+      {
+        "item": "Carbon Sphere",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 213,
+    "silverCost": 31950000000,
+    "megaMasteries": 29,
+    "items": [
+      {
+        "item": "Runestone 04",
+        "quantity": 2100
+      },
+      {
+        "item": "Runestone 05",
+        "quantity": 2100
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 214,
+    "silverCost": 32100000000,
+    "megaMasteries": 29,
+    "items": [
+      {
+        "item": "Tomato",
+        "quantity": 2100
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 2100
+      },
+      {
+        "item": "Watermelon",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 215,
+    "silverCost": 32250000000,
+    "megaMasteries": 29,
+    "items": [
+      {
+        "item": "Blue Sea Bass",
+        "quantity": 2100
+      },
+      {
+        "item": "Bone Fish",
+        "quantity": 2100
+      },
+      {
+        "item": "Fruit Punch",
+        "quantity": 215
+      }
+    ]
+  },
+  {
+    "level": 216,
+    "silverCost": 32400000000,
+    "megaMasteries": 29,
+    "items": [
+      {
+        "item": "Amethyst Necklace",
+        "quantity": 2100
+      },
+      {
+        "item": "Jade Charm",
+        "quantity": 2100
+      },
+      {
+        "item": "Mystic Ring",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 217,
+    "silverCost": 32550000000,
+    "megaMasteries": 30,
+    "items": [
+      {
+        "item": "Treasure Key",
+        "quantity": 2100
+      },
+      {
+        "item": "Square Key",
+        "quantity": 2100
+      },
+      {
+        "item": "Small Key",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 218,
+    "silverCost": 32700000000,
+    "megaMasteries": 30,
+    "items": [
+      {
+        "item": "Small Spring",
+        "quantity": 2100
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 2100
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 219,
+    "silverCost": 32850000000,
+    "megaMasteries": 30,
+    "items": [
+      {
+        "item": "Bacon",
+        "quantity": 2100
+      },
+      {
+        "item": "Steak",
+        "quantity": 2100
+      },
+      {
+        "item": "Steak Kabob",
+        "quantity": 2100
+      }
+    ]
+  },
+  {
+    "level": 220,
+    "silverCost": 33000000000,
+    "megaMasteries": 30,
+    "items": [
+      {
+        "item": "Borgen Buck",
+        "quantity": 22
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 2200
+      },
+      {
+        "item": "Silver",
+        "quantity": 220000000
+      }
+    ]
+  },
+  {
+    "level": 221,
+    "silverCost": 33150000000,
+    "megaMasteries": 31,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 2200
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 2200
+      },
+      {
+        "item": "Ancient Coin",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 222,
+    "silverCost": 33300000000,
+    "megaMasteries": 31,
+    "items": [
+      {
+        "item": "Grab Bag 01",
+        "quantity": 2200
+      },
+      {
+        "item": "Grab Bag 02",
+        "quantity": 2200
+      },
+      {
+        "item": "Grab Bag 03",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 223,
+    "silverCost": 33450000000,
+    "megaMasteries": 31,
+    "items": [
+      {
+        "item": "Runestone 07",
+        "quantity": 2200
+      },
+      {
+        "item": "Runestone 08",
+        "quantity": 2200
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 224,
+    "silverCost": 33600000000,
+    "megaMasteries": 31,
+    "items": [
+      {
+        "item": "Cotton",
+        "quantity": 2200
+      },
+      {
+        "item": "Beet",
+        "quantity": 2200
+      },
+      {
+        "item": "Sunflower",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 225,
+    "silverCost": 33750000000,
+    "megaMasteries": 32,
+    "items": [
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Ruby Coral",
+        "quantity": 2200
+      },
+      {
+        "item": "Serpent Eel",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 226,
+    "silverCost": 33900000000,
+    "megaMasteries": 32,
+    "items": [
+      {
+        "item": "Lava Sphere",
+        "quantity": 2200
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 2200
+      },
+      {
+        "item": "Sturdy Bow",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 227,
+    "silverCost": 34050000000,
+    "megaMasteries": 32,
+    "items": [
+      {
+        "item": "Small Chest 01",
+        "quantity": 2200
+      },
+      {
+        "item": "Medium Chest 01",
+        "quantity": 2200
+      },
+      {
+        "item": "Buddystone",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 228,
+    "silverCost": 34200000000,
+    "megaMasteries": 32,
+    "items": [
+      {
+        "item": "Lantern",
+        "quantity": 2200
+      },
+      {
+        "item": "Garnet Ring",
+        "quantity": 2200
+      },
+      {
+        "item": "Hourglass",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 229,
+    "silverCost": 34350000000,
+    "megaMasteries": 33,
+    "items": [
+      {
+        "item": "Cyclops Spider",
+        "quantity": 2200
+      },
+      {
+        "item": "Frog",
+        "quantity": 2200
+      },
+      {
+        "item": "Water Lily",
+        "quantity": 2200
+      }
+    ]
+  },
+  {
+    "level": 230,
+    "silverCost": 34500000000,
+    "megaMasteries": 33,
+    "items": [
+      {
+        "item": "Borgen Buck",
+        "quantity": 23
+      },
+      {
+        "item": "Large Net",
+        "quantity": 2300
+      },
+      {
+        "item": "Silver",
+        "quantity": 230000000
+      }
+    ]
+  },
+  {
+    "level": 231,
+    "silverCost": 34650000000,
+    "megaMasteries": 33,
+    "items": [
+      {
+        "item": "Cheese",
+        "quantity": 2300
+      },
+      {
+        "item": "Gouda",
+        "quantity": 2300
+      },
+      {
+        "item": "Grapes",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 232,
+    "silverCost": 34800000000,
+    "megaMasteries": 33,
+    "items": [
+      {
+        "item": "Steel",
+        "quantity": 2300
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 2300
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 233,
+    "silverCost": 34950000000,
+    "megaMasteries": 34,
+    "items": [
+      {
+        "item": "Corn",
+        "quantity": 2300
+      },
+      {
+        "item": "Potato",
+        "quantity": 2300
+      },
+      {
+        "item": "Wheat",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 234,
+    "silverCost": 35100000000,
+    "megaMasteries": 34,
+    "items": [
+      {
+        "item": "Soap",
+        "quantity": 2300
+      },
+      {
+        "item": "Shimmer Ring",
+        "quantity": 2300
+      },
+      {
+        "item": "Lemon Quartz Ring",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 235,
+    "silverCost": 35250000000,
+    "megaMasteries": 34,
+    "items": [
+      {
+        "item": "Lemon Cream Pie",
+        "quantity": 230
+      },
+      {
+        "item": "Redgill",
+        "quantity": 2300
+      },
+      {
+        "item": "Flamejack",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 236,
+    "silverCost": 35400000000,
+    "megaMasteries": 34,
+    "items": [
+      {
+        "item": "Gold Carrot",
+        "quantity": 2300
+      },
+      {
+        "item": "Gold Cucumber",
+        "quantity": 2300
+      },
+      {
+        "item": "Mini Time Egg",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 237,
+    "silverCost": 35550000000,
+    "megaMasteries": 35,
+    "items": [
+      {
+        "item": "Runestone 10",
+        "quantity": 2300
+      },
+      {
+        "item": "Runestone 11",
+        "quantity": 2300
+      },
+      {
+        "item": "Runestone 12",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 238,
+    "silverCost": 35700000000,
+    "megaMasteries": 35,
+    "items": [
+      {
+        "item": "Jar of Pickles",
+        "quantity": 238
+      },
+      {
+        "item": "Crab Claw",
+        "quantity": 2300
+      },
+      {
+        "item": "Fruit Punch",
+        "quantity": 238
+      }
+    ]
+  },
+  {
+    "level": 239,
+    "silverCost": 35850000000,
+    "megaMasteries": 35,
+    "items": [
+      {
+        "item": "Wine",
+        "quantity": 2300
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2300
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 2300
+      }
+    ]
+  },
+  {
+    "level": 240,
+    "silverCost": 36000000000,
+    "megaMasteries": 35,
+    "items": [
+      {
+        "item": "Borgen Buck",
+        "quantity": 24
+      },
+      {
+        "item": "Borgen Bag 01",
+        "quantity": 24
+      },
+      {
+        "item": "Silver",
+        "quantity": 240000000
+      }
+    ]
+  },
+  {
+    "level": 241,
+    "silverCost": 36150000000,
+    "megaMasteries": 36,
+    "items": [
+      {
+        "item": "Goldfish",
+        "quantity": 2400
+      },
+      {
+        "item": "Spiked Shell",
+        "quantity": 2400
+      },
+      {
+        "item": "Skull Coin",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 242,
+    "silverCost": 36300000000,
+    "megaMasteries": 36,
+    "items": [
+      {
+        "item": "Lava Sphere",
+        "quantity": 2400
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 2400
+      },
+      {
+        "item": "Joker",
+        "quantity": 24
+      }
+    ]
+  },
+  {
+    "level": 243,
+    "silverCost": 36450000000,
+    "megaMasteries": 36,
+    "items": [
+      {
+        "item": "Goldray",
+        "quantity": 2400
+      },
+      {
+        "item": "Goldgill",
+        "quantity": 2400
+      },
+      {
+        "item": "Gold Crab",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 244,
+    "silverCost": 36600000000,
+    "megaMasteries": 36,
+    "items": [
+      {
+        "item": "Diamond",
+        "quantity": 2400
+      },
+      {
+        "item": "Green Cloak",
+        "quantity": 2400
+      },
+      {
+        "item": "Broccoli",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 245,
+    "silverCost": 36750000000,
+    "megaMasteries": 37,
+    "items": [
+      {
+        "item": "Apple Pie",
+        "quantity": 3
+      },
+      {
+        "item": "Medium Chest 02",
+        "quantity": 2400
+      },
+      {
+        "item": "Large Chest 02",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 246,
+    "silverCost": 36900000000,
+    "megaMasteries": 37,
+    "items": [
+      {
+        "item": "Grab Bag 04",
+        "quantity": 2400
+      },
+      {
+        "item": "Grab Bag 05",
+        "quantity": 2400
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 247,
+    "silverCost": 37050000000,
+    "megaMasteries": 37,
+    "items": [
+      {
+        "item": "Runestone 13",
+        "quantity": 2400
+      },
+      {
+        "item": "Runestone 14",
+        "quantity": 2400
+      },
+      {
+        "item": "Runestone 15",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 248,
+    "silverCost": 37200000000,
+    "megaMasteries": 37,
+    "items": [
+      {
+        "item": "Fruit Punch",
+        "quantity": 248
+      },
+      {
+        "item": "Sea Dragon",
+        "quantity": 2400
+      },
+      {
+        "item": "Ruby Scorpion",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 249,
+    "silverCost": 37350000000,
+    "megaMasteries": 38,
+    "items": [
+      {
+        "item": "Time Egg",
+        "quantity": 1
+      },
+      {
+        "item": "Orange",
+        "quantity": 2400
+      },
+      {
+        "item": "Lemon",
+        "quantity": 2400
+      }
+    ]
+  },
+  {
+    "level": 250,
+    "silverCost": 37500000000,
+    "megaMasteries": 38,
+    "items": [
+      {
+        "item": "Scythe of Dewstar",
+        "quantity": 1
+      },
+      {
+        "item": "Void Bag 01",
+        "quantity": 500
+      },
+      {
+        "item": "Heart Container",
+        "quantity": 10
+      },
+      {
+        "item": "Silver",
+        "quantity": 250000000
+      }
+    ]
+  },
+  {
+    "level": 251,
+    "silverCost": 37650000000,
+    "megaMasteries": 38,
+    "items": [
+      {
+        "item": "Medium Chest 03",
+        "quantity": 2510
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 2510
+      },
+      {
+        "item": "Raptor Claw",
+        "quantity": 251
+      }
+    ]
+  },
+  {
+    "level": 252,
+    "silverCost": 37800000000,
+    "megaMasteries": 38,
+    "items": [
+      {
+        "item": "Fruit Punch",
+        "quantity": 252
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 2520
+      },
+      {
+        "item": "Large Net",
+        "quantity": 2520
+      }
+    ]
+  },
+  {
+    "level": 253,
+    "silverCost": 37950000000,
+    "megaMasteries": 39,
+    "items": [
+      {
+        "item": "Runestone 16",
+        "quantity": 2530
+      },
+      {
+        "item": "Runestone 17",
+        "quantity": 2530
+      },
+      {
+        "item": "Runestone 18",
+        "quantity": 2530
+      }
+    ]
+  },
+  {
+    "level": 254,
+    "silverCost": 38100000000,
+    "megaMasteries": 39,
+    "items": [
+      {
+        "item": "Soap",
+        "quantity": 2540
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 2540
+      },
+      {
+        "item": "Small Bolt",
+        "quantity": 2540
+      }
+    ]
+  },
+  {
+    "level": 255,
+    "silverCost": 38250000000,
+    "megaMasteries": 39,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 2550
+      },
+      {
+        "item": "Acorn",
+        "quantity": 2550
+      },
+      {
+        "item": "Frog",
+        "quantity": 2550
+      }
+    ]
+  },
+  {
+    "level": 256,
+    "silverCost": 38400000000,
+    "megaMasteries": 39,
+    "items": [
+      {
+        "item": "Caterpillar",
+        "quantity": 2560
+      },
+      {
+        "item": "Garnet",
+        "quantity": 2560
+      },
+      {
+        "item": "Bacon",
+        "quantity": 2560
+      }
+    ]
+  },
+  {
+    "level": 257,
+    "silverCost": 38550000000,
+    "megaMasteries": 40,
+    "items": [
+      {
+        "item": "Blue Dye",
+        "quantity": 2570
+      },
+      {
+        "item": "Apple Turnover",
+        "quantity": 2
+      },
+      {
+        "item": "Prune Juice",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 258,
+    "silverCost": 38700000000,
+    "megaMasteries": 40,
+    "items": [
+      {
+        "item": "Grab Bag 07",
+        "quantity": 2580
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 2580
+      },
+      {
+        "item": "Purple Dye",
+        "quantity": 2580
+      }
+    ]
+  },
+  {
+    "level": 259,
+    "silverCost": 38850000000,
+    "megaMasteries": 40,
+    "items": [
+      {
+        "item": "Small Spring",
+        "quantity": 2590
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 2590
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 2590
+      }
+    ]
+  },
+  {
+    "level": 260,
+    "silverCost": 39000000000,
+    "megaMasteries": 40,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 2600
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2600
+      },
+      {
+        "item": "Cranberry Juice",
+        "quantity": 2
+      },
+      {
+        "item": "Silver",
+        "quantity": 260000000
+      }
+    ]
+  },
+  {
+    "level": 261,
+    "silverCost": 39150000000,
+    "megaMasteries": 41,
+    "items": [
+      {
+        "item": "Gold Feather",
+        "quantity": 2610
+      },
+      {
+        "item": "Gold Leaf",
+        "quantity": 2610
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 261
+      }
+    ]
+  },
+  {
+    "level": 262,
+    "silverCost": 39300000000,
+    "megaMasteries": 41,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 2620
+      },
+      {
+        "item": "Orange",
+        "quantity": 2620
+      },
+      {
+        "item": "Lemon",
+        "quantity": 2620
+      }
+    ]
+  },
+  {
+    "level": 263,
+    "silverCost": 39450000000,
+    "megaMasteries": 41,
+    "items": [
+      {
+        "item": "Runestone 19",
+        "quantity": 2630
+      },
+      {
+        "item": "Runestone 20",
+        "quantity": 2630
+      },
+      {
+        "item": "Runestone 01",
+        "quantity": 2630
+      }
+    ]
+  },
+  {
+    "level": 264,
+    "silverCost": 39600000000,
+    "megaMasteries": 41,
+    "items": [
+      {
+        "item": "Large Chest 01",
+        "quantity": 2640
+      },
+      {
+        "item": "Large Chest 02",
+        "quantity": 2640
+      },
+      {
+        "item": "Large Chest 03",
+        "quantity": 2640
+      }
+    ]
+  },
+  {
+    "level": 265,
+    "silverCost": 39750000000,
+    "megaMasteries": 42,
+    "items": [
+      {
+        "item": "Glass Jar",
+        "quantity": 2650
+      },
+      {
+        "item": "Joker",
+        "quantity": 26
+      },
+      {
+        "item": "Lemon Seltzer",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 266,
+    "silverCost": 39900000000,
+    "megaMasteries": 42,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 2660
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2660
+      },
+      {
+        "item": "Cabbage Stew",
+        "quantity": 26
+      }
+    ]
+  },
+  {
+    "level": 267,
+    "silverCost": 40050000000,
+    "megaMasteries": 42,
+    "items": [
+      {
+        "item": "Medium Chest 01",
+        "quantity": 2670
+      },
+      {
+        "item": "Void Bag 01",
+        "quantity": 267
+      },
+      {
+        "item": "Buddy Doll",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 268,
+    "silverCost": 40200000000,
+    "megaMasteries": 42,
+    "items": [
+      {
+        "item": "Sunflower",
+        "quantity": 2680
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 2680
+      },
+      {
+        "item": "Steel",
+        "quantity": 2680
+      }
+    ]
+  },
+  {
+    "level": 269,
+    "silverCost": 40350000000,
+    "megaMasteries": 43,
+    "items": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2690
+      },
+      {
+        "item": "Amber",
+        "quantity": 269
+      },
+      {
+        "item": "Clubs",
+        "quantity": 26
+      }
+    ]
+  },
+  {
+    "level": 270,
+    "silverCost": 40500000000,
+    "megaMasteries": 43,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 2700
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2700
+      },
+      {
+        "item": "Egg of Chicken",
+        "quantity": 2
+      },
+      {
+        "item": "Silver",
+        "quantity": 270000000
+      }
+    ]
+  },
+  {
+    "level": 271,
+    "silverCost": 40650000000,
+    "megaMasteries": 43,
+    "items": [
+      {
+        "item": "Medium Chest 03",
+        "quantity": 2710
+      },
+      {
+        "item": "Feed",
+        "quantity": 2710
+      },
+      {
+        "item": "Flour",
+        "quantity": 2710
+      }
+    ]
+  },
+  {
+    "level": 272,
+    "silverCost": 40800000000,
+    "megaMasteries": 43,
+    "items": [
+      {
+        "item": "Crab Claw",
+        "quantity": 2720
+      },
+      {
+        "item": "Yarn",
+        "quantity": 2720
+      },
+      {
+        "item": "Tea Leaves",
+        "quantity": 2720
+      }
+    ]
+  },
+  {
+    "level": 273,
+    "silverCost": 40950000000,
+    "megaMasteries": 44,
+    "items": [
+      {
+        "item": "Runestone 02",
+        "quantity": 2730
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 2730
+      },
+      {
+        "item": "Runestone 04",
+        "quantity": 2730
+      }
+    ]
+  },
+  {
+    "level": 274,
+    "silverCost": 41100000000,
+    "megaMasteries": 44,
+    "items": [
+      {
+        "item": "Small Chest 01",
+        "quantity": 2740
+      },
+      {
+        "item": "Treasure Key",
+        "quantity": 2740
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 2740
+      }
+    ]
+  },
+  {
+    "level": 275,
+    "silverCost": 41250000000,
+    "megaMasteries": 44,
+    "items": [
+      {
+        "item": "Green Cloak",
+        "quantity": 2750
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 2750
+      },
+      {
+        "item": "Borgen Bag 01",
+        "quantity": 27
+      }
+    ]
+  },
+  {
+    "level": 276,
+    "silverCost": 41400000000,
+    "megaMasteries": 44,
+    "items": [
+      {
+        "item": "Inferno Sphere",
+        "quantity": 2760
+      },
+      {
+        "item": "Lava Sphere",
+        "quantity": 2760
+      },
+      {
+        "item": "Lemon Seltzer",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 277,
+    "silverCost": 41550000000,
+    "megaMasteries": 45,
+    "items": [
+      {
+        "item": "Candy Cane",
+        "quantity": 2770
+      },
+      {
+        "item": "Jack-o-lantern",
+        "quantity": 2770
+      },
+      {
+        "item": "Egg of Chicken",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 278,
+    "silverCost": 41700000000,
+    "megaMasteries": 45,
+    "items": [
+      {
+        "item": "Grab Bag 01",
+        "quantity": 2780
+      },
+      {
+        "item": "Grab Bag 02",
+        "quantity": 2780
+      },
+      {
+        "item": "Grab Bag 03",
+        "quantity": 2780
+      }
+    ]
+  },
+  {
+    "level": 279,
+    "silverCost": 41850000000,
+    "megaMasteries": 45,
+    "items": [
+      {
+        "item": "Control Box",
+        "quantity": 2790
+      },
+      {
+        "item": "Copper Wire",
+        "quantity": 2790
+      },
+      {
+        "item": "Buddy Loves You Card",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 280,
+    "silverCost": 42000000000,
+    "megaMasteries": 45,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 2800
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2800
+      },
+      {
+        "item": "Time Egg",
+        "quantity": 2
+      },
+      {
+        "item": "Silver",
+        "quantity": 280000000
+      }
+    ]
+  },
+  {
+    "level": 281,
+    "silverCost": 42150000000,
+    "megaMasteries": 46,
+    "items": [
+      {
+        "item": "Small Chest 02",
+        "quantity": 2810
+      },
+      {
+        "item": "Square Key",
+        "quantity": 2810
+      },
+      {
+        "item": "Borgen Buck",
+        "quantity": 28
+      }
+    ]
+  },
+  {
+    "level": 282,
+    "silverCost": 42300000000,
+    "megaMasteries": 46,
+    "items": [
+      {
+        "item": "Power Monitor",
+        "quantity": 2820
+      },
+      {
+        "item": "Hearts",
+        "quantity": 28
+      },
+      {
+        "item": "Protein Bar",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 283,
+    "silverCost": 42450000000,
+    "megaMasteries": 46,
+    "items": [
+      {
+        "item": "Runestone 05",
+        "quantity": 2830
+      },
+      {
+        "item": "Runestone 06",
+        "quantity": 2830
+      },
+      {
+        "item": "Runestone 07",
+        "quantity": 2830
+      }
+    ]
+  },
+  {
+    "level": 284,
+    "silverCost": 42600000000,
+    "megaMasteries": 46,
+    "items": [
+      {
+        "item": "Orange Juice",
+        "quantity": 2840
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 2840
+      },
+      {
+        "item": "Prune Juice",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 285,
+    "silverCost": 42750000000,
+    "megaMasteries": 47,
+    "items": [
+      {
+        "item": "Medium Chest 03",
+        "quantity": 2850
+      },
+      {
+        "item": "Grab Bag 04",
+        "quantity": 2850
+      },
+      {
+        "item": "Grab Bag 05",
+        "quantity": 2850
+      }
+    ]
+  },
+  {
+    "level": 286,
+    "silverCost": 42900000000,
+    "megaMasteries": 47,
+    "items": [
+      {
+        "item": "Water Lily",
+        "quantity": 2860
+      },
+      {
+        "item": "Red Twine",
+        "quantity": 2860
+      },
+      {
+        "item": "Bananas",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 287,
+    "silverCost": 43050000000,
+    "megaMasteries": 47,
+    "items": [
+      {
+        "item": "Beet",
+        "quantity": 2870
+      },
+      {
+        "item": "Magna Core",
+        "quantity": 287
+      },
+      {
+        "item": "Baba Cola",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 288,
+    "silverCost": 43200000000,
+    "megaMasteries": 47,
+    "items": [
+      {
+        "item": "Red Dye",
+        "quantity": 2880
+      },
+      {
+        "item": "Block of Wood",
+        "quantity": 2880
+      },
+      {
+        "item": "Carved Squisquatch",
+        "quantity": 288
+      }
+    ]
+  },
+  {
+    "level": 289,
+    "silverCost": 43350000000,
+    "megaMasteries": 48,
+    "items": [
+      {
+        "item": "Lemon Cream Pie",
+        "quantity": 28
+      },
+      {
+        "item": "Lemon Seltzer",
+        "quantity": 2
+      },
+      {
+        "item": "Lemonade",
+        "quantity": 2890
+      }
+    ]
+  },
+  {
+    "level": 290,
+    "silverCost": 43500000000,
+    "megaMasteries": 48,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 2900
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2900
+      },
+      {
+        "item": "Pumpkin Juice",
+        "quantity": 1
+      },
+      {
+        "item": "Silver",
+        "quantity": 290000000
+      }
+    ]
+  },
+  {
+    "level": 291,
+    "silverCost": 43650000000,
+    "megaMasteries": 48,
+    "items": [
+      {
+        "item": "Large Net",
+        "quantity": 2910
+      },
+      {
+        "item": "Fishing Net",
+        "quantity": 2910
+      },
+      {
+        "item": "Antler",
+        "quantity": 2910
+      }
+    ]
+  },
+  {
+    "level": 292,
+    "silverCost": 43800000000,
+    "megaMasteries": 48,
+    "items": [
+      {
+        "item": "Medium Chest 03",
+        "quantity": 2920
+      },
+      {
+        "item": "Spades",
+        "quantity": 29
+      },
+      {
+        "item": "Lemon Seltzer",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 293,
+    "silverCost": 43950000000,
+    "megaMasteries": 49,
+    "items": [
+      {
+        "item": "Runestone 08",
+        "quantity": 2930
+      },
+      {
+        "item": "Runestone 09",
+        "quantity": 2930
+      },
+      {
+        "item": "Runestone 10",
+        "quantity": 2930
+      }
+    ]
+  },
+  {
+    "level": 294,
+    "silverCost": 44100000000,
+    "megaMasteries": 49,
+    "items": [
+      {
+        "item": "Mystical Chest 01",
+        "quantity": 2940
+      },
+      {
+        "item": "Grand Piano",
+        "quantity": 294
+      },
+      {
+        "item": "Sail Cloth",
+        "quantity": 2940
+      }
+    ]
+  },
+  {
+    "level": 295,
+    "silverCost": 44250000000,
+    "megaMasteries": 49,
+    "items": [
+      {
+        "item": "Spider",
+        "quantity": 2950
+      },
+      {
+        "item": "Caterpillar",
+        "quantity": 2950
+      },
+      {
+        "item": "Machine Press",
+        "quantity": 2950
+      }
+    ]
+  },
+  {
+    "level": 296,
+    "silverCost": 44400000000,
+    "megaMasteries": 49,
+    "items": [
+      {
+        "item": "Cotton",
+        "quantity": 2960
+      },
+      {
+        "item": "Potato Battery",
+        "quantity": 296
+      },
+      {
+        "item": "Prune Juice",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "level": 297,
+    "silverCost": 44550000000,
+    "megaMasteries": 50,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 2970
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 2970
+      },
+      {
+        "item": "Bait Bag 01",
+        "quantity": 297
+      }
+    ]
+  },
+  {
+    "level": 298,
+    "silverCost": 44700000000,
+    "megaMasteries": 50,
+    "items": [
+      {
+        "item": "Green Cloak",
+        "quantity": 2980
+      },
+      {
+        "item": "Large Chest 02",
+        "quantity": 2980
+      },
+      {
+        "item": "Pine Board",
+        "quantity": 2980
+      }
+    ]
+  },
+  {
+    "level": 299,
+    "silverCost": 44850000000,
+    "megaMasteries": 50,
+    "items": [
+      {
+        "item": "Lemon Seltzer",
+        "quantity": 5
+      },
+      {
+        "item": "Prune Juice",
+        "quantity": 5
+      },
+      {
+        "item": "Protein Bar",
+        "quantity": 5
+      },
+      {
+        "item": "Gold",
+        "quantity": 250
+      }
+    ]
+  },
+  {
+    "level": 300,
+    "silverCost": 45000000000,
+    "megaMasteries": 50,
+    "items": [
+      {
+        "item": "Time Egg",
+        "quantity": 10
+      },
+      {
+        "item": "Mechanical Heart",
+        "quantity": 1
+      },
+      {
+        "item": "Box of Chocolate 02",
+        "quantity": 1
+      },
+      {
+        "item": "Silver",
+        "quantity": 300000000
+      }
+    ]
+  },
+  {
+    "level": 301,
+    "silverCost": 60200000000,
+    "megaMasteries": 51,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3010
+      },
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Gold",
+        "quantity": 300
+      }
+    ]
+  },
+  {
+    "level": 302,
+    "silverCost": 60400000000,
+    "megaMasteries": 51,
+    "items": [
+      {
+        "item": "Large Net",
+        "quantity": 3020
+      },
+      {
+        "item": "Treasure Key",
+        "quantity": 3020
+      },
+      {
+        "item": "Large Chest 01",
+        "quantity": 3020
+      }
+    ]
+  },
+  {
+    "level": 303,
+    "silverCost": 60600000000,
+    "megaMasteries": 51,
+    "items": [
+      {
+        "item": "Runestone 11",
+        "quantity": 3030
+      },
+      {
+        "item": "Runestone 12",
+        "quantity": 3030
+      },
+      {
+        "item": "Runestone 13",
+        "quantity": 3030
+      }
+    ]
+  },
+  {
+    "level": 304,
+    "silverCost": 60800000000,
+    "megaMasteries": 51,
+    "items": [
+      {
+        "item": "Mega Beet Seeds",
+        "quantity": 304
+      },
+      {
+        "item": "Mega Cotton Seeds",
+        "quantity": 304
+      },
+      {
+        "item": "Mega Sunflower Seeds",
+        "quantity": 304
+      }
+    ]
+  },
+  {
+    "level": 305,
+    "silverCost": 61000000000,
+    "megaMasteries": 52,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 3050
+      },
+      {
+        "item": "Acorn Pie",
+        "quantity": 30
+      },
+      {
+        "item": "Lemon Cream Pie",
+        "quantity": 30
+      }
+    ]
+  },
+  {
+    "level": 306,
+    "silverCost": 61200000000,
+    "megaMasteries": 52,
+    "items": [
+      {
+        "item": "Travel Voucher",
+        "quantity": 3
+      },
+      {
+        "item": "Prune Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 307,
+    "silverCost": 61400000000,
+    "megaMasteries": 52,
+    "items": [
+      {
+        "item": "Caterpillar",
+        "quantity": 3070
+      },
+      {
+        "item": "Spider",
+        "quantity": 3070
+      },
+      {
+        "item": "Machine Press",
+        "quantity": 3070
+      }
+    ]
+  },
+  {
+    "level": 308,
+    "silverCost": 61600000000,
+    "megaMasteries": 52,
+    "items": [
+      {
+        "item": "Grapes",
+        "quantity": 3080
+      },
+      {
+        "item": "Wine",
+        "quantity": 3080
+      },
+      {
+        "item": "Grape Juice",
+        "quantity": 308
+      }
+    ]
+  },
+  {
+    "level": 309,
+    "silverCost": 61800000000,
+    "megaMasteries": 53,
+    "items": [
+      {
+        "item": "Mystical Chest 01",
+        "quantity": 3090
+      },
+      {
+        "item": "Jade",
+        "quantity": 3090
+      },
+      {
+        "item": "Spooky Pie",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 310,
+    "silverCost": 62000000000,
+    "megaMasteries": 53,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3100
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 3100
+      },
+      {
+        "item": "Heart-shaped Gem",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 311,
+    "silverCost": 62200000000,
+    "megaMasteries": 53,
+    "items": [
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Black Dye",
+        "quantity": 3110
+      },
+      {
+        "item": "White Dye",
+        "quantity": 3110
+      }
+    ]
+  },
+  {
+    "level": 312,
+    "silverCost": 62400000000,
+    "megaMasteries": 53,
+    "items": [
+      {
+        "item": "Gold Leaf",
+        "quantity": 3120
+      },
+      {
+        "item": "Gold Feather",
+        "quantity": 3120
+      },
+      {
+        "item": "Large Net",
+        "quantity": 3120
+      }
+    ]
+  },
+  {
+    "level": 313,
+    "silverCost": 62600000000,
+    "megaMasteries": 54,
+    "items": [
+      {
+        "item": "Runestone 13",
+        "quantity": 3130
+      },
+      {
+        "item": "Runestone 14",
+        "quantity": 3130
+      },
+      {
+        "item": "Runestone 15",
+        "quantity": 3130
+      }
+    ]
+  },
+  {
+    "level": 314,
+    "silverCost": 62800000000,
+    "megaMasteries": 54,
+    "items": [
+      {
+        "item": "Void Bag 01",
+        "quantity": 314
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3140
+      },
+      {
+        "item": "Apple Pie",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 315,
+    "silverCost": 63000000000,
+    "megaMasteries": 54,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 3150
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 3150
+      },
+      {
+        "item": "Small Chest 01",
+        "quantity": 3150
+      }
+    ]
+  },
+  {
+    "level": 316,
+    "silverCost": 63200000000,
+    "megaMasteries": 54,
+    "items": [
+      {
+        "item": "Acorn Pie",
+        "quantity": 31
+      },
+      {
+        "item": "Lemon Seltzer",
+        "quantity": 15
+      },
+      {
+        "item": "Small Chest 02",
+        "quantity": 3160
+      }
+    ]
+  },
+  {
+    "level": 317,
+    "silverCost": 63400000000,
+    "megaMasteries": 55,
+    "items": [
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Buddy Doll",
+        "quantity": 31
+      },
+      {
+        "item": "Bananas",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 318,
+    "silverCost": 63600000000,
+    "megaMasteries": 55,
+    "items": [
+      {
+        "item": "Silk",
+        "quantity": 3180
+      },
+      {
+        "item": "Machine Press",
+        "quantity": 3180
+      },
+      {
+        "item": "Re'taw",
+        "quantity": 3180
+      }
+    ]
+  },
+  {
+    "level": 319,
+    "silverCost": 63800000000,
+    "megaMasteries": 55,
+    "items": [
+      {
+        "item": "Large Chest 02",
+        "quantity": 3190
+      },
+      {
+        "item": "Medium Chest 02",
+        "quantity": 3190
+      },
+      {
+        "item": "Small Chest 02",
+        "quantity": 3190
+      }
+    ]
+  },
+  {
+    "level": 320,
+    "silverCost": 64000000000,
+    "megaMasteries": 55,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3200
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 3200
+      },
+      {
+        "item": "Time Egg",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 321,
+    "silverCost": 64200000000,
+    "megaMasteries": 56,
+    "items": [
+      {
+        "item": "Apple",
+        "quantity": 3210
+      },
+      {
+        "item": "Orange",
+        "quantity": 3210
+      },
+      {
+        "item": "Lemon",
+        "quantity": 3210
+      }
+    ]
+  },
+  {
+    "level": 322,
+    "silverCost": 64400000000,
+    "megaMasteries": 56,
+    "items": [
+      {
+        "item": "Bacon",
+        "quantity": 3220
+      },
+      {
+        "item": "Borgen Buck",
+        "quantity": 32
+      },
+      {
+        "item": "Glacierstone",
+        "quantity": 3220
+      }
+    ]
+  },
+  {
+    "level": 323,
+    "silverCost": 64600000000,
+    "megaMasteries": 56,
+    "items": [
+      {
+        "item": "Runestone 16",
+        "quantity": 3230
+      },
+      {
+        "item": "Runestone 17",
+        "quantity": 3230
+      },
+      {
+        "item": "Runestone 18",
+        "quantity": 3230
+      }
+    ]
+  },
+  {
+    "level": 324,
+    "silverCost": 64800000000,
+    "megaMasteries": 56,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3240
+      },
+      {
+        "item": "Prune Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Cabbage Stew",
+        "quantity": 32
+      }
+    ]
+  },
+  {
+    "level": 325,
+    "silverCost": 65000000000,
+    "megaMasteries": 57,
+    "items": [
+      {
+        "item": "Birthday Surprise Box 03",
+        "quantity": 1
+      },
+      {
+        "item": "Birthday Surprise Box 04",
+        "quantity": 1
+      },
+      {
+        "item": "Maverick Chip",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 326,
+    "silverCost": 65200000000,
+    "megaMasteries": 57,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 3260
+      },
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Large Chest 03",
+        "quantity": 3260
+      }
+    ]
+  },
+  {
+    "level": 327,
+    "silverCost": 65400000000,
+    "megaMasteries": 57,
+    "items": [
+      {
+        "item": "Small Key",
+        "quantity": 3270
+      },
+      {
+        "item": "Square Key",
+        "quantity": 3270
+      },
+      {
+        "item": "Treasure Key",
+        "quantity": 3270
+      }
+    ]
+  },
+  {
+    "level": 328,
+    "silverCost": 65600000000,
+    "megaMasteries": 57,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3280
+      },
+      {
+        "item": "Grab Bag 06",
+        "quantity": 328
+      },
+      {
+        "item": "Apple Turnover",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 329,
+    "silverCost": 65800000000,
+    "megaMasteries": 58,
+    "items": [
+      {
+        "item": "Mega Beet Seeds",
+        "quantity": 329
+      },
+      {
+        "item": "Mega Cotton Seeds",
+        "quantity": 329
+      },
+      {
+        "item": "Mega Sunflower Seeds",
+        "quantity": 329
+      }
+    ]
+  },
+  {
+    "level": 330,
+    "silverCost": 66000000000,
+    "megaMasteries": 58,
+    "items": [
+      {
+        "item": "Heart Container",
+        "quantity": 3
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 3300
+      },
+      {
+        "item": "Heart-shaped Gem",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 331,
+    "silverCost": 66200000000,
+    "megaMasteries": 58,
+    "items": [
+      {
+        "item": "Travel Voucher",
+        "quantity": 3
+      },
+      {
+        "item": "Apple Pie",
+        "quantity": 3
+      },
+      {
+        "item": "Spooky Pie",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 332,
+    "silverCost": 66400000000,
+    "megaMasteries": 58,
+    "items": [
+      {
+        "item": "Lovely Cookies",
+        "quantity": 33
+      },
+      {
+        "item": "Spooky Cookies",
+        "quantity": 33
+      },
+      {
+        "item": "Happy Cookies",
+        "quantity": 33
+      }
+    ]
+  },
+  {
+    "level": 333,
+    "silverCost": 66600000000,
+    "megaMasteries": 59,
+    "items": [
+      {
+        "item": "Runestone 19",
+        "quantity": 3333
+      },
+      {
+        "item": "Runestone 20",
+        "quantity": 3333
+      },
+      {
+        "item": "Runestone 01",
+        "quantity": 3333
+      }
+    ]
+  },
+  {
+    "level": 334,
+    "silverCost": 66800000000,
+    "megaMasteries": 59,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 3340
+      },
+      {
+        "item": "Gold Carrot Seeds",
+        "quantity": 3340
+      },
+      {
+        "item": "Gold Pepper Seeds",
+        "quantity": 3340
+      }
+    ]
+  },
+  {
+    "level": 335,
+    "silverCost": 67000000000,
+    "megaMasteries": 59,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3350
+      },
+      {
+        "item": "Lava Sphere",
+        "quantity": 3350
+      },
+      {
+        "item": "Inferno Sphere",
+        "quantity": 3350
+      }
+    ]
+  },
+  {
+    "level": 336,
+    "silverCost": 67200000000,
+    "megaMasteries": 59,
+    "items": [
+      {
+        "item": "Medium Chest 03",
+        "quantity": 3360
+      },
+      {
+        "item": "Rubber Duckie",
+        "quantity": 3360
+      },
+      {
+        "item": "Spring Seeds",
+        "quantity": 3360
+      }
+    ]
+  },
+  {
+    "level": 337,
+    "silverCost": 67400000000,
+    "megaMasteries": 60,
+    "items": [
+      {
+        "item": "Crunchy Omelette",
+        "quantity": 33
+      },
+      {
+        "item": "Flywheel",
+        "quantity": 3370
+      },
+      {
+        "item": "Small Screw",
+        "quantity": 3370
+      }
+    ]
+  },
+  {
+    "level": 338,
+    "silverCost": 67600000000,
+    "megaMasteries": 60,
+    "items": [
+      {
+        "item": "4-leaf Clover",
+        "quantity": 3380
+      },
+      {
+        "item": "Large Net",
+        "quantity": 3380
+      },
+      {
+        "item": "Cheese",
+        "quantity": 3380
+      }
+    ]
+  },
+  {
+    "level": 339,
+    "silverCost": 67800000000,
+    "megaMasteries": 60,
+    "items": [
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3390
+      },
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Acorn Pie",
+        "quantity": 33
+      }
+    ]
+  },
+  {
+    "level": 340,
+    "silverCost": 68000000000,
+    "megaMasteries": 60,
+    "items": [
+      {
+        "item": "Apple Cider",
+        "quantity": 3400
+      },
+      {
+        "item": "Orange Juice",
+        "quantity": 3400
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 3400
+      }
+    ]
+  }
+]

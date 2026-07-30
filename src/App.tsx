@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
@@ -21,6 +21,7 @@ import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
 import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
+import { TheTowerPage } from './components/TheTowerPage';
 import { DailyActionCard } from './components/DailyActionCard';
 import { PetsPage } from './components/PetsPage';
 import { NeedsTab } from './components/NeedsTab';
@@ -29,7 +30,7 @@ import { NpcPage } from './components/NpcPage';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'locations' | 'tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
+type Tab = 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -315,7 +316,8 @@ export default function App() {
               {([
                 { id: 'active', label: 'Active', icon: <ListTodo size={16} /> },
                 { id: 'locations', label: 'Locations', icon: <MapPin size={16} /> },
-                { id: 'tower', label: 'Tower', icon: <Building2 size={16} /> },
+                { id: 'tower', label: 'Towering Inv.', icon: <Building2 size={16} /> },
+                { id: 'the-tower', label: 'The Tower', icon: <Layers size={16} /> },
                 { id: 'inventory', label: 'Inventory', icon: <Package size={16} /> },
                 { id: 'pets', label: 'Pets', icon: <PawPrint size={16} /> },
                 { id: 'npcs', label: 'NPCs', icon: <Users size={16} /> },
@@ -355,7 +357,8 @@ export default function App() {
             {([
               { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
               { id: 'locations', label: 'Locations', icon: <MapPin size={14} /> },
-              { id: 'tower', label: 'Tower', icon: <Building2 size={14} /> },
+              { id: 'tower', label: 'Towering Inv.', icon: <Building2 size={14} /> },
+              { id: 'the-tower', label: 'The Tower', icon: <Layers size={14} /> },
               { id: 'inventory', label: 'Inventory', icon: <Package size={14} /> },
               { id: 'pets', label: 'Pets', icon: <PawPrint size={14} /> },
               { id: 'npcs', label: 'NPCs', icon: <Users size={14} /> },
@@ -456,6 +459,10 @@ export default function App() {
 
           {tab === 'tower' && (
             <ToweringInvestmentPage />
+          )}
+
+          {tab === 'the-tower' && (
+            <TheTowerPage />
           )}
 
           {tab === 'inventory' && (
