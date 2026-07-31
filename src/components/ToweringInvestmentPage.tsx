@@ -334,7 +334,8 @@ function SummaryPanel({
       directCraft:  all.filter(i => !i.done && i.isDirectCraftNow),
       rawCraft:     all.filter(i => !i.done && i.isRawCraftNow),
       craftingQueue:all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass),
-      crops:        all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass),
+      crops:        all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass)
+                       .sort((a, b) => (a.cropTime!.growMinutes) - (b.cropTime!.growMinutes)),
       collecting:   all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime),
     };
   }, [questsWithStatus, inventory, cropTimes, plotCount]);
@@ -548,7 +549,8 @@ function QuestSection({
     const directCraft = all.filter(i => !i.done && i.isDirectCraftNow);
     const rawCraft = all.filter(i => !i.done && i.isRawCraftNow);
     const craftingQueue = all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass);
-    const crops = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass);
+    const crops = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass)
+                     .sort((a, b) => (a.cropTime!.growMinutes) - (b.cropTime!.growMinutes));
     const collecting = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime);
     return {
       tiers: { done, directCraft, rawCraft, craftingQueue, crops, collecting },
