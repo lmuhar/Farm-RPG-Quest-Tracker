@@ -30,7 +30,12 @@ function buildCropRows(
       const totalTime = grows * ct.growMinutes;
       return { item, have, totalNeeded, stillNeed, grows, timePerGrow: ct.growMinutes, totalTime };
     })
-    .sort((a, b) => a.totalTime - b.totalTime);
+    .sort((a, b) => {
+      // Done items always sink to the bottom
+      if (a.stillNeed === 0 && b.stillNeed > 0) return 1;
+      if (b.stillNeed === 0 && a.stillNeed > 0) return -1;
+      return a.timePerGrow - b.timePerGrow;
+    });
 }
 
 export function GrowPlanner({ questlineGroups }: Props) {
@@ -285,8 +290,8 @@ export function GrowPlanner({ questlineGroups }: Props) {
                 <th className="text-right px-4 py-3">Have</th>
                 <th className="text-right px-4 py-3">Need</th>
                 <th className="text-right px-4 py-3">Grows</th>
-                <th className="text-right px-4 py-3 hidden sm:table-cell">Per grow</th>
-                <th className="text-right px-4 py-3">Total time ↑</th>
+                <th className="text-right px-4 py-3 hidden sm:table-cell">Per grow ↑</th>
+                <th className="text-right px-4 py-3">Total time</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
