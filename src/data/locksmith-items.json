@@ -48,7 +48,8 @@
     },
     {
       "name": "Medium Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     },
     {
       "name": "Picnic Basket 01",
@@ -450,7 +451,8 @@
     },
     {
       "name": "Small Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Mushroom": [
@@ -548,11 +550,13 @@
     },
     {
       "name": "Large Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     },
     {
       "name": "Medium Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     },
     {
       "name": "Present 01",
@@ -592,7 +596,8 @@
     },
     {
       "name": "Small Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Fire Ant": [
@@ -686,7 +691,8 @@
     },
     {
       "name": "Medium Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     },
     {
       "name": "Tackle Box",
@@ -822,7 +828,8 @@
     },
     {
       "name": "Mystical Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     },
     {
       "name": "Picnic Basket 01",
@@ -1152,7 +1159,8 @@
     },
     {
       "name": "Medium Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     },
     {
       "name": "Spring Basket 01",
@@ -1228,7 +1236,8 @@
     },
     {
       "name": "Large Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Wheat": [
@@ -1318,33 +1327,39 @@
     },
     {
       "name": "Mystical Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Jade": [
     {
       "name": "Large Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     },
     {
       "name": "Small Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Emerald": [
     {
       "name": "Large Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     },
     {
       "name": "Small Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Lemon Quartz": [
     {
       "name": "Small Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Ruby": [
@@ -1354,17 +1369,20 @@
     },
     {
       "name": "Large Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     },
     {
       "name": "Small Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Amethyst": [
     {
       "name": "Small Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Leather": [
@@ -1374,7 +1392,8 @@
     },
     {
       "name": "Small Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Lemon": [
@@ -1626,7 +1645,8 @@
     },
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     },
     {
       "name": "Treat Bag 03",
@@ -1656,7 +1676,8 @@
     },
     {
       "name": "Mystical Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Wine": [
@@ -1674,13 +1695,15 @@
     },
     {
       "name": "Medium Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Wizard Hat": [
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Magicite": [
@@ -1694,13 +1717,15 @@
     },
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Winged Amulet": [
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Gold Coral": [
@@ -1710,23 +1735,27 @@
     },
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Mystic Ring": [
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Shimmer Ring": [
     {
       "name": "Medium Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     },
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Goldgill": [
@@ -1736,13 +1765,15 @@
     },
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Egyptian Necklace": [
     {
       "name": "Mystical Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Cabbage": [
@@ -1858,25 +1889,29 @@
   "Aquamarine Ring": [
     {
       "name": "Medium Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Emerald Ring": [
     {
       "name": "Medium Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Ruby Ring": [
     {
       "name": "Medium Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Amethyst Necklace": [
     {
       "name": "Medium Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Red Shield": [
@@ -1886,13 +1921,15 @@
     },
     {
       "name": "Mystical Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Green Cloak": [
     {
       "name": "Mystical Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Skeleton Key"
     }
   ],
   "Steak Kabob": [
@@ -1912,19 +1949,22 @@
     },
     {
       "name": "Large Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Honey": [
     {
       "name": "Large Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Shinefish": [
     {
       "name": "Large Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Glass Bottle": [
@@ -1938,7 +1978,8 @@
     },
     {
       "name": "Large Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Hummingbird Feeder": [
@@ -2180,31 +2221,36 @@
   "Small Spring": [
     {
       "name": "Large Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Hammer": [
     {
       "name": "Large Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Small Screw": [
     {
       "name": "Large Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Small Gear": [
     {
       "name": "Large Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Cogwheel": [
     {
       "name": "Large Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Steel": [
@@ -2214,7 +2260,8 @@
     },
     {
       "name": "Large Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Red Dye": [
@@ -2262,19 +2309,22 @@
   "Rope": [
     {
       "name": "Small Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Glass Orb": [
     {
       "name": "Small Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Wooden Plank": [
     {
       "name": "Small Chest 02",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Small Key"
     }
   ],
   "Diamonds": [
@@ -2670,7 +2720,8 @@
     },
     {
       "name": "Large Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Quandary Chowder": [
@@ -3170,7 +3221,8 @@
   "Shimmer Topaz": [
     {
       "name": "Large Chest 01",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Treasure Key"
     }
   ],
   "Frozen Tomato": [
@@ -3232,13 +3284,15 @@
   "Grab Bag 08": [
     {
       "name": "Medium Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Twine": [
     {
       "name": "Medium Chest 03",
-      "type": "locksmith"
+      "type": "locksmith",
+      "key": "Square Key"
     }
   ],
   "Egg of Air": [

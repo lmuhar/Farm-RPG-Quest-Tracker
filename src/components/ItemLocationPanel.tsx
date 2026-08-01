@@ -2,10 +2,12 @@ import { Fish, Compass, PawPrint, KeyRound } from 'lucide-react';
 import locationData from '../data/item-locations.json';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
+import { useStore } from '../store';
 
 type LocationEntry = { name: string; type: string };
+type LocksmithEntry = { name: string; type: string; key?: string };
 const locations = locationData as Record<string, LocationEntry[]>;
-const locksmithSources = locksmithData as Record<string, LocationEntry[]>;
+const locksmithSources = locksmithData as Record<string, LocksmithEntry[]>;
 
 interface PetEntry { petName: string; minLevel: 1 | 3 | 6 }
 const petLootMap: Record<string, PetEntry[]> = {};
@@ -49,6 +51,7 @@ interface Props {
 }
 
 export function ItemLocationPanel({ item, allNeededItems }: Props) {
+  const inventory = useStore(s => s.inventory);
   const itemLocs = locations[item] ?? [];
   const itemPets = petLootMap[item] ?? [];
   const itemChests = locksmithSources[item] ?? [];
@@ -115,17 +118,53 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
           className="rounded-lg px-3 py-2"
           style={{ background: 'var(--accent-purple-bg)', border: '1px solid var(--accent-purple-border)' }}
         >
-          <div className="flex items-center gap-1.5 mb-1">
+          <div className="flex items-center gap-1.5 mb-2">
             <KeyRound size={11} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
             <span className="text-xs font-semibold" style={{ color: 'var(--accent-purple)' }}>Locksmith</span>
           </div>
-          <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-            {itemChests.map(({ name, type }) => (
-              <span key={name} className="text-[11px]" style={{ color: 'var(--accent-purple)' }}>
-                {name}
-                {type === 'grab_bag' && <span style={{ opacity: 0.7 }}> (grab bag)</span>}
-              </span>
-            ))}
+          <div className="space-y-1.5">
+            {itemChests.map(({ name, type, key: keyName }) => {
+              const haveContainer = inventory[name] ?? 0;
+              const haveKey = keyName ? (inventory[keyName] ?? 0) : null;
+              const canOpen = haveContainer > 0 && (haveKey === null || haveKey > 0);
+
+              // Sources for the key if player has none
+              const keySources: string[] = [];
+              if (keyName && haveKey === 0) {
+                for (const src of locksmithSources[keyName] ?? []) keySources.push(src.name);
+                for (const src of locations[keyName] ?? []) keySources.push(src.name);
+              }
+
+              return (
+                <div key={name}>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[11px]" style={{ color: 'var(--accent-purple)' }}>
+                      {name}
+                      {type === 'grab_bag' && <span style={{ opacity: 0.6 }}> (grab bag)</span>}
+                    </span>
+                    <span
+                      className="text-[11px] font-medium shrink-0"
+                      style={{ color: haveContainer > 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}
+                    >
+                      have {haveContainer}
+                    </span>
+                  </div>
+                  {keyName && (
+                    <div className="text-[10px] mt-0.5 pl-2" style={{ color: haveKey! > 0 ? 'var(--accent-purple)' : 'var(--accent-yellow)', opacity: 0.85 }}>
+                      {keyName}: {haveKey ?? 0}
+                      {haveKey === 0 && keySources.length > 0 && (
+                        <span style={{ opacity: 0.75 }}> · find from {keySources.slice(0, 3).join(', ')}</span>
+                      )}
+                    </div>
+                  )}
+                  {canOpen && (
+                    <div className="text-[10px] mt-0.5 pl-2 font-medium" style={{ color: 'var(--accent-green)' }}>
+                      ready to open!
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
