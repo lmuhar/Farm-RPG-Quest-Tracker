@@ -92,36 +92,32 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
         );
       })}
 
-      {(() => {
-        // Pets not yet covering this item (not owned at the required level)
-        const neededPets = itemPets.filter(({ petId, minLevel }) => (ownedPets[petId] ?? 0) < minLevel);
-        if (neededPets.length === 0) return null;
-        return (
-          <div
-            className="rounded-lg px-3 py-2"
-            style={{ background: 'var(--accent-orange-bg)', border: '1px solid var(--accent-orange-border)' }}
-          >
-            <div className="flex items-center gap-1.5 mb-1">
-              <PawPrint size={11} style={{ color: 'var(--accent-orange)', flexShrink: 0 }} />
-              <span className="text-xs font-semibold" style={{ color: 'var(--accent-orange)' }}>Pet loot</span>
-            </div>
-            <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-              {neededPets.map(({ petId, petName, minLevel }) => {
-                const currentLevel = ownedPets[petId] ?? 0;
-                return (
-                  <span key={petName} className="text-[11px]" style={{ color: 'var(--accent-orange)' }}>
-                    {petName}
-                    {currentLevel > 0
+      {itemPets.length > 0 && (
+        <div
+          className="rounded-lg px-3 py-2"
+          style={{ background: 'var(--accent-orange-bg)', border: '1px solid var(--accent-orange-border)' }}
+        >
+          <div className="flex items-center gap-1.5 mb-1">
+            <PawPrint size={11} style={{ color: 'var(--accent-orange)', flexShrink: 0 }} />
+            <span className="text-xs font-semibold" style={{ color: 'var(--accent-orange)' }}>Pet loot</span>
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+            {itemPets.map(({ petId, petName, minLevel }) => {
+              const currentLevel = ownedPets[petId] ?? 0;
+              return (
+                <span key={petName} className="text-[11px]" style={{ color: 'var(--accent-orange)' }}>
+                  {petName}
+                  {currentLevel < minLevel && (
+                    currentLevel > 0
                       ? <span style={{ opacity: 0.7 }}> (upgrade to lv {minLevel})</span>
                       : <span style={{ opacity: 0.7 }}> (lv {minLevel}+)</span>
-                    }
-                  </span>
-                );
-              })}
-            </div>
+                  )}
+                </span>
+              );
+            })}
           </div>
-        );
-      })()}
+        </div>
+      )}
 
       {itemChests.length > 0 && (
         <div
