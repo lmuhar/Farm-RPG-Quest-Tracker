@@ -1,0 +1,4168 @@
+{
+  "Spooky Pie": [
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "Grape Juice": [
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Box of Chocolate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 11",
+      "type": "locksmith"
+    },
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Drink Bundle",
+      "type": "locksmith"
+    },
+    {
+      "name": "Giving Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Medium Chest 01",
+      "type": "locksmith",
+      "key": "Square Key"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Spooky Cookies": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "Breakfast Boost": [
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    }
+  ],
+  "Happy Cookies": [
+    {
+      "name": "Bag of Presents 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    }
+  ],
+  "Lovely Cookies": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Prune Juice": [
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Giving Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Veggie Juice": [
+    {
+      "name": "Harvest Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Gummy Worms": [
+    {
+      "name": "Bait Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Iron": [
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Worms": [
+    {
+      "name": "Bait Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Stone": [
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Pepper Seeds": [
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Carrot Seeds": [
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    },
+    {
+      "name": "frank's Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Wood": [
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Nails": [
+    {
+      "name": "Welcome Card",
+      "type": "locksmith"
+    }
+  ],
+  "Snowball": [
+    {
+      "name": "Bag of Snowballs",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Tanooki Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Lucky Cat Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Snowman Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Groundhog Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Leprechaun Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Cupid Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg Basket": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Void Bag 01": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Magical Egg Basket": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Lemon Seltzer": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    }
+  ],
+  "Harvest Bundle 01": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Black Hole Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Garden Claw": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Fuzzy Egg": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Picnic Basket 01": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Garden Trowel": [
+    {
+      "name": "Garden Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Aquamarine": [
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Small Chest 01",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Mushroom": [
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Potato": [
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Cucumber": [
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    }
+  ],
+  "3-leaf Clover": [
+    {
+      "name": "Christmas Present 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Catfish": [
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Bone": [
+    {
+      "name": "Grab Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Ancient Coin": [
+    {
+      "name": "Christmas Present 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    },
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Large Chest 01",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    },
+    {
+      "name": "Medium Chest 01",
+      "type": "locksmith",
+      "key": "Square Key"
+    },
+    {
+      "name": "Present 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Present 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Red Envelope",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 03",
+      "type": "locksmith"
+    }
+  ],
+  "Horn": [
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Antler": [
+    {
+      "name": "Christmas Present 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Small Chest 02",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Fire Ant": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Globber": [
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Giant Centipede": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Shiny Beetle": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Snail": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 02",
+      "type": "grab_bag"
+    }
+  ],
+  "Frozen Cabbage": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Fishing Net": [
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Medium Chest 03",
+      "type": "locksmith",
+      "key": "Square Key"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Cider": [
+    {
+      "name": "Apple Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Drink Bundle",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Giving Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Present 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Large Net": [
+    {
+      "name": "Bag of Presents 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Giving Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Mystical Chest 02",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Present 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Arnold Palmer": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Bag of Presents 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Drink Bundle",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Giving Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Present 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Orange Juice": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Drink Bundle",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Giving Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Lemonade": [
+    {
+      "name": "Christmas Present 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Drink Bundle",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Peas": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Pine": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Winter Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Acorn": [
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    }
+  ],
+  "Apple": [
+    {
+      "name": "Apple Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Box of Chocolate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Buddy's School Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Stocking",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Medium Chest 01",
+      "type": "locksmith",
+      "key": "Square Key"
+    },
+    {
+      "name": "Spring Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    },
+    {
+      "name": "frank's Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Orange": [
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 02",
+      "type": "locksmith"
+    }
+  ],
+  "Corn": [
+    {
+      "name": "Christmas Present 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Large Chest 03",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Wheat": [
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Grapes": [
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 02",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Leaf": [
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    }
+  ],
+  "Pumpkin": [
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Sunflower": [
+    {
+      "name": "Cornucopia 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Mystical Chest 02",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Jade": [
+    {
+      "name": "Large Chest 01",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    },
+    {
+      "name": "Small Chest 01",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Emerald": [
+    {
+      "name": "Large Chest 01",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    },
+    {
+      "name": "Small Chest 01",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Lemon Quartz": [
+    {
+      "name": "Small Chest 01",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Ruby": [
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Large Chest 01",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    },
+    {
+      "name": "Small Chest 01",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Amethyst": [
+    {
+      "name": "Small Chest 01",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Leather": [
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Small Chest 02",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Lemon": [
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Gift Basket 02",
+      "type": "locksmith"
+    }
+  ],
+  "Caterpillar": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Christmas Present 10",
+      "type": "locksmith"
+    }
+  ],
+  "Pot of Gold (Medium)": [
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "Pot of Gold (Small)": [
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "Shillelagh": [
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "4-leaf Clover": [
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Pot of Gold (Large)": [
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Shamrock": [
+    {
+      "name": "Green Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Hops": [
+    {
+      "name": "Christmas Present 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 01",
+      "type": "locksmith"
+    }
+  ],
+  "Thankful Notes": [
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    }
+  ],
+  "Cranberry Juice": [
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Supply Voucher": [
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Travel Voucher": [
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Gravy Boat": [
+    {
+      "name": "Cornucopia 03",
+      "type": "locksmith"
+    }
+  ],
+  "Candy Roll": [
+    {
+      "name": "Christmas Present 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Stocking",
+      "type": "locksmith"
+    }
+  ],
+  "Herbs": [
+    {
+      "name": "Spring Basket 01",
+      "type": "locksmith"
+    }
+  ],
+  "Eggplant": [
+    {
+      "name": "Christmas Present 06",
+      "type": "locksmith"
+    }
+  ],
+  "Peppers": [
+    {
+      "name": "Christmas Present 06",
+      "type": "locksmith"
+    }
+  ],
+  "Carrot": [
+    {
+      "name": "Christmas Present 06",
+      "type": "locksmith"
+    }
+  ],
+  "Peas": [
+    {
+      "name": "Christmas Present 06",
+      "type": "locksmith"
+    }
+  ],
+  "Cucumber": [
+    {
+      "name": "Christmas Present 06",
+      "type": "locksmith"
+    }
+  ],
+  "Radish": [
+    {
+      "name": "Christmas Present 06",
+      "type": "locksmith"
+    }
+  ],
+  "Taffy": [
+    {
+      "name": "Bag of Ghost Candy",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    }
+  ],
+  "Square Key": [
+    {
+      "name": "Grab Bag 08",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    },
+    {
+      "name": "Treat Bag 03",
+      "type": "locksmith"
+    }
+  ],
+  "Chattering Teeth": [
+    {
+      "name": "Treat Bag 03",
+      "type": "locksmith"
+    }
+  ],
+  "Steak": [
+    {
+      "name": "Christmas Present 11",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    }
+  ],
+  "Skull Coin": [
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Mystical Chest 02",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Wine": [
+    {
+      "name": "Box of Chocolate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 11",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 06",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Medium Chest 03",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Wizard Hat": [
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Magicite": [
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Winged Amulet": [
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Gold Coral": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Mystic Ring": [
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Shimmer Ring": [
+    {
+      "name": "Medium Chest 02",
+      "type": "locksmith",
+      "key": "Square Key"
+    },
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Goldgill": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Egyptian Necklace": [
+    {
+      "name": "Mystical Chest 01",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Cabbage": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    }
+  ],
+  "Cheese": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Cabbage Stew": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    }
+  ],
+  "Baba Cola": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    }
+  ],
+  "YoYo": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    }
+  ],
+  "Mixed Nuts": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Protein Bar": [
+    {
+      "name": "Baba's Snack Pack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Buddy's School Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Blue Feathers": [
+    {
+      "name": "frank's Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Bunny Ears": [
+    {
+      "name": "frank's Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Egg 06": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    },
+    {
+      "name": "frank's Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Purple Flower": [
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    },
+    {
+      "name": "frank's Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Aquamarine Ring": [
+    {
+      "name": "Medium Chest 02",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Emerald Ring": [
+    {
+      "name": "Medium Chest 02",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Ruby Ring": [
+    {
+      "name": "Medium Chest 02",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Amethyst Necklace": [
+    {
+      "name": "Medium Chest 02",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Red Shield": [
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Mystical Chest 02",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Green Cloak": [
+    {
+      "name": "Mystical Chest 02",
+      "type": "locksmith",
+      "key": "Skeleton Key"
+    }
+  ],
+  "Steak Kabob": [
+    {
+      "name": "Christmas Present 11",
+      "type": "locksmith"
+    },
+    {
+      "name": "Present 01",
+      "type": "locksmith"
+    }
+  ],
+  "Salt": [
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Large Chest 03",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Honey": [
+    {
+      "name": "Large Chest 03",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Shinefish": [
+    {
+      "name": "Large Chest 03",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Glass Bottle": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Birthday Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Large Chest 03",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Hummingbird Feeder": [
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Spring Seeds": [
+    {
+      "name": "Bag of Spring Seeds",
+      "type": "locksmith"
+    },
+    {
+      "name": "Spring Basket 02",
+      "type": "locksmith"
+    }
+  ],
+  "Wax Candle": [
+    {
+      "name": "Box of Chocolate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Garnet Ring": [
+    {
+      "name": "Box of Chocolate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Snow Globe": [
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    }
+  ],
+  "Cotton": [
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    }
+  ],
+  "Christmas Card": [
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lovely Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    }
+  ],
+  "Moon Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Sun Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Planet Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Asteroid Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Comet Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Nebula Egg": [
+    {
+      "name": "Galactic Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Grab Bag 04": [
+    {
+      "name": "Bag of Presents 02",
+      "type": "locksmith"
+    }
+  ],
+  "Grab Bag 05": [
+    {
+      "name": "Bag of Presents 02",
+      "type": "locksmith"
+    }
+  ],
+  "Raffle Ticket": [
+    {
+      "name": "Apple Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Pie": [
+    {
+      "name": "Apple Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Turnover": [
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Slicer": [
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Core": [
+    {
+      "name": "Apple Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Candy": [
+    {
+      "name": "Treat Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    }
+  ],
+  "Lollipop": [
+    {
+      "name": "Treat Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    }
+  ],
+  "Candy Corn": [
+    {
+      "name": "Treat Bag 04",
+      "type": "locksmith"
+    }
+  ],
+  "Jack-o-lantern": [
+    {
+      "name": "Treat Bag 04",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "Small Spring": [
+    {
+      "name": "Large Chest 02",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Hammer": [
+    {
+      "name": "Large Chest 02",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Small Screw": [
+    {
+      "name": "Large Chest 02",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Small Gear": [
+    {
+      "name": "Large Chest 02",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Cogwheel": [
+    {
+      "name": "Large Chest 02",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Steel": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Large Chest 02",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Red Dye": [
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Valentines Card": [
+    {
+      "name": "Box of Chocolate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Bacon": [
+    {
+      "name": "Christmas Present 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Present 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Rope": [
+    {
+      "name": "Small Chest 02",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Glass Orb": [
+    {
+      "name": "Small Chest 02",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Wooden Plank": [
+    {
+      "name": "Small Chest 02",
+      "type": "locksmith",
+      "key": "Small Key"
+    }
+  ],
+  "Diamonds": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Stack of Cards",
+      "type": "locksmith"
+    }
+  ],
+  "Hearts": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Stack of Cards",
+      "type": "locksmith"
+    }
+  ],
+  "Spades": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Stack of Cards",
+      "type": "locksmith"
+    }
+  ],
+  "Clubs": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Stack of Cards",
+      "type": "locksmith"
+    }
+  ],
+  "Joker": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Stack of Cards",
+      "type": "locksmith"
+    }
+  ],
+  "Mushroom Paste": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    },
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    }
+  ],
+  "Tomato": [
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    }
+  ],
+  "Trout": [
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    }
+  ],
+  "Milk": [
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    }
+  ],
+  "Scissors": [
+    {
+      "name": "Christmas Present 09",
+      "type": "locksmith"
+    }
+  ],
+  "Runestone 04": [
+    {
+      "name": "Bag of Presents 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Feather": [
+    {
+      "name": "Bag of Presents 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Crab": [
+    {
+      "name": "Bag of Presents 01",
+      "type": "locksmith"
+    }
+  ],
+  "Magna Quartz": [
+    {
+      "name": "Bag of Presents 01",
+      "type": "locksmith"
+    }
+  ],
+  "Runestone 18": [
+    {
+      "name": "Bag of Presents 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Sun Shades": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Sand Shovel": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Pet Treat": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Sand Castle Bucket": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Shark Jaws": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Sunscreen": [
+    {
+      "name": "Buddy's Beach Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Carrot": [
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Peppers": [
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Eggplant": [
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Peas": [
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    }
+  ],
+  "Treasure Key": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 03",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Grab Bag 08",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 05": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 07": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 08": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 09": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 10": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 01": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 02": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 03": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 06": [
+    {
+      "name": "Grab Bag 04",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 19": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 17": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 13": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 15": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 16": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 20": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 14": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 12": [
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Runestone 11": [
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    },
+    {
+      "name": "Grab Bag 05",
+      "type": "grab_bag"
+    }
+  ],
+  "Conch Shell": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    },
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Flier": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    }
+  ],
+  "Jellyfish": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    }
+  ],
+  "Blue Sea Bass": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    }
+  ],
+  "Shrimp": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    }
+  ],
+  "Starfish": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    }
+  ],
+  "Clownfish": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    }
+  ],
+  "Pearl": [
+    {
+      "name": "Christmas Present 08",
+      "type": "locksmith"
+    },
+    {
+      "name": "Large Chest 01",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Quandary Chowder": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 01",
+      "type": "locksmith"
+    }
+  ],
+  "Over The Moon": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    }
+  ],
+  "Lemon Cream Pie": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    }
+  ],
+  "Shrimp-a-Plenty": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Cat's Meow": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    }
+  ],
+  "Fruit Punch": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    }
+  ],
+  "Peach Juice": [
+    {
+      "name": "Holger's Lunch Box",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Box of Holiday Cakes": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Buddy Elf on a Shelf": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Supply Crate 02": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Holiday Candles": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Snowflakes": [
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    },
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    }
+  ],
+  "Holiday Garland": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    }
+  ],
+  "Holiday Cake": [
+    {
+      "name": "Box of Holiday Cakes",
+      "type": "locksmith"
+    },
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Hot Cocoa": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Supply Crate 01": [
+    {
+      "name": "Holiday Cheer Bundle 01",
+      "type": "locksmith"
+    }
+  ],
+  "Small Key": [
+    {
+      "name": "Grab Bag 08",
+      "type": "grab_bag"
+    }
+  ],
+  "Skeleton Key": [
+    {
+      "name": "Grab Bag 08",
+      "type": "grab_bag"
+    }
+  ],
+  "Spider": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Treat Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    }
+  ],
+  "Onion Soup": [
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    }
+  ],
+  "Mini Time Egg": [
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    }
+  ],
+  "Sea Pincher Special": [
+    {
+      "name": "Picnic Basket 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Festive Eggnog": [
+    {
+      "name": "Box of Holiday Cakes",
+      "type": "locksmith"
+    }
+  ],
+  "Egg 05": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 10": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 01": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 03": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 08": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 09": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 11": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 12": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 04": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 02": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg 07": [
+    {
+      "name": "Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Spooky Doll": [
+    {
+      "name": "Treat Bag 05",
+      "type": "locksmith"
+    }
+  ],
+  "Black Powder": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    }
+  ],
+  "Bottle Rocket": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    }
+  ],
+  "Fireworks": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Blue Star Stomper": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Explosive": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    }
+  ],
+  "Bomb": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Moonbreaker": [
+    {
+      "name": "Beatrix's Big Box of Boom",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Ruby Scorpion": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Horned Beetle": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Grasshopper": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Onyx Scorpion": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    }
+  ],
+  "Cricket": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Cyclops Spider": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Dragonfly": [
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Mealworms": [
+    {
+      "name": "Bait Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Bug Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    }
+  ],
+  "Piece of Heart": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Raptor Claw": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Large Chest 01": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Borgen Buck": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    }
+  ],
+  "Large Chest 02": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Large Chest 03": [
+    {
+      "name": "Borgen Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Thank You Card": [
+    {
+      "name": "Cornucopia 02",
+      "type": "locksmith"
+    }
+  ],
+  "Shimmer Topaz": [
+    {
+      "name": "Large Chest 01",
+      "type": "locksmith",
+      "key": "Treasure Key"
+    }
+  ],
+  "Frozen Tomato": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Corn": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    }
+  ],
+  "Re'taw": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Bouquet": [
+    {
+      "name": "Frozen Chest 01",
+      "type": "locksmith"
+    }
+  ],
+  "Blue Shell": [
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Sand Dollar": [
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    },
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Shark Tooth": [
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Sand": [
+    {
+      "name": "Rosalie's Beach Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Grab Bag 08": [
+    {
+      "name": "Medium Chest 03",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Twine": [
+    {
+      "name": "Medium Chest 03",
+      "type": "locksmith",
+      "key": "Square Key"
+    }
+  ],
+  "Egg of Air": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Chaos": [
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Fire": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Earth": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Water": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Ages": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Life": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Light": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Shadow": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Egg of Space": [
+    {
+      "name": "Magical Egg Basket",
+      "type": "grab_bag"
+    }
+  ],
+  "Fish Flakes": [
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Pumpkin Juice": [
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "PHR Voucher": [
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Coconut Water": [
+    {
+      "name": "Traveler's Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Crunchy Omelette": [
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Kite Kite": [
+    {
+      "name": "Magical Chest 01",
+      "type": "locksmith"
+    }
+  ],
+  "Iced Tea": [
+    {
+      "name": "Drink Bundle",
+      "type": "locksmith"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    }
+  ],
+  "Blue Dye": [
+    {
+      "name": "Summer Basket",
+      "type": "locksmith"
+    }
+  ],
+  "Iron Ring": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "Yarn": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "Steel Wire": [
+    {
+      "name": "Backpack",
+      "type": "locksmith"
+    }
+  ],
+  "Green Torpedo": [
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Safety Goggles": [
+    {
+      "name": "Beatrix's Booming Brawl Box 01",
+      "type": "locksmith"
+    }
+  ],
+  "Mushroom Stew": [
+    {
+      "name": "Fall Basket",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Bag 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Bag 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Supply Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Fuzzy Chick 12": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Nirumdivar": [
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "frank's Bunny Mask": [
+    {
+      "name": "Magical Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Prism Shell": [
+    {
+      "name": "Friendship Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Heart Container": [
+    {
+      "name": "Friendship Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Refined Corn Quartz": [
+    {
+      "name": "Friendship Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Five Point Mace": [
+    {
+      "name": "Friendship Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Ramjoram's Mask": [
+    {
+      "name": "Friendship Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Perfect Paint Palette": [
+    {
+      "name": "Friendship Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Heart-shaped Gem": [
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Boltonic Love Potion 4": [
+    {
+      "name": "Heart-shaped Box 01",
+      "type": "locksmith"
+    }
+  ],
+  "Moonstone": [
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Popcorn": [
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Crab Claw": [
+    {
+      "name": "Corn Prize Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Reindeer Headband": [
+    {
+      "name": "Fancy Present",
+      "type": "locksmith"
+    }
+  ],
+  "Buddy Doll": [
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    }
+  ],
+  "Maverick Chip": [
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Fish Biscuit": [
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Radish": [
+    {
+      "name": "Frozen Chest 02",
+      "type": "locksmith"
+    }
+  ],
+  "Tackle Box": [
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    },
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    }
+  ],
+  "Drink Bundle": [
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "The Big One": [
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Event Token Purse": [
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Safety Headgear": [
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Hornworm": [
+    {
+      "name": "Beatrix's Booming Brawl Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Trout": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Flier": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Sea Bass": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Goldjack": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Catfish": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Goldfin": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Jelly": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Drum": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Goldray": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Sea Crest": [
+    {
+      "name": "Grab Bag 07",
+      "type": "grab_bag"
+    }
+  ],
+  "Notebook": [
+    {
+      "name": "Buddy's School Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Water Bottle": [
+    {
+      "name": "Buddy's School Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Toothbrush": [
+    {
+      "name": "Buddy's School Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Pencil": [
+    {
+      "name": "Buddy's School Bag",
+      "type": "locksmith"
+    }
+  ],
+  "Donner": [
+    {
+      "name": "Christmas Stocking",
+      "type": "locksmith"
+    }
+  ],
+  "Candy Cane": [
+    {
+      "name": "Christmas Stocking",
+      "type": "locksmith"
+    }
+  ],
+  "Gare Bear": [
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Heart Candies": [
+    {
+      "name": "Heart-shaped Box 02",
+      "type": "locksmith"
+    },
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Safety Mask": [
+    {
+      "name": "Beatrix's Booming Brawl Box 02",
+      "type": "locksmith"
+    }
+  ],
+  "Event Token": [
+    {
+      "name": "Event Token Purse",
+      "type": "locksmith"
+    }
+  ],
+  "Hickory Omelette": [
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Bread": [
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Fish and Chips": [
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Mug of Beer": [
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    },
+    {
+      "name": "Thomas's Tavern Tote",
+      "type": "locksmith"
+    }
+  ],
+  "Fuzzy Chick 01": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 02": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 03": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 04": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 05": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 06": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 11": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 08": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 09": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 10": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Fuzzy Chick 07": [
+    {
+      "name": "Fuzzy Egg",
+      "type": "grab_bag"
+    }
+  ],
+  "Gold Eggplant Seeds": [
+    {
+      "name": "Gold Seed Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Pepper Seeds": [
+    {
+      "name": "Gold Seed Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Carrot Seeds": [
+    {
+      "name": "Gold Seed Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Pea Seeds": [
+    {
+      "name": "Gold Seed Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Gold Cucumber Seeds": [
+    {
+      "name": "Gold Seed Bag 01",
+      "type": "locksmith"
+    }
+  ],
+  "Treat Bag 05": [
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Treat Bag 04": [
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Treat Bag 02": [
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Treat Bag 06": [
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Treat Bag 01": [
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Treat Bag 03": [
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Ghost Candy": [
+    {
+      "name": "Bag of Ghost Candy",
+      "type": "locksmith"
+    },
+    {
+      "name": "Pillow Case 01",
+      "type": "locksmith"
+    }
+  ],
+  "Nut Cracker Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Zombie Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Turkey Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Movember Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Ghost Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Vampire Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Werewolf Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Krampus Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Santa Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Rudolph Buddy Doll": [
+    {
+      "name": "Buddy Doll Bag 01",
+      "type": "grab_bag"
+    }
+  ],
+  "Grubs": [
+    {
+      "name": "Bait Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    }
+  ],
+  "Minnows": [
+    {
+      "name": "Bait Bag 01",
+      "type": "grab_bag"
+    },
+    {
+      "name": "Tackle Box",
+      "type": "locksmith"
+    }
+  ],
+  "Time Egg": [
+    {
+      "name": "Tower Prep Pack 01",
+      "type": "locksmith"
+    }
+  ],
+  "Ice Scraper": [
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    }
+  ],
+  "Frozen Hops": [
+    {
+      "name": "Frozen Chest 03",
+      "type": "locksmith"
+    }
+  ],
+  "Temple Voucher": [
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    }
+  ],
+  "Glyph Sphere": [
+    {
+      "name": "Lorn's Expedition Kit",
+      "type": "locksmith"
+    }
+  ],
+  "Witch's Broom": [
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "Gummy Globber": [
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "Thomas's Cup of PB": [
+    {
+      "name": "Treat Bag 06",
+      "type": "locksmith"
+    }
+  ],
+  "Nut Cracker Buddy": [
+    {
+      "name": "Shiny Present",
+      "type": "locksmith"
+    }
+  ],
+  "Lovely Rose": [
+    {
+      "name": "Heart-shaped Box 03",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Picker": [
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Bar of Silver": [
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Apple Ant": [
+    {
+      "name": "Apple Crate 02",
+      "type": "locksmith"
+    }
+  ],
+  "Bag of Spring Seeds": [
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Shamrock Milk": [
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Egg of Tree": [
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ],
+  "Leprechaun Hat": [
+    {
+      "name": "Spring Basket 03",
+      "type": "locksmith"
+    }
+  ]
+}
