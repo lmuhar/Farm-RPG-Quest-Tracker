@@ -1,8 +1,21 @@
-import { Fish, Compass } from 'lucide-react';
+import { Fish, Compass, PawPrint } from 'lucide-react';
 import locationData from '../data/item-locations.json';
+import petsData from '../data/pets.json';
 
 type LocationEntry = { name: string; type: string };
 const locations = locationData as Record<string, LocationEntry[]>;
+
+interface PetEntry { petName: string; minLevel: 1 | 3 | 6 }
+const petLootMap: Record<string, PetEntry[]> = {};
+for (const pet of petsData as { name: string; loot: Record<string, string[]> }[]) {
+  for (const [tier, items] of Object.entries(pet.loot)) {
+    const minLevel = Number(tier) as 1 | 3 | 6;
+    for (const item of items) {
+      if (!petLootMap[item]) petLootMap[item] = [];
+      petLootMap[item].push({ petName: pet.name, minLevel });
+    }
+  }
+}
 
 // For a set of needed items, group them by location → items at that location
 export function getLocationGroups(neededItems: string[]): Map<string, { type: string; items: string[] }> {
@@ -13,20 +26,26 @@ export function getLocationGroups(neededItems: string[]): Map<string, { type: st
       if (!groups.has(loc.name)) groups.set(loc.name, { type: loc.type, items: [] });
       groups.get(loc.name)!.items.push(item);
     }
+    const pets = petLootMap[item] ?? [];
+    for (const { petName } of pets) {
+      const key = `${petName} (pet)`;
+      if (!groups.has(key)) groups.set(key, { type: 'pet', items: [] });
+      if (!groups.get(key)!.items.includes(item)) groups.get(key)!.items.push(item);
+    }
   }
   return groups;
 }
 
 interface Props {
   item: string;
-  // All items currently needed (active quest items) so we can show co-located items
   allNeededItems: string[];
 }
 
 export function ItemLocationPanel({ item, allNeededItems }: Props) {
-  const itemLocs = locations[item];
+  const itemLocs = locations[item] ?? [];
+  const itemPets = petLootMap[item] ?? [];
 
-  if (!itemLocs || itemLocs.length === 0) {
+  if (itemLocs.length === 0 && itemPets.length === 0) {
     return (
       <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
         No location data available for this item
@@ -34,7 +53,6 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
     );
   }
 
-  // For each location this item is at, find other needed items also at that location
   return (
     <div className="mt-1.5 space-y-2">
       {itemLocs.map((loc) => {
@@ -47,19 +65,11 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
         const border = loc.type === 'fishing' ? 'var(--accent-blue-border)' : 'var(--accent-green-border)';
 
         return (
-          <div
-            key={loc.name}
-            className="rounded-lg px-3 py-2"
-            style={{ background: bg, border: `1px solid ${border}` }}
-          >
+          <div key={loc.name} className="rounded-lg px-3 py-2" style={{ background: bg, border: `1px solid ${border}` }}>
             <div className="flex items-center gap-1.5">
               <Icon size={11} style={{ color, flexShrink: 0 }} />
-              <span className="text-xs font-semibold" style={{ color }}>
-                {loc.name}
-              </span>
-              <span className="text-[10px] ml-0.5" style={{ color, opacity: 0.7 }}>
-                {loc.type}
-              </span>
+              <span className="text-xs font-semibold" style={{ color }}>{loc.name}</span>
+              <span className="text-[10px] ml-0.5" style={{ color, opacity: 0.7 }}>{loc.type}</span>
             </div>
             {coLocated.length > 0 && (
               <p className="text-[11px] mt-1" style={{ color }}>
@@ -69,12 +79,33 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
           </div>
         );
       })}
+
+      {itemPets.length > 0 && (
+        <div
+          className="rounded-lg px-3 py-2"
+          style={{ background: 'var(--accent-orange-bg)', border: '1px solid var(--accent-orange-border)' }}
+        >
+          <div className="flex items-center gap-1.5 mb-1">
+            <PawPrint size={11} style={{ color: 'var(--accent-orange)', flexShrink: 0 }} />
+            <span className="text-xs font-semibold" style={{ color: 'var(--accent-orange)' }}>Pet loot</span>
+          </div>
+          <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+            {itemPets.map(({ petName, minLevel }) => (
+              <span key={petName} className="text-[11px]" style={{ color: 'var(--accent-orange)' }}>
+                {petName}
+                {minLevel > 1 && (
+                  <span style={{ opacity: 0.7 }}> (lv {minLevel}+)</span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 interface LocationGroupPanelProps {
-  // Show all locations for a set of needed items — used for the "by location" overview
   neededItems: string[];
 }
 
@@ -87,10 +118,10 @@ export function LocationGroupPanel({ neededItems }: LocationGroupPanelProps) {
   return (
     <div className="space-y-2">
       {sorted.map(([locName, { type, items: locItems }]) => {
-        const Icon = type === 'fishing' ? Fish : Compass;
-        const color = type === 'fishing' ? 'var(--accent-blue)' : 'var(--accent-green)';
-        const bg = type === 'fishing' ? 'var(--accent-blue-bg)' : 'var(--accent-green-bg)';
-        const border = type === 'fishing' ? 'var(--accent-blue-border)' : 'var(--accent-green-border)';
+        const Icon = type === 'fishing' ? Fish : type === 'pet' ? PawPrint : Compass;
+        const color = type === 'fishing' ? 'var(--accent-blue)' : type === 'pet' ? 'var(--accent-orange)' : 'var(--accent-green)';
+        const bg = type === 'fishing' ? 'var(--accent-blue-bg)' : type === 'pet' ? 'var(--accent-orange-bg)' : 'var(--accent-green-bg)';
+        const border = type === 'fishing' ? 'var(--accent-blue-border)' : type === 'pet' ? 'var(--accent-orange-border)' : 'var(--accent-green-border)';
 
         return (
           <div key={locName} className="rounded-lg px-3 py-2" style={{ background: bg, border: `1px solid ${border}` }}>
