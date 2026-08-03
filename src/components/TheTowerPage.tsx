@@ -123,12 +123,12 @@ function LevelCard({
 const SHOW_AHEAD = 10;
 
 export function TheTowerPage() {
-  const { towerLevel, setTowerLevel, megaMasteries, setMegaMasteries } = useStore();
+  const { towerLevel, setTowerLevel, mastered, setMastered, grandMastered, setGrandMastered, megaMastered, setMegaMastered } = useStore();
   const [showAll, setShowAll] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [editing, setEditing] = useState(false);
-  const [mmInputValue, setMmInputValue] = useState('');
-  const [mmEditing, setMmEditing] = useState(false);
+  const [editingField, setEditingField] = useState<'mastered' | 'grandMastered' | 'megaMastered' | null>(null);
+  const [masteryInputValue, setMasteryInputValue] = useState('');
 
   const maxLevel = allLevels[allLevels.length - 1]?.level ?? 340;
 
@@ -155,11 +155,15 @@ export function TheTowerPage() {
     setInputValue('');
   }
 
-  function commitMm(raw: string) {
+  function commitMastery(raw: string) {
     const n = parseInt(raw, 10);
-    if (!isNaN(n) && n >= 0) setMegaMasteries(n);
-    setMmEditing(false);
-    setMmInputValue('');
+    if (!isNaN(n) && n >= 0) {
+      if (editingField === 'mastered') setMastered(n);
+      else if (editingField === 'grandMastered') setGrandMastered(n);
+      else if (editingField === 'megaMastered') setMegaMastered(n);
+    }
+    setEditingField(null);
+    setMasteryInputValue('');
   }
 
   return (
@@ -236,45 +240,54 @@ export function TheTowerPage() {
             </span>
           </div>
 
-          <div
-            className="flex flex-col px-3 py-2 rounded-lg"
-            style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
-          >
-            <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>Mega Masteries Owned</span>
-            {mmEditing ? (
-              <input
-                autoFocus
-                type="number"
-                min={0}
-                value={mmInputValue}
-                onChange={(e) => setMmInputValue(e.target.value)}
-                onBlur={() => commitMm(mmInputValue)}
-                onKeyDown={(e) => { if (e.key === 'Enter') commitMm(mmInputValue); if (e.key === 'Escape') { setMmEditing(false); setMmInputValue(''); } }}
-                className="text-lg font-bold w-20 bg-transparent focus:outline-none"
-                style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}
-              />
-            ) : (
-              <button
-                onClick={() => { setMmEditing(true); setMmInputValue(String(megaMasteries)); }}
-                className="text-lg font-bold text-left hover:opacity-70 transition-opacity"
-                style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}
-                title="Click to edit"
-              >
-                {megaMasteries}
-              </button>
-            )}
-          </div>
+          {(
+            [
+              { field: 'mastered', label: 'Mastered', value: mastered },
+              { field: 'grandMastered', label: 'Grand Mastered', value: grandMastered },
+              { field: 'megaMastered', label: 'Mega Mastered', value: megaMastered },
+            ] as const
+          ).map(({ field, label, value }) => (
+            <div
+              key={field}
+              className="flex flex-col px-3 py-2 rounded-lg"
+              style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
+            >
+              <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</span>
+              {editingField === field ? (
+                <input
+                  autoFocus
+                  type="number"
+                  min={0}
+                  value={masteryInputValue}
+                  onChange={(e) => setMasteryInputValue(e.target.value)}
+                  onBlur={() => commitMastery(masteryInputValue)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') commitMastery(masteryInputValue); if (e.key === 'Escape') { setEditingField(null); setMasteryInputValue(''); } }}
+                  className="text-lg font-bold w-20 bg-transparent focus:outline-none"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}
+                />
+              ) : (
+                <button
+                  onClick={() => { setEditingField(field); setMasteryInputValue(String(value)); }}
+                  className="text-lg font-bold text-left hover:opacity-70 transition-opacity"
+                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}
+                  title="Click to edit"
+                >
+                  {value}
+                </button>
+              )}
+            </div>
+          ))}
 
           <div
             className="flex flex-col px-3 py-2 rounded-lg"
             style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
           >
-            <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>MM Still Needed</span>
+            <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>Mega Mastered Needed</span>
             <span
               className="text-lg font-bold"
-              style={{ fontFamily: 'var(--font-mono)', color: totalMegaMasteriesAhead > megaMasteries ? 'var(--accent-yellow)' : 'var(--accent-green)' }}
+              style={{ fontFamily: 'var(--font-mono)', color: totalMegaMasteriesAhead > megaMastered ? 'var(--accent-yellow)' : 'var(--accent-green)' }}
             >
-              {Math.max(0, totalMegaMasteriesAhead - megaMasteries)}
+              {Math.max(0, totalMegaMasteriesAhead - megaMastered)}
             </span>
           </div>
         </div>

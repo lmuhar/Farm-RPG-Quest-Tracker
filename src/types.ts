@@ -67,5 +67,7 @@ export interface AppState {
   ownedPets: Record<number, number>;
   towerLevel: number;
   trackedQuestline: string;
-  megaMasteries: number;
+  mastered: number;
+  grandMastered: number;
+  megaMastered: number;
 }

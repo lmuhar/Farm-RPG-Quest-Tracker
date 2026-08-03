@@ -22,7 +22,9 @@ function snapshotState(): AppState {
     ownedPets: s.ownedPets,
     towerLevel: s.towerLevel,
     trackedQuestline: s.trackedQuestline,
-    megaMasteries: s.megaMasteries,
+    mastered: s.mastered,
+    grandMastered: s.grandMastered,
+    megaMastered: s.megaMastered,
   };
 }
 
