@@ -75,7 +75,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     return map;
   }, [quests]);
 
-  const { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp, priorityItemSet } = useMemo(() => {
+  const { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp, priorityItemSet, blocked, blockedQuestCount } = useMemo(() => {
     // Items needed by active quests in the pinned questline
     const priorityItemSet = new Set<string>();
     if (pinnedQuestline) {
@@ -87,6 +87,13 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         }
       }
     }
+
+    const isQuestBlocked = (quest: Quest) =>
+      parseItems(quest.itemsRequired).some(({ quantity }) => quantity > inventoryMax);
+    const normalQuests = quests.filter((q) => !isQuestBlocked(q));
+    const blockedQuestsArr = quests.filter((q) => isQuestBlocked(q));
+    const normalNextUp = nextUpQuests.filter((q) => !isQuestBlocked(q));
+    const blockedNextUpArr = nextUpQuests.filter((q) => isQuestBlocked(q));
 
     // Shared item computation for any set of quests
     const computeAll = (questsToProcess: Quest[]) => {
@@ -139,8 +146,8 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     };
 
     // Active quest tiers
-    const all = computeAll(quests);
-    const turnInQuests = quests.filter((quest) =>
+    const all = computeAll(normalQuests);
+    const turnInQuests = normalQuests.filter((quest) =>
       parseItems(quest.itemsRequired).every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity)
     );
     const needed = all.filter((i) => i.deficit > 0);
@@ -163,7 +170,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     }
 
     // Next-up quest tiers (same logic, separate quantities)
-    const nextUpAll = computeAll(nextUpQuests);
+    const nextUpAll = computeAll(normalNextUp);
     const nextUpNeeded = nextUpAll.filter((i) => i.deficit > 0);
     const nextUp = {
       directCraft: nextUpNeeded.filter((i) => i.isDirectCraftNow).sort(sortItems),
@@ -173,7 +180,28 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       stocked: nextUpAll.filter((i) => i.deficit === 0),
     };
 
-    return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp, priorityItemSet };
+    // Blocked quest tiers (quests where any item exceeds inventoryMax)
+    const blockedAll = computeAll(blockedQuestsArr);
+    const blockedNextUpAll = computeAll(blockedNextUpArr);
+    const blockedNeeded = blockedAll.filter((i) => i.deficit > 0);
+    const blockedNextUpNeeded = blockedNextUpAll.filter((i) => i.deficit > 0);
+    const blocked = {
+      directCraft: blockedNeeded.filter((i) => i.isDirectCraftNow),
+      rawCraft: blockedNeeded.filter((i) => i.isRawCraftNow),
+      gatherForCraft: blockedNeeded.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass),
+      collecting: blockedNeeded.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)),
+      stocked: blockedAll.filter((i) => i.deficit === 0),
+      nextUp: {
+        directCraft: blockedNextUpNeeded.filter((i) => i.isDirectCraftNow),
+        rawCraft: blockedNextUpNeeded.filter((i) => i.isRawCraftNow),
+        gatherForCraft: blockedNextUpNeeded.filter((i) => !i.isCraftNow && i.recipe != null && !i.isHoney && !i.isCutlass),
+        collecting: blockedNextUpNeeded.filter((i) => !i.isCraftNow && (i.recipe == null || i.isHoney || i.isCutlass)),
+        stocked: blockedNextUpAll.filter((i) => i.deficit === 0),
+      },
+    };
+    const blockedQuestCount = blockedQuestsArr.length + blockedNextUpArr.length;
+
+    return { turnInQuests, directCraftItems, rawCraftItems, gatherForCraftItems, collectingItems, stockedItems, templeRecommendation, nextUp, priorityItemSet, blocked, blockedQuestCount };
   }, [quests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline]);
 
   // Inventory pressure
@@ -1037,7 +1065,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         );
       })()}
 
-      {/* Stocked items — collapsible (includes next-up stocked) */}
+      {/* Stocked items — collapsible (includes next-up stocked, excludes blocked) */}
       {(stockedItems.length > 0 || nextUp.stocked.length > 0) && (
         <div>
           <button
@@ -1074,6 +1102,434 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
                   ))}
                 </>
               )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Can't be completed yet — quests where any single item exceeds inventoryMax */}
+      {blockedQuestCount > 0 && (
+        <div style={{ borderTop: '2px solid var(--border-subtle)' }}>
+          <div
+            className="px-5 py-2.5 flex items-center gap-2"
+            style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}
+          >
+            <AlertTriangle size={12} style={{ color: 'var(--accent-orange)', flexShrink: 0 }} />
+            <div>
+              <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-orange)' }}>
+                Can't be completed yet
+              </span>
+              <span className="text-[11px] ml-2" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>
+                — items exceed inventory cap ({inventoryMax})
+              </span>
+            </div>
+          </div>
+
+          {/* Blocked — Craft now */}
+          {(blocked.directCraft.length > 0 || blocked.nextUp.directCraft.length > 0) && (
+            <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <div className="px-5 py-2 flex items-center gap-2" style={{ background: 'var(--accent-blue-bg)', borderBottom: '1px solid var(--accent-blue-border)' }}>
+                <Hammer size={11} style={{ color: 'var(--accent-blue)' }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-blue)' }}>Craft now</span>
+              </div>
+              {blocked.directCraft.map(({ item, totalNeeded, have, deficit, directIngredients }) => (
+                <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
+                        <Hammer size={9} /> ×{deficit}
+                      </span>
+                      <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                        <AlertTriangle size={9} /> over cap
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                  </div>
+                  {directIngredients && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                      {[...directIngredients.entries()].map(([ing, qty]) => {
+                        const haveIng = inventory[ing] ?? 0;
+                        return <span key={ing} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>✓ {ing} {haveIng}/{qty}</span>;
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {blocked.nextUp.directCraft.length > 0 && (
+                <>
+                  <NextUpDivider />
+                  {blocked.nextUp.directCraft.map(({ item, totalNeeded, have, deficit, directIngredients }) => (
+                    <div key={`bnd-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                      <div className="flex items-center justify-between gap-3 mb-1.5">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-sm font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
+                            <Hammer size={9} /> ×{deficit}
+                          </span>
+                          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                            <AlertTriangle size={9} /> over cap
+                          </span>
+                        </div>
+                        <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                      {directIngredients && (
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                          {[...directIngredients.entries()].map(([ing, qty]) => {
+                            const haveIng = inventory[ing] ?? 0;
+                            return <span key={ing} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>✓ {ing} {haveIng}/{qty}</span>;
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Blocked — Craft with prep */}
+          {(blocked.rawCraft.length > 0 || blocked.nextUp.rawCraft.length > 0) && (
+            <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <div className="px-5 py-2 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
+                <Hammer size={11} style={{ color: 'var(--accent-purple)' }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-purple)' }}>Craft with prep</span>
+              </div>
+              {blocked.rawCraft.map(({ item, totalNeeded, have, deficit, directIngredients, rawMaterials }) => (
+                <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                        <Hammer size={9} /> ×{deficit}
+                      </span>
+                      <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                        <AlertTriangle size={9} /> over cap
+                      </span>
+                    </div>
+                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                  </div>
+                  {directIngredients && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1">
+                      {[...directIngredients.entries()].map(([ing, qty]) => {
+                        const haveIng = inventory[ing] ?? 0;
+                        const ok = haveIng >= qty;
+                        return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '→'} {ing} {haveIng}/{qty}</span>;
+                      })}
+                    </div>
+                  )}
+                  {rawMaterials && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                      {[...rawMaterials.entries()].map(([ri, rq]) => {
+                        const haveRaw = inventory[ri] ?? 0;
+                        return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>✓ {ri} {haveRaw}/{rq}</span>;
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {blocked.nextUp.rawCraft.length > 0 && (
+                <>
+                  <NextUpDivider />
+                  {blocked.nextUp.rawCraft.map(({ item, totalNeeded, have, deficit, directIngredients, rawMaterials }) => (
+                    <div key={`bnr-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                      <div className="flex items-center justify-between gap-3 mb-1.5">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <span className="text-sm font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                            <Hammer size={9} /> ×{deficit}
+                          </span>
+                          <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                            <AlertTriangle size={9} /> over cap
+                          </span>
+                        </div>
+                        <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                      {directIngredients && (
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1">
+                          {[...directIngredients.entries()].map(([ing, qty]) => {
+                            const haveIng = inventory[ing] ?? 0;
+                            const ok = haveIng >= qty;
+                            return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '→'} {ing} {haveIng}/{qty}</span>;
+                          })}
+                        </div>
+                      )}
+                      {rawMaterials && (
+                        <div className="flex flex-wrap gap-x-3 gap-y-0.5">
+                          {[...rawMaterials.entries()].map(([ri, rq]) => {
+                            const haveRaw = inventory[ri] ?? 0;
+                            return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>✓ {ri} {haveRaw}/{rq}</span>;
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Blocked — Crafting queue */}
+          {(blocked.gatherForCraft.length > 0 || blocked.nextUp.gatherForCraft.length > 0) && (
+            <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <div className="px-5 py-2 flex items-center gap-2" style={{ background: 'var(--accent-yellow-bg)', borderBottom: '1px solid var(--accent-yellow-border)' }}>
+                <Hammer size={11} style={{ color: 'var(--accent-yellow)' }} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-yellow)' }}>Crafting queue</span>
+              </div>
+              {blocked.gatherForCraft.map(({ item, totalNeeded, have, pct, directIngredients }) => {
+                const pctDisplay = Math.round(pct * 100);
+                return (
+                  <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                    <div className="flex items-center justify-between gap-3 mb-1.5">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                          <Hammer size={9} /> crafted
+                        </span>
+                        <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                          <AlertTriangle size={9} /> over cap
+                        </span>
+                      </div>
+                      <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                    </div>
+                    {directIngredients && (
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1.5">
+                        {[...directIngredients.entries()].map(([ing, qty]) => {
+                          const haveIng = inventory[ing] ?? 0;
+                          const ok = haveIng >= qty;
+                          return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '✗'} {ing} {haveIng}/{qty}</span>;
+                        })}
+                      </div>
+                    )}
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-yellow)', transition: 'var(--transition-default)' }} />
+                    </div>
+                  </div>
+                );
+              })}
+              {blocked.nextUp.gatherForCraft.length > 0 && (
+                <>
+                  <NextUpDivider />
+                  {blocked.nextUp.gatherForCraft.map(({ item, totalNeeded, have, pct, directIngredients }) => {
+                    const pctDisplay = Math.round(pct * 100);
+                    return (
+                      <div key={`bng-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                        <div className="flex items-center justify-between gap-3 mb-1.5">
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span className="text-sm font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                              <Hammer size={9} /> crafted
+                            </span>
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                              <AlertTriangle size={9} /> over cap
+                            </span>
+                          </div>
+                          <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                        </div>
+                        {directIngredients && (
+                          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mb-1.5">
+                            {[...directIngredients.entries()].map(([ing, qty]) => {
+                              const haveIng = inventory[ing] ?? 0;
+                              const ok = haveIng >= qty;
+                              return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>{ok ? '✓' : '✗'} {ing} {haveIng}/{qty}</span>;
+                            })}
+                          </div>
+                        )}
+                        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                          <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </div>
+          )}
+
+          {/* Blocked — Grow crops */}
+          {(() => {
+            const bCropItems = blocked.collecting.filter((i) => i.cropTime);
+            const bNextCropItems = blocked.nextUp.collecting.filter((i) => i.cropTime);
+            if (bCropItems.length === 0 && bNextCropItems.length === 0) return null;
+            return (
+              <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <div className="px-5 py-2 flex items-center gap-2" style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}>
+                  <Sprout size={11} style={{ color: 'var(--accent-green)' }} />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-green)' }}>Grow crops</span>
+                </div>
+                {bCropItems.map(({ item, totalNeeded, have, pct, cropTime, grows, totalTime }) => {
+                  const pctDisplay = Math.round(pct * 100);
+                  return (
+                    <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                              <AlertTriangle size={9} /> over cap
+                            </span>
+                          </div>
+                          {cropTime && grows && totalTime && (
+                            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+                              <Clock size={10} />
+                              {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)} · done {formatDoneBy(totalTime)}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                        <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }} />
+                      </div>
+                    </div>
+                  );
+                })}
+                {bNextCropItems.length > 0 && (
+                  <>
+                    <NextUpDivider />
+                    {bNextCropItems.map(({ item, totalNeeded, have, pct, cropTime, grows, totalTime }) => {
+                      const pctDisplay = Math.round(pct * 100);
+                      return (
+                        <div key={`bnc-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                          <div className="flex items-start justify-between gap-3 mb-1.5">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                                <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                                  <AlertTriangle size={9} /> over cap
+                                </span>
+                              </div>
+                              {cropTime && grows && totalTime && (
+                                <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+                                  <Clock size={10} />
+                                  {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(totalTime)} · done {formatDoneBy(totalTime)}
+                                </p>
+                              )}
+                            </div>
+                            <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                          </div>
+                          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                            <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Blocked — Still collecting */}
+          {(() => {
+            const bOtherItems = blocked.collecting.filter((i) => !i.cropTime);
+            const bNextOtherItems = blocked.nextUp.collecting.filter((i) => !i.cropTime);
+            if (bOtherItems.length === 0 && bNextOtherItems.length === 0) return null;
+            return (
+              <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <div className="px-5 py-2 flex items-center gap-2" style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}>
+                  <Swords size={11} style={{ color: 'var(--accent-orange)' }} />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-orange)' }}>Still collecting</span>
+                </div>
+                {bOtherItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave }) => {
+                  const pctDisplay = Math.round(pct * 100);
+                  return (
+                    <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                      <div className="flex items-start justify-between gap-3 mb-1.5">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                            {(isHoney || isCutlass) && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                                <Landmark size={9} /> temple
+                              </span>
+                            )}
+                            <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                              <AlertTriangle size={9} /> over cap
+                            </span>
+                          </div>
+                          {isHoney && honey && (
+                            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                              <Landmark size={10} />
+                              {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+                              {honeyGrows > 0 ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})` : ' · radishes stocked'}
+                              {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                          {isCutlass && cutlass && (
+                            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                              <Landmark size={10} />
+                              {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
+                              {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
+                              {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>{have}/{totalNeeded}</span>
+                      </div>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                        <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }} />
+                      </div>
+                    </div>
+                  );
+                })}
+                {bNextOtherItems.length > 0 && (
+                  <>
+                    <NextUpDivider />
+                    {bNextOtherItems.map(({ item, totalNeeded, have, pct, isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave }) => {
+                      const pctDisplay = Math.round(pct * 100);
+                      return (
+                        <div key={`bno-${item}`} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)', opacity: 0.85 }}>
+                          <div className="flex items-start justify-between gap-3 mb-1.5">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>{item}</span>
+                                {(isHoney || isCutlass) && (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                                    <Landmark size={9} /> temple
+                                  </span>
+                                )}
+                                <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                                  <AlertTriangle size={9} /> over cap
+                                </span>
+                              </div>
+                              {isHoney && honey && (
+                                <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                                  <Landmark size={10} />
+                                  {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+                                  {honeyGrows > 0 ? ` · ${honeyGrows} grow${honeyGrows !== 1 ? 's' : ''} (have ${honeyRadishHave.toLocaleString()})` : ' · radishes stocked'}
+                                  {' '}· {honey.runs} day{honey.runs !== 1 ? 's' : ''}
+                                </p>
+                              )}
+                              {isCutlass && cutlass && (
+                                <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                                  <Landmark size={10} />
+                                  {cutlass.runs} run{cutlass.runs !== 1 ? 's' : ''} · {cutlass.tribalStaff} tribal staff
+                                  {cutlassStaffHave > 0 && ` (have ${cutlassStaffHave.toLocaleString()})`}
+                                  {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
+                                </p>
+                              )}
+                            </div>
+                            <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{have}/{totalNeeded}</span>
+                          </div>
+                          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                            <div className="h-full rounded-full" style={{ width: `${pctDisplay}%`, background: 'var(--accent-purple)', transition: 'var(--transition-default)' }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* Blocked — Stocked items */}
+          {(blocked.stocked.length > 0 || blocked.nextUp.stocked.length > 0) && (
+            <div className="px-5 py-2.5" style={{ background: 'var(--accent-green-bg)' }}>
+              <p className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
+                ✓ {blocked.stocked.length + blocked.nextUp.stocked.length} item{blocked.stocked.length + blocked.nextUp.stocked.length !== 1 ? 's' : ''} stocked for these quests
+              </p>
             </div>
           )}
         </div>
