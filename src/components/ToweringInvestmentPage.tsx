@@ -18,8 +18,9 @@ import itemLocationsData from '../data/item-locations.json';
 
 const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
-const QUESTLINE = 'A Towering Investment';
 const allQuestsData = questsData as Quest[];
+
+const allQuestlineNames = [...new Set(allQuestsData.map(q => q.questline).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const recipeByName = new Map<string, Recipe>(
@@ -722,16 +723,16 @@ function QuestSection({
 type TowerSubTab = 'summary' | 'quests' | 'gathering';
 
 export function ToweringInvestmentPage() {
-  const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus } = useStore();
+  const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline } = useStore();
   const [filter, setFilter] = useState<QuestFilter>('incomplete');
   const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
   const quests = useMemo(
     () =>
       allQuestsData
-        .filter(q => q.questline === QUESTLINE)
+        .filter(q => q.questline === trackedQuestline)
         .sort((a, b) => compareQuests(a.name, b.name)),
-    []
+    [trackedQuestline]
   );
 
   const questsWithStatus = useMemo(
@@ -767,12 +768,25 @@ export function ToweringInvestmentPage() {
       {/* Header card */}
       <div className="rounded-xl p-5" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
         <div className="flex items-start justify-between gap-4 mb-3">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1">
               <Building2 size={18} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
-              <h2 className="text-xl font-bold truncate" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
-                {QUESTLINE}
-              </h2>
+              <select
+                value={trackedQuestline}
+                onChange={(e) => { setTrackedQuestline(e.target.value); setFilter('incomplete'); setTowerSubTab('summary'); }}
+                className="flex-1 min-w-0 text-xl font-bold rounded-lg px-2 py-0.5 focus:outline-none"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  color: 'var(--text-primary)',
+                  background: 'var(--surface-inset)',
+                  border: '1px solid var(--border-default)',
+                  maxWidth: '100%',
+                }}
+              >
+                {allQuestlineNames.map(name => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
             </div>
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               {completedCount} of {quests.length} quests completed

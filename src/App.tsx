@@ -316,7 +316,7 @@ export default function App() {
               {([
                 { id: 'active', label: 'Active', icon: <ListTodo size={16} /> },
                 { id: 'locations', label: 'Locations', icon: <MapPin size={16} /> },
-                { id: 'tower', label: 'Towering Inv.', icon: <Building2 size={16} /> },
+                { id: 'tower', label: 'Quest Focus', icon: <Building2 size={16} /> },
                 { id: 'the-tower', label: 'The Tower', icon: <Layers size={16} /> },
                 { id: 'inventory', label: 'Inventory', icon: <Package size={16} /> },
                 { id: 'pets', label: 'Pets', icon: <PawPrint size={16} /> },
@@ -357,7 +357,7 @@ export default function App() {
             {([
               { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
               { id: 'locations', label: 'Locations', icon: <MapPin size={14} /> },
-              { id: 'tower', label: 'Towering Inv.', icon: <Building2 size={14} /> },
+              { id: 'tower', label: 'Quest Focus', icon: <Building2 size={14} /> },
               { id: 'the-tower', label: 'The Tower', icon: <Layers size={14} /> },
               { id: 'inventory', label: 'Inventory', icon: <Package size={14} /> },
               { id: 'pets', label: 'Pets', icon: <PawPrint size={14} /> },

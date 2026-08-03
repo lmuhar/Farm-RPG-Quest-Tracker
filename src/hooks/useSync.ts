@@ -21,6 +21,7 @@ function snapshotState(): AppState {
     pinnedQuestline: s.pinnedQuestline,
     ownedPets: s.ownedPets,
     towerLevel: s.towerLevel,
+    trackedQuestline: s.trackedQuestline,
   };
 }
 
