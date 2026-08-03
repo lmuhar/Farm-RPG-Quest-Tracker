@@ -232,6 +232,21 @@ export default function App() {
     });
   }, [questlineGroups, activeQuestIds, inventory, pinnedQuestline]);
 
+  const { readyQuestlines, blockedQuestlines } = useMemo(() => {
+    const isFullyCovered = (quests: Quest[]) => {
+      const activeInLine = quests.filter((q) => activeQuestIds.has(q.id));
+      return activeInLine.every((quest) => {
+        const items = parseItems(quest.itemsRequired);
+        if (items.length === 0) return true;
+        return items.every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity);
+      });
+    };
+    return {
+      readyQuestlines: sortedActiveQuestlines.filter(({ quests }) => isFullyCovered(quests)),
+      blockedQuestlines: sortedActiveQuestlines.filter(({ quests }) => !isFullyCovered(quests)),
+    };
+  }, [sortedActiveQuestlines, activeQuestIds, inventory]);
+
   const isSearching = globalSearch.trim().length > 0;
 
   return (
@@ -461,12 +476,30 @@ export default function App() {
 
               {activeSubTab === 'questlines' && (
                 <>
-                  {sortedActiveQuestlines.map(({ name, quests }) => (
+                  {readyQuestlines.map(({ name, quests }) => (
                     <ActiveQuestLine key={name} questline={name} quests={quests} />
                   ))}
                   {activeQuests.filter((q) => !q.questline).map((quest) => (
                     <QuestCard key={quest.id} quest={quest} status="active" />
                   ))}
+
+                  {blockedQuestlines.length > 0 && (
+                    <>
+                      <div className="flex items-center gap-3 pt-1">
+                        <div className="flex-1 h-px" style={{ background: 'var(--border-subtle)' }} />
+                        <span
+                          className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          Not able to be completed
+                        </span>
+                        <div className="flex-1 h-px" style={{ background: 'var(--border-subtle)' }} />
+                      </div>
+                      {blockedQuestlines.map(({ name, quests }) => (
+                        <ActiveQuestLine key={name} questline={name} quests={quests} />
+                      ))}
+                    </>
+                  )}
                 </>
               )}
             </div>
