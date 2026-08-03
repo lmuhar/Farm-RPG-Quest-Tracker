@@ -42,6 +42,7 @@ interface Store extends AppState {
   setOwnedPetLevel: (petId: number, level: number) => void;
   setTowerLevel: (level: number) => void;
   setTrackedQuestline: (name: string) => void;
+  setMegaMasteries: (count: number) => void;
 }
 
 const defaultCropTimes = [
@@ -105,6 +106,7 @@ export const useStore = create<Store>()(
       ownedPets: {},
       towerLevel: 0,
       trackedQuestline: 'A Towering Investment',
+      megaMasteries: 0,
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -176,6 +178,7 @@ export const useStore = create<Store>()(
           ownedPets: {},
           towerLevel: 0,
           trackedQuestline: 'A Towering Investment',
+          megaMasteries: 0,
         }),
 
       importState: (data) =>
@@ -196,6 +199,7 @@ export const useStore = create<Store>()(
           ownedPets: data.ownedPets ?? s.ownedPets,
           towerLevel: data.towerLevel ?? s.towerLevel,
           trackedQuestline: data.trackedQuestline ?? s.trackedQuestline,
+          megaMasteries: data.megaMasteries ?? s.megaMasteries,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -228,6 +232,8 @@ export const useStore = create<Store>()(
       setTowerLevel: (towerLevel) => set({ towerLevel }),
 
       setTrackedQuestline: (trackedQuestline) => set({ trackedQuestline }),
+
+      setMegaMasteries: (megaMasteries) => set({ megaMasteries }),
     }),
     {
       name: 'farm-rpg-tracker',
