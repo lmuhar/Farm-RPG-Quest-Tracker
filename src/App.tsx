@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
-import { getQuestStatus, compareQuests, isLimitedTime, isCompletable } from './utils';
+import { getQuestStatus, compareQuests, isLimitedTime, isCompletable, parseItems } from './utils';
 import { useStore } from './store';
 import { SkillsPanel } from './components/SkillsPanel';
 import { CropTimerPanel } from './components/CropTimerPanel';
@@ -34,7 +34,7 @@ type Tab = 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets'
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
-  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
+  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState, pinnedQuestline } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -210,6 +210,27 @@ export default function App() {
     const available = questsWithStatus.filter((q) => q.status === 'available').length;
     return { completed: completedCount, available, active: activeQuests.length, total: allQuests.length };
   }, [questsWithStatus, activeQuests, completedCount]);
+
+  const sortedActiveQuestlines = useMemo(() => {
+    const active = questlineGroups.filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)));
+    const coverageScore = (quests: Quest[]) => {
+      const activeInLine = quests.filter((q) => activeQuestIds.has(q.id));
+      if (activeInLine.length === 0) return 0;
+      const scores = activeInLine.map((quest) => {
+        const items = parseItems(quest.itemsRequired);
+        if (items.length === 0) return 1;
+        const total = items.reduce((sum, { item, quantity }) =>
+          sum + Math.min(inventory[item] ?? 0, quantity) / quantity, 0);
+        return total / items.length;
+      });
+      return scores.reduce((a, b) => a + b, 0) / scores.length;
+    };
+    return [...active].sort((a, b) => {
+      if (a.name === pinnedQuestline) return -1;
+      if (b.name === pinnedQuestline) return 1;
+      return coverageScore(b.quests) - coverageScore(a.quests);
+    });
+  }, [questlineGroups, activeQuestIds, inventory, pinnedQuestline]);
 
   const isSearching = globalSearch.trim().length > 0;
 
@@ -440,11 +461,9 @@ export default function App() {
 
               {activeSubTab === 'questlines' && (
                 <>
-                  {questlineGroups
-                    .filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)))
-                    .map(({ name, quests }) => (
-                      <ActiveQuestLine key={name} questline={name} quests={quests} />
-                    ))}
+                  {sortedActiveQuestlines.map(({ name, quests }) => (
+                    <ActiveQuestLine key={name} questline={name} quests={quests} />
+                  ))}
                   {activeQuests.filter((q) => !q.questline).map((quest) => (
                     <QuestCard key={quest.id} quest={quest} status="active" />
                   ))}

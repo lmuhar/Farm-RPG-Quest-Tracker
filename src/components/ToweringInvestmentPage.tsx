@@ -763,6 +763,21 @@ export function ToweringInvestmentPage() {
     return questsWithStatus.filter(({ status }) => status !== 'completed');
   }, [questsWithStatus, filter]);
 
+  const sortedFiltered = useMemo(() => {
+    if (filter === 'completed') return filtered;
+    return [...filtered].sort((a, b) => {
+      const score = (quest: typeof a['quest']) => {
+        const items = parseItems(quest.itemsRequired);
+        if (items.length === 0) return 1;
+        const total = items.reduce((sum, { item, quantity }) => {
+          return sum + Math.min(inventory[item] ?? 0, quantity) / quantity;
+        }, 0);
+        return total / items.length;
+      };
+      return score(b.quest) - score(a.quest);
+    });
+  }, [filtered, inventory, filter]);
+
   return (
     <div className="space-y-4">
       {/* Header card */}
@@ -871,7 +886,7 @@ export function ToweringInvestmentPage() {
 
           {/* Quest accordions */}
           <div className="space-y-2">
-            {filtered.map(({ quest, status }) => (
+            {sortedFiltered.map(({ quest, status }) => (
               <QuestSection
                 key={quest.id}
                 quest={quest}
@@ -883,7 +898,7 @@ export function ToweringInvestmentPage() {
                 setQuestStatus={setQuestStatus}
               />
             ))}
-            {filtered.length === 0 && (
+            {sortedFiltered.length === 0 && (
               <p className="text-sm text-center py-8" style={{ color: 'var(--text-muted)' }}>
                 No quests match this filter.
               </p>
