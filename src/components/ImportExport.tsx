@@ -21,6 +21,10 @@ export function ImportExport() {
       pinnedQuestline: store.pinnedQuestline,
       ownedPets: store.ownedPets,
       towerLevel: store.towerLevel,
+      trackedQuestline: store.trackedQuestline,
+      mastered: store.mastered,
+      grandMastered: store.grandMastered,
+      megaMastered: store.megaMastered,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

@@ -21,6 +21,10 @@ function snapshotState(): AppState {
     pinnedQuestline: s.pinnedQuestline,
     ownedPets: s.ownedPets,
     towerLevel: s.towerLevel,
+    trackedQuestline: s.trackedQuestline,
+    mastered: s.mastered,
+    grandMastered: s.grandMastered,
+    megaMastered: s.megaMastered,
   };
 }
 

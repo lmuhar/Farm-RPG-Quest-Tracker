@@ -66,4 +66,8 @@ export interface AppState {
   pinnedQuestline: string | null;
   ownedPets: Record<number, number>;
   towerLevel: number;
+  trackedQuestline: string;
+  mastered: number;
+  grandMastered: number;
+  megaMastered: number;
 }

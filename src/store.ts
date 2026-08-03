@@ -41,6 +41,10 @@ interface Store extends AppState {
   setPinnedQuestline: (name: string | null) => void;
   setOwnedPetLevel: (petId: number, level: number) => void;
   setTowerLevel: (level: number) => void;
+  setTrackedQuestline: (name: string) => void;
+  setMastered: (count: number) => void;
+  setGrandMastered: (count: number) => void;
+  setMegaMastered: (count: number) => void;
 }
 
 const defaultCropTimes = [
@@ -103,6 +107,10 @@ export const useStore = create<Store>()(
       pinnedQuestline: null,
       ownedPets: {},
       towerLevel: 0,
+      trackedQuestline: 'A Towering Investment',
+      mastered: 0,
+      grandMastered: 0,
+      megaMastered: 0,
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -173,6 +181,10 @@ export const useStore = create<Store>()(
           pinnedQuestline: null,
           ownedPets: {},
           towerLevel: 0,
+          trackedQuestline: 'A Towering Investment',
+          mastered: 0,
+          grandMastered: 0,
+          megaMastered: 0,
         }),
 
       importState: (data) =>
@@ -192,6 +204,10 @@ export const useStore = create<Store>()(
           pinnedQuestline: data.pinnedQuestline ?? s.pinnedQuestline,
           ownedPets: data.ownedPets ?? s.ownedPets,
           towerLevel: data.towerLevel ?? s.towerLevel,
+          trackedQuestline: data.trackedQuestline ?? s.trackedQuestline,
+          mastered: data.mastered ?? s.mastered,
+          grandMastered: data.grandMastered ?? s.grandMastered,
+          megaMastered: data.megaMastered ?? s.megaMastered,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -222,6 +238,12 @@ export const useStore = create<Store>()(
         }),
 
       setTowerLevel: (towerLevel) => set({ towerLevel }),
+
+      setTrackedQuestline: (trackedQuestline) => set({ trackedQuestline }),
+
+      setMastered: (mastered) => set({ mastered }),
+      setGrandMastered: (grandMastered) => set({ grandMastered }),
+      setMegaMastered: (megaMastered) => set({ megaMastered }),
     }),
     {
       name: 'farm-rpg-tracker',
