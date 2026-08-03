@@ -48,30 +48,30 @@ interface Store extends AppState {
 }
 
 const defaultCropTimes = [
-  { item: 'Peppers',     growMinutes: 0.183 },  // 11 secs
-  { item: 'Carrot',      growMinutes: 0.383 },  // 23 secs
-  { item: 'Peas',        growMinutes: 0.583 },  // 35 secs
-  { item: 'Cucumber',    growMinutes: 0.783 },  // 47 secs
-  { item: 'Eggplant',    growMinutes: 1 },
-  { item: 'Radish',      growMinutes: 2 },
-  { item: 'Onion',       growMinutes: 3 },
-  { item: 'Hops',        growMinutes: 4 },
-  { item: 'Potato',      growMinutes: 5 },
-  { item: 'Tomato',      growMinutes: 6 },
-  { item: 'Mushroom',    growMinutes: 18 },
-  { item: 'Leek',        growMinutes: 12 },
-  { item: 'Watermelon',  growMinutes: 24 },
-  { item: 'Corn',        growMinutes: 38.4 },   // 38m 24s
-  { item: 'Sugar Cane',  growMinutes: 90 },
-  { item: 'Cabbage',     growMinutes: 96 },
-  { item: 'Pine Tree',   growMinutes: 96 },
-  { item: 'Pumpkin',     growMinutes: 144 },
-  { item: 'Wheat',       growMinutes: 288 },    // 4h 48m
-  { item: 'Broccoli',    growMinutes: 576 },    // 9h 36m
-  { item: 'Cotton',      growMinutes: 1152 },   // 19h 12m
-  { item: 'Sunflower',  growMinutes: 1728 },   // 1d 4h 48m
-  { item: 'Beet',       growMinutes: 2592 },   // 1d 19h 12m
-  { item: 'Rice',       growMinutes: 2880 },   // 2d
+  { item: 'Peppers',    growMinutes: 0.0915 },  // ~5.5 secs
+  { item: 'Carrot',     growMinutes: 0.1915 },  // ~11.5 secs
+  { item: 'Peas',       growMinutes: 0.2915 },  // ~17.5 secs
+  { item: 'Cucumber',   growMinutes: 0.3915 },  // ~23.5 secs
+  { item: 'Eggplant',   growMinutes: 0.5 },     // 30 secs
+  { item: 'Radish',     growMinutes: 1 },
+  { item: 'Onion',      growMinutes: 1.5 },
+  { item: 'Hops',       growMinutes: 2 },
+  { item: 'Potato',     growMinutes: 2.5 },
+  { item: 'Tomato',     growMinutes: 3 },
+  { item: 'Leek',       growMinutes: 6 },
+  { item: 'Mushroom',   growMinutes: 9 },
+  { item: 'Watermelon', growMinutes: 12 },
+  { item: 'Corn',       growMinutes: 19.2 },    // 19m 12s
+  { item: 'Sugar Cane', growMinutes: 45 },
+  { item: 'Cabbage',    growMinutes: 48 },
+  { item: 'Pine Tree',  growMinutes: 48 },
+  { item: 'Pumpkin',    growMinutes: 72 },
+  { item: 'Wheat',      growMinutes: 144 },     // 2h 24m
+  { item: 'Broccoli',   growMinutes: 288 },     // 4h 48m
+  { item: 'Cotton',     growMinutes: 576 },     // 9h 36m
+  { item: 'Sunflower',  growMinutes: 864 },     // 14h 24m
+  { item: 'Beet',       growMinutes: 1296 },    // 21h 36m
+  { item: 'Rice',       growMinutes: 1440 },    // 1d
 ];
 
 const defaultPlayer: PlayerProfile = {
@@ -247,6 +247,15 @@ export const useStore = create<Store>()(
     }),
     {
       name: 'farm-rpg-tracker',
+      version: 1,
+      migrate: (persistedState, version) => {
+        const s = persistedState as Partial<AppState>;
+        if (version < 1) {
+          // Reset crop times to updated defaults (all crops now 50% faster)
+          return { ...s, cropTimes: defaultCropTimes };
+        }
+        return s;
+      },
       merge: (persisted, current) => {
         const p = persisted as Partial<AppState>;
         return {
