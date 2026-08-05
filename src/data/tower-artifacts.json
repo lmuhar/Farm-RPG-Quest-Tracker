@@ -1,0 +1,160 @@
+[
+  {
+    "floor": 10,
+    "name": "Diary of O'Dynn",
+    "perkName": "Enriched Soil",
+    "perkType": "perk_point",
+    "description": "Crop growth time reduced by 10% of base time. Only effective if the perk is active when you plant the crop — harvesting state doesn't matter.",
+    "notes": "If you have all other crop speed-up perks (which add up to 80% reduction), this perk cuts the remaining time in half. Results in 48-minute cabbage with all perks active."
+  },
+  {
+    "floor": 20,
+    "name": "Bahltruvian Scales",
+    "perkName": "Gift of Persuasion",
+    "perkType": "perk_point",
+    "description": "Silver from sales increased by 10%."
+  },
+  {
+    "floor": 30,
+    "name": "Odthorin's Charm",
+    "perkName": "Steady Hands",
+    "perkType": "perk_point",
+    "description": "Crafting costs 10% less silver."
+  },
+  {
+    "floor": 40,
+    "name": "Stones of Gallodor",
+    "perkName": "Animal Charmer",
+    "perkType": "perk_point",
+    "description": "Pets such as Chickens, Cows, Pigs, and Raptors level up faster. +500 XP per pet feed or incubate."
+  },
+  {
+    "floor": 50,
+    "name": "Runecube",
+    "perkName": "Eagle Eye",
+    "perkType": "perk_point",
+    "description": "Rare items drop slightly more frequently and common items drop slightly less frequently when farming, exploring, or fishing.",
+    "notes": "Reduces effective rarity by 20% on dice rolls during exploring and fishing. You may not see an exact 20% increase due to RNG, but you should see a noticeable increase in rare drops overall."
+  },
+  {
+    "floor": 60,
+    "name": "Growth Medallion I",
+    "perkName": "Orchard Annex I",
+    "perkType": "gold",
+    "description": "Allows you to buy 400 more trees in the orchard."
+  },
+  {
+    "floor": 70,
+    "name": "Trigon Knot",
+    "perkName": "Fishing Trawl",
+    "perkType": "perk_point",
+    "description": "+100 fish from Large Nets. 500 total if you also have the Reinforced Netting perk."
+  },
+  {
+    "floor": 80,
+    "name": "Friendship Bracelet",
+    "perkName": "Charming Personality",
+    "perkType": "perk_point",
+    "description": "Townsfolk give you 5–15 of a random item each hour. Possible items: Orange Juice, Lemonade, Grapes, Orange, Lemon, Apple, Apple Cider, Fishing Net.",
+    "notes": "Items can exceed your mailbox cap, but stop once your mailbox reaches 2,000."
+  },
+  {
+    "floor": 90,
+    "name": "Headdress of Luna",
+    "perkName": "Resource Saver 3",
+    "perkType": "gold",
+    "description": "+20% chance items are duplicated when crafting."
+  },
+  {
+    "floor": 100,
+    "name": "Strange Gem",
+    "perkName": "Inventory Boost",
+    "perkType": "gold",
+    "description": "Inventory boost — gives +2,500 inventory space."
+  },
+  {
+    "floor": 110,
+    "name": "Growth Medallion II",
+    "perkName": "Orchard Annex II",
+    "perkType": "gold",
+    "description": "Allows you to buy 1,500 more trees in the orchard."
+  },
+  {
+    "floor": 120,
+    "name": "Ashes of Pentagorn",
+    "perkName": "Magic Coals",
+    "perkType": "gold",
+    "description": "Reduces resources used when you cook a meal."
+  },
+  {
+    "floor": 130,
+    "name": "Dragon Heart",
+    "perkName": "Personal Bonus",
+    "perkType": "gold",
+    "description": "Doubles rewards from Personal Help Requests."
+  },
+  {
+    "floor": 140,
+    "name": "Magic Mirror",
+    "perkName": "Reflecting Pool",
+    "perkType": "gold",
+    "description": "Doubles rewards from the Wishing Well."
+  },
+  {
+    "floor": 150,
+    "name": "Maduin's Cup",
+    "perkName": "Grape Juice Spring",
+    "perkType": "gold",
+    "description": "Doubles the daily Grape Juice use allowance."
+  },
+  {
+    "floor": 160,
+    "name": "Serpent of Trym",
+    "perkName": "Antler Snare",
+    "perkType": "gold",
+    "description": "10% of Antler production generates at Noon daily, in addition to the normal daily reset amount."
+  },
+  {
+    "floor": 170,
+    "name": "Spring Bangle",
+    "perkName": "Tree Shaker",
+    "perkType": "gold",
+    "description": "10% of orchard production generates at Noon daily, in addition to the normal daily reset amount."
+  },
+  {
+    "floor": 180,
+    "name": "Inferno Ring",
+    "perkName": "Inferno Forge",
+    "perkType": "gold",
+    "description": "10% more output when crafting Inferno Sphere."
+  },
+  {
+    "floor": 190,
+    "name": "Lava Ring",
+    "perkName": "Lava Forge",
+    "perkType": "gold",
+    "description": "10% more output when crafting Lava Sphere."
+  },
+  {
+    "floor": 200,
+    "name": "Unusual Gem",
+    "perkName": "Inventory Boost II",
+    "perkType": "gold",
+    "description": "Inventory boost — gives +2,500 inventory space."
+  },
+  {
+    "floor": 250,
+    "name": "Scythe of Dewstar",
+    "perkName": "Bonus Crops",
+    "perkType": "perk_point",
+    "description": "Gives you bonus crops on harvest."
+  },
+  {
+    "floor": 300,
+    "name": "Mechanical Heart",
+    "perkName": "Monthly Love",
+    "perkType": "perk_point",
+    "description": "Adds extra items to the monthly chore reward.",
+    "notes": "Adds 3,000 Apple Cider to the first reward, 2,000 Arnold Palmer to the second, and doubles the starter pack box from the third. Must be active at time of collection — not retroactive."
+  }
+]

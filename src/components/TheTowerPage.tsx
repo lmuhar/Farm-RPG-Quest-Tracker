@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle } from 'lucide-react';
+import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle, Gem, ChevronRight, Coins } from 'lucide-react';
 import towerLevelsData from '../data/tower-levels.json';
+import towerArtifactsData from '../data/tower-artifacts.json';
 import { useStore } from '../store';
 
 interface TowerLevelData {
@@ -10,7 +11,19 @@ interface TowerLevelData {
   items: { item: string; quantity: number }[];
 }
 
+interface Artifact {
+  floor: number;
+  name: string;
+  perkName: string;
+  perkType: 'perk_point' | 'gold';
+  description: string;
+  notes?: string;
+}
+
 const allLevels = towerLevelsData as TowerLevelData[];
+const artifactByFloor = new Map<number, Artifact>(
+  (towerArtifactsData as Artifact[]).map((a) => [a.floor, a])
+);
 
 function formatSilver(n: number): string {
   if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(n % 1_000_000_000 === 0 ? 0 : 1)}B`;
@@ -39,6 +52,50 @@ function RewardChip({ item, quantity }: { item: string; quantity: number }) {
   );
 }
 
+function ArtifactPanel({ artifact }: { artifact: Artifact }) {
+  return (
+    <div
+      className="rounded-lg p-3 space-y-2"
+      style={{ background: 'var(--accent-purple-bg)', border: '1px solid var(--accent-purple-border)' }}
+    >
+      <div className="flex items-center gap-2">
+        <Gem size={13} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
+        <span className="text-sm font-bold" style={{ color: 'var(--accent-purple)', fontFamily: 'var(--font-display)' }}>
+          {artifact.name}
+        </span>
+      </div>
+      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+        {artifact.description}
+      </p>
+      {artifact.notes && (
+        <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
+          {artifact.notes}
+        </p>
+      )}
+      <div className="flex items-center gap-1.5 pt-0.5">
+        <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>Perk:</span>
+        <span
+          className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+          style={
+            artifact.perkType === 'gold'
+              ? { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }
+              : { background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }
+          }
+        >
+          {artifact.perkType === 'gold' ? <Coins size={8} /> : <span>★</span>}
+          {artifact.perkType === 'gold' ? '1 Gold' : 'Perk point'}
+        </span>
+        <span className="text-[11px] font-medium" style={{ color: 'var(--text-secondary)' }}>
+          "{artifact.perkName}"
+        </span>
+      </div>
+      <p className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
+        Purchase the perk from Farm Supply / perk list to activate
+      </p>
+    </div>
+  );
+}
+
 function LevelCard({
   levelData,
   isCurrent,
@@ -46,14 +103,16 @@ function LevelCard({
   levelData: TowerLevelData;
   isCurrent: boolean;
 }) {
+  const artifact = artifactByFloor.get(levelData.level);
   const isMilestone = levelData.level % 10 === 0;
+  const [showArtifact, setShowArtifact] = useState(false);
 
   return (
     <div
       className="rounded-xl p-3 space-y-2.5"
       style={{
         background: 'var(--surface-card)',
-        border: `1px solid ${isCurrent ? 'var(--accent-yellow-border)' : 'var(--border-subtle)'}`,
+        border: `1px solid ${isCurrent ? 'var(--accent-yellow-border)' : artifact ? 'var(--accent-purple-border)' : 'var(--border-subtle)'}`,
       }}
     >
       {/* Level header */}
@@ -74,7 +133,7 @@ function LevelCard({
               Next
             </span>
           )}
-          {isMilestone && (
+          {isMilestone && !artifact && (
             <span
               className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full uppercase tracking-wider"
               style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
@@ -83,7 +142,24 @@ function LevelCard({
             </span>
           )}
         </div>
+        {artifact && (
+          <button
+            onClick={() => setShowArtifact((v) => !v)}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg transition-colors"
+            style={{ background: 'var(--accent-purple-bg)', border: '1px solid var(--accent-purple-border)', color: 'var(--accent-purple)' }}
+          >
+            <Gem size={11} />
+            <span className="text-[10px] font-semibold">{artifact.name}</span>
+            <ChevronRight
+              size={10}
+              style={{ transform: showArtifact ? 'rotate(90deg)' : 'none', transition: 'var(--transition-fast)' }}
+            />
+          </button>
+        )}
       </div>
+
+      {/* Artifact panel */}
+      {artifact && showArtifact && <ArtifactPanel artifact={artifact} />}
 
       {/* Cost row */}
       <div className="flex flex-wrap gap-1.5">
