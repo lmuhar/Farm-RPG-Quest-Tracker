@@ -764,7 +764,7 @@ export function ToweringInvestmentPage() {
   }, [questsWithStatus, filter]);
 
   const sortedFiltered = useMemo(() => {
-    if (filter === 'completed') return filtered;
+    if (filter === 'completed' || filter === 'upcoming') return filtered;
     return [...filtered].sort((a, b) => {
       const score = (quest: typeof a['quest']) => {
         const items = parseItems(quest.itemsRequired);
