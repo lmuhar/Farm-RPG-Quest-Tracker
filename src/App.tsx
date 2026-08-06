@@ -31,7 +31,7 @@ import { CraftworksSuggestions } from './components/CraftworksSuggestions';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'recipes' | 'stats' | 'settings';
+type Tab = 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -45,7 +45,7 @@ export default function App() {
   const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
-  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'needs' | 'craftworks' | 'questlines'>('plan');
+  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'needs' | 'questlines'>('plan');
   const [copied, setCopied] = useState(false);
 
   const bookmarkletHref = useMemo(() => {
@@ -361,6 +361,7 @@ export default function App() {
                 { id: 'quests', label: 'All Quests', icon: <Search size={16} /> },
                 { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={16} /> },
                 { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={16} /> },
+                { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={16} /> },
                 { id: 'recipes', label: 'Recipes', icon: <Hammer size={16} /> },
                 { id: 'stats', label: 'Stats', icon: <BarChart2 size={16} /> },
                 { id: 'settings', label: 'Settings', icon: <Settings size={16} /> },
@@ -402,6 +403,7 @@ export default function App() {
               { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
               { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
+              { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={14} /> },
               { id: 'recipes', label: 'Recipes', icon: <Hammer size={14} /> },
               { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
               { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
@@ -434,7 +436,6 @@ export default function App() {
                 {([
                   { id: 'plan', label: 'Action Plan', icon: <ListTodo size={13} /> },
                   { id: 'needs', label: 'Needs', icon: <ShoppingCart size={13} /> },
-                  { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={13} /> },
                   { id: 'questlines', label: 'Questlines', icon: <GitBranch size={13} /> },
                 ] as const).map(({ id, label, icon }) => (
                   <button
@@ -474,10 +475,6 @@ export default function App() {
 
               {activeSubTab === 'needs' && (
                 <NeedsTab activeQuests={activeQuests} />
-              )}
-
-              {activeSubTab === 'craftworks' && (
-                <CraftworksSuggestions quests={activeQuests} nextUpQuests={nextUpQuests} />
               )}
 
               {activeSubTab === 'questlines' && (
@@ -645,6 +642,10 @@ export default function App() {
 
           {tab === 'grow' && (
             <GrowPlanner questlineGroups={questlineGroups} />
+          )}
+
+          {tab === 'craftworks' && (
+            <CraftworksSuggestions quests={activeQuests} nextUpQuests={nextUpQuests} />
           )}
 
           {tab === 'recipes' && (
