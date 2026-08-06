@@ -45,6 +45,7 @@ interface Store extends AppState {
   setMastered: (count: number) => void;
   setGrandMastered: (count: number) => void;
   setMegaMastered: (count: number) => void;
+  setCraftworksSlots: (count: number) => void;
 }
 
 const defaultCropTimes = [
@@ -111,6 +112,7 @@ export const useStore = create<Store>()(
       mastered: 0,
       grandMastered: 0,
       megaMastered: 0,
+      craftworksSlots: 5,
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -185,6 +187,7 @@ export const useStore = create<Store>()(
           mastered: 0,
           grandMastered: 0,
           megaMastered: 0,
+          craftworksSlots: 5,
         }),
 
       importState: (data) =>
@@ -208,6 +211,7 @@ export const useStore = create<Store>()(
           mastered: data.mastered ?? s.mastered,
           grandMastered: data.grandMastered ?? s.grandMastered,
           megaMastered: data.megaMastered ?? s.megaMastered,
+          craftworksSlots: data.craftworksSlots ?? s.craftworksSlots,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -244,6 +248,7 @@ export const useStore = create<Store>()(
       setMastered: (mastered) => set({ mastered }),
       setGrandMastered: (grandMastered) => set({ grandMastered }),
       setMegaMastered: (megaMastered) => set({ megaMastered }),
+      setCraftworksSlots: (craftworksSlots) => set({ craftworksSlots }),
     }),
     {
       name: 'farm-rpg-tracker',

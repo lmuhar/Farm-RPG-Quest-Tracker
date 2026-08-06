@@ -27,6 +27,7 @@ import { PetsPage } from './components/PetsPage';
 import { NeedsTab } from './components/NeedsTab';
 import { NpcGatesCard } from './components/NpcGatesCard';
 import { NpcPage } from './components/NpcPage';
+import { CraftworksSuggestions } from './components/CraftworksSuggestions';
 
 const allQuests = questsData as Quest[];
 
@@ -44,7 +45,7 @@ export default function App() {
   const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
   const [showCompletedLines, setShowCompletedLines] = useState(true);
-  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'needs' | 'questlines'>('plan');
+  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'needs' | 'craftworks' | 'questlines'>('plan');
   const [copied, setCopied] = useState(false);
 
   const bookmarkletHref = useMemo(() => {
@@ -433,6 +434,7 @@ export default function App() {
                 {([
                   { id: 'plan', label: 'Action Plan', icon: <ListTodo size={13} /> },
                   { id: 'needs', label: 'Needs', icon: <ShoppingCart size={13} /> },
+                  { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={13} /> },
                   { id: 'questlines', label: 'Questlines', icon: <GitBranch size={13} /> },
                 ] as const).map(({ id, label, icon }) => (
                   <button
@@ -472,6 +474,10 @@ export default function App() {
 
               {activeSubTab === 'needs' && (
                 <NeedsTab activeQuests={activeQuests} />
+              )}
+
+              {activeSubTab === 'craftworks' && (
+                <CraftworksSuggestions quests={activeQuests} nextUpQuests={nextUpQuests} />
               )}
 
               {activeSubTab === 'questlines' && (
