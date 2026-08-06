@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Hammer, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Minus, Plus } from 'lucide-react';
+import { Hammer, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Minus, Plus, Link2 } from 'lucide-react';
 import type { Quest } from '../types';
-import { parseItems } from '../utils';
+import { parseItems, resolveRawIngredients } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 
@@ -12,6 +12,7 @@ interface Recipe {
 }
 
 const allRecipes = recipesData as Recipe[];
+const builtInRecipeMap = new Map<string, Recipe>(allRecipes.map((r) => [r.name.toLowerCase(), r]));
 
 interface Candidate {
   item: string;
@@ -22,6 +23,7 @@ interface Candidate {
   isIntermediate: boolean;
   questNames: string[];
   recipe: Recipe;
+  anchorMaterial: string | null;
 }
 
 interface Props {
@@ -34,8 +36,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
 
   const recipeMap = useMemo(() => {
-    const map = new Map<string, Recipe>();
-    allRecipes.forEach((r) => map.set(r.name.toLowerCase(), r));
+    const map = new Map<string, Recipe>(builtInRecipeMap);
     Object.entries(craftingRecipes).forEach(([item, ings]) => {
       map.set(item.toLowerCase(), { id: 'custom', name: item, ingredients: ings });
     });
@@ -43,7 +44,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
   }, [craftingRecipes]);
 
   const suggestions = useMemo(() => {
-    const candidateMap = new Map<string, Candidate>();
+    const candidateMap = new Map<string, Omit<Candidate, 'anchorMaterial'>>();
 
     const addCandidate = (
       item: string,
@@ -70,24 +71,21 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
         }
       } else {
         candidateMap.set(item, {
-          item,
-          needed,
-          have,
-          deficit,
-          priority,
-          isIntermediate,
+          item, needed, have, deficit, priority, isIntermediate,
           questNames: isIntermediate ? [] : questName ? [questName] : [],
           recipe,
         });
       }
     };
 
+    // Active quests first (higher priority)
     for (const quest of quests) {
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
         addCandidate(item, quantity, 'active', quest.name, false);
       }
     }
 
+    // Next-up quests (lower priority, skip if already queued)
     for (const quest of nextUpQuests) {
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
         if (!candidateMap.has(item)) {
@@ -96,7 +94,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    // Add intermediate craftable ingredients that also have a deficit
+    // Pull in craftable intermediate ingredients that also have a deficit
     const directCandidates = [...candidateMap.values()];
     for (const c of directCandidates) {
       for (const { item: ing, quantity: ingQty } of c.recipe.ingredients) {
@@ -106,8 +104,55 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    // Topological sort: if item A's recipe needs item B (also a candidate), B comes first
-    const allCandidates = [...candidateMap.values()];
+    // ── Smarter clustering ───────────────────────────────────────────────
+    // Resolve every candidate down to its raw base ingredients so we can
+    // find which items share the same source materials.  Items that draw
+    // from the same base (e.g. Wood → Twine, Board, Lantern) are scored
+    // higher and sorted together so Craftworks can run the whole chain
+    // automatically in one go.
+    const candidateRawMap = new Map<string, Map<string, number>>();
+    for (const c of candidateMap.values()) {
+      candidateRawMap.set(c.item, resolveRawIngredients(c.item, 1, recipeMap));
+    }
+
+    // Count how many candidates each raw ingredient appears in
+    const rawFreq = new Map<string, number>();
+    for (const rawMats of candidateRawMap.values()) {
+      for (const raw of rawMats.keys()) {
+        rawFreq.set(raw, (rawFreq.get(raw) ?? 0) + 1);
+      }
+    }
+
+    // Cluster score = sum of freq of each raw ingredient.
+    // Higher score → this item shares more base materials with other candidates.
+    const clusterScore = (item: string) => {
+      const rawMats = candidateRawMap.get(item);
+      if (!rawMats) return 0;
+      return [...rawMats.keys()].reduce((s, raw) => s + (rawFreq.get(raw) ?? 0), 0);
+    };
+
+    // Anchor = the raw ingredient shared by the most other candidates.
+    // Used to label and visually group a chain of related crafts.
+    const anchorOf = (item: string): string | null => {
+      const rawMats = candidateRawMap.get(item);
+      if (!rawMats) return null;
+      let best = '';
+      let bestFreq = 1; // only meaningful if shared by ≥ 2
+      for (const raw of rawMats.keys()) {
+        const f = rawFreq.get(raw) ?? 0;
+        if (f > bestFreq) { bestFreq = f; best = raw; }
+      }
+      return best || null;
+    };
+
+    const allCandidates: Candidate[] = [...candidateMap.values()].map((c) => ({
+      ...c,
+      anchorMaterial: anchorOf(c.item),
+    }));
+
+    // ── Topological sort (ingredients before products) ───────────────────
+    // Pre-sort by cluster score so that high-sharing items anchor the visit
+    // order, which naturally pulls related crafts into adjacent slots.
     const itemKeys = new Set(allCandidates.map((c) => c.item.toLowerCase()));
     const visited = new Set<string>();
     const result: Candidate[] = [];
@@ -118,27 +163,27 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       visited.add(key);
       for (const { item: dep } of c.recipe.ingredients) {
         if (itemKeys.has(dep.toLowerCase())) {
-          const depCand = candidateMap.get(dep) ?? allCandidates.find((x) => x.item.toLowerCase() === dep.toLowerCase());
+          const depCand = allCandidates.find((x) => x.item.toLowerCase() === dep.toLowerCase());
           if (depCand) visit(depCand);
         }
       }
       result.push(c);
     };
 
-    // Visit in priority order so higher-priority items anchor the topo sort
-    const sorted = [...allCandidates].sort((a, b) => {
+    const presorted = [...allCandidates].sort((a, b) => {
       if (a.priority !== b.priority) return a.priority === 'active' ? -1 : 1;
       if (a.isIntermediate !== b.isIntermediate) return a.isIntermediate ? 1 : -1;
-      return b.deficit - a.deficit;
+      return clusterScore(b.item) - clusterScore(a.item);
     });
-    for (const c of sorted) visit(c);
+    for (const c of presorted) visit(c);
 
     return result;
   }, [quests, nextUpQuests, inventory, recipeMap]);
 
-  // For each displayed slot, check ingredient availability assuming prior slots produce their items
+  const displaySlots = suggestions.slice(0, craftworksSlots);
+
+  // Check ingredient availability per slot, treating prior slots as already having run
   const slotReadiness = useMemo(() => {
-    const displaySlots = suggestions.slice(0, craftworksSlots);
     return displaySlots.map((candidate, slotIdx) => {
       const virtual: Record<string, number> = { ...inventory };
       for (let i = 0; i < slotIdx; i++) {
@@ -150,12 +195,25 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
         const haveNow = virtual[ing] ?? 0;
         return { item: ing, totalNeeded, haveNow, ok: haveNow >= totalNeeded };
       });
-      const canCraft = ingredientStatus.every((s) => s.ok);
-      return { canCraft, ingredientStatus };
+      return { canCraft: ingredientStatus.every((s) => s.ok), ingredientStatus };
     });
-  }, [suggestions, craftworksSlots, inventory]);
+  }, [displaySlots, inventory]);
 
-  const displaySlots = suggestions.slice(0, craftworksSlots);
+  // Group consecutive slots that share the same anchor material so we can
+  // render a "Wood chain" header above each cluster
+  const chainGroups = useMemo(() => {
+    const groups: { anchor: string | null; indices: number[] }[] = [];
+    for (let i = 0; i < displaySlots.length; i++) {
+      const anchor = displaySlots[i].anchorMaterial;
+      const last = groups[groups.length - 1];
+      if (last && last.anchor === anchor) {
+        last.indices.push(i);
+      } else {
+        groups.push({ anchor, indices: [i] });
+      }
+    }
+    return groups;
+  }, [displaySlots]);
 
   if (quests.length === 0 && nextUpQuests.length === 0) return null;
 
@@ -164,42 +222,44 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       className="rounded-xl overflow-hidden"
       style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
     >
-      {/* Header */}
+      {/* ── Header ─────────────────────────────────────────────────────── */}
       <div
-        className="flex items-center justify-between gap-3 px-4 py-3 flex-wrap"
+        className="flex items-center gap-3 px-4 py-3"
         style={{ borderBottom: '1px solid var(--border-subtle)' }}
       >
-        <div className="flex items-center gap-2">
-          <Hammer size={15} style={{ color: 'var(--accent-blue)' }} />
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <Hammer size={14} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
           <span
             className="text-sm font-semibold"
             style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
           >
             Craftworks
           </span>
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            suggested slot order
+          <span className="text-xs hidden sm:inline" style={{ color: 'var(--text-muted)' }}>
+            auto-chain order
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Slots:</span>
+
+        {/* Slot counter */}
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Slots</span>
           <button
             onClick={() => setCraftworksSlots(Math.max(1, craftworksSlots - 1))}
-            className="w-6 h-6 flex items-center justify-center rounded transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-lg"
             style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-default)', color: 'var(--text-muted)' }}
             aria-label="Fewer slots"
           >
             <Minus size={11} />
           </button>
           <span
-            className="text-sm font-bold w-5 text-center"
-            style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}
+            className="text-sm font-bold w-5 text-center tabular-nums"
+            style={{ color: 'var(--text-primary)' }}
           >
             {craftworksSlots}
           </span>
           <button
             onClick={() => setCraftworksSlots(Math.min(15, craftworksSlots + 1))}
-            className="w-6 h-6 flex items-center justify-center rounded transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-lg"
             style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-default)', color: 'var(--text-muted)' }}
             aria-label="More slots"
           >
@@ -208,157 +268,210 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
         </div>
       </div>
 
+      {/* ── Empty state ─────────────────────────────────────────────────── */}
       {displaySlots.length === 0 ? (
         <div className="px-4 py-8 text-center">
-          <CheckCircle2 size={24} className="mx-auto mb-2" style={{ color: 'var(--accent-green)' }} />
+          <CheckCircle2 size={22} className="mx-auto mb-2" style={{ color: 'var(--accent-green)' }} />
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
             Nothing to craft — all needed items are stocked.
           </p>
         </div>
       ) : (
         <div>
-          {displaySlots.map((candidate, slotIdx) => {
-            const { canCraft, ingredientStatus } = slotReadiness[slotIdx];
-            const isExpanded = expandedSlot === slotIdx;
-            const pct = candidate.needed > 0 ? Math.min(1, candidate.have / candidate.needed) : 1;
-
-            return (
-              <div key={candidate.item} style={{ borderBottom: slotIdx < displaySlots.length - 1 ? '1px solid var(--border-subtle)' : undefined }}>
-                <button
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors"
-                  style={{ background: isExpanded ? 'var(--surface-inset)' : undefined }}
-                  onClick={() => setExpandedSlot(isExpanded ? null : slotIdx)}
+          {chainGroups.map((group, gIdx) => (
+            <div key={gIdx}>
+              {/* Chain header — only when ≥ 2 slots share the same base */}
+              {group.anchor && group.indices.length > 1 && (
+                <div
+                  className="flex items-center gap-1.5 px-4 py-1.5"
+                  style={{
+                    background: 'var(--surface-inset)',
+                    borderTop: gIdx > 0 ? '1px solid var(--border-subtle)' : undefined,
+                    borderBottom: '1px solid var(--border-subtle)',
+                  }}
                 >
-                  {/* Slot number */}
+                  <Link2 size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
                   <span
-                    className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{
-                      background: 'var(--accent-blue-bg)',
-                      color: 'var(--accent-blue)',
-                      border: '1px solid var(--accent-blue-border)',
-                    }}
+                    className="text-[10px] font-semibold uppercase tracking-wider"
+                    style={{ color: 'var(--accent-blue)' }}
                   >
-                    {slotIdx + 1}
+                    {group.anchor} chain
                   </span>
+                  <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                    · slots {group.indices.map((i) => i + 1).join(', ')} run together
+                  </span>
+                </div>
+              )}
 
-                  {/* Item info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                        {candidate.item}
-                      </span>
-                      {candidate.isIntermediate && (
-                        <span
-                          className="text-[10px] px-1.5 py-0.5 rounded font-medium"
-                          style={{
-                            background: 'var(--accent-purple-bg)',
-                            color: 'var(--accent-purple)',
-                            border: '1px solid var(--accent-purple-border)',
-                          }}
-                        >
-                          ingredient
-                        </span>
-                      )}
-                      {candidate.priority === 'nextup' && !candidate.isIntermediate && (
-                        <span
-                          className="text-[10px] px-1.5 py-0.5 rounded font-medium"
-                          style={{
-                            background: 'var(--accent-yellow-bg)',
-                            color: 'var(--accent-yellow)',
-                            border: '1px solid var(--accent-yellow-border)',
-                          }}
-                        >
-                          up next
-                        </span>
-                      )}
-                    </div>
-                    {candidate.questNames.length > 0 && (
-                      <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                        {candidate.questNames.join(' · ')}
-                      </p>
-                    )}
-                  </div>
+              {group.indices.map((slotIdx) => {
+                const candidate = displaySlots[slotIdx];
+                const { canCraft, ingredientStatus } = slotReadiness[slotIdx];
+                const isExpanded = expandedSlot === slotIdx;
+                const pct = candidate.needed > 0 ? Math.min(1, candidate.have / candidate.needed) : 1;
+                const isLast = slotIdx === displaySlots.length - 1 && gIdx === chainGroups.length - 1;
 
-                  {/* Progress */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="text-right">
-                      <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                        {candidate.have.toLocaleString()} / {candidate.needed.toLocaleString()}
-                      </div>
-                      <div
-                        className="w-16 h-1 rounded-full mt-1 overflow-hidden"
-                        style={{ background: 'var(--surface-inset)' }}
-                      >
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${pct * 100}%`,
-                            background: pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)',
-                          }}
-                        />
-                      </div>
-                    </div>
-                    {canCraft ? (
-                      <CheckCircle2 size={14} style={{ color: 'var(--accent-green)' }} />
-                    ) : (
-                      <AlertCircle size={14} style={{ color: 'var(--accent-orange)' }} />
-                    )}
-                    {isExpanded ? (
-                      <ChevronUp size={13} style={{ color: 'var(--text-muted)' }} />
-                    ) : (
-                      <ChevronDown size={13} style={{ color: 'var(--text-muted)' }} />
-                    )}
-                  </div>
-                </button>
-
-                {isExpanded && (
+                return (
                   <div
-                    className="px-4 pb-3"
-                    style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}
+                    key={candidate.item}
+                    style={{ borderBottom: isLast ? undefined : '1px solid var(--border-subtle)' }}
                   >
-                    <p
-                      className="text-[10px] font-semibold uppercase tracking-wider mb-2 pt-3"
-                      style={{ color: 'var(--text-muted)' }}
+                    <button
+                      className="w-full px-3 py-2.5 text-left"
+                      style={{
+                        background: isExpanded
+                          ? 'color-mix(in srgb, var(--surface-inset) 70%, transparent)'
+                          : undefined,
+                      }}
+                      onClick={() => setExpandedSlot(isExpanded ? null : slotIdx)}
                     >
-                      Ingredients for {candidate.deficit.toLocaleString()} {candidate.item}
-                      {candidate.deficit > 1 ? 's' : ''}
-                    </p>
-                    <div className="space-y-1.5">
-                      {ingredientStatus.map(({ item: ing, totalNeeded, haveNow, ok }) => (
-                        <div key={ing} className="flex items-center justify-between text-xs gap-3">
-                          <span style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}>
-                            {ing}
-                          </span>
-                          <span
-                            style={{
-                              fontFamily: 'var(--font-mono)',
-                              color: ok ? 'var(--accent-green)' : 'var(--accent-orange)',
-                            }}
-                          >
-                            {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}
-                          </span>
+                      {/* Line 1: slot badge · item name · tags · status · chevron */}
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                          style={{
+                            background: 'var(--accent-blue-bg)',
+                            color: 'var(--accent-blue)',
+                            border: '1px solid var(--accent-blue-border)',
+                          }}
+                        >
+                          {slotIdx + 1}
+                        </span>
+
+                        <span
+                          className="text-sm font-medium flex-1 min-w-0 truncate"
+                          style={{ color: 'var(--text-primary)' }}
+                        >
+                          {candidate.item}
+                        </span>
+
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          {candidate.isIntermediate && (
+                            <span
+                              className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline"
+                              style={{
+                                background: 'var(--accent-purple-bg)',
+                                color: 'var(--accent-purple)',
+                                border: '1px solid var(--accent-purple-border)',
+                              }}
+                            >
+                              ingredient
+                            </span>
+                          )}
+                          {candidate.priority === 'nextup' && !candidate.isIntermediate && (
+                            <span
+                              className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline"
+                              style={{
+                                background: 'var(--accent-yellow-bg)',
+                                color: 'var(--accent-yellow)',
+                                border: '1px solid var(--accent-yellow-border)',
+                              }}
+                            >
+                              next
+                            </span>
+                          )}
+                          {canCraft ? (
+                            <CheckCircle2 size={13} style={{ color: 'var(--accent-green)' }} />
+                          ) : (
+                            <AlertCircle size={13} style={{ color: 'var(--accent-orange)' }} />
+                          )}
+                          {isExpanded ? (
+                            <ChevronUp size={12} style={{ color: 'var(--text-muted)' }} />
+                          ) : (
+                            <ChevronDown size={12} style={{ color: 'var(--text-muted)' }} />
+                          )}
                         </div>
-                      ))}
-                    </div>
-                    {!canCraft && (
-                      <p className="text-xs mt-2.5 italic" style={{ color: 'var(--text-muted)' }}>
-                        Earlier slots may supply missing ingredients once crafted.
-                      </p>
+                      </div>
+
+                      {/* Line 2: quest name + have/need + progress bar */}
+                      <div className="flex items-center gap-2 mt-1 ml-7">
+                        <span
+                          className="text-xs flex-1 min-w-0 truncate"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          {candidate.isIntermediate
+                            ? 'needed as ingredient'
+                            : candidate.questNames.join(' · ')}
+                        </span>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          <span
+                            className="text-xs tabular-nums"
+                            style={{ color: 'var(--text-secondary)' }}
+                          >
+                            {candidate.have.toLocaleString()}/{candidate.needed.toLocaleString()}
+                          </span>
+                          <div
+                            className="w-12 h-1 rounded-full overflow-hidden flex-shrink-0"
+                            style={{ background: 'var(--surface-inset)' }}
+                          >
+                            <div
+                              className="h-full rounded-full"
+                              style={{
+                                width: `${pct * 100}%`,
+                                background: pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)',
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+
+                    {/* Expanded: ingredient checklist */}
+                    {isExpanded && (
+                      <div
+                        className="px-3 pb-3"
+                        style={{
+                          background: 'var(--surface-inset)',
+                          borderTop: '1px solid var(--border-subtle)',
+                        }}
+                      >
+                        <p
+                          className="text-[10px] font-semibold uppercase tracking-wider pt-2.5 pb-2"
+                          style={{ color: 'var(--text-muted)' }}
+                        >
+                          Ingredients for {candidate.deficit.toLocaleString()} × {candidate.item}
+                        </p>
+                        <div className="space-y-1.5">
+                          {ingredientStatus.map(({ item: ing, totalNeeded, haveNow, ok }) => (
+                            <div key={ing} className="flex items-center justify-between gap-2 text-xs">
+                              <span
+                                className="truncate"
+                                style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}
+                              >
+                                {ing}
+                              </span>
+                              <span
+                                className="tabular-nums flex-shrink-0 font-medium"
+                                style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)' }}
+                              >
+                                {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        {!canCraft && (
+                          <p
+                            className="text-[11px] mt-2.5 italic"
+                            style={{ color: 'var(--text-muted)' }}
+                          >
+                            Earlier slots supply missing ingredients once crafted.
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          ))}
         </div>
       )}
 
       {suggestions.length > craftworksSlots && (
         <div
-          className="px-4 py-2 text-xs text-center"
+          className="px-4 py-2.5 text-xs text-center"
           style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)' }}
         >
-          +{suggestions.length - craftworksSlots} more craftable items — increase slots to see them
+          +{suggestions.length - craftworksSlots} more craftable items — increase slots to include them
         </div>
       )}
     </div>
