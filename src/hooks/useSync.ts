@@ -25,6 +25,7 @@ function snapshotState(): AppState {
     mastered: s.mastered,
     grandMastered: s.grandMastered,
     megaMastered: s.megaMastered,
+    craftworksSlots: s.craftworksSlots,
   };
 }
 

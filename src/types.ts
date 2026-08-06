@@ -70,4 +70,5 @@ export interface AppState {
   mastered: number;
   grandMastered: number;
   megaMastered: number;
+  craftworksSlots: number;
 }
