@@ -32,7 +32,7 @@ interface Props {
 }
 
 export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
-  const { inventory, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
+  const { inventory, inventoryMax, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
 
   const recipeMap = useMemo(() => {
@@ -56,6 +56,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       const recipe = recipeMap.get(item.toLowerCase());
       if (!recipe) return;
       const have = inventory[item] ?? 0;
+      if (have >= inventoryMax) return; // already at cap — Craftworks suspends here anyway
       const deficit = needed - have;
       if (deficit <= 0) return;
 
