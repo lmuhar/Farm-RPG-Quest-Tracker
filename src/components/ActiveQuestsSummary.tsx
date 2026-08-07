@@ -28,6 +28,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [locationItem, setLocationItem] = useState<string | null>(null);
   const [showStocked, setShowStocked] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<'all' | 'ready' | 'farming' | 'crafting'>('all');
 
   const toggleItem = (item: string) =>
     setSelectedItem((prev) => (prev === item ? null : item));
@@ -326,6 +327,29 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         </div>
       </div>
 
+      {/* Filter chips */}
+      <div className="px-5 py-2 flex items-center gap-1.5 flex-wrap" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+        {([
+          { id: 'all', label: 'All' },
+          { id: 'ready', label: 'Ready Now' },
+          { id: 'crafting', label: 'Crafting' },
+          { id: 'farming', label: 'Farming' },
+        ] as const).map(({ id, label }) => (
+          <button
+            key={id}
+            onClick={() => setActiveFilter(id)}
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-full transition-colors"
+            style={
+              activeFilter === id
+                ? { background: 'var(--accent-purple)', color: '#fff' }
+                : { background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
+            }
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* Priority questline banner */}
       {pinnedQuestline && (
         <div
@@ -354,7 +378,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* Group header: Ready Now */}
-      {(turnInQuests.length > 0 || directCraftItems.length > 0 || rawCraftItems.length > 0) && (
+      {(activeFilter === 'all' || activeFilter === 'ready') && (turnInQuests.length > 0 || directCraftItems.length > 0 || rawCraftItems.length > 0) && (
         <div
           className="px-5 py-2 flex items-center gap-2"
           style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}
@@ -367,7 +391,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* TIER 1 — Turn in now (active quests only) */}
-      {turnInQuests.length > 0 && (
+      {(activeFilter === 'all' || activeFilter === 'ready') && turnInQuests.length > 0 && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -404,7 +428,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* TIER 2a — Craft now */}
-      {(directCraftItems.length > 0 || nextUp.directCraft.length > 0) && (
+      {(activeFilter === 'all' || activeFilter === 'ready' || activeFilter === 'crafting') && (directCraftItems.length > 0 || nextUp.directCraft.length > 0) && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -516,7 +540,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* TIER 2b — Craft with prep */}
-      {(rawCraftItems.length > 0 || nextUp.rawCraft.length > 0) && (
+      {(activeFilter === 'all' || activeFilter === 'crafting') && (rawCraftItems.length > 0 || nextUp.rawCraft.length > 0) && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -660,7 +684,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* Group header: Waiting */}
-      {(gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0 || collectingItems.filter(i => i.cropTime).length > 0 || nextUp.collecting.filter(i => i.cropTime).length > 0) && (
+      {(activeFilter === 'all' || activeFilter === 'crafting' || activeFilter === 'farming') && (gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0 || collectingItems.filter(i => i.cropTime).length > 0 || nextUp.collecting.filter(i => i.cropTime).length > 0) && (
         <div
           className="px-5 py-2 flex items-center gap-2"
           style={{ background: 'var(--accent-yellow-bg)', borderBottom: '1px solid var(--accent-yellow-border)' }}
@@ -673,7 +697,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* TIER 3 — Crafting queue */}
-      {(gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0) && (
+      {(activeFilter === 'all' || activeFilter === 'crafting') && (gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0) && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <div
             className="px-5 py-2 flex items-center gap-2"
@@ -843,7 +867,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       )}
 
       {/* TIER 4a — Grow crops */}
-      {(() => {
+      {(activeFilter === 'all' || activeFilter === 'farming') && (() => {
         const cropItems = collectingItems.filter((i) => i.cropTime);
         const nextUpCropItems = nextUp.collecting.filter((i) => i.cropTime);
         if (cropItems.length === 0 && nextUpCropItems.length === 0) return null;
