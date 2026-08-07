@@ -257,23 +257,33 @@ export default function App() {
         style={{ background: 'oklch(0.25 0.022 258 / 0.85)', borderBottom: '1px solid var(--border-subtle)' }}
       >
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-          {/* Logo — home button */}
+          {/* Mobile hamburger — LEFT */}
+          <button
+            className="md:hidden flex-shrink-0 p-1.5 rounded-lg transition-colors"
+            style={{ color: 'var(--text-muted)' }}
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Open menu"
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
+          {/* Logo + Title — centered on mobile, left-aligned on desktop */}
           <button
             onClick={() => { setTab('active'); setMenuOpen(false); }}
-            className="flex items-center gap-2 flex-shrink-0 rounded-lg transition-opacity hover:opacity-80"
+            className="flex items-center gap-2 flex-1 md:flex-none justify-center md:justify-start rounded-lg transition-opacity hover:opacity-80"
             aria-label="Home"
           >
             <img src="/favicon.svg" alt="" style={{ width: 26, height: 26, flexShrink: 0 }} />
             <h1
-              className="text-base font-bold hidden sm:block"
+              className="text-base font-bold"
               style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
             >
               Farm RPG Tracker
             </h1>
           </button>
 
-          {/* Global search */}
-          <div className="relative flex-1 max-w-md mx-2 sm:mx-4">
+          {/* Global search — desktop only */}
+          <div className="relative hidden md:block flex-1 max-w-md mx-4">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
             <input
               type="text"
@@ -305,28 +315,30 @@ export default function App() {
           {completedCount < 10 && (
             <button
               onClick={() => setShowWizard(true)}
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium flex-shrink-0 transition-colors"
+              className="hidden md:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium flex-shrink-0 transition-colors"
               style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
             >
               <Wand2 size={13} />
-              <span className="hidden sm:inline">Quick Setup</span>
+              Quick Setup
             </button>
           )}
 
-          <div className="ml-auto flex items-center gap-3 text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)' }}>
+          {/* Stats — desktop only */}
+          <div className="hidden md:flex ml-auto items-center gap-3 text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)' }}>
             <span style={{ color: 'var(--accent-yellow)', fontWeight: 600 }}>{stats.active} active</span>
             <span style={{ color: 'var(--accent-green)', fontWeight: 600 }}>{stats.completed} done</span>
-            <span className="hidden sm:inline" style={{ color: 'var(--text-muted)' }}>{stats.available} available</span>
+            <span style={{ color: 'var(--text-muted)' }}>{stats.available} available</span>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Sync / refresh button — RIGHT, always visible */}
           <button
-            className="md:hidden flex-shrink-0 p-1.5 rounded-lg transition-colors"
-            style={{ color: 'var(--text-muted)' }}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Open menu"
+            onClick={() => sync.pullNow()}
+            className="flex-shrink-0 p-1.5 rounded-lg transition-colors"
+            style={{ color: sync.syncStatus === 'syncing' ? 'var(--accent-green)' : 'var(--text-muted)' }}
+            aria-label="Sync data"
+            title={sync.user ? 'Sync from cloud' : 'Sign in to sync'}
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            <RefreshCw size={16} className={sync.syncStatus === 'syncing' ? 'animate-spin' : ''} />
           </button>
         </div>
       </header>

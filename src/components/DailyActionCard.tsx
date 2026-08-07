@@ -4,7 +4,7 @@ import { useStore } from '../store';
 import {
   parseItems, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns,
   HONEY_RADISHES_PER_RUN, CUTLASS_TRIBAL_STAFF_PER_RUN,
-  formatDoneBy,
+  formatDoneBy, formatDuration,
 } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
@@ -35,6 +35,8 @@ interface CropAction {
   item: string;
   grows: number;
   doneBy: string;
+  growMinutes: number;
+  deficit: number;
 }
 
 interface Props {
@@ -130,13 +132,13 @@ export function DailyActionCard({ activeQuests }: Props) {
         const cropTime = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
         if (cropTime) {
           const grows = calcGrowsNeeded(deficit, plotCount);
-          cropActions.push({ item, grows, doneBy: formatDoneBy(grows * cropTime.growMinutes) });
+          cropActions.push({ item, grows, doneBy: formatDoneBy(grows * cropTime.growMinutes), growMinutes: cropTime.growMinutes, deficit });
         }
       }
     }
 
-    // Shortest grow time first
-    cropActions.sort((a, b) => a.grows - b.grows);
+    // Shortest grow time per cycle first
+    cropActions.sort((a, b) => a.growMinutes - b.growMinutes);
 
     return { turnInReady, craftNow, templeItems, cropActions };
   }, [activeQuests, inventory, cropTimes, plotCount]);
@@ -229,11 +231,11 @@ export function DailyActionCard({ activeQuests }: Props) {
           <Sprout size={13} style={{ color: 'var(--accent-green)', flexShrink: 0, marginTop: 1 }} />
           <div className="flex-1 min-w-0 space-y-1">
             <span className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>Plant today</span>
-            {cropActions.map(({ item, grows, doneBy }) => (
+            {cropActions.map(({ item, grows, doneBy, growMinutes, deficit }) => (
               <div key={item} className="flex items-baseline justify-between gap-2">
                 <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{item}</span>
                 <span className="text-[11px] flex-shrink-0 text-right" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                  {grows} grow{grows !== 1 ? 's' : ''} · {doneBy}
+                  ×{deficit} · {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle · {doneBy}
                 </span>
               </div>
             ))}

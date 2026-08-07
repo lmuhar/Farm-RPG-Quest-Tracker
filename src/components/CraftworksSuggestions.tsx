@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Hammer, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Minus, Plus, Link2 } from 'lucide-react';
+import { Hammer, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Minus, Plus, Link2, ChevronRight } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, resolveRawIngredients } from '../utils';
 import { useStore } from '../store';
@@ -34,6 +34,15 @@ interface Props {
 export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
   const { inventory, inventoryMax, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
+
+  const toggleGroup = (groupIdx: number) =>
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(groupIdx)) next.delete(groupIdx);
+      else next.add(groupIdx);
+      return next;
+    });
 
   const recipeMap = useMemo(() => {
     const map = new Map<string, Recipe>(builtInRecipeMap);
@@ -181,7 +190,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     return result;
   }, [quests, nextUpQuests, inventory, recipeMap]);
 
-  const displaySlots = suggestions.slice(0, craftworksSlots);
+  const displaySlots = suggestions.slice(0, Math.max(craftworksSlots, 0));
 
   // Check ingredient availability per slot, treating prior slots as already having run
   const slotReadiness = useMemo(() => {
@@ -259,7 +268,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
             {craftworksSlots}
           </span>
           <button
-            onClick={() => setCraftworksSlots(Math.min(15, craftworksSlots + 1))}
+            onClick={() => setCraftworksSlots(craftworksSlots + 1)}
             className="w-7 h-7 flex items-center justify-center rounded-lg"
             style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-default)', color: 'var(--text-muted)' }}
             aria-label="More slots"
@@ -279,191 +288,146 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
         </div>
       ) : (
         <div>
-          {chainGroups.map((group, gIdx) => (
-            <div key={gIdx}>
-              {/* Chain header — only when ≥ 2 slots share the same base */}
-              {group.anchor && group.indices.length > 1 && (
-                <div
-                  className="flex items-center gap-1.5 px-4 py-1.5"
-                  style={{
-                    background: 'var(--surface-inset)',
-                    borderTop: gIdx > 0 ? '1px solid var(--border-subtle)' : undefined,
-                    borderBottom: '1px solid var(--border-subtle)',
-                  }}
+          {Array.from({ length: Math.ceil(displaySlots.length / 5) }, (_, pageIdx) => {
+            const pageStart = pageIdx * 5;
+            const pageEnd = Math.min(pageStart + 5, displaySlots.length);
+            const pageSlots = displaySlots.slice(pageStart, pageEnd);
+            const isCollapsed = collapsedGroups.has(pageIdx);
+            const pageReadyCount = pageSlots.filter((_, i) => slotReadiness[pageStart + i]?.canCraft).length;
+
+            return (
+              <div key={pageIdx} style={{ borderBottom: pageIdx < Math.ceil(displaySlots.length / 5) - 1 ? '2px solid var(--border-subtle)' : undefined }}>
+                {/* Group header */}
+                <button
+                  className="w-full flex items-center gap-2 px-4 py-2.5 text-left transition-colors hover:opacity-80"
+                  style={{ background: 'var(--surface-inset)' }}
+                  onClick={() => toggleGroup(pageIdx)}
                 >
-                  <Link2 size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
-                  <span
-                    className="text-[10px] font-semibold uppercase tracking-wider"
-                    style={{ color: 'var(--accent-blue)' }}
-                  >
-                    {group.anchor} chain
+                  {isCollapsed
+                    ? <ChevronRight size={12} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                    : <ChevronDown size={12} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                  }
+                  <span className="text-xs font-semibold flex-1" style={{ color: 'var(--text-secondary)' }}>
+                    Slots {pageStart + 1}–{pageEnd}
                   </span>
-                  <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                    · slots {group.indices.map((i) => i + 1).join(', ')} run together
+                  <span className="text-[11px]" style={{ color: pageReadyCount === pageSlots.length ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                    {pageReadyCount}/{pageSlots.length} ready
                   </span>
-                </div>
-              )}
+                </button>
 
-              {group.indices.map((slotIdx) => {
-                const candidate = displaySlots[slotIdx];
-                const { canCraft, ingredientStatus } = slotReadiness[slotIdx];
-                const isExpanded = expandedSlot === slotIdx;
-                const pct = candidate.needed > 0 ? Math.min(1, candidate.have / candidate.needed) : 1;
-                const isLast = slotIdx === displaySlots.length - 1 && gIdx === chainGroups.length - 1;
+                {!isCollapsed && pageSlots.map((candidate, localIdx) => {
+                  const slotIdx = pageStart + localIdx;
 
-                return (
-                  <div
-                    key={candidate.item}
-                    style={{ borderBottom: isLast ? undefined : '1px solid var(--border-subtle)' }}
-                  >
-                    <button
-                      className="w-full px-3 py-2.5 text-left"
-                      style={{
-                        background: isExpanded
-                          ? 'color-mix(in srgb, var(--surface-inset) 70%, transparent)'
-                          : undefined,
-                      }}
-                      onClick={() => setExpandedSlot(isExpanded ? null : slotIdx)}
-                    >
-                      {/* Line 1: slot badge · item name · tags · status · chevron */}
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
-                          style={{
-                            background: 'var(--accent-blue-bg)',
-                            color: 'var(--accent-blue)',
-                            border: '1px solid var(--accent-blue-border)',
-                          }}
+                  // Find chain group for this slot
+                  const chainGroup = chainGroups.find(g => g.indices.includes(slotIdx));
+                  const isChainStart = chainGroup && chainGroup.anchor && chainGroup.indices.length > 1 && chainGroup.indices[0] === slotIdx;
+
+                  const { canCraft, ingredientStatus } = slotReadiness[slotIdx];
+                  const isExpanded = expandedSlot === slotIdx;
+                  const pct = candidate.needed > 0 ? Math.min(1, candidate.have / candidate.needed) : 1;
+                  const isLast = localIdx === pageSlots.length - 1;
+
+                  return (
+                    <div key={candidate.item}>
+                      {/* Chain sub-header */}
+                      {isChainStart && (
+                        <div
+                          className="flex items-center gap-1.5 px-4 py-1.5"
+                          style={{ background: 'color-mix(in srgb, var(--accent-blue-bg) 50%, transparent)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}
                         >
-                          {slotIdx + 1}
-                        </span>
-
-                        <span
-                          className="text-sm font-medium flex-1 min-w-0 truncate"
-                          style={{ color: 'var(--text-primary)' }}
-                        >
-                          {candidate.item}
-                        </span>
-
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          {candidate.isIntermediate && (
-                            <span
-                              className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline"
-                              style={{
-                                background: 'var(--accent-purple-bg)',
-                                color: 'var(--accent-purple)',
-                                border: '1px solid var(--accent-purple-border)',
-                              }}
-                            >
-                              ingredient
-                            </span>
-                          )}
-                          {candidate.priority === 'nextup' && !candidate.isIntermediate && (
-                            <span
-                              className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline"
-                              style={{
-                                background: 'var(--accent-yellow-bg)',
-                                color: 'var(--accent-yellow)',
-                                border: '1px solid var(--accent-yellow-border)',
-                              }}
-                            >
-                              next
-                            </span>
-                          )}
-                          {canCraft ? (
-                            <CheckCircle2 size={13} style={{ color: 'var(--accent-green)' }} />
-                          ) : (
-                            <AlertCircle size={13} style={{ color: 'var(--accent-orange)' }} />
-                          )}
-                          {isExpanded ? (
-                            <ChevronUp size={12} style={{ color: 'var(--text-muted)' }} />
-                          ) : (
-                            <ChevronDown size={12} style={{ color: 'var(--text-muted)' }} />
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Line 2: quest name + have/need + progress bar */}
-                      <div className="flex items-center gap-2 mt-1 ml-7">
-                        <span
-                          className="text-xs flex-1 min-w-0 truncate"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
-                          {candidate.isIntermediate
-                            ? 'needed as ingredient'
-                            : candidate.questNames.join(' · ')}
-                        </span>
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
-                          <span
-                            className="text-xs tabular-nums"
-                            style={{ color: 'var(--text-secondary)' }}
-                          >
-                            {candidate.have.toLocaleString()}/{candidate.needed.toLocaleString()}
+                          <Link2 size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+                          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-blue)' }}>
+                            {chainGroup!.anchor} chain
                           </span>
-                          <div
-                            className="w-12 h-1 rounded-full overflow-hidden flex-shrink-0"
-                            style={{ background: 'var(--surface-inset)' }}
-                          >
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: `${pct * 100}%`,
-                                background: pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)',
-                              }}
-                            />
-                          </div>
+                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                            · slots {chainGroup!.indices.map(i => i + 1).join(', ')} run together
+                          </span>
                         </div>
-                      </div>
-                    </button>
+                      )}
 
-                    {/* Expanded: ingredient checklist */}
-                    {isExpanded && (
-                      <div
-                        className="px-3 pb-3"
-                        style={{
-                          background: 'var(--surface-inset)',
-                          borderTop: '1px solid var(--border-subtle)',
-                        }}
-                      >
-                        <p
-                          className="text-[10px] font-semibold uppercase tracking-wider pt-2.5 pb-2"
-                          style={{ color: 'var(--text-muted)' }}
+                      <div style={{ borderBottom: isLast ? undefined : '1px solid var(--border-subtle)' }}>
+                        <button
+                          className="w-full px-3 py-2.5 text-left"
+                          style={{ background: isExpanded ? 'color-mix(in srgb, var(--surface-inset) 70%, transparent)' : undefined }}
+                          onClick={() => setExpandedSlot(isExpanded ? null : slotIdx)}
                         >
-                          Ingredients for {candidate.deficit.toLocaleString()} × {candidate.item}
-                        </p>
-                        <div className="space-y-1.5">
-                          {ingredientStatus.map(({ item: ing, totalNeeded, haveNow, ok }) => (
-                            <div key={ing} className="flex items-center justify-between gap-2 text-xs">
-                              <span
-                                className="truncate"
-                                style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}
-                              >
-                                {ing}
-                              </span>
-                              <span
-                                className="tabular-nums flex-shrink-0 font-medium"
-                                style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)' }}
-                              >
-                                {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}
-                              </span>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                              style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
+                            >
+                              {slotIdx + 1}
+                            </span>
+                            <span className="text-sm font-medium flex-1 min-w-0 truncate" style={{ color: 'var(--text-primary)' }}>
+                              {candidate.item}
+                            </span>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              {candidate.isIntermediate && (
+                                <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                                  ingredient
+                                </span>
+                              )}
+                              {candidate.priority === 'nextup' && !candidate.isIntermediate && (
+                                <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                                  next
+                                </span>
+                              )}
+                              {canCraft ? (
+                                <CheckCircle2 size={13} style={{ color: 'var(--accent-green)' }} />
+                              ) : (
+                                <AlertCircle size={13} style={{ color: 'var(--accent-orange)' }} />
+                              )}
+                              {isExpanded ? (
+                                <ChevronUp size={12} style={{ color: 'var(--text-muted)' }} />
+                              ) : (
+                                <ChevronDown size={12} style={{ color: 'var(--text-muted)' }} />
+                              )}
                             </div>
-                          ))}
-                        </div>
-                        {!canCraft && (
-                          <p
-                            className="text-[11px] mt-2.5 italic"
-                            style={{ color: 'var(--text-muted)' }}
-                          >
-                            Earlier slots supply missing ingredients once crafted.
-                          </p>
+                          </div>
+                          <div className="flex items-center gap-2 mt-1 ml-7">
+                            <span className="text-xs flex-1 min-w-0 truncate" style={{ color: 'var(--text-muted)' }}>
+                              {candidate.isIntermediate ? 'needed as ingredient' : candidate.questNames.join(' · ')}
+                            </span>
+                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                              <span className="text-xs tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+                                {candidate.have.toLocaleString()}/{candidate.needed.toLocaleString()}
+                              </span>
+                              <div className="w-12 h-1 rounded-full overflow-hidden flex-shrink-0" style={{ background: 'var(--surface-inset)' }}>
+                                <div className="h-full rounded-full" style={{ width: `${pct * 100}%`, background: pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+
+                        {isExpanded && (
+                          <div className="px-3 pb-3" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
+                            <p className="text-[10px] font-semibold uppercase tracking-wider pt-2.5 pb-2" style={{ color: 'var(--text-muted)' }}>
+                              Ingredients for {candidate.deficit.toLocaleString()} × {candidate.item}
+                            </p>
+                            <div className="space-y-1.5">
+                              {ingredientStatus.map(({ item: ing, totalNeeded, haveNow, ok }) => (
+                                <div key={ing} className="flex items-center justify-between gap-2 text-xs">
+                                  <span className="truncate" style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}>{ing}</span>
+                                  <span className="tabular-nums flex-shrink-0 font-medium" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                                    {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                            {!canCraft && (
+                              <p className="text-[11px] mt-2.5 italic" style={{ color: 'var(--text-muted)' }}>
+                                Earlier slots supply missing ingredients once crafted.
+                              </p>
+                            )}
+                          </div>
                         )}
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
       )}
 
