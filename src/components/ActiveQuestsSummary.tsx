@@ -377,19 +377,6 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         </div>
       )}
 
-      {/* Group header: Ready Now */}
-      {(activeFilter === 'all' || activeFilter === 'ready') && (turnInQuests.length > 0 || directCraftItems.length > 0 || rawCraftItems.length > 0) && (
-        <div
-          className="px-5 py-2 flex items-center gap-2"
-          style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}
-        >
-          <CheckCircle2 size={12} style={{ color: 'var(--accent-green)' }} />
-          <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--accent-green)' }}>
-            Ready Now
-          </span>
-        </div>
-      )}
-
       {/* TIER 1 — Turn in now (active quests only) */}
       {(activeFilter === 'all' || activeFilter === 'ready') && turnInQuests.length > 0 && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
@@ -683,18 +670,6 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
         </div>
       )}
 
-      {/* Group header: Waiting */}
-      {(activeFilter === 'all' || activeFilter === 'crafting' || activeFilter === 'farming') && (gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0 || collectingItems.filter(i => i.cropTime).length > 0 || nextUp.collecting.filter(i => i.cropTime).length > 0) && (
-        <div
-          className="px-5 py-2 flex items-center gap-2"
-          style={{ background: 'var(--accent-yellow-bg)', borderBottom: '1px solid var(--accent-yellow-border)' }}
-        >
-          <Clock size={12} style={{ color: 'var(--accent-yellow)' }} />
-          <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--accent-yellow)' }}>
-            Waiting
-          </span>
-        </div>
-      )}
 
       {/* TIER 3 — Crafting queue */}
       {(activeFilter === 'all' || activeFilter === 'crafting') && (gatherForCraftItems.length > 0 || nextUp.gatherForCraft.length > 0) && (
