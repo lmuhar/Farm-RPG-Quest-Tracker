@@ -439,7 +439,7 @@ export default function App() {
           </div>
 
           {tab === 'dashboard' && (
-            <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
+            <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} onTabChange={(t) => setTab(t as Tab)} />
           )}
 
           {tab === 'active' && (

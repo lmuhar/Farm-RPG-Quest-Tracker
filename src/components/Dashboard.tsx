@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
-import { CheckCircle2, Hammer, Sprout, Package, AlertTriangle, TrendingUp, Zap, Clock } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X } from 'lucide-react';
 import { useStore } from '../store';
-import { parseItems, calcGrowsNeeded } from '../utils';
+import { parseItems, calcGrowsNeeded, resolveRawIngredients } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 
@@ -12,10 +12,12 @@ const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLower
 interface Props {
   activeQuests: Quest[];
   nextUpQuests: Quest[];
+  onTabChange?: (tab: string) => void;
 }
 
-export function Dashboard({ activeQuests, nextUpQuests }: Props) {
+export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
   const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes } = useStore();
+  const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
 
   const recipeMap = useMemo(() => {
     const map = new Map<string, Recipe>(recipeByName);
@@ -25,13 +27,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     return map;
   }, [craftingRecipes]);
 
-  const {
-    readyToTurnIn,
-    craftNowItems,
-    cropItems,
-    bottlenecks,
-  } = useMemo(() => {
-    // All quests to consider
+  const { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks } = useMemo(() => {
     const allQ = [...activeQuests, ...nextUpQuests];
 
     // Aggregate item needs across active quests
@@ -42,14 +38,14 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       }
     }
 
-    // Turn in ready
     const readyToTurnIn = activeQuests.filter(q =>
       parseItems(q.itemsRequired).every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity)
     );
 
-    // Craft now (all direct ingredients in inventory)
-    const craftNowItems: string[] = [];
+    // Craft now: all direct ingredients in inventory, deficit ≤ inventoryMax
+    const craftNowItems: { item: string; deficit: number; totalNeeded: number }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
+      if (totalNeeded > inventoryMax) continue; // can't hold this many
       const have = inventory[item] ?? 0;
       const deficit = totalNeeded - have;
       if (deficit <= 0) continue;
@@ -57,7 +53,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       if (!recipe) continue;
       const directIngs = new Map(recipe.ingredients.map(({ item: ing, quantity: qty }) => [ing, qty * deficit]));
       if ([...directIngs.entries()].every(([ing, qty]) => (inventory[ing] ?? 0) >= qty)) {
-        craftNowItems.push(item);
+        craftNowItems.push({ item, deficit, totalNeeded });
       }
     }
 
@@ -74,20 +70,17 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       }
     }
 
-    // Bottleneck items: deficit > 0, no recipe, no crop time, needed by ≥ 1 quest
-    // Rank by: number of quests needing it (both active + next-up)
+    // Bottleneck items
     const allItemQuestCount = new Map<string, { active: number; nextup: number; have: number; need: number }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
         const have = inventory[item] ?? 0;
-        if (have >= quantity) continue; // already stocked
+        if (have >= quantity) continue;
         const recipe = recipeMap.get(item.toLowerCase());
         const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
-        if (recipe || crop) continue; // has a path
-        const isHoney = item.toLowerCase() === 'honey';
-        const isCutlass = item.toLowerCase() === 'cutlass';
-        if (isHoney || isCutlass) continue; // temple items handled separately
+        if (recipe || crop) continue;
+        if (item.toLowerCase() === 'honey' || item.toLowerCase() === 'cutlass') continue;
         const existing = allItemQuestCount.get(item) ?? { active: 0, nextup: 0, have, need: 0 };
         if (isNextUp) existing.nextup++;
         else existing.active++;
@@ -100,93 +93,70 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       .sort((a, b) => b.active - a.active || b.nextup - a.nextup)
       .slice(0, 6);
 
-    return { readyToTurnIn, craftNowItems, cropItems, bottlenecks };
-  }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, recipeMap]);
+    // Craftworks picks: craftable items for active/nextup quests, sorted by priority
+    const craftworksPicks: {
+      item: string;
+      deficit: number;
+      totalNeeded: number;
+      have: number;
+      priority: 'active' | 'nextup';
+      ingredientsReady: boolean;
+      missingRaw: [string, number][];
+    }[] = [];
 
-  const usedSlots = Object.keys(inventory).length;
-  const slotPct = inventoryMax > 0 ? usedSlots / inventoryMax : 0;
-  const slotColor = slotPct >= 0.9 ? 'var(--accent-orange)' : slotPct >= 0.75 ? 'var(--accent-yellow)' : 'var(--accent-green)';
+    const allQuestsForCraft = [
+      ...activeQuests.map(q => ({ quest: q, priority: 'active' as const })),
+      ...nextUpQuests.map(q => ({ quest: q, priority: 'nextup' as const })),
+    ];
 
-  const totalGrows = cropItems.reduce((s, c) => s + c.grows, 0);
+    const seenCraftItems = new Set<string>();
+    for (const { quest, priority } of allQuestsForCraft) {
+      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
+        if (seenCraftItems.has(item)) continue;
+        if (quantity > inventoryMax) continue;
+        const recipe = recipeMap.get(item.toLowerCase());
+        if (!recipe) continue;
+        const have = inventory[item] ?? 0;
+        if (have >= inventoryMax) continue; // at cap
+        const deficit = quantity - have;
+        if (deficit <= 0) continue;
+        seenCraftItems.add(item);
+
+        const rawMats = resolveRawIngredients(item, deficit, recipeMap);
+        const ingredientsReady = [...rawMats.entries()].every(([ing, qty]) => (inventory[ing] ?? 0) >= qty);
+        const missingRaw: [string, number][] = [...rawMats.entries()]
+          .filter(([ing, qty]) => (inventory[ing] ?? 0) < qty)
+          .map(([ing, qty]) => [ing, qty - (inventory[ing] ?? 0)]);
+
+        craftworksPicks.push({ item, deficit, totalNeeded: quantity, have, priority, ingredientsReady, missingRaw });
+      }
+    }
+    craftworksPicks.sort((a, b) => {
+      if (a.priority !== b.priority) return a.priority === 'active' ? -1 : 1;
+      return b.deficit - a.deficit;
+    });
+
+    return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks: craftworksPicks.slice(0, 6) };
+  }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap]);
+
+  const hasDoNow = readyToTurnIn.length > 0 || craftNowItems.length > 0;
+
+  // Per-quest item details for expansion
+  const questItemDetails = useMemo(() => {
+    const map = new Map<string, { item: string; quantity: number; have: number; pct: number }[]>();
+    for (const q of activeQuests) {
+      map.set(q.id, parseItems(q.itemsRequired).map(({ item, quantity }) => {
+        const have = Math.min(inventory[item] ?? 0, quantity);
+        return { item, quantity, have, pct: quantity > 0 ? have / quantity : 1 };
+      }));
+    }
+    return map;
+  }, [activeQuests, inventory]);
 
   return (
     <div className="space-y-4">
-      {/* Stat tiles */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        {/* Ready to turn in */}
-        <div
-          className="rounded-xl p-4 flex flex-col gap-1"
-          style={{ background: 'var(--surface-card)', border: readyToTurnIn.length > 0 ? '1px solid var(--accent-green-border)' : '1px solid var(--border-subtle)' }}
-        >
-          <div className="flex items-center gap-2">
-            <CheckCircle2 size={14} style={{ color: readyToTurnIn.length > 0 ? 'var(--accent-green)' : 'var(--text-muted)' }} />
-            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Turn in</span>
-          </div>
-          <span className="text-2xl font-bold" style={{ color: readyToTurnIn.length > 0 ? 'var(--accent-green)' : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            {readyToTurnIn.length}
-          </span>
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {readyToTurnIn.length === 0 ? 'quest ready' : readyToTurnIn.length === 1 ? 'quest ready' : 'quests ready'}
-          </span>
-        </div>
-
-        {/* Craft now */}
-        <div
-          className="rounded-xl p-4 flex flex-col gap-1"
-          style={{ background: 'var(--surface-card)', border: craftNowItems.length > 0 ? '1px solid var(--accent-blue-border)' : '1px solid var(--border-subtle)' }}
-        >
-          <div className="flex items-center gap-2">
-            <Hammer size={14} style={{ color: craftNowItems.length > 0 ? 'var(--accent-blue)' : 'var(--text-muted)' }} />
-            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Craft now</span>
-          </div>
-          <span className="text-2xl font-bold" style={{ color: craftNowItems.length > 0 ? 'var(--accent-blue)' : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-            {craftNowItems.length}
-          </span>
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {craftNowItems.length === 1 ? 'item ready' : 'items ready'}
-          </span>
-        </div>
-
-        {/* Crops */}
-        <div
-          className="rounded-xl p-4 flex flex-col gap-1"
-          style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-        >
-          <div className="flex items-center gap-2">
-            <Sprout size={14} style={{ color: 'var(--accent-green)' }} />
-            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Grows needed</span>
-          </div>
-          <span className="text-2xl font-bold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono)' }}>
-            {totalGrows}
-          </span>
-          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            {cropItems.length} crop type{cropItems.length !== 1 ? 's' : ''}
-          </span>
-        </div>
-
-        {/* Inventory pressure */}
-        <div
-          className="rounded-xl p-4 flex flex-col gap-1"
-          style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-        >
-          <div className="flex items-center gap-2">
-            <Package size={14} style={{ color: slotColor }} />
-            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Inventory</span>
-          </div>
-          <span className="text-2xl font-bold" style={{ color: slotColor, fontFamily: 'var(--font-mono)' }}>
-            {usedSlots}
-          </span>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>of {inventoryMax}</span>
-            <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-              <div className="h-full rounded-full" style={{ width: `${Math.min(slotPct * 100, 100)}%`, background: slotColor }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Do right now */}
-      {(readyToTurnIn.length > 0 || craftNowItems.length > 0) && (
+      {hasDoNow && (
         <div
           className="rounded-xl overflow-hidden"
           style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-green-border)' }}
@@ -200,15 +170,21 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               <div key={q.id} className="px-4 py-2.5 flex items-center gap-2">
                 <CheckCircle2 size={12} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
                 <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Turn in: {q.name}</span>
-                <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>{q.npc}</span>
+                <span className="text-xs ml-auto flex-shrink-0" style={{ color: 'var(--text-muted)' }}>{q.npc}</span>
               </div>
             ))}
-            {craftNowItems.map(item => (
-              <div key={item} className="px-4 py-2.5 flex items-center gap-2">
-                <Hammer size={12} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
-                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Craft: {item}</span>
-              </div>
-            ))}
+            {craftNowItems.map(({ item, deficit, totalNeeded }) => {
+              const have = inventory[item] ?? 0;
+              return (
+                <div key={item} className="px-4 py-2.5 flex items-center gap-2">
+                  <Hammer size={12} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Craft: {item}</span>
+                  <span className="text-xs ml-auto flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
+                    ×{deficit} needed · {have}/{totalNeeded}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -223,7 +199,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
             <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}>
               <AlertTriangle size={13} style={{ color: 'var(--accent-orange)' }} />
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-orange)' }}>Bottlenecks</span>
-              <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— items with no easy source</span>
+              <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— no easy source</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
               {bottlenecks.map(({ item, active, nextup, have, need }) => (
@@ -233,7 +209,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                     <div className="flex items-center gap-2 mt-0.5">
                       {active > 0 && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
-                          {active} active quest{active !== 1 ? 's' : ''}
+                          {active} active
                         </span>
                       )}
                       {nextup > 0 && (
@@ -252,7 +228,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           </div>
         )}
 
-        {/* Crops overview */}
+        {/* Crops to grow */}
         {cropItems.length > 0 && (
           <div
             className="rounded-xl overflow-hidden"
@@ -279,7 +255,65 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         )}
       </div>
 
-      {/* Active quests count by questline */}
+      {/* Craftworks picks */}
+      {craftworksPicks.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--surface-inset)', borderBottom: '1px solid var(--border-subtle)' }}>
+            <Hammer size={13} style={{ color: 'var(--accent-blue)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Craftworks</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--text-muted)' }}>— suggested items for your slots</span>
+            {onTabChange && (
+              <button
+                onClick={() => onTabChange('craftworks')}
+                className="ml-auto text-xs flex items-center gap-1 flex-shrink-0"
+                style={{ color: 'var(--accent-purple)' }}
+              >
+                See all <ChevronRight size={11} />
+              </button>
+            )}
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {craftworksPicks.map(({ item, deficit, totalNeeded, have, priority, ingredientsReady, missingRaw }) => (
+              <div key={item} className="px-4 py-2.5">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <Hammer size={11} style={{ color: ingredientsReady ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    {priority === 'nextup' && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                        next up
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: ingredientsReady ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                    {have}/{totalNeeded} · ×{deficit} to craft
+                  </span>
+                </div>
+                {!ingredientsReady && missingRaw.length > 0 && (
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 pl-5">
+                    {missingRaw.slice(0, 4).map(([ing, short]) => (
+                      <span key={ing} className="text-xs" style={{ color: 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
+                        {ing} –{short}
+                      </span>
+                    ))}
+                    {missingRaw.length > 4 && (
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>+{missingRaw.length - 4} more</span>
+                    )}
+                  </div>
+                )}
+                {ingredientsReady && (
+                  <p className="text-xs mt-1 pl-5" style={{ color: 'var(--accent-green)' }}>✓ All ingredients ready — craft now</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Active quests — expandable */}
       {activeQuests.length > 0 && (
         <div
           className="rounded-xl overflow-hidden"
@@ -288,10 +322,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--surface-inset)', borderBottom: '1px solid var(--border-subtle)' }}>
             <TrendingUp size={13} style={{ color: 'var(--accent-purple)' }} />
             <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-purple)' }}>Active quests</span>
-            <span className="ml-auto text-xs font-semibold" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{activeQuests.length} total</span>
+            <span className="ml-auto text-xs font-semibold flex-shrink-0" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{activeQuests.length} total</span>
           </div>
           <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {/* Group by questline */}
             {(() => {
               const lines = new Map<string, Quest[]>();
               for (const q of activeQuests) {
@@ -300,19 +333,75 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                 lines.get(key)!.push(q);
               }
               return [...lines.entries()].map(([line, quests]) => (
-                <div key={line} className="px-4 py-2.5 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>{line}</span>
-                    <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                      {quests.map(q => q.name).join(' · ')}
-                    </p>
+                <div key={line}>
+                  <div className="px-4 py-2" style={{ background: 'var(--surface-inset)' }}>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{line}</span>
                   </div>
-                  <span
-                    className="flex-shrink-0 text-[11px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}
-                  >
-                    {quests.length}
-                  </span>
+                  {quests.map(q => {
+                    const isExpanded = expandedQuestId === q.id;
+                    const items = questItemDetails.get(q.id) ?? [];
+                    const allReady = items.every(i => i.pct >= 1);
+                    const overallPct = items.length > 0
+                      ? items.reduce((sum, i) => sum + i.pct, 0) / items.length
+                      : 1;
+                    return (
+                      <div key={q.id} style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                        <button
+                          onClick={() => setExpandedQuestId(isExpanded ? null : q.id)}
+                          className="w-full px-4 py-2.5 flex items-center gap-3 text-left transition-colors hover:bg-slate-500/5"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium" style={{ color: allReady ? 'var(--accent-green)' : 'var(--text-primary)' }}>
+                                {q.name}
+                              </span>
+                              {allReady && <CheckCircle2 size={11} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />}
+                            </div>
+                            <div className="flex items-center gap-2 mt-1">
+                              <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                                <div
+                                  className="h-full rounded-full"
+                                  style={{ width: `${Math.round(overallPct * 100)}%`, background: allReady ? 'var(--accent-green)' : 'var(--accent-yellow)' }}
+                                />
+                              </div>
+                              <span className="text-[10px] flex-shrink-0" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                                {Math.round(overallPct * 100)}%
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{q.npc}</span>
+                            {isExpanded
+                              ? <X size={12} style={{ color: 'var(--text-muted)' }} />
+                              : <ChevronDown size={12} style={{ color: 'var(--text-muted)' }} />
+                            }
+                          </div>
+                        </button>
+                        {isExpanded && (
+                          <div className="px-4 pb-3 pt-1 space-y-1.5" style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)' }}>
+                            {items.map(({ item, quantity, have, pct }) => {
+                              const ready = pct >= 1;
+                              return (
+                                <div key={item} className="flex items-center gap-2">
+                                  <div className="flex-1 min-w-0">
+                                    <div className="flex items-baseline justify-between gap-2">
+                                      <span className="text-xs" style={{ color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>{item}</span>
+                                      <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                                        {have}/{quantity}{ready ? ' ✓' : ''}
+                                      </span>
+                                    </div>
+                                    <div className="h-1 rounded-full overflow-hidden mt-0.5" style={{ background: 'var(--border-default)' }}>
+                                      <div className="h-full rounded-full" style={{ width: `${Math.round(pct * 100)}%`, background: ready ? 'var(--accent-green)' : 'var(--accent-yellow)' }} />
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               ));
             })()}
