@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers, LayoutDashboard } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable, parseItems } from './utils';
@@ -28,10 +28,11 @@ import { NeedsTab } from './components/NeedsTab';
 import { NpcGatesCard } from './components/NpcGatesCard';
 import { NpcPage } from './components/NpcPage';
 import { CraftworksSuggestions } from './components/CraftworksSuggestions';
+import { Dashboard } from './components/Dashboard';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes' | 'stats' | 'settings';
+type Tab = 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -363,6 +364,7 @@ export default function App() {
             {/* Nav items */}
             <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
               {([
+                { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
                 { id: 'active', label: 'Active', icon: <ListTodo size={16} /> },
                 { id: 'locations', label: 'Locations', icon: <MapPin size={16} /> },
                 { id: 'tower', label: 'Quest Focus', icon: <Building2 size={16} /> },
@@ -405,6 +407,7 @@ export default function App() {
             style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
           >
             {([
+              { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} /> },
               { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
               { id: 'locations', label: 'Locations', icon: <MapPin size={14} /> },
               { id: 'tower', label: 'Quest Focus', icon: <Building2 size={14} /> },
@@ -434,6 +437,10 @@ export default function App() {
               </button>
             ))}
           </div>
+
+          {tab === 'dashboard' && (
+            <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
+          )}
 
           {tab === 'active' && (
             <div className="space-y-3">
