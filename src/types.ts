@@ -71,4 +71,7 @@ export interface AppState {
   grandMastered: number;
   megaMastered: number;
   craftworksSlots: number;
+  inventoryGoal: number;
+  dailyGain: number;
+  dailyResetTime: string;
 }

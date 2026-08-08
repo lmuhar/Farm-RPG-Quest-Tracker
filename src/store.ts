@@ -46,6 +46,9 @@ interface Store extends AppState {
   setGrandMastered: (count: number) => void;
   setMegaMastered: (count: number) => void;
   setCraftworksSlots: (count: number) => void;
+  setInventoryGoal: (goal: number) => void;
+  setDailyGain: (gain: number) => void;
+  setDailyResetTime: (time: string) => void;
 }
 
 const defaultCropTimes = [
@@ -113,6 +116,9 @@ export const useStore = create<Store>()(
       grandMastered: 0,
       megaMastered: 0,
       craftworksSlots: 5,
+      inventoryGoal: 1000,
+      dailyGain: 14,
+      dailyResetTime: '00:00',
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -188,6 +194,9 @@ export const useStore = create<Store>()(
           grandMastered: 0,
           megaMastered: 0,
           craftworksSlots: 5,
+          inventoryGoal: 1000,
+          dailyGain: 14,
+          dailyResetTime: '00:00',
         }),
 
       importState: (data) =>
@@ -212,6 +221,9 @@ export const useStore = create<Store>()(
           grandMastered: data.grandMastered ?? s.grandMastered,
           megaMastered: data.megaMastered ?? s.megaMastered,
           craftworksSlots: data.craftworksSlots ?? s.craftworksSlots,
+          inventoryGoal: data.inventoryGoal ?? s.inventoryGoal,
+          dailyGain: data.dailyGain ?? s.dailyGain,
+          dailyResetTime: data.dailyResetTime ?? s.dailyResetTime,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -249,6 +261,9 @@ export const useStore = create<Store>()(
       setGrandMastered: (grandMastered) => set({ grandMastered }),
       setMegaMastered: (megaMastered) => set({ megaMastered }),
       setCraftworksSlots: (craftworksSlots) => set({ craftworksSlots }),
+      setInventoryGoal: (inventoryGoal) => set({ inventoryGoal }),
+      setDailyGain: (dailyGain) => set({ dailyGain }),
+      setDailyResetTime: (dailyResetTime) => set({ dailyResetTime }),
     }),
     {
       name: 'farm-rpg-tracker',

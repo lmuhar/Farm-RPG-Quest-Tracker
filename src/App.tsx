@@ -29,6 +29,7 @@ import { NpcGatesCard } from './components/NpcGatesCard';
 import { NpcPage } from './components/NpcPage';
 import { CraftworksSuggestions } from './components/CraftworksSuggestions';
 import { Dashboard } from './components/Dashboard';
+import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 
 const allQuests = questsData as Quest[];
 
@@ -756,6 +757,7 @@ export default function App() {
                 </div>
               </div>
               <div className="space-y-4">
+                <InventoryGrowthCard />
                 <ImportExport />
                 <CropTimerPanel />
                 <RecipesPanel />
