@@ -97,7 +97,7 @@ function TierHeader({ label, hint, accent, icon }: { label: string; hint?: strin
 // ── Tier item row ─────────────────────────────────────────────────────────────
 
 function TierItemRow({
-  data, inventory, tier, openLoc, onToggleLoc, allNeededItems,
+  data, inventory, tier, openLoc, onToggleLoc, allNeededItems, inventoryMax,
 }: {
   data: ItemData;
   inventory: Record<string, number>;
@@ -105,6 +105,7 @@ function TierItemRow({
   openLoc: boolean;
   onToggleLoc: () => void;
   allNeededItems: string[];
+  inventoryMax: number;
 }) {
   const { item, quantity, have, deficit, pct, recipe, directIngredients, rawMaterials,
     cropTime, grows, totalTime, seedsToBuy, seedsHave,
@@ -161,6 +162,14 @@ function TierItemRow({
               <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
                 style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                 <Landmark size={9} /> temple
+              </span>
+            )}
+
+            {/* AT CAP badge */}
+            {have >= inventoryMax && (
+              <span className="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                AT CAP
               </span>
             )}
 
@@ -303,13 +312,14 @@ function TierItemRow({
 // ── Aggregate summary panel ───────────────────────────────────────────────────
 
 function SummaryPanel({
-  questsWithStatus, inventory, cropTimes, plotCount, allNeededItems,
+  questsWithStatus, inventory, cropTimes, plotCount, allNeededItems, inventoryMax,
 }: {
   questsWithStatus: { quest: Quest; status: string }[];
   inventory: Record<string, number>;
   cropTimes: { item: string; growMinutes: number }[];
   plotCount: number;
   allNeededItems: string[];
+  inventoryMax: number;
 }) {
   const [openLocations, setOpenLocations] = useState<Set<string>>(new Set());
   const toggleLoc = (item: string) => setOpenLocations(prev => {
@@ -360,7 +370,7 @@ function SummaryPanel({
           {tiers.directCraft.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory} tier="directCraft"
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
-              allNeededItems={allNeededItems} />
+              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
         </div>
       )}
@@ -370,7 +380,7 @@ function SummaryPanel({
           {tiers.rawCraft.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory} tier="rawCraft"
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
-              allNeededItems={allNeededItems} />
+              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
         </div>
       )}
@@ -380,7 +390,7 @@ function SummaryPanel({
           {tiers.craftingQueue.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory} tier="craftingQueue"
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
-              allNeededItems={allNeededItems} />
+              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
         </div>
       )}
@@ -390,7 +400,7 @@ function SummaryPanel({
           {tiers.crops.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory} tier="crop"
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
-              allNeededItems={allNeededItems} />
+              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
         </div>
       )}
@@ -401,7 +411,7 @@ function SummaryPanel({
             <TierItemRow key={d.item} data={d} inventory={inventory}
               tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
-              allNeededItems={allNeededItems} />
+              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
         </div>
       )}
@@ -409,9 +419,12 @@ function SummaryPanel({
         <div className="px-5 py-2.5 flex flex-wrap gap-x-4 gap-y-0.5"
           style={{ background: 'var(--accent-green-bg)' }}>
           <span className="text-[10px] font-semibold uppercase tracking-wider w-full" style={{ color: 'var(--accent-green)', opacity: 0.7 }}>stocked</span>
-          {tiers.done.map(({ item, quantity }) => (
-            <span key={item} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+          {tiers.done.map(({ item, quantity, have }) => (
+            <span key={item} className="text-xs inline-flex items-center gap-1" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
               ✓ {item} ×{quantity.toLocaleString()}
+              {have >= inventoryMax && (
+                <span className="text-[9px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>AT CAP</span>
+              )}
             </span>
           ))}
         </div>
@@ -519,7 +532,7 @@ function GatheringPanel({
 // ── Quest section ─────────────────────────────────────────────────────────────
 
 function QuestSection({
-  quest, status, inventory, plotCount, cropTimes, allNeededItems, setQuestStatus,
+  quest, status, inventory, plotCount, cropTimes, allNeededItems, setQuestStatus, inventoryMax,
 }: {
   quest: Quest;
   status: string;
@@ -528,6 +541,7 @@ function QuestSection({
   cropTimes: { item: string; growMinutes: number }[];
   allNeededItems: string[];
   setQuestStatus: (id: string, s: 'completed') => void;
+  inventoryMax: number;
 }) {
   const [open, setOpen] = useState(status === 'active');
   const [openLocations, setOpenLocations] = useState<Set<string>>(new Set());
@@ -592,6 +606,10 @@ function QuestSection({
                 {canComplete ? '✓ all items ready' : `${stockedCount}/${items.length} items ready`}
                 {tiers.directCraft.length > 0 && ` · ${tiers.directCraft.length} craft now`}
                 {tiers.rawCraft.length > 0 && ` · ${tiers.rawCraft.length} craft with prep`}
+                {/* Pre-stocked hint for future quests */}
+                {(status === 'locked' || status === 'available') && stockedCount > 0 && !canComplete && (
+                  <span style={{ color: 'var(--accent-blue)' }}> · {stockedCount} pre-stocked</span>
+                )}
               </p>
             )}
           </div>
@@ -629,7 +647,7 @@ function QuestSection({
                   {tiers.directCraft.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory} tier="directCraft"
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
-                      allNeededItems={allNeededItems} />
+                      allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
                 </div>
               )}
@@ -641,7 +659,7 @@ function QuestSection({
                   {tiers.rawCraft.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory} tier="rawCraft"
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
-                      allNeededItems={allNeededItems} />
+                      allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
                 </div>
               )}
@@ -653,7 +671,7 @@ function QuestSection({
                   {tiers.craftingQueue.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory} tier="craftingQueue"
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
-                      allNeededItems={allNeededItems} />
+                      allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
                 </div>
               )}
@@ -665,7 +683,7 @@ function QuestSection({
                   {tiers.crops.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory} tier="crop"
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
-                      allNeededItems={allNeededItems} />
+                      allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
                 </div>
               )}
@@ -678,7 +696,7 @@ function QuestSection({
                     <TierItemRow key={d.item} data={d} inventory={inventory}
                       tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
-                      allNeededItems={allNeededItems} />
+                      allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
                 </div>
               )}
@@ -687,9 +705,12 @@ function QuestSection({
               {tiers.done.length > 0 && (
                 <div className="px-5 py-2.5 flex flex-wrap gap-x-4 gap-y-0.5"
                   style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--accent-green-bg)' }}>
-                  {tiers.done.map(({ item, quantity }) => (
-                    <span key={item} className="text-xs" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
+                  {tiers.done.map(({ item, quantity, have }) => (
+                    <span key={item} className="text-xs inline-flex items-center gap-1" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
                       ✓ {item} ×{quantity.toLocaleString()}
+                      {have >= inventoryMax && (
+                        <span className="text-[9px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>AT CAP</span>
+                      )}
                     </span>
                   ))}
                 </div>
@@ -723,7 +744,7 @@ function QuestSection({
 type TowerSubTab = 'summary' | 'quests' | 'gathering';
 
 export function ToweringInvestmentPage() {
-  const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline } = useStore();
+  const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline, inventoryMax } = useStore();
   const [filter, setFilter] = useState<QuestFilter>('incomplete');
   const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
@@ -847,6 +868,7 @@ export function ToweringInvestmentPage() {
           cropTimes={cropTimes}
           plotCount={plotCount}
           allNeededItems={allNeededItems}
+          inventoryMax={inventoryMax}
         />
       )}
 
@@ -896,6 +918,7 @@ export function ToweringInvestmentPage() {
                 cropTimes={cropTimes}
                 allNeededItems={allNeededItems}
                 setQuestStatus={setQuestStatus}
+                inventoryMax={inventoryMax}
               />
             ))}
             {sortedFiltered.length === 0 && (

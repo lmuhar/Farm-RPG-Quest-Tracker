@@ -26,6 +26,9 @@ function snapshotState(): AppState {
     grandMastered: s.grandMastered,
     megaMastered: s.megaMastered,
     craftworksSlots: s.craftworksSlots,
+    inventoryGoal: s.inventoryGoal,
+    dailyGain: s.dailyGain,
+    dailyResetTime: s.dailyResetTime,
   };
 }
 

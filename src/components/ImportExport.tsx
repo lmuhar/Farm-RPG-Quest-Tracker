@@ -26,6 +26,9 @@ export function ImportExport() {
       grandMastered: store.grandMastered,
       megaMastered: store.megaMastered,
       craftworksSlots: store.craftworksSlots,
+      inventoryGoal: store.inventoryGoal,
+      dailyGain: store.dailyGain,
+      dailyResetTime: store.dailyResetTime,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
