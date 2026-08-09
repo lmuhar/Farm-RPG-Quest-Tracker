@@ -13,6 +13,7 @@ import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
+import { CraftworksSuggestions } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import itemLocationsData from '../data/item-locations.json';
 
@@ -741,7 +742,7 @@ function QuestSection({
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-type TowerSubTab = 'summary' | 'quests' | 'gathering';
+type TowerSubTab = 'summary' | 'quests' | 'gathering' | 'craftworks';
 
 export function ToweringInvestmentPage() {
   const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline, inventoryMax } = useStore();
@@ -776,6 +777,15 @@ export function ToweringInvestmentPage() {
     });
     return [...items];
   }, [questsWithStatus]);
+
+  const activeQuestsForCraftworks = useMemo(
+    () => questsWithStatus.filter(({ status }) => status === 'active').map(({ quest }) => quest),
+    [questsWithStatus]
+  );
+  const upcomingQuestsForCraftworks = useMemo(
+    () => questsWithStatus.filter(({ status }) => status !== 'completed' && status !== 'active').map(({ quest }) => quest),
+    [questsWithStatus]
+  );
 
   const filtered = useMemo(() => {
     if (filter === 'active')    return questsWithStatus.filter(({ status }) => status === 'active');
@@ -843,9 +853,10 @@ export function ToweringInvestmentPage() {
       <div className="flex gap-1 p-1 rounded-lg"
         style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}>
         {([
-          { id: 'summary',   label: 'Summary' },
-          { id: 'quests',    label: 'Quests' },
-          { id: 'gathering', label: 'Fishing & Explore' },
+          { id: 'summary',    label: 'Summary' },
+          { id: 'quests',     label: 'Quests' },
+          { id: 'gathering',  label: 'Fishing & Explore' },
+          { id: 'craftworks', label: 'Craftworks' },
         ] as const).map(({ id, label }) => (
           <button key={id} onClick={() => setTowerSubTab(id)}
             className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap"
@@ -879,6 +890,17 @@ export function ToweringInvestmentPage() {
           inventory={inventory}
           allNeededItems={allNeededItems}
         />
+      )}
+
+      {/* Craftworks sub-tab */}
+      {towerSubTab === 'craftworks' && (
+        activeQuestsForCraftworks.length === 0 ? (
+          <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No active quests in this questline — mark a quest as active to see craftworks suggestions.</p>
+          </div>
+        ) : (
+          <CraftworksSuggestions quests={activeQuestsForCraftworks} nextUpQuests={upcomingQuestsForCraftworks} />
+        )
       )}
 
       {/* Quests sub-tab — filter pills + accordions */}
