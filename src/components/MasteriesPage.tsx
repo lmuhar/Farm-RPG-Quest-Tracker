@@ -90,14 +90,19 @@ function itemMatchesStatus(level: number, filter: StatusFilter) {
   return level === 3;
 }
 
+const NEXT_STEP_LABEL = ['', '→ M', '→ GM', '→ MM'] as const;
+const NEXT_STEP_TIER = [1, 2, 3] as const; // next tier to achieve for level 0,1,2
+
 interface ItemCardProps {
   item: MasteryItem;
   level: number;
   onLevelClick: (tier: 1 | 2 | 3) => void;
+  showNextStep?: boolean;
 }
 
-function ItemCard({ item, level, onLevelClick }: ItemCardProps) {
+function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
   const ms = METHOD_STYLES[item.method] ?? METHOD_STYLES.other;
+  const nextTier = level < 3 ? NEXT_STEP_TIER[level] : null;
 
   const handleTierClick = (tier: 1 | 2 | 3) => {
     if (level === tier) {
@@ -114,9 +119,19 @@ function ItemCard({ item, level, onLevelClick }: ItemCardProps) {
     >
       <div className="flex items-start gap-2">
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>
-            {item.name}
-          </p>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <p className="text-sm font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>
+              {item.name}
+            </p>
+            {showNextStep && nextTier && (
+              <span
+                className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                style={{ background: TIER_BG[nextTier], color: TIER_COLORS[nextTier], border: `1px solid ${TIER_BORDER[nextTier]}` }}
+              >
+                {NEXT_STEP_LABEL[level]}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1.5 mt-1 flex-wrap">
             <span
               className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
@@ -137,6 +152,7 @@ function ItemCard({ item, level, onLevelClick }: ItemCardProps) {
       <div className="flex gap-1">
         {([1, 2, 3] as const).map((tier) => {
           const active = level >= tier;
+          const isNext = showNextStep && nextTier === tier;
           return (
             <button
               key={tier}
@@ -145,6 +161,8 @@ function ItemCard({ item, level, onLevelClick }: ItemCardProps) {
               style={
                 active
                   ? { background: TIER_BG[tier], color: TIER_COLORS[tier], border: `1px solid ${TIER_BORDER[tier]}` }
+                  : isNext
+                  ? { background: TIER_BG[tier], color: TIER_COLORS[tier], border: `2px solid ${TIER_COLORS[tier]}`, opacity: 0.6 }
                   : { background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }
               }
               title={tier === 1 ? 'Mastered (1,000x)' : tier === 2 ? 'Grand Mastered (10,000x)' : 'Mega Mastered (100,000x)'}
@@ -177,12 +195,25 @@ export function MasteriesPage() {
   }, [masteryLevels]);
 
   const suggestions = useMemo(() => {
-    // Items not yet started, sorted by difficulty ascending
-    return masteries
-      .filter((item) => (masteryLevels[item.name] ?? 0) === 0)
-      .sort((a, b) => a.difficulty - b.difficulty)
-      .slice(0, 9);
+    // Finish in-progress items to MM before starting new ones.
+    // Priority: GM (1 step from MM) → M (2 steps) → not started (easiest first)
+    const byLevel = [2, 1, 0].flatMap((targetLevel) =>
+      masteries
+        .filter((item) => (masteryLevels[item.name] ?? 0) === targetLevel)
+        .sort((a, b) => a.difficulty - b.difficulty)
+    );
+    return byLevel.slice(0, 9);
   }, [masteryLevels]);
+
+  const suggestionSubtitle = useMemo(() => {
+    if (suggestions.some((item) => (masteryLevels[item.name] ?? 0) === 2)) {
+      return '· grand mastered — 1 step from Mega Master';
+    }
+    if (suggestions.some((item) => (masteryLevels[item.name] ?? 0) === 1)) {
+      return '· mastered — push these to MM before starting new ones';
+    }
+    return '· nothing in progress — easiest items to start';
+  }, [suggestions, masteryLevels]);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
@@ -247,12 +278,12 @@ export function MasteriesPage() {
           className="rounded-xl p-4"
           style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
         >
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
             <Star size={15} style={{ color: 'var(--accent-yellow)' }} />
             <h2 className="text-sm font-semibold uppercase tracking-wider" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-display)' }}>
-              Suggested Next
+              Focus
             </h2>
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>· easiest unstarted items</span>
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{suggestionSubtitle}</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {suggestions.map((item) => (
@@ -260,6 +291,7 @@ export function MasteriesPage() {
                 key={item.name}
                 item={item}
                 level={masteryLevels[item.name] ?? 0}
+                showNextStep
                 onLevelClick={(tier) => {
                   const current = masteryLevels[item.name] ?? 0;
                   setMasteryLevel(item.name, current === tier ? tier - 1 : tier);
