@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Hammer, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Minus, Plus, Link2, ChevronRight } from 'lucide-react';
+import { Hammer, CheckCircle2, AlertCircle, ChevronDown, ChevronUp, Minus, Plus, Link2, ChevronRight, RefreshCw } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems, resolveRawIngredients } from '../utils';
 import { useStore } from '../store';
@@ -14,16 +14,22 @@ interface Recipe {
 const allRecipes = recipesData as Recipe[];
 const builtInRecipeMap = new Map<string, Recipe>(allRecipes.map((r) => [r.name.toLowerCase(), r]));
 
+// Items that regenerate automatically without player intervention.
+// Craftworks slots that use ONLY these as raw inputs will self-sustain indefinitely.
+const PASSIVE_INPUTS = new Set(['Wood', 'Stone', 'Nails', 'Straw']);
+
 interface Candidate {
   item: string;
   needed: number;
   have: number;
   deficit: number;
-  priority: 'active' | 'nextup';
+  priority: 'active' | 'nextup' | 'filler';
   isIntermediate: boolean;
   questNames: string[];
   recipe: Recipe;
   anchorMaterial: string | null;
+  passiveScore: number;   // 0–1: fraction of raw ingredient qty from passive inputs
+  passiveInputs: string[]; // which passive materials this item uses
 }
 
 interface Props {
@@ -53,19 +59,19 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
   }, [craftingRecipes]);
 
   const suggestions = useMemo(() => {
-    const candidateMap = new Map<string, Omit<Candidate, 'anchorMaterial'>>();
+    const candidateMap = new Map<string, Omit<Candidate, 'anchorMaterial' | 'passiveScore' | 'passiveInputs'>>();
 
     const addCandidate = (
       item: string,
       needed: number,
-      priority: 'active' | 'nextup',
+      priority: 'active' | 'nextup' | 'filler',
       questName: string,
       isIntermediate: boolean
     ) => {
       const recipe = recipeMap.get(item.toLowerCase());
       if (!recipe) return;
       const have = inventory[item] ?? 0;
-      if (have >= inventoryMax) return; // already at cap — Craftworks suspends here anyway
+      if (have >= inventoryMax) return;
       const deficit = needed - have;
       if (deficit <= 0) return;
 
@@ -75,6 +81,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
           existing.questNames.push(questName);
         }
         if (priority === 'active') existing.priority = 'active';
+        else if (priority === 'nextup' && existing.priority === 'filler') existing.priority = 'nextup';
         if (needed > existing.needed) {
           existing.needed = needed;
           existing.deficit = needed - existing.have;
@@ -88,14 +95,12 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     };
 
-    // Active quests first (higher priority)
     for (const quest of quests) {
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
         addCandidate(item, quantity, 'active', quest.name, false);
       }
     }
 
-    // Next-up quests (lower priority, skip if already queued)
     for (const quest of nextUpQuests) {
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
         if (!candidateMap.has(item)) {
@@ -104,7 +109,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    // Pull in craftable intermediate ingredients that also have a deficit
+    // Pull in craftable intermediate ingredients
     const directCandidates = [...candidateMap.values()];
     for (const c of directCandidates) {
       for (const { item: ing, quantity: ingQty } of c.recipe.ingredients) {
@@ -114,18 +119,59 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    // ── Smarter clustering ───────────────────────────────────────────────
-    // Resolve every candidate down to its raw base ingredients so we can
-    // find which items share the same source materials.  Items that draw
-    // from the same base (e.g. Wood → Twine, Board, Lantern) are scored
-    // higher and sorted together so Craftworks can run the whole chain
-    // automatically in one go.
+    // ── Resolve raw ingredients for every candidate ───────────────────────
     const candidateRawMap = new Map<string, Map<string, number>>();
     for (const c of candidateMap.values()) {
       candidateRawMap.set(c.item, resolveRawIngredients(c.item, 1, recipeMap));
     }
 
-    // Count how many candidates each raw ingredient appears in
+    // Passive score helpers
+    const passiveScoreOf = (item: string): number => {
+      const rawMats = candidateRawMap.get(item);
+      if (!rawMats) return 0;
+      let passiveQty = 0, totalQty = 0;
+      for (const [raw, qty] of rawMats) {
+        totalQty += qty;
+        if (PASSIVE_INPUTS.has(raw)) passiveQty += qty;
+      }
+      return totalQty > 0 ? passiveQty / totalQty : 0;
+    };
+
+    const passiveInputsOf = (item: string): string[] => {
+      const rawMats = candidateRawMap.get(item);
+      if (!rawMats) return [];
+      return [...rawMats.keys()].filter((r) => PASSIVE_INPUTS.has(r));
+    };
+
+    // ── Passive filler: fully passive items to fill remaining slots ───────
+    // Only add if quest/nextup suggestions won't fill all slots
+    const questCount = candidateMap.size;
+    if (questCount < craftworksSlots) {
+      for (const [, recipe] of recipeMap) {
+        if (candidateMap.has(recipe.name)) continue;
+        // Resolve raw from scratch (not in candidateRawMap yet)
+        const rawMats = resolveRawIngredients(recipe.name, 1, recipeMap);
+        const fullyPassive = [...rawMats.keys()].every((r) => PASSIVE_INPUTS.has(r));
+        if (!fullyPassive) continue;
+        const have = inventory[recipe.name] ?? 0;
+        if (have >= inventoryMax) continue;
+        candidateMap.set(recipe.name, {
+          item: recipe.name,
+          needed: inventoryMax,
+          have,
+          deficit: inventoryMax - have,
+          priority: 'filler',
+          isIntermediate: false,
+          questNames: [],
+          recipe,
+        });
+        // Also add to raw map for clustering
+        candidateRawMap.set(recipe.name, rawMats);
+        if (candidateMap.size >= craftworksSlots + 5) break; // reasonable cap
+      }
+    }
+
+    // ── Smarter clustering ────────────────────────────────────────────────
     const rawFreq = new Map<string, number>();
     for (const rawMats of candidateRawMap.values()) {
       for (const raw of rawMats.keys()) {
@@ -133,21 +179,26 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    // Cluster score = sum of freq of each raw ingredient.
-    // Higher score → this item shares more base materials with other candidates.
     const clusterScore = (item: string) => {
       const rawMats = candidateRawMap.get(item);
       if (!rawMats) return 0;
       return [...rawMats.keys()].reduce((s, raw) => s + (rawFreq.get(raw) ?? 0), 0);
     };
 
-    // Anchor = the raw ingredient shared by the most other candidates.
-    // Used to label and visually group a chain of related crafts.
+    // Prefer passive materials as anchors so passive chains group under one label
     const anchorOf = (item: string): string | null => {
       const rawMats = candidateRawMap.get(item);
       if (!rawMats) return null;
-      let best = '';
-      let bestFreq = 1; // only meaningful if shared by ≥ 2
+      // First: prefer a passive material that's shared by the most candidates
+      let bestPassive = '', bestPassiveFreq = 1;
+      for (const raw of rawMats.keys()) {
+        if (!PASSIVE_INPUTS.has(raw)) continue;
+        const f = rawFreq.get(raw) ?? 0;
+        if (f > bestPassiveFreq) { bestPassiveFreq = f; bestPassive = raw; }
+      }
+      if (bestPassive) return bestPassive;
+      // Fall back to most-shared raw ingredient
+      let best = '', bestFreq = 1;
       for (const raw of rawMats.keys()) {
         const f = rawFreq.get(raw) ?? 0;
         if (f > bestFreq) { bestFreq = f; best = raw; }
@@ -158,11 +209,11 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     const allCandidates: Candidate[] = [...candidateMap.values()].map((c) => ({
       ...c,
       anchorMaterial: anchorOf(c.item),
+      passiveScore: passiveScoreOf(c.item),
+      passiveInputs: passiveInputsOf(c.item),
     }));
 
-    // ── Topological sort (ingredients before products) ───────────────────
-    // Pre-sort by cluster score so that high-sharing items anchor the visit
-    // order, which naturally pulls related crafts into adjacent slots.
+    // ── Topological sort (ingredients before products) ────────────────────
     const itemKeys = new Set(allCandidates.map((c) => c.item.toLowerCase()));
     const visited = new Set<string>();
     const result: Candidate[] = [];
@@ -180,19 +231,25 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       result.push(c);
     };
 
+    // Sort: priority → passive items clustered first within tier → cluster score
     const presorted = [...allCandidates].sort((a, b) => {
-      if (a.priority !== b.priority) return a.priority === 'active' ? -1 : 1;
+      const priorityOrder = { active: 0, nextup: 1, filler: 2 };
+      const pDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+      if (pDiff !== 0) return pDiff;
       if (a.isIntermediate !== b.isIntermediate) return a.isIntermediate ? 1 : -1;
+      // Within same tier: group fully-passive items together first
+      const aPure = a.passiveScore >= 1;
+      const bPure = b.passiveScore >= 1;
+      if (aPure !== bPure) return aPure ? -1 : 1;
       return clusterScore(b.item) - clusterScore(a.item);
     });
     for (const c of presorted) visit(c);
 
     return result;
-  }, [quests, nextUpQuests, inventory, recipeMap]);
+  }, [quests, nextUpQuests, inventory, inventoryMax, recipeMap, craftworksSlots]);
 
   const displaySlots = suggestions.slice(0, Math.max(craftworksSlots, 0));
 
-  // Check ingredient availability per slot, treating prior slots as already having run
   const slotReadiness = useMemo(() => {
     return displaySlots.map((candidate, slotIdx) => {
       const virtual: Record<string, number> = { ...inventory };
@@ -209,17 +266,20 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     });
   }, [displaySlots, inventory]);
 
-  // Group consecutive slots that share the same anchor material so we can
-  // render a "Wood chain" header above each cluster
+  // Group consecutive slots by anchor material
   const chainGroups = useMemo(() => {
-    const groups: { anchor: string | null; indices: number[] }[] = [];
+    const groups: { anchor: string | null; indices: number[]; isPassiveChain: boolean }[] = [];
     for (let i = 0; i < displaySlots.length; i++) {
       const anchor = displaySlots[i].anchorMaterial;
       const last = groups[groups.length - 1];
       if (last && last.anchor === anchor) {
         last.indices.push(i);
       } else {
-        groups.push({ anchor, indices: [i] });
+        groups.push({
+          anchor,
+          indices: [i],
+          isPassiveChain: anchor ? PASSIVE_INPUTS.has(anchor) : false,
+        });
       }
     }
     return groups;
@@ -318,9 +378,10 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
                 {!isCollapsed && pageSlots.map((candidate, localIdx) => {
                   const slotIdx = pageStart + localIdx;
 
-                  // Find chain group for this slot
                   const chainGroup = chainGroups.find(g => g.indices.includes(slotIdx));
                   const isChainStart = chainGroup && chainGroup.anchor && chainGroup.indices.length > 1 && chainGroup.indices[0] === slotIdx;
+                  const isPassiveChain = chainGroup?.isPassiveChain ?? false;
+                  const isFullyPassive = candidate.passiveScore >= 1;
 
                   const { canCraft, ingredientStatus } = slotReadiness[slotIdx];
                   const isExpanded = expandedSlot === slotIdx;
@@ -332,15 +393,29 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
                       {/* Chain sub-header */}
                       {isChainStart && (
                         <div
-                          className="flex items-center gap-1.5 px-4 py-1.5"
-                          style={{ background: 'color-mix(in srgb, var(--accent-blue-bg) 50%, transparent)', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}
+                          className="flex items-center gap-1.5 px-4 py-1.5 flex-wrap"
+                          style={{
+                            background: isPassiveChain
+                              ? 'color-mix(in srgb, var(--accent-green-bg) 60%, transparent)'
+                              : 'color-mix(in srgb, var(--accent-blue-bg) 50%, transparent)',
+                            borderTop: '1px solid var(--border-subtle)',
+                            borderBottom: '1px solid var(--border-subtle)',
+                          }}
                         >
-                          <Link2 size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
-                          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--accent-blue)' }}>
+                          {isPassiveChain
+                            ? <RefreshCw size={10} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+                            : <Link2 size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+                          }
+                          <span
+                            className="text-[10px] font-semibold uppercase tracking-wider"
+                            style={{ color: isPassiveChain ? 'var(--accent-green)' : 'var(--accent-blue)' }}
+                          >
                             {chainGroup!.anchor} chain
                           </span>
                           <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                            · slots {chainGroup!.indices.map(i => i + 1).join(', ')} run together
+                            · slots {chainGroup!.indices.map(i => i + 1).join(', ')}
+                            {isPassiveChain && ' · auto-refills from passive resources'}
+                            {!isPassiveChain && ' run together'}
                           </span>
                         </div>
                       )}
@@ -361,7 +436,23 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
                             <span className="text-sm font-medium flex-1 min-w-0 truncate" style={{ color: 'var(--text-primary)' }}>
                               {candidate.item}
                             </span>
-                            <div className="flex items-center gap-1.5 flex-shrink-0">
+                            <div className="flex items-center gap-1 flex-shrink-0">
+                              {/* Passive inputs badges */}
+                              {candidate.passiveInputs.length > 0 && (
+                                <span
+                                  className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden sm:inline-flex items-center gap-0.5"
+                                  style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
+                                  title={`Uses passive inputs: ${candidate.passiveInputs.join(', ')}`}
+                                >
+                                  {isFullyPassive && <RefreshCw size={8} />}
+                                  {candidate.passiveInputs.join('+')}
+                                </span>
+                              )}
+                              {candidate.priority === 'filler' && (
+                                <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline" style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}>
+                                  filler
+                                </span>
+                              )}
                               {candidate.isIntermediate && (
                                 <span className="text-[9px] px-1.5 py-0.5 rounded font-semibold leading-none hidden xs:inline" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                                   ingredient
@@ -386,38 +477,75 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
                           </div>
                           <div className="flex items-center gap-2 mt-1 ml-7">
                             <span className="text-xs flex-1 min-w-0 truncate" style={{ color: 'var(--text-muted)' }}>
-                              {candidate.isIntermediate ? 'needed as ingredient' : candidate.questNames.join(' · ')}
+                              {candidate.priority === 'filler'
+                                ? `auto-refills from ${candidate.passiveInputs.join(', ')}`
+                                : candidate.isIntermediate
+                                ? 'needed as ingredient'
+                                : candidate.questNames.join(' · ')}
                             </span>
                             <div className="flex items-center gap-1.5 flex-shrink-0">
                               <span className="text-xs tabular-nums" style={{ color: 'var(--text-secondary)' }}>
-                                {candidate.have.toLocaleString()}/{candidate.needed.toLocaleString()}
+                                {candidate.priority === 'filler'
+                                  ? `${candidate.have.toLocaleString()} stocked`
+                                  : `${candidate.have.toLocaleString()}/${candidate.needed.toLocaleString()}`}
                               </span>
-                              <div className="w-12 h-1 rounded-full overflow-hidden flex-shrink-0" style={{ background: 'var(--surface-inset)' }}>
-                                <div className="h-full rounded-full" style={{ width: `${pct * 100}%`, background: pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
-                              </div>
+                              {candidate.priority !== 'filler' && (
+                                <div className="w-12 h-1 rounded-full overflow-hidden flex-shrink-0" style={{ background: 'var(--surface-inset)' }}>
+                                  <div className="h-full rounded-full" style={{ width: `${pct * 100}%`, background: pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
+                                </div>
+                              )}
                             </div>
                           </div>
                         </button>
 
                         {isExpanded && (
                           <div className="px-3 pb-3" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider pt-2.5 pb-2" style={{ color: 'var(--text-muted)' }}>
-                              Ingredients for {candidate.deficit.toLocaleString()} × {candidate.item}
-                            </p>
-                            <div className="space-y-1.5">
-                              {ingredientStatus.map(({ item: ing, totalNeeded, haveNow, ok }) => (
-                                <div key={ing} className="flex items-center justify-between gap-2 text-xs">
-                                  <span className="truncate" style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}>{ing}</span>
-                                  <span className="tabular-nums flex-shrink-0 font-medium" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
-                                    {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}
-                                  </span>
+                            {candidate.priority === 'filler' ? (
+                              <div className="pt-2.5">
+                                <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                                  Filler slot — keeps Craftworks running automatically using passive resources
+                                  ({candidate.passiveInputs.join(', ')} regenerate on their own).
+                                  No user action needed once queued.
+                                </p>
+                                <p className="text-[10px] font-semibold uppercase tracking-wider pt-2.5 pb-1.5" style={{ color: 'var(--text-muted)' }}>
+                                  Ingredients (per craft)
+                                </p>
+                                <div className="space-y-1">
+                                  {candidate.recipe.ingredients.map(({ item: ing, quantity: ingQty }) => (
+                                    <div key={ing} className="flex items-center justify-between gap-2 text-xs">
+                                      <span style={{ color: 'var(--text-secondary)' }}>{ing}</span>
+                                      <span className="tabular-nums font-medium" style={{ color: 'var(--accent-green)' }}>×{ingQty}</span>
+                                    </div>
+                                  ))}
                                 </div>
-                              ))}
-                            </div>
-                            {!canCraft && (
-                              <p className="text-[11px] mt-2.5 italic" style={{ color: 'var(--text-muted)' }}>
-                                Earlier slots supply missing ingredients once crafted.
-                              </p>
+                              </div>
+                            ) : (
+                              <>
+                                <p className="text-[10px] font-semibold uppercase tracking-wider pt-2.5 pb-2" style={{ color: 'var(--text-muted)' }}>
+                                  Ingredients for {candidate.deficit.toLocaleString()} × {candidate.item}
+                                </p>
+                                <div className="space-y-1.5">
+                                  {ingredientStatus.map(({ item: ing, totalNeeded, haveNow, ok }) => {
+                                    const isPassiveIng = PASSIVE_INPUTS.has(ing);
+                                    return (
+                                      <div key={ing} className="flex items-center justify-between gap-2 text-xs">
+                                        <span className="flex items-center gap-1 truncate" style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}>
+                                          {isPassiveIng && <RefreshCw size={9} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />}
+                                          {ing}
+                                        </span>
+                                        <span className="tabular-nums flex-shrink-0 font-medium" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                                          {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                                {!canCraft && (
+                                  <p className="text-[11px] mt-2.5 italic" style={{ color: 'var(--text-muted)' }}>
+                                    Earlier slots supply missing ingredients once crafted.
+                                  </p>
+                                )}
+                              </>
                             )}
                           </div>
                         )}
@@ -431,14 +559,23 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
         </div>
       )}
 
-      {suggestions.length > craftworksSlots && (
-        <div
-          className="px-4 py-2.5 text-xs text-center"
-          style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)' }}
-        >
-          +{suggestions.length - craftworksSlots} more craftable items — increase slots to include them
+      {/* Footer */}
+      <div
+        className="px-4 py-2 flex items-center gap-2 flex-wrap"
+        style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-inset)' }}
+      >
+        <div className="flex items-center gap-1.5 flex-1 min-w-0">
+          <RefreshCw size={10} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+            Wood · Stone · Nails · Straw regenerate automatically — items using only these keep Craftworks running without intervention
+          </span>
         </div>
-      )}
+        {suggestions.length > craftworksSlots && (
+          <span className="text-[11px] flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
+            +{suggestions.length - craftworksSlots} more — add slots to include
+          </span>
+        )}
+      </div>
     </div>
   );
 }
