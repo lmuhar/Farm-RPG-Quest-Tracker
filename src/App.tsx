@@ -33,6 +33,7 @@ import { ActiveTab } from './components/ActiveTab';
 import { QuestsTab } from './components/QuestsTab';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
+import { MasterySyncSection } from './components/MasterySyncSection';
 
 const allQuests = questsData as Quest[];
 
@@ -77,6 +78,8 @@ export default function App() {
   useEffect(() => {
     const hash = window.location.hash;
     let hashInv: Record<string, number> | null = null;
+    let hashMasteries: Record<string, number> | null = null;
+
     if (hash.startsWith('#sync-inv=')) {
       try {
         const parsed = JSON.parse(decodeURIComponent(hash.slice('#sync-inv='.length)));
@@ -86,14 +89,31 @@ export default function App() {
       } catch { /* ignore malformed hash */ }
       history.replaceState(null, '', window.location.pathname + window.location.search);
       setTab('inventory');
+    } else if (hash.startsWith('#sync-masteries=')) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(hash.slice('#sync-masteries='.length)));
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          hashMasteries = parsed as Record<string, number>;
+        }
+      } catch { /* ignore malformed hash */ }
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      setTab('masteries');
     }
 
-    const applyHashInv = () => { if (hashInv) importState({ inventory: hashInv }); };
+    const applyHashData = () => {
+      // Inventory: replace entirely (absent items mean qty dropped to 0)
+      if (hashInv) importState({ inventory: hashInv });
+      // Masteries: merge — bookmarklet only sees actively-tracked items, don't wipe the rest
+      if (hashMasteries) {
+        const current = useStore.getState().masteryLevels;
+        importState({ masteryLevels: { ...current, ...hashMasteries } });
+      }
+    };
 
     fetch('/api/state')
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data) importState(data); applyHashInv(); })
-      .catch(() => { applyHashInv(); });
+      .then((data) => { if (data) importState(data); applyHashData(); })
+      .catch(() => { applyHashData(); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -368,6 +388,7 @@ export default function App() {
                   />
                   <SkillsPanel />
                   <BookmarkletSection />
+                  <MasterySyncSection />
                 </div>
                 <div className="space-y-4">
                   <InventoryGrowthCard />
