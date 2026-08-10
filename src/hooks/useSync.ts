@@ -29,6 +29,7 @@ function snapshotState(): AppState {
     inventoryGoal: s.inventoryGoal,
     dailyGain: s.dailyGain,
     dailyResetTime: s.dailyResetTime,
+    masteryLevels: s.masteryLevels,
   };
 }
 

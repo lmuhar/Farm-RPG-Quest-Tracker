@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers, LayoutDashboard } from 'lucide-react';
+import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers, LayoutDashboard, Trophy } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
 import { getQuestStatus, compareQuests, isLimitedTime, isCompletable, parseItems } from './utils';
@@ -30,10 +30,11 @@ import { NpcPage } from './components/NpcPage';
 import { CraftworksSuggestions } from './components/CraftworksSuggestions';
 import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
+import { MasteriesPage } from './components/MasteriesPage';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes' | 'stats' | 'settings';
+type Tab = 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes' | 'masteries' | 'stats' | 'settings';
 type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
 
 export default function App() {
@@ -378,6 +379,7 @@ export default function App() {
                 { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={16} /> },
                 { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={16} /> },
                 { id: 'recipes', label: 'Recipes', icon: <Hammer size={16} /> },
+                { id: 'masteries', label: 'Masteries', icon: <Trophy size={16} /> },
                 { id: 'stats', label: 'Stats', icon: <BarChart2 size={16} /> },
                 { id: 'settings', label: 'Settings', icon: <Settings size={16} /> },
               ] as const).map(({ id, label, icon }) => (
@@ -421,6 +423,7 @@ export default function App() {
               { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
               { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={14} /> },
               { id: 'recipes', label: 'Recipes', icon: <Hammer size={14} /> },
+              { id: 'masteries', label: 'Masteries', icon: <Trophy size={14} /> },
               { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
               { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
             ] as const).map(({ id, label, icon }) => (
@@ -670,6 +673,10 @@ export default function App() {
 
           {tab === 'recipes' && (
             <RecipesPage />
+          )}
+
+          {tab === 'masteries' && (
+            <MasteriesPage />
           )}
 
           {tab === 'stats' && (

@@ -74,4 +74,5 @@ export interface AppState {
   inventoryGoal: number;
   dailyGain: number;
   dailyResetTime: string;
+  masteryLevels: Record<string, number>;
 }
