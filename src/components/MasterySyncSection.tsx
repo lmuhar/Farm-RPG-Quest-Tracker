@@ -19,10 +19,12 @@ export function MasterySyncSection() {
       + `var lines=text.split('\\n').map(function(l){return l.trim();}).filter(Boolean);`
       + `for(var i=0;i<lines.length;i++){`
       + `var l=lines[i];`
-      + `if(l==='Tier V (MM)'){sv();lv=2;continue;}`
-      + `if(l==='Tier IV (GM)'){sv();lv=1;continue;}`
-      + `if(l==='Mega Mastered'){sv();lv=3;continue;}`
-      + `if(l==='Tier III (M)'||l==='Tier II'||l==='Tier I'||l==='No Tier'){sv();lv=-1;continue;}`
+      + `if(l.indexOf('Tier V (MM)')===0){sv();lv=2;continue;}`
+      + `if(l.indexOf('Tier IV (GM)')===0){sv();lv=1;continue;}`
+      + `if(l.indexOf('Mega Mastered')===0){sv();lv=3;continue;}`
+      + `if(l.indexOf('Tier III (M)')===0){sv();lv=-1;continue;}`
+      + `if(l.indexOf('Tier II')===0){sv();lv=-1;continue;}`
+      + `if(l.indexOf('Tier I')===0||l.indexOf('No Tier')===0){sv();lv=-1;continue;}`
       + `if(lv<0)continue;`
       + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'`
       + `||l.indexOf('%')!==-1||l.indexOf('Stop Tracking')===0`
