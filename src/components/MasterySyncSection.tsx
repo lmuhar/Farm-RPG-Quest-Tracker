@@ -7,25 +7,24 @@ export function MasterySyncSection() {
 
   const href = useMemo(() => {
     const origin = window.location.origin;
-    // Scrapes farmrpg.com/mastery.php — maps in-progress tier sections to tracker levels:
-    //   Tier V (MM) in-progress  → level 2 (item is Grand Mastered)
-    //   Tier IV (GM) in-progress → level 1 (item is Mastered)
-    //   Mega Mastered section    → level 3
-    // Only items currently tracked toward a higher tier appear; merges with existing data.
     const code = `(function(){`
-      + `var T='${origin}',m={},lv=-1;`
-      + `var H={'Tier V (MM)':2,'Tier IV (GM)':1,'Mega Mastered':3};`
-      + `var S=new Set(['Tier III (M)','Tier II','Tier I','No Tier','Ready to Claim','Nothing ready yet','Mastery In-Progress','Stop Tracking All']);`
-      + `document.querySelectorAll('.item-title').forEach(function(el){`
-      + `var n=el.textContent.trim();if(!n)return;`
-      + `if(H.hasOwnProperty(n)){lv=H[n];return;}`
-      + `if(S.has(n)){lv=-1;return;}`
-      + `if(lv>=0){var li=el.closest('li');if(!li)return;`
-      + `var a=li.querySelector('.item-after');`
-      + `if(a&&(a.textContent.includes('/')||a.textContent.includes('Complete'))){m[n]=lv;}}`
-      + `});`
+      + `var T='${origin}',m={},lv=-1,pn=null;`
+      + `var lines=document.body.innerText.split('\\n').map(function(l){return l.trim();}).filter(Boolean);`
+      + `for(var i=0;i<lines.length;i++){`
+      + `var l=lines[i];`
+      + `if(l==='Tier V (MM)'){lv=2;pn=null;continue;}`
+      + `if(l==='Tier IV (GM)'){lv=1;pn=null;continue;}`
+      + `if(l==='Mega Mastered'){lv=3;pn=null;continue;}`
+      + `if(l==='Tier III (M)'||l==='Tier II'||l==='Tier I'||l==='No Tier'){lv=-1;pn=null;continue;}`
+      + `if(lv<0)continue;`
+      + `if(l.indexOf('/')!==-1&&l.indexOf('Progress')!==-1){if(pn){m[pn]=lv;}pn=null;continue;}`
+      + `if(l.indexOf('%')!==-1||l==='Track'||l==='Stop'||l==='Complete!'`
+      + `||l==='chevron_down'||l==='chevron_right'`
+      + `||l.indexOf('Stop Tracking')===0||l.indexOf('Nothing ready')===0)continue;`
+      + `pn=l;`
+      + `}`
       + `var c=Object.keys(m).length;`
-      + `if(!c){alert('No mastery data found. Make sure you\\'re on farmrpg.com/mastery.php');return;}`
+      + `if(!c){alert('No mastery data found — make sure you\\'re on farmrpg.com/mastery.php');return;}`
       + `window.open(T+'/#sync-masteries='+encodeURIComponent(JSON.stringify(m)),'_blank');`
       + `})();`;
     return `javascript:${code}`;
