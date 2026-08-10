@@ -49,6 +49,7 @@ interface Store extends AppState {
   setInventoryGoal: (goal: number) => void;
   setDailyGain: (gain: number) => void;
   setDailyResetTime: (time: string) => void;
+  setMasteryLevel: (item: string, level: number) => void;
 }
 
 const defaultCropTimes = [
@@ -119,6 +120,7 @@ export const useStore = create<Store>()(
       inventoryGoal: 1000,
       dailyGain: 14,
       dailyResetTime: '00:00',
+      masteryLevels: {},
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -197,6 +199,7 @@ export const useStore = create<Store>()(
           inventoryGoal: 1000,
           dailyGain: 14,
           dailyResetTime: '00:00',
+          masteryLevels: {},
         }),
 
       importState: (data) =>
@@ -224,6 +227,7 @@ export const useStore = create<Store>()(
           inventoryGoal: data.inventoryGoal ?? s.inventoryGoal,
           dailyGain: data.dailyGain ?? s.dailyGain,
           dailyResetTime: data.dailyResetTime ?? s.dailyResetTime,
+          masteryLevels: data.masteryLevels ?? s.masteryLevels,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -264,6 +268,15 @@ export const useStore = create<Store>()(
       setInventoryGoal: (inventoryGoal) => set({ inventoryGoal }),
       setDailyGain: (dailyGain) => set({ dailyGain }),
       setDailyResetTime: (dailyResetTime) => set({ dailyResetTime }),
+      setMasteryLevel: (item, level) =>
+        set((s) => {
+          if (level <= 0) {
+            const next = { ...s.masteryLevels };
+            delete next[item];
+            return { masteryLevels: next };
+          }
+          return { masteryLevels: { ...s.masteryLevels, [item]: level } };
+        }),
     }),
     {
       name: 'farm-rpg-tracker',
