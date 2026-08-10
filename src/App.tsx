@@ -1,17 +1,18 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package, Settings, Hammer, RefreshCw, BookMarked, Copy, Check, Menu, MapPin, Building2, PawPrint, ShoppingCart, Users, Layers, LayoutDashboard, Trophy } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import {
+  ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package,
+  Settings, Hammer, RefreshCw, Menu, MapPin, Building2, PawPrint, Users, Layers,
+  LayoutDashboard, Trophy,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import questsData from './data/quests.json';
 import type { Quest } from './types';
-import { getQuestStatus, compareQuests, isLimitedTime, isCompletable, parseItems } from './utils';
+import { getQuestStatus, compareQuests } from './utils';
 import { useStore } from './store';
+import { useSync } from './hooks/useSync';
 import { SkillsPanel } from './components/SkillsPanel';
 import { CropTimerPanel } from './components/CropTimerPanel';
-import { QuestCard } from './components/QuestCard';
-import { QuestLineView } from './components/QuestLineView';
-import { ActiveQuestsSummary } from './components/ActiveQuestsSummary';
-import { ActiveQuestLine } from './components/ActiveQuestLine';
 import { SyncSection } from './components/SyncSection';
-import { useSync } from './hooks/useSync';
 import { ImportExport } from './components/ImportExport';
 import { RecipesPanel } from './components/RecipesPanel';
 import { SetupWizard } from './components/SetupWizard';
@@ -22,52 +23,55 @@ import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
 import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
 import { TheTowerPage } from './components/TheTowerPage';
-import { DailyActionCard } from './components/DailyActionCard';
 import { PetsPage } from './components/PetsPage';
-import { NeedsTab } from './components/NeedsTab';
-import { NpcGatesCard } from './components/NpcGatesCard';
 import { NpcPage } from './components/NpcPage';
 import { CraftworksSuggestions } from './components/CraftworksSuggestions';
 import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
+import { ActiveTab } from './components/ActiveTab';
+import { QuestsTab } from './components/QuestsTab';
+import { QuestlinesTab } from './components/QuestlinesTab';
+import { BookmarkletSection } from './components/BookmarkletSection';
 
 const allQuests = questsData as Quest[];
 
-type Tab = 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory' | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes' | 'masteries' | 'stats' | 'settings';
-type FilterStatus = 'all' | 'available' | 'locked' | 'completed' | 'completable' | 'limited';
+type Tab =
+  | 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory'
+  | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes'
+  | 'masteries' | 'stats' | 'settings';
+
+interface NavItem { id: Tab; label: string; Icon: LucideIcon }
+
+const NAV_ITEMS: NavItem[] = [
+  { id: 'dashboard',  label: 'Dashboard',   Icon: LayoutDashboard },
+  { id: 'active',     label: 'Active',       Icon: ListTodo },
+  { id: 'locations',  label: 'Locations',    Icon: MapPin },
+  { id: 'tower',      label: 'Quest Focus',  Icon: Building2 },
+  { id: 'the-tower',  label: 'The Tower',    Icon: Layers },
+  { id: 'inventory',  label: 'Inventory',    Icon: Package },
+  { id: 'pets',       label: 'Pets',         Icon: PawPrint },
+  { id: 'npcs',       label: 'NPCs',         Icon: Users },
+  { id: 'quests',     label: 'All Quests',   Icon: Search },
+  { id: 'questlines', label: 'Quest Lines',  Icon: GitBranch },
+  { id: 'grow',       label: 'Grow Planner', Icon: SproutIcon },
+  { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
+  { id: 'recipes',    label: 'Recipes',      Icon: Hammer },
+  { id: 'masteries',  label: 'Masteries',    Icon: Trophy },
+];
+
+const META_ITEMS: NavItem[] = [
+  { id: 'stats',    label: 'Stats',    Icon: BarChart2 },
+  { id: 'settings', label: 'Settings', Icon: Settings },
+];
 
 export default function App() {
-  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState, pinnedQuestline } = useStore();
+  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
-  const [filterNpc, setFilterNpc] = useState('');
-  const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
-  const [questlineSearch, setQuestlineSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
-  const [showCompletedLines, setShowCompletedLines] = useState(true);
-  const [activeSubTab, setActiveSubTab] = useState<'plan' | 'needs' | 'questlines'>('plan');
-  const [copied, setCopied] = useState(false);
-
-  const bookmarkletHref = useMemo(() => {
-    const origin = window.location.origin;
-    const code = `(function(){var T='${origin}',inv={};document.querySelectorAll('li').forEach(function(li){var n=li.querySelector('.item-title strong'),q=li.querySelector('.item-after');if(!n||!q)return;var name=n.textContent.trim(),qty=parseInt(q.textContent.replace(/,/g,'').trim(),10);if(name&&!isNaN(qty)&&qty>0)inv[name]=qty;});var c=Object.keys(inv).length;if(!c){alert('No items found — make sure you are on the Farm RPG inventory page.');return;}window.open(T+'/#sync-inv='+encodeURIComponent(JSON.stringify(inv)),'_blank');})();`;
-    return `javascript:${code}`;
-  }, []);
-
-  const copyBookmarklet = useCallback(() => {
-    navigator.clipboard.writeText(bookmarkletHref).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }, [bookmarkletHref]);
-
-  const bookmarkAnchorRef = useRef<HTMLAnchorElement>(null);
-  useEffect(() => {
-    bookmarkAnchorRef.current?.setAttribute('href', bookmarkletHref);
-  }, [bookmarkletHref]);
 
   // Load state from server on mount; apply any bookmarklet hash-sync after server state loads
   useEffect(() => {
@@ -84,12 +88,7 @@ export default function App() {
       setTab('inventory');
     }
 
-    const applyHashInv = () => {
-      if (!hashInv) return;
-      // Replace the entire inventory so items that dropped to 0 (absent from
-      // the bookmarklet payload) are cleared rather than left at their old value.
-      importState({ inventory: hashInv });
-    };
+    const applyHashInv = () => { if (hashInv) importState({ inventory: hashInv }); };
 
     fetch('/api/state')
       .then((r) => (r.ok ? r.json() : null))
@@ -110,8 +109,6 @@ export default function App() {
     return () => clearTimeout(timer);
   }, [questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes]);
 
-  const npcs = useMemo(() => [...new Set(allQuests.map((q) => q.npc))].sort(), []);
-
   const questsWithStatus = useMemo(
     () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
     [player, questStatuses]
@@ -122,37 +119,16 @@ export default function App() {
     [questsWithStatus]
   );
 
-  const activeQuestIds = useMemo(() => new Set(activeQuests.map((q) => q.id)), [activeQuests]);
-
   const completedCount = useMemo(
     () => questsWithStatus.filter((q) => q.status === 'completed').length,
     [questsWithStatus]
   );
 
-  const filteredQuests = useMemo(() => {
-    return questsWithStatus.filter(({ quest, status }) => {
-      if (filterStatus === 'limited') {
-        if (!isLimitedTime(quest)) return false;
-      } else if (filterStatus === 'completable') {
-        if (status === 'completed' || status === 'locked') return false;
-        if (!isCompletable(quest, inventory)) return false;
-      } else if (filterStatus !== 'all' && status !== filterStatus) {
-        return false;
-      }
-      if (filterNpc && quest.npc !== filterNpc) return false;
-      const s = globalSearch.toLowerCase();
-      if (s) {
-        return (
-          quest.name.toLowerCase().includes(s) ||
-          quest.npc.toLowerCase().includes(s) ||
-          quest.questline.toLowerCase().includes(s) ||
-          quest.description.toLowerCase().includes(s) ||
-          quest.itemsRequired.toLowerCase().includes(s)
-        );
-      }
-      return true;
-    });
-  }, [questsWithStatus, filterStatus, filterNpc, globalSearch, inventory]);
+  const stats = useMemo(() => ({
+    active: activeQuests.length,
+    completed: completedCount,
+    available: questsWithStatus.filter((q) => q.status === 'available').length,
+  }), [questsWithStatus, activeQuests, completedCount]);
 
   const questlineGroups = useMemo(() => {
     const groups = new Map<string, Quest[]>();
@@ -168,6 +144,8 @@ export default function App() {
       }))
       .sort((a, b) => a.name.localeCompare(b.name));
   }, []);
+
+  const activeQuestIds = useMemo(() => new Set(activeQuests.map((q) => q.id)), [activeQuests]);
 
   const nextUpQuests = useMemo(() => {
     return questlineGroups
@@ -187,71 +165,11 @@ export default function App() {
       });
   }, [questlineGroups, activeQuestIds, player, questStatuses]);
 
-  const filteredQuestlines = useMemo(() => {
-    if (!questlineSearch) return questlineGroups;
-    const s = questlineSearch.toLowerCase();
-    return questlineGroups.filter(
-      ({ name, quests }) =>
-        name.toLowerCase().includes(s) ||
-        quests.some(
-          (q) =>
-            q.name.toLowerCase().includes(s) ||
-            q.itemsRequired.toLowerCase().includes(s) ||
-            q.npc.toLowerCase().includes(s)
-        )
-    );
-  }, [questlineGroups, questlineSearch]);
-
-  const visibleQuestlines = useMemo(() => {
-    if (showCompletedLines) return filteredQuestlines;
-    return filteredQuestlines.filter(({ quests }) => {
-      const completedInLine = quests.filter((q) => questStatuses[q.id] === 'completed').length;
-      return completedInLine < quests.length;
-    });
-  }, [filteredQuestlines, showCompletedLines, questStatuses]);
-
-  const stats = useMemo(() => {
-    const available = questsWithStatus.filter((q) => q.status === 'available').length;
-    return { completed: completedCount, available, active: activeQuests.length, total: allQuests.length };
-  }, [questsWithStatus, activeQuests, completedCount]);
-
-  const sortedActiveQuestlines = useMemo(() => {
-    const active = questlineGroups.filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)));
-    const coverageScore = (quests: Quest[]) => {
-      const activeInLine = quests.filter((q) => activeQuestIds.has(q.id));
-      if (activeInLine.length === 0) return 0;
-      const scores = activeInLine.map((quest) => {
-        const items = parseItems(quest.itemsRequired);
-        if (items.length === 0) return 1;
-        const total = items.reduce((sum, { item, quantity }) =>
-          sum + Math.min(inventory[item] ?? 0, quantity) / quantity, 0);
-        return total / items.length;
-      });
-      return scores.reduce((a, b) => a + b, 0) / scores.length;
-    };
-    return [...active].sort((a, b) => {
-      if (a.name === pinnedQuestline) return -1;
-      if (b.name === pinnedQuestline) return 1;
-      return coverageScore(b.quests) - coverageScore(a.quests);
-    });
-  }, [questlineGroups, activeQuestIds, inventory, pinnedQuestline]);
-
-  const { readyQuestlines, blockedQuestlines } = useMemo(() => {
-    const isFullyCovered = (quests: Quest[]) => {
-      const activeInLine = quests.filter((q) => activeQuestIds.has(q.id));
-      return activeInLine.every((quest) => {
-        const items = parseItems(quest.itemsRequired);
-        if (items.length === 0) return true;
-        return items.every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity);
-      });
-    };
-    return {
-      readyQuestlines: sortedActiveQuestlines.filter(({ quests }) => isFullyCovered(quests)),
-      blockedQuestlines: sortedActiveQuestlines.filter(({ quests }) => !isFullyCovered(quests)),
-    };
-  }, [sortedActiveQuestlines, activeQuestIds, inventory]);
-
-  const isSearching = globalSearch.trim().length > 0;
+  // Shared nav button style helper
+  const navStyle = (isActive: boolean) =>
+    isActive
+      ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
+      : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' };
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--surface-app)', color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
@@ -260,7 +178,6 @@ export default function App() {
         style={{ background: 'oklch(0.25 0.022 258 / 0.85)', borderBottom: '1px solid var(--border-subtle)' }}
       >
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-          {/* Mobile hamburger — LEFT */}
           <button
             className="md:hidden flex-shrink-0 p-1.5 rounded-lg transition-colors"
             style={{ color: 'var(--text-muted)' }}
@@ -270,22 +187,17 @@ export default function App() {
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          {/* Logo + Title — centered on mobile, left-aligned on desktop */}
           <button
             onClick={() => { setTab('active'); setMenuOpen(false); }}
             className="flex items-center gap-2 flex-1 md:flex-none justify-center md:justify-start rounded-lg transition-opacity hover:opacity-80"
             aria-label="Home"
           >
             <img src="/favicon.svg" alt="" style={{ width: 26, height: 26, flexShrink: 0 }} />
-            <h1
-              className="text-base font-bold"
-              style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
-            >
+            <h1 className="text-base font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
               Farm RPG Tracker
             </h1>
           </button>
 
-          {/* Global search — desktop only */}
           <div className="relative hidden md:block flex-1 max-w-md mx-4">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
             <input
@@ -326,14 +238,12 @@ export default function App() {
             </button>
           )}
 
-          {/* Stats — desktop only */}
           <div className="hidden md:flex ml-auto items-center gap-3 text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)' }}>
             <span style={{ color: 'var(--accent-yellow)', fontWeight: 600 }}>{stats.active} active</span>
             <span style={{ color: 'var(--accent-green)', fontWeight: 600 }}>{stats.completed} done</span>
             <span style={{ color: 'var(--text-muted)' }}>{stats.available} available</span>
           </div>
 
-          {/* Sync / refresh button — RIGHT, always visible */}
           <button
             onClick={() => sync.pullNow()}
             className="flex-shrink-0 p-1.5 rounded-lg transition-colors"
@@ -358,42 +268,21 @@ export default function App() {
             className="fixed top-0 left-0 bottom-0 z-30 w-64 flex flex-col md:hidden"
             style={{ background: 'var(--surface-card)', borderRight: '1px solid var(--border-subtle)' }}
           >
-            {/* Drawer header */}
             <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <img src="/favicon.svg" alt="" style={{ width: 24, height: 24 }} />
-              <span className="text-sm font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>Farm RPG Tracker</span>
+              <span className="text-sm font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+                Farm RPG Tracker
+              </span>
             </div>
-            {/* Nav items */}
             <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
-              {([
-                { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
-                { id: 'active', label: 'Active', icon: <ListTodo size={16} /> },
-                { id: 'locations', label: 'Locations', icon: <MapPin size={16} /> },
-                { id: 'tower', label: 'Quest Focus', icon: <Building2 size={16} /> },
-                { id: 'the-tower', label: 'The Tower', icon: <Layers size={16} /> },
-                { id: 'inventory', label: 'Inventory', icon: <Package size={16} /> },
-                { id: 'pets', label: 'Pets', icon: <PawPrint size={16} /> },
-                { id: 'npcs', label: 'NPCs', icon: <Users size={16} /> },
-                { id: 'quests', label: 'All Quests', icon: <Search size={16} /> },
-                { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={16} /> },
-                { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={16} /> },
-                { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={16} /> },
-                { id: 'recipes', label: 'Recipes', icon: <Hammer size={16} /> },
-                { id: 'masteries', label: 'Masteries', icon: <Trophy size={16} /> },
-                { id: 'stats', label: 'Stats', icon: <BarChart2 size={16} /> },
-                { id: 'settings', label: 'Settings', icon: <Settings size={16} /> },
-              ] as const).map(({ id, label, icon }) => (
+              {[...NAV_ITEMS, ...META_ITEMS].map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => { setTab(id); setMenuOpen(false); }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
-                  style={
-                    tab === id
-                      ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
-                      : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }
-                  }
+                  style={navStyle(tab === id)}
                 >
-                  {icon}
+                  <Icon size={16} />
                   {label}
                 </button>
               ))}
@@ -409,52 +298,26 @@ export default function App() {
           style={{ borderRight: '1px solid var(--border-subtle)' }}
         >
           <nav className="flex flex-col gap-0.5 px-2 py-4">
-            {([
-              { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
-              { id: 'active', label: 'Active', icon: <ListTodo size={15} /> },
-              { id: 'locations', label: 'Locations', icon: <MapPin size={15} /> },
-              { id: 'tower', label: 'Quest Focus', icon: <Building2 size={15} /> },
-              { id: 'the-tower', label: 'The Tower', icon: <Layers size={15} /> },
-              { id: 'inventory', label: 'Inventory', icon: <Package size={15} /> },
-              { id: 'pets', label: 'Pets', icon: <PawPrint size={15} /> },
-              { id: 'npcs', label: 'NPCs', icon: <Users size={15} /> },
-              { id: 'quests', label: 'All Quests', icon: <Search size={15} /> },
-              { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={15} /> },
-              { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={15} /> },
-              { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={15} /> },
-              { id: 'recipes', label: 'Recipes', icon: <Hammer size={15} /> },
-              { id: 'masteries', label: 'Masteries', icon: <Trophy size={15} /> },
-            ] as const).map(({ id, label, icon }) => (
+            {NAV_ITEMS.map(({ id, label, Icon }) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
-                style={
-                  tab === id
-                    ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
-                    : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }
-                }
+                style={navStyle(tab === id)}
               >
-                {icon}
+                <Icon size={15} />
                 {label}
               </button>
             ))}
             <div className="h-px my-2 mx-1" style={{ background: 'var(--border-subtle)' }} />
-            {([
-              { id: 'stats', label: 'Stats', icon: <BarChart2 size={15} /> },
-              { id: 'settings', label: 'Settings', icon: <Settings size={15} /> },
-            ] as const).map(({ id, label, icon }) => (
+            {META_ITEMS.map(({ id, label, Icon }) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
                 className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
-                style={
-                  tab === id
-                    ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
-                    : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }
-                }
+                style={navStyle(tab === id)}
               >
-                {icon}
+                <Icon size={15} />
                 {label}
               </button>
             ))}
@@ -463,338 +326,58 @@ export default function App() {
 
         {/* Main content */}
         <div className="flex-1 min-w-0 px-4 md:px-6 py-6">
-        <main className="space-y-4">
-
-          {tab === 'dashboard' && (
-            <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} onTabChange={(t) => setTab(t as Tab)} />
-          )}
-
-          {tab === 'active' && (
-            <div className="space-y-3">
-              {/* Daily action card */}
-              <DailyActionCard activeQuests={activeQuests} />
-
-              {/* Sub-tab pills */}
-              <div
-                className="flex gap-1 p-1 rounded-lg"
-                style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}
-              >
-                {([
-                  { id: 'plan', label: 'Action Plan', icon: <ListTodo size={13} /> },
-                  { id: 'needs', label: 'Needs', icon: <ShoppingCart size={13} /> },
-                  { id: 'questlines', label: 'Questlines', icon: <GitBranch size={13} /> },
-                ] as const).map(({ id, label, icon }) => (
-                  <button
-                    key={id}
-                    onClick={() => setActiveSubTab(id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap"
-                    style={
-                      activeSubTab === id
-                        ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
-                        : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
-                    }
-                  >
-                    {icon}
-                    {label}
-                    {id === 'questlines' && (
-                      <span
-                        className="ml-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                        style={
-                          activeSubTab === 'questlines'
-                            ? { background: 'rgba(255,255,255,0.2)', color: '#fff' }
-                            : { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)' }
-                        }
-                      >
-                        {questlineGroups.filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id))).length}
-                      </span>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {activeSubTab === 'plan' && (
-                <>
-                  <NpcGatesCard activeQuests={activeQuests} questlineGroups={questlineGroups} />
-                  <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
-                </>
-              )}
-
-              {activeSubTab === 'needs' && (
-                <NeedsTab activeQuests={activeQuests} />
-              )}
-
-              {activeSubTab === 'questlines' && (
-                <>
-                  {readyQuestlines.map(({ name, quests }) => (
-                    <ActiveQuestLine key={name} questline={name} quests={quests} />
-                  ))}
-                  {activeQuests.filter((q) => !q.questline).map((quest) => (
-                    <QuestCard key={quest.id} quest={quest} status="active" />
-                  ))}
-
-                  {blockedQuestlines.length > 0 && (
-                    <>
-                      <div className="flex items-center gap-3 pt-1">
-                        <div className="flex-1 h-px" style={{ background: 'var(--border-subtle)' }} />
-                        <span
-                          className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap"
-                          style={{ color: 'var(--text-muted)' }}
-                        >
-                          Not able to be completed
-                        </span>
-                        <div className="flex-1 h-px" style={{ background: 'var(--border-subtle)' }} />
-                      </div>
-                      {blockedQuestlines.map(({ name, quests }) => (
-                        <ActiveQuestLine key={name} questline={name} quests={quests} />
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-
-          {tab === 'locations' && (
-            <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
-          )}
-
-          {tab === 'tower' && (
-            <ToweringInvestmentPage />
-          )}
-
-          {tab === 'the-tower' && (
-            <TheTowerPage />
-          )}
-
-          {tab === 'inventory' && (
-            <InventoryPage />
-          )}
-
-          {tab === 'pets' && (
-            <PetsPage activeQuests={activeQuests} />
-          )}
-
-          {tab === 'npcs' && (
-            <NpcPage />
-          )}
-
-          {tab === 'quests' && (
-            <div className="space-y-3">
-
-              <div className="space-y-2">
-                {/* Search — full width */}
-                <div className="relative">
-                  <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
-                  <input
-                    type="text"
-                    placeholder="Filter by quest, item, NPC…"
-                    value={globalSearch}
-                    onChange={(e) => setGlobalSearch(e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-8 pr-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+          <main className="space-y-4">
+            {tab === 'dashboard' && (
+              <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} onTabChange={(t) => setTab(t as Tab)} />
+            )}
+            {tab === 'active' && (
+              <ActiveTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} questlineGroups={questlineGroups} />
+            )}
+            {tab === 'locations' && (
+              <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
+            )}
+            {tab === 'tower' && <ToweringInvestmentPage />}
+            {tab === 'the-tower' && <TheTowerPage />}
+            {tab === 'inventory' && <InventoryPage />}
+            {tab === 'pets' && <PetsPage activeQuests={activeQuests} />}
+            {tab === 'npcs' && <NpcPage />}
+            {tab === 'quests' && (
+              <QuestsTab globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
+            )}
+            {tab === 'questlines' && (
+              <QuestlinesTab questlineGroups={questlineGroups} />
+            )}
+            {tab === 'grow' && <GrowPlanner questlineGroups={questlineGroups} />}
+            {tab === 'craftworks' && (
+              <CraftworksSuggestions quests={activeQuests} nextUpQuests={nextUpQuests} />
+            )}
+            {tab === 'recipes' && <RecipesPage />}
+            {tab === 'masteries' && <MasteriesPage />}
+            {tab === 'stats' && <StatsTab questlineGroups={questlineGroups} />}
+            {tab === 'settings' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="space-y-4">
+                  <SyncSection
+                    user={sync.user}
+                    authLoading={sync.authLoading}
+                    syncStatus={sync.syncStatus}
+                    lastSynced={sync.lastSynced}
+                    signIn={sync.signIn}
+                    signOut={sync.signOut}
+                    pullNow={sync.pullNow}
                   />
+                  <SkillsPanel />
+                  <BookmarkletSection />
                 </div>
-                {/* Filters row */}
-                <div className="flex gap-2 flex-wrap items-center">
-                  <select
-                    value={filterStatus}
-                    onChange={(e) => setFilterStatus(e.target.value as FilterStatus)}
-                    className="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
-                  >
-                    <option value="all">All statuses</option>
-                    <option value="completable">Completable now</option>
-                    <option value="available">Available</option>
-                    <option value="locked">Locked</option>
-                    <option value="completed">Completed</option>
-                    <option value="limited">Limited time</option>
-                  </select>
-                  <select
-                    value={filterNpc}
-                    onChange={(e) => setFilterNpc(e.target.value)}
-                    className="flex-1 min-w-0 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-purple-500"
-                  >
-                    <option value="">All NPCs</option>
-                    {npcs.map((npc) => (
-                      <option key={npc} value={npc}>{npc}</option>
-                    ))}
-                  </select>
-                  {(globalSearch || filterNpc || filterStatus !== 'all') && (
-                    <button
-                      onClick={() => { setGlobalSearch(''); setFilterNpc(''); setFilterStatus('all'); }}
-                      className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 px-2 py-2"
-                    >
-                      <X size={12} /> Clear
-                    </button>
-                  )}
+                <div className="space-y-4">
+                  <InventoryGrowthCard />
+                  <ImportExport />
+                  <CropTimerPanel />
+                  <RecipesPanel />
                 </div>
               </div>
-
-              <p className="text-xs text-slate-500">
-                {isSearching || filterNpc || filterStatus !== 'all'
-                  ? `${filteredQuests.length} results`
-                  : `${filteredQuests.length} quests`}
-              </p>
-
-              <div className="space-y-2">
-                {filteredQuests.slice(0, 200).map(({ quest, status }) => (
-                  <QuestCard key={quest.id} quest={quest} status={status} />
-                ))}
-                {filteredQuests.length > 200 && (
-                  <p className="text-xs text-slate-500 text-center py-2">
-                    Showing first 200 — use search/filters to narrow results
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {tab === 'questlines' && (
-            <div className="space-y-3">
-              <div className="relative">
-                <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500" />
-                <input
-                  type="text"
-                  placeholder="Search quest lines by name, NPC, or item…"
-                  value={questlineSearch}
-                  onChange={(e) => setQuestlineSearch(e.target.value)}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-8 pr-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-purple-500"
-                />
-                {questlineSearch && (
-                  <button
-                    onClick={() => setQuestlineSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                  >
-                    <X size={13} />
-                  </button>
-                )}
-              </div>
-              <div className="flex items-center justify-between">
-                <p className="text-xs text-slate-500">{visibleQuestlines.length} quest lines</p>
-                <button
-                  onClick={() => setShowCompletedLines(!showCompletedLines)}
-                  className={`text-xs px-2 py-1 rounded border transition-colors ${
-                    showCompletedLines
-                      ? 'bg-slate-700/50 text-slate-300 border-slate-600'
-                      : 'bg-slate-800 text-slate-400 border-slate-700'
-                  }`}
-                >
-                  {showCompletedLines ? 'Hide completed lines' : 'Show completed lines'}
-                </button>
-              </div>
-              {visibleQuestlines.map(({ name, quests }) => (
-                <QuestLineView key={name} questline={name} quests={quests} />
-              ))}
-            </div>
-          )}
-
-          {tab === 'grow' && (
-            <GrowPlanner questlineGroups={questlineGroups} />
-          )}
-
-          {tab === 'craftworks' && (
-            <CraftworksSuggestions quests={activeQuests} nextUpQuests={nextUpQuests} />
-          )}
-
-          {tab === 'recipes' && (
-            <RecipesPage />
-          )}
-
-          {tab === 'masteries' && (
-            <MasteriesPage />
-          )}
-
-          {tab === 'stats' && (
-            <StatsTab questlineGroups={questlineGroups} />
-          )}
-
-          {tab === 'settings' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <SyncSection
-                  user={sync.user}
-                  authLoading={sync.authLoading}
-                  syncStatus={sync.syncStatus}
-                  lastSynced={sync.lastSynced}
-                  signIn={sync.signIn}
-                  signOut={sync.signOut}
-                  pullNow={sync.pullNow}
-                />
-                <SkillsPanel />
-                {/* Sync from Game */}
-                <div
-                  className="rounded-xl p-4 space-y-4"
-                  style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-                >
-                  <div className="flex items-start gap-2">
-                    <BookMarked size={15} style={{ color: 'var(--accent-green)', flexShrink: 0, marginTop: 2 }} />
-                    <div>
-                      <p className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
-                        Sync from Farm RPG
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                        One-click bookmarklet — go to your Farm RPG inventory page and click it to import everything automatically.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Desktop — drag to bookmarks bar</p>
-                    <div className="flex flex-wrap gap-3 items-center">
-                      <a
-                        ref={bookmarkAnchorRef}
-                        onClick={(e) => e.preventDefault()}
-                        draggable
-                        className="inline-flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg cursor-grab active:cursor-grabbing select-none"
-                        style={{ background: 'var(--accent-green)', color: '#0f172a', border: '1px solid var(--accent-green-border)' }}
-                        title="Drag me to your bookmarks bar"
-                      >
-                        <RefreshCw size={13} /> Sync Farm RPG Inventory
-                      </a>
-                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>drag to bookmarks bar</span>
-                    </div>
-                    <button
-                      onClick={copyBookmarklet}
-                      className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border transition-colors"
-                      style={{ border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
-                    >
-                      {copied ? <><Check size={12} style={{ color: 'var(--accent-green)' }} /> Copied!</> : <><Copy size={12} /> Copy Bookmarklet Code</>}
-                    </button>
-                  </div>
-                  <div className="space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-                    <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Mobile — copy URL &amp; save as bookmark</p>
-                    <button
-                      onClick={copyBookmarklet}
-                      className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border transition-colors"
-                      style={{ border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
-                    >
-                      {copied ? <><Check size={12} style={{ color: 'var(--accent-green)' }} /> Copied!</> : <><Copy size={12} /> Copy Bookmarklet URL</>}
-                    </button>
-                    <div className="text-xs space-y-0.5 pl-1" style={{ color: 'var(--text-muted)' }}>
-                      <p className="font-medium" style={{ color: 'var(--text-secondary)' }}>Safari:</p>
-                      <p>1. Bookmark any page → Add Bookmark</p>
-                      <p>2. Open Bookmarks, find it, tap Edit</p>
-                      <p>3. Replace URL with copied code → Save</p>
-                      <p className="font-medium pt-1" style={{ color: 'var(--text-secondary)' }}>Chrome:</p>
-                      <p>1. ⋮ menu → Bookmarks → Add Bookmark</p>
-                      <p>2. Long-press bookmark → Edit</p>
-                      <p>3. Replace URL with copied code → Save</p>
-                    </div>
-                  </div>
-                  <div className="space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-                    <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Using it</p>
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                      Go to <span style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>farmrpg.com/inventory.php</span> and tap the bookmark. Your tracker opens in a new tab with inventory synced.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <InventoryGrowthCard />
-                <ImportExport />
-                <CropTimerPanel />
-                <RecipesPanel />
-              </div>
-            </div>
-          )}
-        </main>
+            )}
+          </main>
         </div>
       </div>
 
