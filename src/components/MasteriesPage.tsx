@@ -51,7 +51,10 @@ function diffLabel(d: number) {
   return 'Expert';
 }
 
-const TIER_LABELS = ['', 'M', 'GM', 'MM'] as const;
+// Tier III = Mastery (1,000×), Tier IV = Grand Master (10,000×), Tier V = Mega Mastery (100,000×)
+const TIER_LABELS   = ['', 'T.III', 'T.IV', 'T.V'] as const;
+const TIER_NAMES    = ['', 'Tier III · Mastery', 'Tier IV · Grand Master', 'Tier V · Mega Mastery'] as const;
+const TIER_TITLES   = ['', 'Tier III · Mastery (1,000×)', 'Tier IV · Grand Master (10,000×)', 'Tier V · Mega Mastery (100,000×)'] as const;
 const TIER_COLORS = [
   '',
   '#cd7f32',
@@ -90,7 +93,7 @@ function itemMatchesStatus(level: number, filter: StatusFilter) {
   return level === 3;
 }
 
-const NEXT_STEP_LABEL = ['', '→ M', '→ GM', '→ MM'] as const;
+const NEXT_STEP_LABEL = ['→ T.III', '→ T.IV', '→ T.V', ''] as const;
 const NEXT_STEP_TIER = [1, 2, 3] as const; // next tier to achieve for level 0,1,2
 
 interface ItemCardProps {
@@ -165,7 +168,7 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
                   ? { background: TIER_BG[tier], color: TIER_COLORS[tier], border: `2px solid ${TIER_COLORS[tier]}`, opacity: 0.6 }
                   : { background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }
               }
-              title={tier === 1 ? 'Mastered (1,000x)' : tier === 2 ? 'Grand Mastered (10,000x)' : 'Mega Mastered (100,000x)'}
+              title={TIER_TITLES[tier]}
             >
               {TIER_LABELS[tier]}
             </button>
@@ -207,10 +210,10 @@ export function MasteriesPage() {
 
   const suggestionSubtitle = useMemo(() => {
     if (suggestions.some((item) => (masteryLevels[item.name] ?? 0) === 2)) {
-      return '· grand mastered — 1 step from Mega Master';
+      return '· Tier IV · Grand Master — 1 step from Tier V · Mega Mastery';
     }
     if (suggestions.some((item) => (masteryLevels[item.name] ?? 0) === 1)) {
-      return '· mastered — push these to MM before starting new ones';
+      return '· Tier III · Mastery — push these to Tier V before starting new ones';
     }
     return '· nothing in progress — easiest items to start';
   }, [suggestions, masteryLevels]);
@@ -258,9 +261,9 @@ export function MasteriesPage() {
             <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Started</div>
           </div>
           {([
-            { label: 'Mastered', count: stats.m, color: TIER_COLORS[1], bg: TIER_BG[1] },
-            { label: 'Grand Master', count: stats.gm, color: TIER_COLORS[2], bg: TIER_BG[2] },
-            { label: 'Mega Master', count: stats.mm, color: TIER_COLORS[3], bg: TIER_BG[3] },
+            { label: TIER_NAMES[1], count: stats.m, color: TIER_COLORS[1], bg: TIER_BG[1] },
+            { label: TIER_NAMES[2], count: stats.gm, color: TIER_COLORS[2], bg: TIER_BG[2] },
+            { label: TIER_NAMES[3], count: stats.mm, color: TIER_COLORS[3], bg: TIER_BG[3] },
           ] as const).map(({ label, count, color, bg }) => (
             <div key={label} className="rounded-lg p-3 text-center" style={{ background: bg }}>
               <div className="text-2xl font-bold" style={{ fontFamily: 'var(--font-mono)', color }}>
@@ -360,9 +363,9 @@ export function MasteriesPage() {
               {([
                 { id: 'all', label: 'All' },
                 { id: 'none', label: 'Not started' },
-                { id: 'mastered', label: 'M' },
-                { id: 'grand-mastered', label: 'GM' },
-                { id: 'mega-mastered', label: 'MM' },
+                { id: 'mastered', label: 'T.III' },
+                { id: 'grand-mastered', label: 'T.IV' },
+                { id: 'mega-mastered', label: 'T.V' },
               ] as const).map(({ id, label }) => (
                 <button
                   key={id}
