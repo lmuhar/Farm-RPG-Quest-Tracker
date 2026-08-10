@@ -402,45 +402,68 @@ export default function App() {
         </>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <main className="space-y-4">
-          {/* Tab bar — desktop only */}
-          <div
-            className="hidden md:flex gap-0.5 rounded-xl p-1"
-            style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-          >
+      <div className="max-w-7xl mx-auto flex">
+        {/* Desktop sidebar */}
+        <aside
+          className="hidden md:flex w-52 flex-shrink-0 flex-col sticky top-[57px] self-start max-h-[calc(100vh-57px)] overflow-y-auto"
+          style={{ borderRight: '1px solid var(--border-subtle)' }}
+        >
+          <nav className="flex flex-col gap-0.5 px-2 py-4">
             {([
-              { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={14} /> },
-              { id: 'active', label: 'Active', icon: <ListTodo size={14} /> },
-              { id: 'locations', label: 'Locations', icon: <MapPin size={14} /> },
-              { id: 'tower', label: 'Quest Focus', icon: <Building2 size={14} /> },
-              { id: 'the-tower', label: 'The Tower', icon: <Layers size={14} /> },
-              { id: 'inventory', label: 'Inventory', icon: <Package size={14} /> },
-              { id: 'pets', label: 'Pets', icon: <PawPrint size={14} /> },
-              { id: 'npcs', label: 'NPCs', icon: <Users size={14} /> },
-              { id: 'quests', label: 'All Quests', icon: <Search size={14} /> },
-              { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={14} /> },
-              { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={14} /> },
-              { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={14} /> },
-              { id: 'recipes', label: 'Recipes', icon: <Hammer size={14} /> },
-              { id: 'masteries', label: 'Masteries', icon: <Trophy size={14} /> },
-              { id: 'stats', label: 'Stats', icon: <BarChart2 size={14} /> },
-              { id: 'settings', label: 'Settings', icon: <Settings size={14} /> },
+              { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={15} /> },
+              { id: 'active', label: 'Active', icon: <ListTodo size={15} /> },
+              { id: 'locations', label: 'Locations', icon: <MapPin size={15} /> },
+              { id: 'tower', label: 'Quest Focus', icon: <Building2 size={15} /> },
+              { id: 'the-tower', label: 'The Tower', icon: <Layers size={15} /> },
+              { id: 'inventory', label: 'Inventory', icon: <Package size={15} /> },
+              { id: 'pets', label: 'Pets', icon: <PawPrint size={15} /> },
+              { id: 'npcs', label: 'NPCs', icon: <Users size={15} /> },
+              { id: 'quests', label: 'All Quests', icon: <Search size={15} /> },
+              { id: 'questlines', label: 'Quest Lines', icon: <GitBranch size={15} /> },
+              { id: 'grow', label: 'Grow Planner', icon: <SproutIcon size={15} /> },
+              { id: 'craftworks', label: 'Craftworks', icon: <Hammer size={15} /> },
+              { id: 'recipes', label: 'Recipes', icon: <Hammer size={15} /> },
+              { id: 'masteries', label: 'Masteries', icon: <Trophy size={15} /> },
             ] as const).map(({ id, label, icon }) => (
               <button
                 key={id}
                 onClick={() => setTab(id)}
-                className="flex-shrink-0 flex items-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium transition-colors whitespace-nowrap"
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
                 style={
                   tab === id
                     ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
-                    : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
+                    : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }
                 }
               >
-                {icon} {label}
+                {icon}
+                {label}
               </button>
             ))}
-          </div>
+            <div className="h-px my-2 mx-1" style={{ background: 'var(--border-subtle)' }} />
+            {([
+              { id: 'stats', label: 'Stats', icon: <BarChart2 size={15} /> },
+              { id: 'settings', label: 'Settings', icon: <Settings size={15} /> },
+            ] as const).map(({ id, label, icon }) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left"
+                style={
+                  tab === id
+                    ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
+                    : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }
+                }
+              >
+                {icon}
+                {label}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* Main content */}
+        <div className="flex-1 min-w-0 px-4 md:px-6 py-6">
+        <main className="space-y-4">
 
           {tab === 'dashboard' && (
             <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} onTabChange={(t) => setTab(t as Tab)} />
@@ -772,6 +795,7 @@ export default function App() {
             </div>
           )}
         </main>
+        </div>
       </div>
 
       {showWizard && <SetupWizard onClose={() => setShowWizard(false)} />}
