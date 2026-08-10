@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle, Gem, ChevronRight, Coins } from 'lucide-react';
 import towerLevelsData from '../data/tower-levels.json';
 import towerArtifactsData from '../data/tower-artifacts.json';
+import masteriesData from '../data/masteries.json';
 import { useStore } from '../store';
 
 interface TowerLevelData {
@@ -19,6 +20,9 @@ interface Artifact {
   description: string;
   notes?: string;
 }
+
+interface MasteryItem { name: string; difficulty: number; method: string }
+const allMasteries = masteriesData as MasteryItem[];
 
 const allLevels = towerLevelsData as TowerLevelData[];
 const artifactByFloor = new Map<number, Artifact>(
@@ -199,12 +203,23 @@ function LevelCard({
 const SHOW_AHEAD = 10;
 
 export function TheTowerPage() {
-  const { towerLevel, setTowerLevel, mastered, setMastered, grandMastered, setGrandMastered, megaMastered, setMegaMastered } = useStore();
+  const { towerLevel, setTowerLevel, masteryLevels } = useStore();
   const [showAll, setShowAll] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [editing, setEditing] = useState(false);
-  const [editingField, setEditingField] = useState<'mastered' | 'grandMastered' | 'megaMastered' | null>(null);
-  const [masteryInputValue, setMasteryInputValue] = useState('');
+
+  const mastered = useMemo(
+    () => allMasteries.filter((item) => (masteryLevels[item.name] ?? 0) >= 1).length,
+    [masteryLevels]
+  );
+  const grandMastered = useMemo(
+    () => allMasteries.filter((item) => (masteryLevels[item.name] ?? 0) >= 2).length,
+    [masteryLevels]
+  );
+  const megaMastered = useMemo(
+    () => allMasteries.filter((item) => (masteryLevels[item.name] ?? 0) >= 3).length,
+    [masteryLevels]
+  );
 
   const maxLevel = allLevels[allLevels.length - 1]?.level ?? 340;
 
@@ -229,17 +244,6 @@ export function TheTowerPage() {
     if (!isNaN(n) && n >= 0 && n <= maxLevel) setTowerLevel(n);
     setEditing(false);
     setInputValue('');
-  }
-
-  function commitMastery(raw: string) {
-    const n = parseInt(raw, 10);
-    if (!isNaN(n) && n >= 0) {
-      if (editingField === 'mastered') setMastered(n);
-      else if (editingField === 'grandMastered') setGrandMastered(n);
-      else if (editingField === 'megaMastered') setMegaMastered(n);
-    }
-    setEditingField(null);
-    setMasteryInputValue('');
   }
 
   return (
@@ -318,39 +322,20 @@ export function TheTowerPage() {
 
           {(
             [
-              { field: 'mastered', label: 'Mastered', value: mastered },
-              { field: 'grandMastered', label: 'Grand Mastered', value: grandMastered },
-              { field: 'megaMastered', label: 'Mega Mastered', value: megaMastered },
+              { label: 'Mastered', value: mastered },
+              { label: 'Grand Mastered', value: grandMastered },
+              { label: 'Mega Mastered', value: megaMastered },
             ] as const
-          ).map(({ field, label, value }) => (
+          ).map(({ label, value }) => (
             <div
-              key={field}
+              key={label}
               className="flex flex-col px-3 py-2 rounded-lg"
               style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
             >
               <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</span>
-              {editingField === field ? (
-                <input
-                  autoFocus
-                  type="number"
-                  min={0}
-                  value={masteryInputValue}
-                  onChange={(e) => setMasteryInputValue(e.target.value)}
-                  onBlur={() => commitMastery(masteryInputValue)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') commitMastery(masteryInputValue); if (e.key === 'Escape') { setEditingField(null); setMasteryInputValue(''); } }}
-                  className="text-lg font-bold w-20 bg-transparent focus:outline-none"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}
-                />
-              ) : (
-                <button
-                  onClick={() => { setEditingField(field); setMasteryInputValue(String(value)); }}
-                  className="text-lg font-bold text-left hover:opacity-70 transition-opacity"
-                  style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}
-                  title="Click to edit"
-                >
-                  {value}
-                </button>
-              )}
+              <span className="text-lg font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+                {value}
+              </span>
             </div>
           ))}
 
