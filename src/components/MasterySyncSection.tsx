@@ -7,22 +7,35 @@ export function MasterySyncSection() {
 
   const href = useMemo(() => {
     const origin = window.location.origin;
+    // Parses farmrpg.com/mastery.php via innerText (no CSS class dependency).
+    // Checks main document and any iframes (Framework7 hash nav loads pages in iframes).
+    // Uses name-follows-name to capture items even when accordion rows are collapsed
+    // and their progress text is hidden (not in innerText).
     const code = `(function(){`
       + `var T='${origin}',m={},lv=-1,pn=null;`
-      + `var lines=document.body.innerText.split('\\n').map(function(l){return l.trim();}).filter(Boolean);`
+      + `function sv(){if(pn!==null&&lv>=0)m[pn]=lv;pn=null;}`
+      + `function proc(text){`
+      + `lv=-1;pn=null;`
+      + `var lines=text.split('\\n').map(function(l){return l.trim();}).filter(Boolean);`
       + `for(var i=0;i<lines.length;i++){`
       + `var l=lines[i];`
-      + `if(l==='Tier V (MM)'){lv=2;pn=null;continue;}`
-      + `if(l==='Tier IV (GM)'){lv=1;pn=null;continue;}`
-      + `if(l==='Mega Mastered'){lv=3;pn=null;continue;}`
-      + `if(l==='Tier III (M)'||l==='Tier II'||l==='Tier I'||l==='No Tier'){lv=-1;pn=null;continue;}`
+      + `if(l==='Tier V (MM)'){sv();lv=2;continue;}`
+      + `if(l==='Tier IV (GM)'){sv();lv=1;continue;}`
+      + `if(l==='Mega Mastered'){sv();lv=3;continue;}`
+      + `if(l==='Tier III (M)'||l==='Tier II'||l==='Tier I'||l==='No Tier'){sv();lv=-1;continue;}`
       + `if(lv<0)continue;`
-      + `if(l.indexOf('/')!==-1&&l.indexOf('Progress')!==-1){if(pn){m[pn]=lv;}pn=null;continue;}`
-      + `if(l.indexOf('%')!==-1||l==='Track'||l==='Stop'||l==='Complete!'`
-      + `||l==='chevron_down'||l==='chevron_right'`
-      + `||l.indexOf('Stop Tracking')===0||l.indexOf('Nothing ready')===0)continue;`
-      + `pn=l;`
+      + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'`
+      + `||l.indexOf('%')!==-1||l.indexOf('Stop Tracking')===0`
+      + `||l.indexOf('Nothing ready')===0||l.indexOf('Ready to Claim')===0)continue;`
+      + `if(l.indexOf('/')!==-1&&l.indexOf('Progress')!==-1){sv();continue;}`
+      + `sv();pn=l;`
       + `}`
+      + `sv();`
+      + `}`
+      + `proc(document.body.innerText);`
+      + `document.querySelectorAll('iframe').forEach(function(f){`
+      + `try{var d=f.contentDocument||f.contentWindow.document;if(d&&d.body)proc(d.body.innerText);}catch(e){}`
+      + `});`
       + `var c=Object.keys(m).length;`
       + `if(!c){alert('No mastery data found — make sure you\\'re on farmrpg.com/mastery.php');return;}`
       + `window.open(T+'/#sync-masteries='+encodeURIComponent(JSON.stringify(m)),'_blank');`
