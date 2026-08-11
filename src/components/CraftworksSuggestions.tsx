@@ -30,6 +30,9 @@ interface Candidate {
   anchorMaterial: string | null;
   passiveScore: number;   // 0–1: fraction of raw ingredient qty from passive inputs
   passiveInputs: string[]; // which passive materials this item uses
+  componentId: string;       // union-find group key
+  feedsInto: string[];       // other candidates that use this as a direct ingredient
+  componentMaterials: string[]; // raw mats shared by 2+ items in the same component
 }
 
 interface Props {
@@ -59,7 +62,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
   }, [craftingRecipes]);
 
   const suggestions = useMemo(() => {
-    const candidateMap = new Map<string, Omit<Candidate, 'anchorMaterial' | 'passiveScore' | 'passiveInputs'>>();
+    const candidateMap = new Map<string, Omit<Candidate, 'anchorMaterial' | 'passiveScore' | 'passiveInputs' | 'componentId' | 'feedsInto' | 'componentMaterials'>>();
 
     const addCandidate = (
       item: string,
@@ -171,7 +174,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    // ── Smarter clustering ────────────────────────────────────────────────
+    // ── Raw frequency + cluster helpers ──────────────────────────────────
     const rawFreq = new Map<string, number>();
     for (const rawMats of candidateRawMap.values()) {
       for (const raw of rawMats.keys()) {
@@ -185,11 +188,9 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       return [...rawMats.keys()].reduce((s, raw) => s + (rawFreq.get(raw) ?? 0), 0);
     };
 
-    // Prefer passive materials as anchors so passive chains group under one label
     const anchorOf = (item: string): string | null => {
       const rawMats = candidateRawMap.get(item);
       if (!rawMats) return null;
-      // First: prefer a passive material that's shared by the most candidates
       let bestPassive = '', bestPassiveFreq = 1;
       for (const raw of rawMats.keys()) {
         if (!PASSIVE_INPUTS.has(raw)) continue;
@@ -197,7 +198,6 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
         if (f > bestPassiveFreq) { bestPassiveFreq = f; bestPassive = raw; }
       }
       if (bestPassive) return bestPassive;
-      // Fall back to most-shared raw ingredient
       let best = '', bestFreq = 1;
       for (const raw of rawMats.keys()) {
         const f = rawFreq.get(raw) ?? 0;
@@ -206,12 +206,90 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       return best || null;
     };
 
-    const allCandidates: Candidate[] = [...candidateMap.values()].map((c) => ({
-      ...c,
-      anchorMaterial: anchorOf(c.item),
-      passiveScore: passiveScoreOf(c.item),
-      passiveInputs: passiveInputsOf(c.item),
-    }));
+    // ── Union-find component grouping ─────────────────────────────────────
+    const ufParent = new Map<string, string>();
+    const candidateKeys = new Set([...candidateMap.keys()].map((k) => k.toLowerCase()));
+
+    const ufFind = (x: string): string => {
+      if (!ufParent.has(x)) ufParent.set(x, x);
+      const p = ufParent.get(x)!;
+      if (p !== x) { const root = ufFind(p); ufParent.set(x, root); return root; }
+      return p;
+    };
+    const ufUnion = (a: string, b: string) => {
+      const ra = ufFind(a), rb = ufFind(b);
+      if (ra !== rb) ufParent.set(rb, ra);
+    };
+
+    for (const c of candidateMap.values()) ufFind(c.item.toLowerCase());
+
+    // Edge type 1: A is a direct ingredient in B's recipe → same component
+    for (const c of candidateMap.values()) {
+      for (const { item: ing } of c.recipe.ingredients) {
+        if (candidateKeys.has(ing.toLowerCase())) {
+          ufUnion(c.item.toLowerCase(), ing.toLowerCase());
+        }
+      }
+    }
+
+    // Edge type 2: items share the same anchor material → same component
+    const anchorGroupMap = new Map<string, string[]>();
+    for (const c of candidateMap.values()) {
+      const a = anchorOf(c.item);
+      if (a) {
+        if (!anchorGroupMap.has(a)) anchorGroupMap.set(a, []);
+        anchorGroupMap.get(a)!.push(c.item.toLowerCase());
+      }
+    }
+    for (const [, members] of anchorGroupMap) {
+      for (let i = 1; i < members.length; i++) ufUnion(members[0], members[i]);
+    }
+
+    // feedsInto: for each candidate, which other candidates directly use it as ingredient
+    const feedsIntoMap = new Map<string, string[]>();
+    for (const c of candidateMap.values()) {
+      for (const { item: ing } of c.recipe.ingredients) {
+        const ingKey = ing.toLowerCase();
+        if (candidateKeys.has(ingKey)) {
+          if (!feedsIntoMap.has(ingKey)) feedsIntoMap.set(ingKey, []);
+          feedsIntoMap.get(ingKey)!.push(c.item);
+        }
+      }
+    }
+
+    // componentMaterials: raw mats shared by 2+ candidates in the same component
+    const compRawCount = new Map<string, Map<string, number>>();
+    for (const c of candidateMap.values()) {
+      const compId = ufFind(c.item.toLowerCase());
+      if (!compRawCount.has(compId)) compRawCount.set(compId, new Map());
+      const rawMats = candidateRawMap.get(c.item);
+      if (rawMats) {
+        for (const raw of rawMats.keys()) {
+          const m = compRawCount.get(compId)!;
+          m.set(raw, (m.get(raw) ?? 0) + 1);
+        }
+      }
+    }
+    const componentMaterialsMap = new Map<string, string[]>();
+    for (const [compId, rawCount] of compRawCount) {
+      componentMaterialsMap.set(
+        compId,
+        [...rawCount.entries()].filter(([, n]) => n >= 2).map(([r]) => r)
+      );
+    }
+
+    const allCandidates: Candidate[] = [...candidateMap.values()].map((c) => {
+      const compId = ufFind(c.item.toLowerCase());
+      return {
+        ...c,
+        anchorMaterial: anchorOf(c.item),
+        passiveScore: passiveScoreOf(c.item),
+        passiveInputs: passiveInputsOf(c.item),
+        componentId: compId,
+        feedsInto: feedsIntoMap.get(c.item.toLowerCase()) ?? [],
+        componentMaterials: componentMaterialsMap.get(compId) ?? [],
+      };
+    });
 
     // ── Topological sort (ingredients before products) ────────────────────
     const itemKeys = new Set(allCandidates.map((c) => c.item.toLowerCase()));
@@ -231,13 +309,24 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       result.push(c);
     };
 
-    // Sort: priority → passive items clustered first within tier → cluster score
+    // Sort: component priority first (keeps related items together), then within component
+    const priorityOrder = { active: 0, nextup: 1, filler: 2 };
+    const compPriorityMap = new Map<string, number>();
+    for (const c of allCandidates) {
+      const cur = compPriorityMap.get(c.componentId) ?? 999;
+      compPriorityMap.set(c.componentId, Math.min(cur, priorityOrder[c.priority]));
+    }
+
     const presorted = [...allCandidates].sort((a, b) => {
-      const priorityOrder = { active: 0, nextup: 1, filler: 2 };
+      const cpA = compPriorityMap.get(a.componentId) ?? 2;
+      const cpB = compPriorityMap.get(b.componentId) ?? 2;
+      if (cpA !== cpB) return cpA - cpB;
+      // Keep same-component items adjacent
+      if (a.componentId !== b.componentId) return a.componentId.localeCompare(b.componentId);
+      // Within component: individual priority then passive grouping
       const pDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
       if (pDiff !== 0) return pDiff;
       if (a.isIntermediate !== b.isIntermediate) return a.isIntermediate ? 1 : -1;
-      // Within same tier: group fully-passive items together first
       const aPure = a.passiveScore >= 1;
       const bPure = b.passiveScore >= 1;
       if (aPure !== bPure) return aPure ? -1 : 1;
@@ -266,22 +355,52 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     });
   }, [displaySlots, inventory]);
 
-  // Group consecutive slots by anchor material
+  // Group slots by component (union-find id) — items sharing ingredients or raw mats cluster together
   const chainGroups = useMemo(() => {
-    const groups: { anchor: string | null; indices: number[]; isPassiveChain: boolean }[] = [];
+    type Group = {
+      componentId: string;
+      indices: number[];
+      isPassiveChain: boolean;
+      label: string;
+      flowArrow: string | null;
+    };
+    const groups: Group[] = [];
+
     for (let i = 0; i < displaySlots.length; i++) {
-      const anchor = displaySlots[i].anchorMaterial;
+      const slot = displaySlots[i];
+      const compId = slot.componentId;
       const last = groups[groups.length - 1];
-      if (last && last.anchor === anchor) {
+      if (last && last.componentId === compId) {
         last.indices.push(i);
       } else {
+        const mats = slot.componentMaterials;
+        const isPassive = mats.length > 0 && mats.every((m) => PASSIVE_INPUTS.has(m));
         groups.push({
-          anchor,
+          componentId: compId,
           indices: [i],
-          isPassiveChain: anchor ? PASSIVE_INPUTS.has(anchor) : false,
+          isPassiveChain: isPassive,
+          label: mats.length > 0 ? mats.join(' · ') : (slot.anchorMaterial ?? ''),
+          flowArrow: null,
         });
       }
     }
+
+    // Second pass: detect ingredient→product flow arrows within each multi-item group
+    for (const g of groups) {
+      if (g.indices.length < 2) continue;
+      const groupItemSet = new Set(g.indices.map((i) => displaySlots[i].item.toLowerCase()));
+      for (const i of g.indices) {
+        const slot = displaySlots[i];
+        for (const { item: ing } of slot.recipe.ingredients) {
+          if (groupItemSet.has(ing.toLowerCase()) && ing.toLowerCase() !== slot.item.toLowerCase()) {
+            g.flowArrow = `${ing} → ${slot.item}`;
+            break;
+          }
+        }
+        if (g.flowArrow) break;
+      }
+    }
+
     return groups;
   }, [displaySlots]);
 
@@ -379,7 +498,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
                   const slotIdx = pageStart + localIdx;
 
                   const chainGroup = chainGroups.find(g => g.indices.includes(slotIdx));
-                  const isChainStart = chainGroup && chainGroup.anchor && chainGroup.indices.length > 1 && chainGroup.indices[0] === slotIdx;
+                  const isChainStart = chainGroup && chainGroup.label && chainGroup.indices.length > 1 && chainGroup.indices[0] === slotIdx;
                   const isPassiveChain = chainGroup?.isPassiveChain ?? false;
                   const isFullyPassive = candidate.passiveScore >= 1;
 
@@ -410,12 +529,13 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
                             className="text-[10px] font-semibold uppercase tracking-wider"
                             style={{ color: isPassiveChain ? 'var(--accent-green)' : 'var(--accent-blue)' }}
                           >
-                            {chainGroup!.anchor} chain
+                            {chainGroup!.flowArrow ?? chainGroup!.label}
                           </span>
                           <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
                             · slots {chainGroup!.indices.map(i => i + 1).join(', ')}
                             {isPassiveChain && ' · auto-refills from passive resources'}
-                            {!isPassiveChain && ' run together'}
+                            {!isPassiveChain && !chainGroup!.flowArrow && ' · shared ingredients'}
+                            {!isPassiveChain && chainGroup!.flowArrow && ' · ingredient chain'}
                           </span>
                         </div>
                       )}
