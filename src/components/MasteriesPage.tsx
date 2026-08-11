@@ -154,7 +154,8 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
 
       <div className="flex gap-1">
         {([1, 2, 3] as const).map((tier) => {
-          const active = level >= tier;
+          const isCurrent = level === tier;
+          const isDone = level > tier;
           const isNext = showNextStep && nextTier === tier;
           return (
             <button
@@ -162,15 +163,17 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
               onClick={() => handleTierClick(tier)}
               className="flex-1 text-[11px] font-bold py-1 rounded transition-colors"
               style={
-                active
-                  ? { background: TIER_BG[tier], color: TIER_COLORS[tier], border: `1px solid ${TIER_BORDER[tier]}` }
+                isCurrent
+                  ? { background: TIER_BG[tier], color: TIER_COLORS[tier], border: `2px solid ${TIER_COLORS[tier]}` }
+                  : isDone
+                  ? { background: 'transparent', color: TIER_COLORS[tier], border: `1px solid ${TIER_BORDER[tier]}`, opacity: 0.4 }
                   : isNext
-                  ? { background: TIER_BG[tier], color: TIER_COLORS[tier], border: `2px solid ${TIER_COLORS[tier]}`, opacity: 0.6 }
+                  ? { background: 'transparent', color: TIER_COLORS[tier], border: `1.5px dashed ${TIER_COLORS[tier]}` }
                   : { background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }
               }
               title={TIER_TITLES[tier]}
             >
-              {TIER_LABELS[tier]}
+              {isDone ? '✓' : TIER_LABELS[tier]}
             </button>
           );
         })}
