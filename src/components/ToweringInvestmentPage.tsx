@@ -782,8 +782,14 @@ export function ToweringInvestmentPage() {
     () => questsWithStatus.filter(({ status }) => status === 'active').map(({ quest }) => quest),
     [questsWithStatus]
   );
+  // Only take the first 3 upcoming quests (in questline order) so craftworks pre-stocks
+  // for genuinely near-future quests, not ones at the end of the questline.
   const upcomingQuestsForCraftworks = useMemo(
-    () => questsWithStatus.filter(({ status }) => status !== 'completed' && status !== 'active').map(({ quest }) => quest),
+    () =>
+      questsWithStatus
+        .filter(({ status }) => status !== 'completed' && status !== 'active')
+        .slice(0, 3)
+        .map(({ quest }) => quest),
     [questsWithStatus]
   );
 
