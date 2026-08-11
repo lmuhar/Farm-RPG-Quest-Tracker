@@ -104,10 +104,13 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       }
     }
 
-    for (const quest of nextUpQuests) {
-      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
+    // nextupRank: item → index of the quest in nextUpQuests (earlier quests = lower rank = higher priority)
+    const nextupRankMap = new Map<string, number>();
+    for (let qi = 0; qi < nextUpQuests.length; qi++) {
+      for (const { item, quantity } of parseItems(nextUpQuests[qi].itemsRequired)) {
         if (!candidateMap.has(item)) {
-          addCandidate(item, quantity, 'nextup', quest.name, false);
+          addCandidate(item, quantity, 'nextup', nextUpQuests[qi].name, false);
+          if (!nextupRankMap.has(item)) nextupRankMap.set(item, qi);
         }
       }
     }
@@ -323,9 +326,14 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       if (cpA !== cpB) return cpA - cpB;
       // Keep same-component items adjacent
       if (a.componentId !== b.componentId) return a.componentId.localeCompare(b.componentId);
-      // Within component: individual priority then passive grouping
+      // Within component: individual priority then nextup quest rank (earlier quest = higher priority)
       const pDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
       if (pDiff !== 0) return pDiff;
+      if (a.priority === 'nextup' && b.priority === 'nextup') {
+        const rA = nextupRankMap.get(a.item) ?? 999;
+        const rB = nextupRankMap.get(b.item) ?? 999;
+        if (rA !== rB) return rA - rB;
+      }
       if (a.isIntermediate !== b.isIntermediate) return a.isIntermediate ? 1 : -1;
       const aPure = a.passiveScore >= 1;
       const bPure = b.passiveScore >= 1;
