@@ -1938,6 +1938,20 @@
     ]
   },
   {
+    "id": "539",
+    "name": "Purple Bag",
+    "ingredients": [
+      {
+        "item": "Leather Bag",
+        "quantity": 1
+      },
+      {
+        "item": "Purple Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "83",
     "name": "Purple Diary",
     "ingredients": [
@@ -2058,6 +2072,24 @@
       {
         "item": "Yarn",
         "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "538",
+    "name": "Red Shield",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 3
+      },
+      {
+        "item": "Wooden Shield",
+        "quantity": 1
+      },
+      {
+        "item": "Red Dye",
+        "quantity": 1
       }
     ]
   },
