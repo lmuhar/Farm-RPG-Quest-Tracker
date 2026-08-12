@@ -87,12 +87,30 @@ const defaultPlayer: PlayerProfile = {
   npcLevels: {},
 };
 
+// Pre-halving defaults (commit 891ff8d). If a saved value matches one of these
+// exactly, it was never manually edited — migrate it to the current (halved) default.
+const preFastDefaultTimes: Record<string, number> = {
+  Peppers: 0.183, Carrot: 0.383, Peas: 0.583, Cucumber: 0.783, Eggplant: 1,
+  Radish: 2, Onion: 3, Hops: 4, Potato: 5, Tomato: 6, Leek: 12, Mushroom: 18,
+  Watermelon: 24, Corn: 38.4, 'Sugar Cane': 90, Cabbage: 96, 'Pine Tree': 96,
+  Pumpkin: 144, Wheat: 288, Broccoli: 576, Cotton: 1152, Sunflower: 1728,
+  Beet: 2592, Rice: 2880,
+};
+
 // Merge saved crop times with defaults: saved entries win, new defaults fill gaps
 function mergeCropTimes(
   saved: { item: string; growMinutes: number }[]
 ): { item: string; growMinutes: number }[] {
   // Migrate old "Beets" → "Beet" to match quest item names
-  const migrated = saved.map((c) => c.item === 'Beets' ? { ...c, item: 'Beet' } : c);
+  const renamed = saved.map((c) => c.item === 'Beets' ? { ...c, item: 'Beet' } : c);
+  // Migrate pre-halving values to current defaults where value was never customised
+  const migrated = renamed.map((c) => {
+    if (preFastDefaultTimes[c.item] === c.growMinutes) {
+      const newDefault = defaultCropTimes.find((d) => d.item === c.item);
+      return newDefault ? { ...c, growMinutes: newDefault.growMinutes } : c;
+    }
+    return c;
+  });
   const savedItems = new Set(migrated.map((c) => c.item));
   return [...defaultCropTimes.filter((d) => !savedItems.has(d.item)), ...migrated];
 }
