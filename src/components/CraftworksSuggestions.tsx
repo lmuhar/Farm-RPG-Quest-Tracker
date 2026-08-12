@@ -38,9 +38,10 @@ interface Candidate {
 interface Props {
   quests: Quest[];
   nextUpQuests?: Quest[];
+  questlineOnly?: boolean;
 }
 
-export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
+export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly = false }: Props) {
   const { inventory, inventoryMax, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
@@ -150,30 +151,30 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     };
 
     // ── Passive filler: fully passive items to fill remaining slots ───────
-    // Only add if quest/nextup suggestions won't fill all slots
-    const questCount = candidateMap.size;
-    if (questCount < craftworksSlots) {
-      for (const [, recipe] of recipeMap) {
-        if (candidateMap.has(recipe.name)) continue;
-        // Resolve raw from scratch (not in candidateRawMap yet)
-        const rawMats = resolveRawIngredients(recipe.name, 1, recipeMap);
-        const fullyPassive = [...rawMats.keys()].every((r) => PASSIVE_INPUTS.has(r));
-        if (!fullyPassive) continue;
-        const have = inventory[recipe.name] ?? 0;
-        if (have >= inventoryMax) continue;
-        candidateMap.set(recipe.name, {
-          item: recipe.name,
-          needed: inventoryMax,
-          have,
-          deficit: inventoryMax - have,
-          priority: 'filler',
-          isIntermediate: false,
-          questNames: [],
-          recipe,
-        });
-        // Also add to raw map for clustering
-        candidateRawMap.set(recipe.name, rawMats);
-        if (candidateMap.size >= craftworksSlots + 5) break; // reasonable cap
+    // Skipped when questlineOnly — craftworks should only surface questline items.
+    if (!questlineOnly) {
+      const questCount = candidateMap.size;
+      if (questCount < craftworksSlots) {
+        for (const [, recipe] of recipeMap) {
+          if (candidateMap.has(recipe.name)) continue;
+          const rawMats = resolveRawIngredients(recipe.name, 1, recipeMap);
+          const fullyPassive = [...rawMats.keys()].every((r) => PASSIVE_INPUTS.has(r));
+          if (!fullyPassive) continue;
+          const have = inventory[recipe.name] ?? 0;
+          if (have >= inventoryMax) continue;
+          candidateMap.set(recipe.name, {
+            item: recipe.name,
+            needed: inventoryMax,
+            have,
+            deficit: inventoryMax - have,
+            priority: 'filler',
+            isIntermediate: false,
+            questNames: [],
+            recipe,
+          });
+          candidateRawMap.set(recipe.name, rawMats);
+          if (candidateMap.size >= craftworksSlots + 5) break;
+        }
       }
     }
 
@@ -343,7 +344,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     for (const c of presorted) visit(c);
 
     return result;
-  }, [quests, nextUpQuests, inventory, inventoryMax, recipeMap, craftworksSlots]);
+  }, [quests, nextUpQuests, inventory, inventoryMax, recipeMap, craftworksSlots, questlineOnly]);
 
   const displaySlots = suggestions.slice(0, Math.max(craftworksSlots, 0));
 

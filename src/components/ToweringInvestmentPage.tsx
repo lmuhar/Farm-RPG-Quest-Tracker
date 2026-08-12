@@ -782,13 +782,10 @@ export function ToweringInvestmentPage() {
     () => questsWithStatus.filter(({ status }) => status === 'active').map(({ quest }) => quest),
     [questsWithStatus]
   );
-  // Only take the first 3 upcoming quests (in questline order) so craftworks pre-stocks
-  // for genuinely near-future quests, not ones at the end of the questline.
   const upcomingQuestsForCraftworks = useMemo(
     () =>
       questsWithStatus
         .filter(({ status }) => status !== 'completed' && status !== 'active')
-        .slice(0, 3)
         .map(({ quest }) => quest),
     [questsWithStatus]
   );
@@ -900,12 +897,12 @@ export function ToweringInvestmentPage() {
 
       {/* Craftworks sub-tab */}
       {towerSubTab === 'craftworks' && (
-        activeQuestsForCraftworks.length === 0 ? (
+        activeQuestsForCraftworks.length === 0 && upcomingQuestsForCraftworks.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
-            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No active quests in this questline — mark a quest as active to see craftworks suggestions.</p>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>All quests in this questline are complete — nothing left to craft.</p>
           </div>
         ) : (
-          <CraftworksSuggestions quests={activeQuestsForCraftworks} nextUpQuests={upcomingQuestsForCraftworks} />
+          <CraftworksSuggestions quests={activeQuestsForCraftworks} nextUpQuests={upcomingQuestsForCraftworks} questlineOnly />
         )
       )}
 
