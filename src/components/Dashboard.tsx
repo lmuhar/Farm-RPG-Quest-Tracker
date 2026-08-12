@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X } from 'lucide-react';
 import { useStore } from '../store';
-import { parseItems, calcGrowsNeeded, resolveRawIngredients } from '../utils';
+import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 
@@ -246,7 +246,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
                     <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
                   </div>
                   <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                    {grows} grow{grows !== 1 ? 's' : ''} · {growMinutes < 1 ? `${Math.round(growMinutes * 60)}s` : growMinutes < 60 ? `${growMinutes}m` : `${Math.round(growMinutes / 60 * 10) / 10}h`}/cycle
+                    {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
                   </span>
                 </div>
               ))}

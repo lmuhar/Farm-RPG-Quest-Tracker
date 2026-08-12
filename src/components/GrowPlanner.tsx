@@ -272,8 +272,8 @@ export function GrowPlanner({ questlineGroups }: Props) {
                 onClick={() => {
                   const needed = rows.filter((r) => r.stillNeed > 0);
                   const next = [...growQueue];
-                  for (const { item } of needed) {
-                    if (!next.find((q) => q.item === item)) next.push({ item, grows: 1 });
+                  for (const { item, grows } of needed) {
+                    if (!next.find((q) => q.item === item)) next.push({ item, grows });
                   }
                   setGrowQueue(next);
                 }}
