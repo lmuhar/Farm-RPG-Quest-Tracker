@@ -902,7 +902,7 @@ export function ToweringInvestmentPage() {
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>All quests in this questline are complete — nothing left to craft.</p>
           </div>
         ) : (
-          <CraftworksSuggestions quests={activeQuestsForCraftworks} nextUpQuests={upcomingQuestsForCraftworks} />
+          <CraftworksSuggestions quests={activeQuestsForCraftworks} nextUpQuests={upcomingQuestsForCraftworks} questlineOnly />
         )
       )}
 

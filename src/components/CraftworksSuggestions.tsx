@@ -38,9 +38,10 @@ interface Candidate {
 interface Props {
   quests: Quest[];
   nextUpQuests?: Quest[];
+  questlineOnly?: boolean;
 }
 
-export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
+export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly = false }: Props) {
   const { inventory, inventoryMax, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
@@ -148,6 +149,34 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       if (!rawMats) return [];
       return [...rawMats.keys()].filter((r) => PASSIVE_INPUTS.has(r));
     };
+
+    // ── Passive filler: fully passive items to fill remaining slots ───────
+    // Skipped when questlineOnly — craftworks should only surface questline items.
+    if (!questlineOnly) {
+      const questCount = candidateMap.size;
+      if (questCount < craftworksSlots) {
+        for (const [, recipe] of recipeMap) {
+          if (candidateMap.has(recipe.name)) continue;
+          const rawMats = resolveRawIngredients(recipe.name, 1, recipeMap);
+          const fullyPassive = [...rawMats.keys()].every((r) => PASSIVE_INPUTS.has(r));
+          if (!fullyPassive) continue;
+          const have = inventory[recipe.name] ?? 0;
+          if (have >= inventoryMax) continue;
+          candidateMap.set(recipe.name, {
+            item: recipe.name,
+            needed: inventoryMax,
+            have,
+            deficit: inventoryMax - have,
+            priority: 'filler',
+            isIntermediate: false,
+            questNames: [],
+            recipe,
+          });
+          candidateRawMap.set(recipe.name, rawMats);
+          if (candidateMap.size >= craftworksSlots + 5) break;
+        }
+      }
+    }
 
     // ── Raw frequency + cluster helpers ──────────────────────────────────
     const rawFreq = new Map<string, number>();
@@ -315,7 +344,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
     for (const c of presorted) visit(c);
 
     return result;
-  }, [quests, nextUpQuests, inventory, inventoryMax, recipeMap, craftworksSlots]);
+  }, [quests, nextUpQuests, inventory, inventoryMax, recipeMap, craftworksSlots, questlineOnly]);
 
   const displaySlots = suggestions.slice(0, Math.max(craftworksSlots, 0));
 
