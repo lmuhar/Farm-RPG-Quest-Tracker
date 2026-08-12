@@ -149,34 +149,6 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [] }: Props) {
       return [...rawMats.keys()].filter((r) => PASSIVE_INPUTS.has(r));
     };
 
-    // ── Passive filler: fully passive items to fill remaining slots ───────
-    // Only add if quest/nextup suggestions won't fill all slots
-    const questCount = candidateMap.size;
-    if (questCount < craftworksSlots) {
-      for (const [, recipe] of recipeMap) {
-        if (candidateMap.has(recipe.name)) continue;
-        // Resolve raw from scratch (not in candidateRawMap yet)
-        const rawMats = resolveRawIngredients(recipe.name, 1, recipeMap);
-        const fullyPassive = [...rawMats.keys()].every((r) => PASSIVE_INPUTS.has(r));
-        if (!fullyPassive) continue;
-        const have = inventory[recipe.name] ?? 0;
-        if (have >= inventoryMax) continue;
-        candidateMap.set(recipe.name, {
-          item: recipe.name,
-          needed: inventoryMax,
-          have,
-          deficit: inventoryMax - have,
-          priority: 'filler',
-          isIntermediate: false,
-          questNames: [],
-          recipe,
-        });
-        // Also add to raw map for clustering
-        candidateRawMap.set(recipe.name, rawMats);
-        if (candidateMap.size >= craftworksSlots + 5) break; // reasonable cap
-      }
-    }
-
     // ── Raw frequency + cluster helpers ──────────────────────────────────
     const rawFreq = new Map<string, number>();
     for (const rawMats of candidateRawMap.values()) {
