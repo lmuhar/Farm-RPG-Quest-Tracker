@@ -784,6 +784,28 @@
     ]
   },
   {
+    "id": "fancy_drum",
+    "name": "Fancy Drum",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 15
+      },
+      {
+        "item": "Yarn",
+        "quantity": 4
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
+        "item": "Leather",
+        "quantity": 2
+      }
+    ]
+  },
+  {
     "id": "393",
     "name": "Fancy Guitar",
     "ingredients": [
