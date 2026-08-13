@@ -138,6 +138,36 @@
     ]
   },
   {
+    "id": "800",
+    "name": "Amber Cane",
+    "ingredients": [
+      {
+        "item": "Sand",
+        "quantity": 3
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Bone",
+        "quantity": 1
+      },
+      {
+        "item": "Amber",
+        "quantity": 1
+      },
+      {
+        "item": "Oak",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "379",
     "name": "Apple Cider",
     "ingredients": [
@@ -634,6 +664,32 @@
     ]
   },
   {
+    "id": "585",
+    "name": "Crossbow",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 3
+      },
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 2
+      },
+      {
+        "item": "Arrowhead",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "1442",
     "name": "Crown of Clover",
     "ingredients": [
@@ -939,6 +995,52 @@
       },
       {
         "item": "Antler",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "885",
+    "name": "Flying Machine",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 10
+      },
+      {
+        "item": "Rope",
+        "quantity": 10
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 10
+      },
+      {
+        "item": "Nailed Board",
+        "quantity": 10
+      },
+      {
+        "item": "Small Spring",
+        "quantity": 6
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 4
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 4
+      },
+      {
+        "item": "Pulley",
+        "quantity": 4
+      },
+      {
+        "item": "Steel Buckle",
+        "quantity": 2
+      },
+      {
+        "item": "Power Monitor",
         "quantity": 1
       }
     ]
@@ -2018,6 +2120,32 @@
     ]
   },
   {
+    "id": "684",
+    "name": "Power Monitor",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 10
+      },
+      {
+        "item": "Transistor",
+        "quantity": 5
+      },
+      {
+        "item": "Pocket Watch",
+        "quantity": 1
+      },
+      {
+        "item": "Copper Wire",
+        "quantity": 1
+      },
+      {
+        "item": "Broken Pipe",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "539",
     "name": "Purple Bag",
     "ingredients": [
@@ -2436,6 +2564,32 @@
     ]
   },
   {
+    "id": "776",
+    "name": "Ship in a Bottle",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 3
+      },
+      {
+        "item": "Oak",
+        "quantity": 2
+      },
+      {
+        "item": "Sand",
+        "quantity": 2
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 2
+      },
+      {
+        "item": "Model Ship",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "248",
     "name": "Shimmer Topaz",
     "ingredients": [
@@ -2548,6 +2702,20 @@
     ]
   },
   {
+    "id": "679",
+    "name": "Spool of Copper",
+    "ingredients": [
+      {
+        "item": "Copper Wire",
+        "quantity": 10
+      },
+      {
+        "item": "Metal Spool",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "675",
     "name": "Spoon",
     "ingredients": [
@@ -2655,6 +2823,36 @@
       },
       {
         "item": "Carbon Sphere",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "759",
+    "name": "Steel Vise",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 50
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 2
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 2
+      },
+      {
+        "item": "Small Bolt",
+        "quantity": 1
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 1
+      },
+      {
+        "item": "Broken Pipe",
         "quantity": 1
       }
     ]
