@@ -82,6 +82,28 @@
     ]
   },
   {
+    "id": "635",
+    "name": "Onion Soup",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 60
+      },
+      {
+        "item": "Onion",
+        "quantity": 50
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "84",
     "name": "Orange Juice",
     "ingredients": [
@@ -373,6 +395,24 @@
       },
       {
         "item": "Pickaxe",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "641",
+    "name": "Bone Broth",
+    "ingredients": [
+      {
+        "item": "Bone",
+        "quantity": 10
+      },
+      {
+        "item": "Coal",
+        "quantity": 5
+      },
+      {
+        "item": "Cooking Pot",
         "quantity": 1
       }
     ]
