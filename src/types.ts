@@ -25,6 +25,7 @@ export interface PlayerProfile {
   fishingLv: number;
   craftingLv: number;
   exploringLv: number;
+  cookingLv: number;
   npcLevels: Record<string, number>;
 }
 

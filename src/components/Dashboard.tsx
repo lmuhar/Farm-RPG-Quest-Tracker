@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
@@ -16,7 +16,7 @@ interface Props {
 }
 
 export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player } = useStore();
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
 
   const recipeMap = useMemo(() => {
@@ -71,7 +71,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     }
 
     // Bottleneck items — exclude items with steady passive income streams
-    const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms', 'eggs', 'milk']);
+    const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms', 'eggs', 'milk', 'grapes']);
     const allItemQuestCount = new Map<string, { active: number; nextup: number; have: number; need: number }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
@@ -141,6 +141,51 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
   }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap]);
 
   const hasDoNow = readyToTurnIn.length > 0 || craftNowItems.length > 0;
+
+  const COOKING_UNLOCKS = [
+    {
+      recipe: 'Mushroom Stew',
+      npc: 'Holger',
+      npcLvRequired: 40,
+      cookingLvRequired: 20,
+      lovedItems: ['Cheese', 'Mushroom Stew', 'Milk', 'Trout', 'Horn', 'Peach', 'Worms', 'Apple Cider', 'Largemouth Bass', 'Valentines Card', 'Arrowhead', 'Bluegill', 'Carp', 'Aquamarine', 'Peas', 'Marlin', 'Mug of Beer', 'Gold Trout', 'Potato', 'Wooden Table'],
+    },
+    {
+      recipe: 'Breakfast Boost',
+      npc: 'Lorn',
+      npcLvRequired: 40,
+      cookingLvRequired: 40,
+      lovedItems: ['Gold Peas', 'Iced Tea', 'Iron Cup', 'Old Boot', 'Purple Parchment', 'Green Parchment', '3-leaf Clover', 'Snail', 'Worms', 'Bucket', 'Spider', 'Peas', 'Crappie', 'Apple Cider', 'Shrimp', 'Glass Orb', 'Milk', 'Small Prawn'],
+    },
+    {
+      recipe: 'Hickory Omelette',
+      npc: 'Mariya',
+      npcLvRequired: 40,
+      cookingLvRequired: 35,
+      lovedItems: ['Radish', 'Worms', 'Spider', 'Black Powder', 'Explosive', 'Iced Tea', 'Milk', 'Eggs', 'Peach', 'Eggplant', 'Cucumber', 'Onion Soup', 'Shrimp-a-Plenty', "Cat's Meow", 'Quandary Chowder', 'Sea Pincher Special', 'Over The Moon', 'Leather Diary', 'Mushroom Stew'],
+    },
+    {
+      recipe: 'Quandary Chowder',
+      npc: 'Jill',
+      npcLvRequired: 50,
+      cookingLvRequired: 25,
+      lovedItems: ['Peach', 'Old Boot', 'Tomato', 'Grubs', 'Scrap Metal', 'Stingray', 'Spider', 'Hops', 'Snowball', 'Cheese', 'Milk', 'Grapes', 'Worms', 'Yellow Perch', 'Corn Husk Doll', 'MIAB', 'Mushroom Paste', 'Leather', 'Corn'],
+    },
+  ] as const;
+
+  const cookingHints = useMemo(() => {
+    return COOKING_UNLOCKS.flatMap((unlock) => {
+      const npcLv = player.npcLevels[unlock.npc] ?? 0;
+      const cookingLv = player.cookingLv ?? 0;
+      const npcMet = npcLv >= unlock.npcLvRequired;
+      const cookingMet = cookingLv >= unlock.cookingLvRequired;
+      if (npcMet && cookingMet) return [];
+      const itemsAtMax = unlock.lovedItems.filter((item) => (inventory[item] ?? 0) >= inventoryMax);
+      if (itemsAtMax.length === 0) return [];
+      return [{ ...unlock, npcLv, cookingLv, npcMet, cookingMet, itemsAtMax }];
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, inventory, inventoryMax]);
 
   // Per-quest item details for expansion
   const questItemDetails = useMemo(() => {
@@ -255,6 +300,63 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
           </div>
         )}
       </div>
+
+      {/* Cooking unlock hints */}
+      {cookingHints.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
+            <ChefHat size={13} style={{ color: 'var(--accent-purple)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-purple)' }}>Cooking unlocks</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>— give loved items to level up NPCs</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {cookingHints.map(({ recipe, npc, npcLvRequired, cookingLvRequired, npcLv, cookingLv, npcMet, cookingMet, itemsAtMax }) => (
+              <div key={recipe} className="px-4 py-3">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div>
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{recipe}</span>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                        style={{
+                          background: npcMet ? 'var(--accent-green-bg)' : 'var(--accent-orange-bg)',
+                          color: npcMet ? 'var(--accent-green)' : 'var(--accent-orange)',
+                          border: `1px solid ${npcMet ? 'var(--accent-green-border)' : 'var(--accent-orange-border)'}`,
+                        }}
+                      >
+                        {npc} lv {npcLv}/{npcLvRequired}
+                      </span>
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                        style={{
+                          background: cookingMet ? 'var(--accent-green-bg)' : 'var(--accent-blue-bg)',
+                          color: cookingMet ? 'var(--accent-green)' : 'var(--accent-blue)',
+                          border: `1px solid ${cookingMet ? 'var(--accent-green-border)' : 'var(--accent-blue-border)'}`,
+                        }}
+                      >
+                        Cooking lv {cookingLv}/{cookingLvRequired}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {itemsAtMax.map((item) => (
+                    <div key={item} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg" style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}>
+                      <Gift size={10} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+                      <span style={{ color: 'var(--text-secondary)' }}>Give</span>
+                      <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <span style={{ color: 'var(--text-muted)' }}>→ {npc}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Craftworks picks */}
       {craftworksPicks.length > 0 && (
