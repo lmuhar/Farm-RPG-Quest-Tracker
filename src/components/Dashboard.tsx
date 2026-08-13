@@ -71,7 +71,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     }
 
     // Bottleneck items — exclude items with steady passive income streams
-    const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms']);
+    const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms', 'eggs', 'milk']);
     const allItemQuestCount = new Map<string, { active: number; nextup: number; have: number; need: number }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
