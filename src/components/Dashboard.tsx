@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift, Fish } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift, Fish, Users } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
@@ -260,6 +260,34 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, inventory, inventoryMax]);
 
+  const HELP_REQUEST_NPCS = [
+    { npc: 'Buddy',          nextHelpLv: 60, lovedItems: ['Pirate Bandana', 'Valentines Card', 'Buddy Doll', 'Purple Flower', 'Pirate Flag', 'Buddystone'] },
+    { npc: 'Captain Thomas', nextHelpLv: 25, lovedItems: ['Fishing Net', 'Gold Catfish', 'Large Net', 'Gold Drum', 'Gold Trout', 'Slobster'] },
+    { npc: 'Geist',          nextHelpLv: 25, lovedItems: ['Gold Catfish', 'Shrimp-a-Plenty', 'Sea Pincher Special', 'Goldgill'] },
+    { npc: 'ROOMBA',         nextHelpLv: 40, lovedItems: ['Cogwheel', 'Carbon Sphere', 'Scrap Metal'] },
+    { npc: 'Lorn',           nextHelpLv: 60, lovedItems: ['Glass Orb', 'Milk', 'Gold Peas', 'Small Prawn', 'Shrimp'] },
+    { npc: 'George',         nextHelpLv: 70, lovedItems: ['Hide', 'Spider', 'Apple Cider', 'Mug of Beer', 'Carbon Sphere'] },
+    { npc: 'Jill',           nextHelpLv: 96, lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'] },
+    // Gary Bearson V (80) and Goostav (80) to be added once loved items are known
+  ];
+
+  const helpRequestHints = useMemo(() => {
+    return HELP_REQUEST_NPCS
+      .map((entry) => {
+        const npcLv = player.npcLevels[entry.npc] ?? 0;
+        const met = npcLv >= entry.nextHelpLv;
+        const lovedItemStats = entry.lovedItems.map((item) => {
+          const have = inventory[item] ?? 0;
+          const pct = inventoryMax > 0 ? have / inventoryMax : 0;
+          return { item, have, atMax: have >= inventoryMax, nearMax: pct >= 0.9 };
+        });
+        return { ...entry, npcLv, met, lovedItemStats, gap: entry.nextHelpLv - npcLv };
+      })
+      .filter(({ met }) => !met)
+      .sort((a, b) => a.gap - b.gap);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player, inventory, inventoryMax]);
+
   // Per-quest item details for expansion
   const questItemDetails = useMemo(() => {
     const map = new Map<string, { item: string; quantity: number; have: number; pct: number }[]>();
@@ -416,6 +444,57 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Next help requests */}
+      {helpRequestHints.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-yellow-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-yellow-bg)', borderBottom: '1px solid var(--accent-yellow-border)' }}>
+            <Users size={13} style={{ color: 'var(--accent-yellow)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-yellow)' }}>Next help requests</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--accent-yellow)', opacity: 0.7 }}>— gift loved items to unlock new quests</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {helpRequestHints.map(({ npc, nextHelpLv, npcLv, gap, lovedItemStats }) => (
+              <div key={npc} className="px-4 py-3">
+                <div className="mb-2.5">
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{npc}</span>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                      style={{
+                        background: gap <= 5 ? 'var(--accent-green-bg)' : 'var(--accent-orange-bg)',
+                        color: gap <= 5 ? 'var(--accent-green)' : 'var(--accent-orange)',
+                        border: `1px solid ${gap <= 5 ? 'var(--accent-green-border)' : 'var(--accent-orange-border)'}`,
+                      }}
+                    >
+                      lv {npcLv}/{nextHelpLv} · {gap} to go
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {lovedItemStats.map(({ item, have, atMax, nearMax }) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg"
+                      style={{
+                        background: atMax ? 'var(--accent-green-bg)' : nearMax ? 'var(--accent-yellow-bg)' : 'var(--surface-inset)',
+                        border: `1px solid ${atMax ? 'var(--accent-green-border)' : nearMax ? 'var(--accent-yellow-border)' : 'var(--border-subtle)'}`,
+                      }}
+                    >
+                      {(atMax || nearMax) && <Gift size={10} style={{ color: atMax ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />}
+                      <span className="font-medium" style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>{item}</span>
+                      <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>{have}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
