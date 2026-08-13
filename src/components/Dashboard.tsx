@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift, Fish } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
@@ -8,6 +8,19 @@ import recipesData from '../data/recipes.json';
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
 const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLowerCase(), r]));
+
+// Gold fish items catchable only via manual fishing with mealworms, mapped to their fishing location
+const GOLD_FISH = new Map<string, string>([
+  ['Gold Drum',     'Small Pond'],
+  ['Gold Trout',    'Farm Pond'],
+  ['Gold Sea Bass', 'Small Island'],
+  ['Gold Catfish',  'Crystal River'],
+  ['Gold Flier',    'Lake Tempest'],
+  ['Gold Sea Crest','Glacier Lake'],
+  ['Gold Jelly',    "Pirate's Cove"],
+  ['Gold Coral',    'Large Island'],
+  ['Gold Boot',     'Large Island'],
+]);
 
 interface Props {
   activeQuests: Quest[];
@@ -27,7 +40,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     return map;
   }, [craftingRecipes]);
 
-  const { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks } = useMemo(() => {
+  const { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks, goldFishNeeds } = useMemo(() => {
     const allQ = [...activeQuests, ...nextUpQuests];
 
     // Aggregate item needs across active quests
@@ -58,7 +71,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     }
 
     // Crop grows needed
-    const cropItems: { item: string; grows: number; growMinutes: number }[] = [];
+    const cropItems: { item: string; grows: number; growMinutes: number; totalMinutes: number }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;
       const deficit = totalNeeded - have;
@@ -66,11 +79,11 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
       if (crop) {
         const grows = calcGrowsNeeded(deficit, plotCount);
-        cropItems.push({ item, grows, growMinutes: crop.growMinutes });
+        cropItems.push({ item, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes });
       }
     }
 
-    // Bottleneck items — exclude items with steady passive income streams
+    // Bottleneck items — exclude passive income and gold fish (shown separately)
     const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms', 'eggs', 'milk', 'grapes']);
     const allItemQuestCount = new Map<string, { active: number; nextup: number; have: number; need: number }>();
     for (const q of allQ) {
@@ -82,6 +95,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
         const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
         if (recipe || crop) continue;
         if (PASSIVE_INCOME_ITEMS.has(item.toLowerCase())) continue;
+        if (GOLD_FISH.has(item)) continue;
         const existing = allItemQuestCount.get(item) ?? { active: 0, nextup: 0, have, need: 0 };
         if (isNextUp) existing.nextup++;
         else existing.active++;
@@ -93,6 +107,25 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       .map(([item, { active, nextup, have, need }]) => ({ item, active, nextup, have, need }))
       .sort((a, b) => b.active - a.active || b.nextup - a.nextup)
       .slice(0, 6);
+
+    // Gold fish needed for active/next-up quests
+    const goldFishMap = new Map<string, { have: number; need: number; location: string }>();
+    for (const q of allQ) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        if (!GOLD_FISH.has(item)) continue;
+        const have = inventory[item] ?? 0;
+        if (have >= quantity) continue;
+        const existing = goldFishMap.get(item);
+        if (!existing) {
+          goldFishMap.set(item, { have, need: quantity, location: GOLD_FISH.get(item)! });
+        } else {
+          existing.need = Math.max(existing.need, quantity);
+        }
+      }
+    }
+    const goldFishNeeds = [...goldFishMap.entries()]
+      .map(([item, { have, need, location }]) => ({ item, have, need, location }))
+      .sort((a, b) => a.item.localeCompare(b.item));
 
     // Craftworks picks: craftable items for active/nextup quests, sorted by priority
     const craftworksPicks: {
@@ -137,7 +170,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       return b.deficit - a.deficit;
     });
 
-    return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks: craftworksPicks.slice(0, 6) };
+    return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks: craftworksPicks.slice(0, 6), goldFishNeeds };
   }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap]);
 
   const hasDoNow = readyToTurnIn.length > 0 || craftNowItems.length > 0;
@@ -284,21 +317,66 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-green)' }}>Crops to grow</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {[...cropItems].sort((a, b) => a.growMinutes - b.growMinutes).map(({ item, grows, growMinutes }) => (
-                <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                    <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+              {[...cropItems].sort((a, b) => a.totalMinutes - b.totalMinutes).map(({ item, grows, growMinutes, totalMinutes }) => {
+                const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+                const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                const isToday = finishAt.toDateString() === new Date().toDateString();
+                const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+                return (
+                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                      <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                        {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: 'var(--accent-green)' }}>{doneLabel}</div>
+                    </div>
                   </div>
-                  <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                    {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
       </div>
+
+      {/* Gold fish — Use your mealworms here */}
+      {goldFishNeeds.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-blue-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-blue-bg)', borderBottom: '1px solid var(--accent-blue-border)' }}>
+            <Fish size={13} style={{ color: 'var(--accent-blue)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Use your mealworms here</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>— manual fishing only</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {goldFishNeeds.map(({ item, have, need, location }) => {
+              const pct = Math.min(have / need, 1);
+              const done = have >= need;
+              return (
+                <div key={item} className="px-4 py-2.5">
+                  <div className="flex items-center justify-between gap-3 mb-1">
+                    <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-xs" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
+                      <span className="text-xs font-semibold" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--accent-yellow)' }}>
+                        {have}/{need}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+                    <div className="h-full rounded-full" style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Cooking unlock hints */}
       {cookingHints.length > 0 && (
