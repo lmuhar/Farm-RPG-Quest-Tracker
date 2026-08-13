@@ -181,7 +181,6 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       const cookingMet = cookingLv >= unlock.cookingLvRequired;
       if (npcMet && cookingMet) return [];
       const itemsAtMax = unlock.lovedItems.filter((item) => (inventory[item] ?? 0) >= inventoryMax);
-      if (itemsAtMax.length === 0) return [];
       return [{ ...unlock, npcLv, cookingLv, npcMet, cookingMet, itemsAtMax }];
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -342,16 +341,22 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {itemsAtMax.map((item) => (
-                    <div key={item} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg" style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}>
-                      <Gift size={10} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
-                      <span style={{ color: 'var(--text-secondary)' }}>Give</span>
-                      <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                      <span style={{ color: 'var(--text-muted)' }}>→ {npc}</span>
-                    </div>
-                  ))}
-                </div>
+                {itemsAtMax.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {itemsAtMax.map((item) => (
+                      <div key={item} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg" style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}>
+                        <Gift size={10} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+                        <span style={{ color: 'var(--text-secondary)' }}>Give</span>
+                        <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>→ {npc}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    No loved items at max inventory yet — gift {npc} to progress friendship.
+                  </p>
+                )}
               </div>
             ))}
           </div>
