@@ -250,7 +250,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       const npcMet = npcLv >= unlock.npcLvRequired;
       const cookingMet = cookingLv >= unlock.cookingLvRequired;
       if (npcMet && cookingMet) return [];
-      const itemsAtMax = unlock.lovedItems.filter((item) => (inventory[item] ?? 0) >= inventoryMax);
+      const itemsAtMax = unlock.lovedItems.filter((item) => (inventory[item] ?? 0) >= inventoryMax * 0.9);
       return [{ ...unlock, npcLv, cookingLv, npcMet, cookingMet, itemsAtMax }];
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
