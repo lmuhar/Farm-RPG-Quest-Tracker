@@ -740,6 +740,60 @@
     ]
   },
   {
+    "id": "685",
+    "name": "Engine",
+    "ingredients": [
+      {
+        "item": "Steel Wire",
+        "quantity": 50
+      },
+      {
+        "item": "Steel",
+        "quantity": 20
+      },
+      {
+        "item": "Transistor",
+        "quantity": 12
+      },
+      {
+        "item": "Magicite",
+        "quantity": 1
+      },
+      {
+        "item": "Flywheel",
+        "quantity": 1
+      },
+      {
+        "item": "Steel Plate",
+        "quantity": 1
+      },
+      {
+        "item": "Belt Drive",
+        "quantity": 1
+      },
+      {
+        "item": "Energy Coil",
+        "quantity": 1
+      },
+      {
+        "item": "Control Box",
+        "quantity": 1
+      },
+      {
+        "item": "Kill Switch",
+        "quantity": 1
+      },
+      {
+        "item": "Pear Grease",
+        "quantity": 1
+      },
+      {
+        "item": "Power Monitor",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "492",
     "name": "Essence of Slime",
     "ingredients": [
