@@ -564,6 +564,36 @@
     ]
   },
   {
+    "id": "615",
+    "name": "Canoe",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 100
+      },
+      {
+        "item": "Nails",
+        "quantity": 10
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 10
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 5
+      },
+      {
+        "item": "Board",
+        "quantity": 4
+      },
+      {
+        "item": "Rope",
+        "quantity": 2
+      }
+    ]
+  },
+  {
     "id": "481",
     "name": "Chum",
     "ingredients": [
@@ -934,6 +964,74 @@
     ]
   },
   {
+    "id": "736",
+    "name": "Fancy Chair",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 50
+      },
+      {
+        "item": "Nails",
+        "quantity": 8
+      },
+      {
+        "item": "Twine",
+        "quantity": 8
+      },
+      {
+        "item": "Cotton",
+        "quantity": 6
+      },
+      {
+        "item": "Leather",
+        "quantity": 4
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 1
+      },
+      {
+        "item": "Red Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1136",
+    "name": "Fancy Clock",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 12
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 8
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 4
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 4
+      },
+      {
+        "item": "Scrap Metal",
+        "quantity": 4
+      },
+      {
+        "item": "Cogwheel",
+        "quantity": 2
+      },
+      {
+        "item": "Pocket Watch",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "474",
     "name": "Fancy Drum",
     "ingredients": [
@@ -978,6 +1076,28 @@
     ]
   },
   {
+    "id": "737",
+    "name": "Fancy Pan Flute",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 9
+      },
+      {
+        "item": "Twine",
+        "quantity": 5
+      },
+      {
+        "item": "Leather",
+        "quantity": 1
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "301",
     "name": "Fancy Pipe",
     "ingredients": [
@@ -991,6 +1111,92 @@
       },
       {
         "item": "Iron",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1328",
+    "name": "Fancy Sword",
+    "ingredients": [
+      {
+        "item": "Steel Wire",
+        "quantity": 4
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
+        "item": "Lemon Quartz",
+        "quantity": 2
+      },
+      {
+        "item": "Gold Leaf",
+        "quantity": 2
+      },
+      {
+        "item": "Sturdy Sword",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "774",
+    "name": "Fancy Table",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 80
+      },
+      {
+        "item": "Nails",
+        "quantity": 32
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 8
+      },
+      {
+        "item": "Corn Oil",
+        "quantity": 1
+      },
+      {
+        "item": "Steel Vise",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "817",
+    "name": "Fancy Violin",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 8
+      },
+      {
+        "item": "Pine Board",
+        "quantity": 5
+      },
+      {
+        "item": "Steel",
+        "quantity": 4
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 4
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 4
+      },
+      {
+        "item": "Purple Dye",
+        "quantity": 3
+      },
+      {
+        "item": "Steel Plate",
         "quantity": 1
       }
     ]
@@ -1194,6 +1400,56 @@
       {
         "item": "Shimmer Stone",
         "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "1130",
+    "name": "Grand Piano",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 88
+      },
+      {
+        "item": "Horn",
+        "quantity": 88
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 88
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 11
+      },
+      {
+        "item": "White Parchment",
+        "quantity": 10
+      },
+      {
+        "item": "Steel",
+        "quantity": 10
+      },
+      {
+        "item": "Block of Wood",
+        "quantity": 8
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 5
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      },
+      {
+        "item": "Fancy Chair",
+        "quantity": 1
+      },
+      {
+        "item": "Handsaw",
+        "quantity": 1
       }
     ]
   },
@@ -1887,6 +2143,28 @@
       },
       {
         "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1260",
+    "name": "Magus Hat",
+    "ingredients": [
+      {
+        "item": "Blue Feathers",
+        "quantity": 10
+      },
+      {
+        "item": "Twine",
+        "quantity": 3
+      },
+      {
+        "item": "Leather",
+        "quantity": 2
+      },
+      {
+        "item": "Gold Leaf",
         "quantity": 1
       }
     ]
