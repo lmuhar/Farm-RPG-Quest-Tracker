@@ -433,7 +433,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
     return groups;
   }, [displaySlots]);
 
-  if (quests.length === 0 && nextUpQuests.length === 0) return null;
+  if (quests.length === 0 && nextUpQuests.length === 0 && directItems.length === 0) return null;
 
   return (
     <div
