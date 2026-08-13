@@ -1992,6 +1992,32 @@
     ]
   },
   {
+    "id": "754",
+    "name": "Potato Battery",
+    "ingredients": [
+      {
+        "item": "Potato",
+        "quantity": 8
+      },
+      {
+        "item": "Transistor",
+        "quantity": 8
+      },
+      {
+        "item": "Nails",
+        "quantity": 4
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 4
+      },
+      {
+        "item": "Spool of Copper",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "539",
     "name": "Purple Bag",
     "ingredients": [
