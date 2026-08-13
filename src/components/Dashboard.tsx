@@ -4,10 +4,43 @@ import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
+import petsData from '../data/pets.json';
+import itemLocationsData from '../data/item-locations.json';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
 const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLowerCase(), r]));
+
+// Curated list of rare bottleneck items and where to find them
+const RARE_ITEMS = new Map<string, string>([
+  ['Gold Feather',  'Forest / Misty Forest / Mt. Banon'],
+  ['Gold Leaf',     'Forest'],
+  ['Model Ship',    'Small Cave'],
+  ['Skull Coin',    'Small Spring'],
+  ['Tea Leaves',    'Cane Pole Ridge'],
+  ['Horned Beetle', 'Cane Pole Ridge'],
+  ['Lima Bean',     'Cane Pole Ridge'],
+  ['Spider',        'Misty Forest / Haunted House'],
+  ['Orange Gecko',  'Black Rock Canyon'],
+  ['Dragon Skull',  'Mount Banon'],
+  ['Bacon',         'Mount Banon'],
+  ['Diamond',       'Ember Lagoon'],
+  ['Herbs',         'Whispering Creek'],
+  ['Onyx Scorpion', 'Jundland Desert'],
+]);
+
+// Compute items that drop only from pets (not findable via explore/fishing and not craftable)
+const _itemLocKeys = new Set(Object.keys(itemLocationsData as Record<string, unknown>).map(k => k.toLowerCase()));
+const _recipeKeys = new Set(allRecipes.map(r => r.name.toLowerCase()));
+const _petLootItems = new Set<string>();
+for (const pet of petsData as { loot: Record<string, string[]> }[]) {
+  for (const items of Object.values(pet.loot)) {
+    for (const item of items) _petLootItems.add(item);
+  }
+}
+const PET_ONLY_ITEMS = new Set<string>(
+  [..._petLootItems].filter(item => !_itemLocKeys.has(item.toLowerCase()) && !_recipeKeys.has(item.toLowerCase()))
+);
 
 // Gold fish items catchable only via manual fishing with mealworms, mapped to their fishing location
 const GOLD_FISH = new Map<string, string>([
@@ -83,30 +116,34 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       }
     }
 
-    // Bottleneck items — exclude passive income and gold fish (shown separately)
-    const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms', 'eggs', 'milk', 'grapes']);
-    const allItemQuestCount = new Map<string, { active: number; nextup: number; have: number; need: number }>();
+    // Bottleneck items — curated rare items + pet-only drops
+    const bottleneckMap = new Map<string, { active: number; nextup: number; have: number; need: number; location: string }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
         const have = inventory[item] ?? 0;
         if (have >= quantity) continue;
-        const recipe = recipeMap.get(item.toLowerCase());
         const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
-        if (recipe || crop) continue;
-        if (PASSIVE_INCOME_ITEMS.has(item.toLowerCase())) continue;
-        if (GOLD_FISH.has(item)) continue;
-        const existing = allItemQuestCount.get(item) ?? { active: 0, nextup: 0, have, need: 0 };
+        if (crop) continue;
+        let location: string | undefined;
+        if (RARE_ITEMS.has(item)) {
+          location = RARE_ITEMS.get(item)!;
+        } else if (PET_ONLY_ITEMS.has(item)) {
+          location = 'Pet drops';
+        } else {
+          continue;
+        }
+        const existing = bottleneckMap.get(item) ?? { active: 0, nextup: 0, have, need: 0, location };
         if (isNextUp) existing.nextup++;
         else existing.active++;
         existing.need = Math.max(existing.need, quantity);
-        allItemQuestCount.set(item, existing);
+        bottleneckMap.set(item, existing);
       }
     }
-    const bottlenecks = [...allItemQuestCount.entries()]
-      .map(([item, { active, nextup, have, need }]) => ({ item, active, nextup, have, need }))
+    const bottlenecks = [...bottleneckMap.entries()]
+      .map(([item, { active, nextup, have, need, location }]) => ({ item, active, nextup, have, need, location }))
       .sort((a, b) => b.active - a.active || b.nextup - a.nextup)
-      .slice(0, 6);
+      .slice(0, 8);
 
     // Gold fish needed for active/next-up quests
     const goldFishMap = new Map<string, { have: number; need: number; location: string }>();
@@ -280,11 +317,12 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
               <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— no easy source</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {bottlenecks.map(({ item, active, nextup, have, need }) => (
+              {bottlenecks.map(({ item, active, nextup, have, need, location }) => (
                 <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                    <div className="flex items-center gap-2 mt-0.5">
+                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                      <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
                       {active > 0 && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                           {active} active
