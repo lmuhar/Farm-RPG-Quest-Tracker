@@ -218,30 +218,30 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       npc: 'Holger',
       npcLvRequired: 40,
       cookingLvRequired: 20,
-      lovedItems: ['Cheese', 'Mushroom Stew', 'Milk', 'Trout', 'Horn', 'Peach', 'Worms', 'Apple Cider', 'Largemouth Bass', 'Valentines Card', 'Arrowhead', 'Bluegill', 'Carp', 'Aquamarine', 'Peas', 'Marlin', 'Mug of Beer', 'Gold Trout', 'Potato', 'Wooden Table'],
+      lovedItems: ['Wooden Table', 'Gold Trout', 'Mug of Beer', 'Potato'],
     },
     {
       recipe: 'Breakfast Boost',
       npc: 'Lorn',
       npcLvRequired: 40,
       cookingLvRequired: 40,
-      lovedItems: ['Gold Peas', 'Iced Tea', 'Iron Cup', 'Old Boot', 'Purple Parchment', 'Green Parchment', '3-leaf Clover', 'Snail', 'Worms', 'Bucket', 'Spider', 'Peas', 'Crappie', 'Apple Cider', 'Shrimp', 'Glass Orb', 'Milk', 'Small Prawn'],
+      lovedItems: ['Glass Orb', 'Milk', 'Gold Peas', 'Small Prawn', 'Shrimp'],
     },
     {
       recipe: 'Hickory Omelette',
       npc: 'Mariya',
       npcLvRequired: 40,
       cookingLvRequired: 35,
-      lovedItems: ['Radish', 'Worms', 'Spider', 'Black Powder', 'Explosive', 'Iced Tea', 'Milk', 'Eggs', 'Peach', 'Eggplant', 'Cucumber', 'Onion Soup', 'Shrimp-a-Plenty', "Cat's Meow", 'Quandary Chowder', 'Sea Pincher Special', 'Over The Moon', 'Leather Diary', 'Mushroom Stew'],
+      lovedItems: ['Tomato', 'Shrimp-a-Plenty', 'Onion Soup', 'Over The Moon', 'Quandary Chowder', "Cat's Meow", 'Sea Pincher Special', 'Leather Diary', 'Mushroom Stew'],
     },
     {
       recipe: 'Quandary Chowder',
       npc: 'Jill',
       npcLvRequired: 50,
       cookingLvRequired: 25,
-      lovedItems: ['Peach', 'Old Boot', 'Tomato', 'Grubs', 'Scrap Metal', 'Stingray', 'Spider', 'Hops', 'Snowball', 'Cheese', 'Milk', 'Grapes', 'Worms', 'Yellow Perch', 'Corn Husk Doll', 'MIAB', 'Mushroom Paste', 'Leather', 'Corn'],
+      lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'],
     },
-  ] as const;
+  ];
 
   const cookingHints = useMemo(() => {
     return COOKING_UNLOCKS.flatMap((unlock) => {
@@ -250,8 +250,12 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       const npcMet = npcLv >= unlock.npcLvRequired;
       const cookingMet = cookingLv >= unlock.cookingLvRequired;
       if (npcMet && cookingMet) return [];
-      const itemsAtMax = unlock.lovedItems.filter((item) => (inventory[item] ?? 0) >= inventoryMax * 0.9);
-      return [{ ...unlock, npcLv, cookingLv, npcMet, cookingMet, itemsAtMax }];
+      const lovedItemStats = unlock.lovedItems.map((item) => {
+        const have = inventory[item] ?? 0;
+        const pct = inventoryMax > 0 ? have / inventoryMax : 0;
+        return { item, have, atMax: have >= inventoryMax, nearMax: pct >= 0.9 };
+      });
+      return [{ ...unlock, npcLv, cookingLv, npcMet, cookingMet, lovedItemStats }];
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, inventory, inventoryMax]);
@@ -428,9 +432,9 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
             <span className="text-xs ml-1" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>— give loved items to level up NPCs</span>
           </div>
           <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {cookingHints.map(({ recipe, npc, npcLvRequired, cookingLvRequired, npcLv, cookingLv, npcMet, cookingMet, itemsAtMax }) => (
+            {cookingHints.map(({ recipe, npc, npcLvRequired, cookingLvRequired, npcLv, cookingLv, npcMet, cookingMet, lovedItemStats }) => (
               <div key={recipe} className="px-4 py-3">
-                <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex items-start justify-between gap-3 mb-2.5">
                   <div>
                     <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{recipe}</span>
                     <div className="flex flex-wrap gap-2 mt-1">
@@ -457,22 +461,22 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
                     </div>
                   </div>
                 </div>
-                {itemsAtMax.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {itemsAtMax.map((item) => (
-                      <div key={item} className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg" style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}>
-                        <Gift size={10} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
-                        <span style={{ color: 'var(--text-secondary)' }}>Give</span>
-                        <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                        <span style={{ color: 'var(--text-muted)' }}>→ {npc}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    No loved items at max inventory yet — gift {npc} to progress friendship.
-                  </p>
-                )}
+                <div className="flex flex-wrap gap-2">
+                  {lovedItemStats.map(({ item, have, atMax, nearMax }) => (
+                    <div
+                      key={item}
+                      className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-lg"
+                      style={{
+                        background: atMax ? 'var(--accent-green-bg)' : nearMax ? 'var(--accent-yellow-bg)' : 'var(--surface-inset)',
+                        border: `1px solid ${atMax ? 'var(--accent-green-border)' : nearMax ? 'var(--accent-yellow-border)' : 'var(--border-subtle)'}`,
+                      }}
+                    >
+                      {(atMax || nearMax) && <Gift size={10} style={{ color: atMax ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />}
+                      <span className="font-medium" style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>{item}</span>
+                      <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>{have}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
