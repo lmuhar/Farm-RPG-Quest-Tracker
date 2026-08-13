@@ -268,7 +268,8 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     { npc: 'Lorn',           nextHelpLv: 60, lovedItems: ['Glass Orb', 'Milk', 'Gold Peas', 'Small Prawn', 'Shrimp'] },
     { npc: 'George',         nextHelpLv: 70, lovedItems: ['Hide', 'Spider', 'Apple Cider', 'Mug of Beer', 'Carbon Sphere'] },
     { npc: 'Jill',           nextHelpLv: 96, lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'] },
-    // Gary Bearson V (80) and Goostav (80) to be added once loved items are known
+    { npc: 'Gary Bearson V', nextHelpLv: 80, lovedItems: ['Yarn', 'Gold Trout', 'You Rock Card', 'Apple Cider'] },
+    { npc: 'Goostav',        nextHelpLv: 80, lovedItems: ['Slime Egg Shell', 'Glowshroom', 'Swamp Gourd', 'Mini Slime Squid', 'Gold Slimeback'] },
   ];
 
   const helpRequestHints = useMemo(() => {
