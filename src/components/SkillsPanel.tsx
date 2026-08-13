@@ -9,7 +9,7 @@ const quests = questsData as Quest[];
 const allNpcs = [...new Set(quests.map((q) => q.npc))].sort();
 const mainNpcs = ['Thomas', 'Rosalie', 'Holger', 'Cecil', 'Beatrix', 'Jill', 'George', 'Lorn', 'Buddy'];
 
-type SkillKey = 'farmingLv' | 'fishingLv' | 'craftingLv' | 'exploringLv';
+type SkillKey = 'farmingLv' | 'fishingLv' | 'craftingLv' | 'exploringLv' | 'cookingLv';
 
 function computeLevelRecommendations(player: PlayerProfile, questStatuses: Record<string, string>) {
   const skillDefs: { key: SkillKey; label: string; emoji: string; questField: keyof Quest }[] = [
@@ -84,6 +84,7 @@ export function SkillsPanel() {
     { key: 'fishingLv', label: 'Fishing', emoji: '🎣' },
     { key: 'craftingLv', label: 'Crafting', emoji: '🔨' },
     { key: 'exploringLv', label: 'Exploring', emoji: '🗺️' },
+    { key: 'cookingLv', label: 'Cooking', emoji: '🍳' },
   ] as const;
 
   const displayedNpcs = showAllNpcs ? allNpcs : mainNpcs;
