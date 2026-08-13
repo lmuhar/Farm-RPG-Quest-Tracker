@@ -70,7 +70,8 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       }
     }
 
-    // Bottleneck items
+    // Bottleneck items — exclude items with steady passive income streams
+    const PASSIVE_INCOME_ITEMS = new Set(['honey', 'cutlass', 'grubs', 'mealworms', 'gummy worms', 'minnows', 'worms']);
     const allItemQuestCount = new Map<string, { active: number; nextup: number; have: number; need: number }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
@@ -80,7 +81,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
         const recipe = recipeMap.get(item.toLowerCase());
         const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
         if (recipe || crop) continue;
-        if (item.toLowerCase() === 'honey' || item.toLowerCase() === 'cutlass') continue;
+        if (PASSIVE_INCOME_ITEMS.has(item.toLowerCase())) continue;
         const existing = allItemQuestCount.get(item) ?? { active: 0, nextup: 0, have, need: 0 };
         if (isNextUp) existing.nextup++;
         else existing.active++;
