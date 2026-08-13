@@ -82,6 +82,28 @@
     ]
   },
   {
+    "id": "635",
+    "name": "Onion Soup",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 60
+      },
+      {
+        "item": "Onion",
+        "quantity": 50
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "84",
     "name": "Orange Juice",
     "ingredients": [
@@ -133,6 +155,36 @@
       },
       {
         "item": "Amethyst",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "800",
+    "name": "Amber Cane",
+    "ingredients": [
+      {
+        "item": "Sand",
+        "quantity": 3
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Bone",
+        "quantity": 1
+      },
+      {
+        "item": "Amber",
+        "quantity": 1
+      },
+      {
+        "item": "Oak",
         "quantity": 1
       }
     ]
@@ -348,6 +400,24 @@
     ]
   },
   {
+    "id": "641",
+    "name": "Bone Broth",
+    "ingredients": [
+      {
+        "item": "Bone",
+        "quantity": 10
+      },
+      {
+        "item": "Coal",
+        "quantity": 5
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "105",
     "name": "Bottle Rocket",
     "ingredients": [
@@ -494,6 +564,36 @@
     ]
   },
   {
+    "id": "615",
+    "name": "Canoe",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 100
+      },
+      {
+        "item": "Nails",
+        "quantity": 10
+      },
+      {
+        "item": "Blue Gel",
+        "quantity": 10
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 5
+      },
+      {
+        "item": "Board",
+        "quantity": 4
+      },
+      {
+        "item": "Rope",
+        "quantity": 2
+      }
+    ]
+  },
+  {
     "id": "481",
     "name": "Chum",
     "ingredients": [
@@ -629,6 +729,32 @@
       },
       {
         "item": "Machine Press",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "585",
+    "name": "Crossbow",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 3
+      },
+      {
+        "item": "Iron",
+        "quantity": 2
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 2
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 2
+      },
+      {
+        "item": "Arrowhead",
         "quantity": 1
       }
     ]
@@ -838,6 +964,74 @@
     ]
   },
   {
+    "id": "736",
+    "name": "Fancy Chair",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 50
+      },
+      {
+        "item": "Nails",
+        "quantity": 8
+      },
+      {
+        "item": "Twine",
+        "quantity": 8
+      },
+      {
+        "item": "Cotton",
+        "quantity": 6
+      },
+      {
+        "item": "Leather",
+        "quantity": 4
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 1
+      },
+      {
+        "item": "Red Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1136",
+    "name": "Fancy Clock",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 12
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 8
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 4
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 4
+      },
+      {
+        "item": "Scrap Metal",
+        "quantity": 4
+      },
+      {
+        "item": "Cogwheel",
+        "quantity": 2
+      },
+      {
+        "item": "Pocket Watch",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "474",
     "name": "Fancy Drum",
     "ingredients": [
@@ -882,6 +1076,28 @@
     ]
   },
   {
+    "id": "737",
+    "name": "Fancy Pan Flute",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 9
+      },
+      {
+        "item": "Twine",
+        "quantity": 5
+      },
+      {
+        "item": "Leather",
+        "quantity": 1
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "301",
     "name": "Fancy Pipe",
     "ingredients": [
@@ -895,6 +1111,92 @@
       },
       {
         "item": "Iron",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1328",
+    "name": "Fancy Sword",
+    "ingredients": [
+      {
+        "item": "Steel Wire",
+        "quantity": 4
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 2
+      },
+      {
+        "item": "Lemon Quartz",
+        "quantity": 2
+      },
+      {
+        "item": "Gold Leaf",
+        "quantity": 2
+      },
+      {
+        "item": "Sturdy Sword",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "774",
+    "name": "Fancy Table",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 80
+      },
+      {
+        "item": "Nails",
+        "quantity": 32
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 8
+      },
+      {
+        "item": "Corn Oil",
+        "quantity": 1
+      },
+      {
+        "item": "Steel Vise",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "817",
+    "name": "Fancy Violin",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 8
+      },
+      {
+        "item": "Pine Board",
+        "quantity": 5
+      },
+      {
+        "item": "Steel",
+        "quantity": 4
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 4
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 4
+      },
+      {
+        "item": "Purple Dye",
+        "quantity": 3
+      },
+      {
+        "item": "Steel Plate",
         "quantity": 1
       }
     ]
@@ -939,6 +1241,52 @@
       },
       {
         "item": "Antler",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "885",
+    "name": "Flying Machine",
+    "ingredients": [
+      {
+        "item": "Leather",
+        "quantity": 10
+      },
+      {
+        "item": "Rope",
+        "quantity": 10
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 10
+      },
+      {
+        "item": "Nailed Board",
+        "quantity": 10
+      },
+      {
+        "item": "Small Spring",
+        "quantity": 6
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 4
+      },
+      {
+        "item": "Small Gear",
+        "quantity": 4
+      },
+      {
+        "item": "Pulley",
+        "quantity": 4
+      },
+      {
+        "item": "Steel Buckle",
+        "quantity": 2
+      },
+      {
+        "item": "Power Monitor",
         "quantity": 1
       }
     ]
@@ -1052,6 +1400,56 @@
       {
         "item": "Shimmer Stone",
         "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "1130",
+    "name": "Grand Piano",
+    "ingredients": [
+      {
+        "item": "Wood",
+        "quantity": 88
+      },
+      {
+        "item": "Horn",
+        "quantity": 88
+      },
+      {
+        "item": "Steel Wire",
+        "quantity": 88
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 11
+      },
+      {
+        "item": "White Parchment",
+        "quantity": 10
+      },
+      {
+        "item": "Steel",
+        "quantity": 10
+      },
+      {
+        "item": "Block of Wood",
+        "quantity": 8
+      },
+      {
+        "item": "Green Dye",
+        "quantity": 5
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      },
+      {
+        "item": "Fancy Chair",
+        "quantity": 1
+      },
+      {
+        "item": "Handsaw",
+        "quantity": 1
       }
     ]
   },
@@ -1750,6 +2148,28 @@
     ]
   },
   {
+    "id": "1260",
+    "name": "Magus Hat",
+    "ingredients": [
+      {
+        "item": "Blue Feathers",
+        "quantity": 10
+      },
+      {
+        "item": "Twine",
+        "quantity": 3
+      },
+      {
+        "item": "Leather",
+        "quantity": 2
+      },
+      {
+        "item": "Gold Leaf",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "1095",
     "name": "Mayonnaise",
     "ingredients": [
@@ -2013,6 +2433,32 @@
       },
       {
         "item": "Spool of Copper",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "684",
+    "name": "Power Monitor",
+    "ingredients": [
+      {
+        "item": "Iron",
+        "quantity": 10
+      },
+      {
+        "item": "Transistor",
+        "quantity": 5
+      },
+      {
+        "item": "Pocket Watch",
+        "quantity": 1
+      },
+      {
+        "item": "Copper Wire",
+        "quantity": 1
+      },
+      {
+        "item": "Broken Pipe",
         "quantity": 1
       }
     ]
@@ -2436,6 +2882,32 @@
     ]
   },
   {
+    "id": "776",
+    "name": "Ship in a Bottle",
+    "ingredients": [
+      {
+        "item": "Mushroom Paste",
+        "quantity": 3
+      },
+      {
+        "item": "Oak",
+        "quantity": 2
+      },
+      {
+        "item": "Sand",
+        "quantity": 2
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 2
+      },
+      {
+        "item": "Model Ship",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "248",
     "name": "Shimmer Topaz",
     "ingredients": [
@@ -2548,6 +3020,20 @@
     ]
   },
   {
+    "id": "679",
+    "name": "Spool of Copper",
+    "ingredients": [
+      {
+        "item": "Copper Wire",
+        "quantity": 10
+      },
+      {
+        "item": "Metal Spool",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "675",
     "name": "Spoon",
     "ingredients": [
@@ -2655,6 +3141,36 @@
       },
       {
         "item": "Carbon Sphere",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "759",
+    "name": "Steel Vise",
+    "ingredients": [
+      {
+        "item": "Steel",
+        "quantity": 50
+      },
+      {
+        "item": "Glass Orb",
+        "quantity": 2
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 2
+      },
+      {
+        "item": "Small Bolt",
+        "quantity": 1
+      },
+      {
+        "item": "Wooden Plank",
+        "quantity": 1
+      },
+      {
+        "item": "Broken Pipe",
         "quantity": 1
       }
     ]
