@@ -218,7 +218,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       npc: 'Holger',
       npcLvRequired: 40,
       cookingLvRequired: 20,
-      lovedItems: ['Cheese', 'Mushroom Stew', 'Milk', 'Trout', 'Horn', 'Peach', 'Worms', 'Apple Cider', 'Largemouth Bass', 'Valentines Card', 'Arrowhead', 'Bluegill', 'Carp', 'Aquamarine', 'Peas', 'Marlin', 'Mug of Beer', 'Gold Trout', 'Potato', 'Wooden Table'],
+      lovedItems: ['Wooden Table', 'Gold Trout', 'Mug of Beer', 'Potato'],
     },
     {
       recipe: 'Breakfast Boost',
@@ -241,7 +241,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       cookingLvRequired: 25,
       lovedItems: ['Peach', 'Old Boot', 'Tomato', 'Grubs', 'Scrap Metal', 'Stingray', 'Spider', 'Hops', 'Snowball', 'Cheese', 'Milk', 'Grapes', 'Worms', 'Yellow Perch', 'Corn Husk Doll', 'MIAB', 'Mushroom Paste', 'Leather', 'Corn'],
     },
-  ] as const;
+  ];
 
   const cookingHints = useMemo(() => {
     return COOKING_UNLOCKS.flatMap((unlock) => {
