@@ -25,7 +25,7 @@ import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
 import { TheTowerPage } from './components/TheTowerPage';
 import { PetsPage } from './components/PetsPage';
 import { NpcPage } from './components/NpcPage';
-import { CraftworksSuggestions } from './components/CraftworksSuggestions';
+import { CraftworksPage } from './components/CraftworksPage';
 import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
@@ -369,7 +369,7 @@ export default function App() {
             )}
             {tab === 'grow' && <GrowPlanner questlineGroups={questlineGroups} />}
             {tab === 'craftworks' && (
-              <CraftworksSuggestions quests={activeQuests} nextUpQuests={nextUpQuests} />
+              <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
             {tab === 'recipes' && <RecipesPage />}
             {tab === 'masteries' && <MasteriesPage />}
