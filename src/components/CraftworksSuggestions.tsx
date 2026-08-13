@@ -35,13 +35,22 @@ interface Candidate {
   componentMaterials: string[]; // raw mats shared by 2+ items in the same component
 }
 
+export interface DirectItem {
+  item: string;
+  quantity: number;
+  label: string;
+  priority?: 'active' | 'nextup';
+}
+
 interface Props {
   quests: Quest[];
   nextUpQuests?: Quest[];
   questlineOnly?: boolean;
+  directItems?: DirectItem[];
+  subtitle?: string;
 }
 
-export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly = false }: Props) {
+export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly = false, directItems = [], subtitle = 'auto-chain order' }: Props) {
   const { inventory, inventoryMax, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
@@ -112,6 +121,17 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
         if (!candidateMap.has(item)) {
           addCandidate(item, quantity, 'nextup', nextUpQuests[qi].name, false);
           if (!nextupRankMap.has(item)) nextupRankMap.set(item, qi);
+        }
+      }
+    }
+
+    // Direct items (e.g. mastery targets) — added after quest items so quests take precedence
+    for (let di = 0; di < directItems.length; di++) {
+      const { item, quantity, label, priority = 'active' } = directItems[di];
+      if (!candidateMap.has(item)) {
+        addCandidate(item, quantity, priority, label, false);
+        if (priority === 'nextup' && !nextupRankMap.has(item)) {
+          nextupRankMap.set(item, nextUpQuests.length + di);
         }
       }
     }
@@ -344,7 +364,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
     for (const c of presorted) visit(c);
 
     return result;
-  }, [quests, nextUpQuests, inventory, inventoryMax, recipeMap, craftworksSlots, questlineOnly]);
+  }, [quests, nextUpQuests, directItems, inventory, inventoryMax, recipeMap, craftworksSlots, questlineOnly]);
 
   const displaySlots = suggestions.slice(0, Math.max(craftworksSlots, 0));
 
@@ -434,7 +454,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
             Craftworks
           </span>
           <span className="text-xs hidden sm:inline" style={{ color: 'var(--text-muted)' }}>
-            auto-chain order
+            {subtitle}
           </span>
         </div>
 
