@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift, Fish, Users, Leaf } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, AlertTriangle, TrendingUp, Zap, Clock, ChevronDown, ChevronRight, X, ChefHat, Gift, Fish, Users } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
@@ -42,9 +42,6 @@ const PET_ONLY_ITEMS = new Set<string>(
   [..._petLootItems].filter(item => !_itemLocKeys.has(item.toLowerCase()) && !_recipeKeys.has(item.toLowerCase()))
 );
 
-// Items passively farmable from explore — Wood, Board (crafted), Straw, Oak, Feathers
-const WOOD_PASSIVE_ITEMS = new Set(['Wood', 'Board', 'Straw', 'Oak', 'Feathers']);
-
 // Gold fish items catchable only via manual fishing with mealworms, mapped to their fishing location
 const GOLD_FISH = new Map<string, string>([
   ['Gold Drum',     'Small Pond'],
@@ -76,7 +73,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     return map;
   }, [craftingRecipes]);
 
-  const { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks, goldFishNeeds, woodPassiveNeeds } = useMemo(() => {
+  const { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks, goldFishNeeds } = useMemo(() => {
     const allQ = [...activeQuests, ...nextUpQuests];
 
     // Aggregate item needs across active quests
@@ -167,25 +164,6 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       .map(([item, { have, need, location }]) => ({ item, have, need, location }))
       .sort((a, b) => a.item.localeCompare(b.item));
 
-    // Wood passive — explore/craftworks items needed for quests
-    const woodPassiveMap = new Map<string, { have: number; need: number; activeCount: number; nextupCount: number }>();
-    for (const q of allQ) {
-      const isNextUp = !activeQuests.includes(q);
-      for (const { item, quantity } of parseItems(q.itemsRequired)) {
-        if (!WOOD_PASSIVE_ITEMS.has(item)) continue;
-        const have = inventory[item] ?? 0;
-        if (have >= quantity) continue;
-        const existing = woodPassiveMap.get(item) ?? { have, need: 0, activeCount: 0, nextupCount: 0 };
-        if (isNextUp) existing.nextupCount++;
-        else existing.activeCount++;
-        existing.need = Math.max(existing.need, quantity);
-        woodPassiveMap.set(item, existing);
-      }
-    }
-    const woodPassiveNeeds = [...woodPassiveMap.entries()]
-      .map(([item, data]) => ({ item, ...data }))
-      .sort((a, b) => b.activeCount - a.activeCount || b.nextupCount - a.nextupCount);
-
     // Craftworks picks: craftable items for active/nextup quests, sorted by priority
     const craftworksPicks: {
       item: string;
@@ -229,7 +207,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
       return b.deficit - a.deficit;
     });
 
-    return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks: craftworksPicks.slice(0, 6), goldFishNeeds, woodPassiveNeeds };
+    return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, craftworksPicks: craftworksPicks.slice(0, 6), goldFishNeeds };
   }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap]);
 
   const hasDoNow = readyToTurnIn.length > 0 || craftNowItems.length > 0;
@@ -463,51 +441,6 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
                   </div>
                   <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
                     <div className="h-full rounded-full" style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Wood passive — explore/craftworks items */}
-      {woodPassiveNeeds.length > 0 && (
-        <div
-          className="rounded-xl overflow-hidden"
-          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-green-border)' }}
-        >
-          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}>
-            <Leaf size={13} style={{ color: 'var(--accent-green)' }} />
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-green)' }}>Wood passive</span>
-            <span className="text-xs ml-1" style={{ color: 'var(--accent-green)', opacity: 0.7 }}>— set these in craftworks or explore</span>
-          </div>
-          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {woodPassiveNeeds.map(({ item, have, need, activeCount, nextupCount }) => {
-              const pct = Math.min(have / need, 1);
-              const done = have >= need;
-              return (
-                <div key={item} className="px-4 py-2.5">
-                  <div className="flex items-center justify-between gap-3 mb-1">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
-                      {activeCount > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
-                          {activeCount} active
-                        </span>
-                      )}
-                      {nextupCount > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
-                          {nextupCount} next up
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-xs font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--accent-yellow)' }}>
-                      {have}/{need}
-                    </span>
-                  </div>
-                  <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                    <div className="h-full rounded-full" style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : 'var(--accent-green)', opacity: done ? 1 : 0.6 }} />
                   </div>
                 </div>
               );
