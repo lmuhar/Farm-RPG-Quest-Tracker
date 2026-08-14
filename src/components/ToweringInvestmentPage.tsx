@@ -21,7 +21,6 @@ const itemLocations = itemLocationsData as Record<string, { name: string; type: 
 
 const allQuestsData = questsData as Quest[];
 
-const allQuestlineNames = [...new Set(allQuestsData.map(q => q.questline).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const recipeByName = new Map<string, Recipe>(
