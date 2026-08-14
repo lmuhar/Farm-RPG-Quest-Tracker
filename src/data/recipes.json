@@ -4090,5 +4090,15 @@
         "quantity": 5
       }
     ]
+  },
+  {
+    "id": "760",
+    "name": "Red Trunk",
+    "ingredients": [
+      { "item": "Nails",   "quantity": 16 },
+      { "item": "Steel",   "quantity": 8  },
+      { "item": "Red Dye", "quantity": 4  },
+      { "item": "Leather", "quantity": 3  }
+    ]
   }
 ]
