@@ -4092,6 +4092,17 @@
     ]
   },
   {
+    "id": "717",
+    "name": "Frost Shield",
+    "ingredients": [
+      { "item": "Nails",              "quantity": 3 },
+      { "item": "Blue Gel",           "quantity": 3 },
+      { "item": "Hammer",             "quantity": 1 },
+      { "item": "Red Shield",         "quantity": 1 },
+      { "item": "Frost Snapper Shell","quantity": 1 }
+    ]
+  },
+  {
     "id": "760",
     "name": "Red Trunk",
     "ingredients": [
