@@ -749,6 +749,18 @@ export function ToweringInvestmentPage() {
   const [filter, setFilter] = useState<QuestFilter>('incomplete');
   const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
+  const activeQuestlineNames = useMemo(() => {
+    const active = new Set<string>();
+    for (const q of allQuestsData) {
+      if (q.questline && getQuestStatus(q, player, questStatuses) === 'active') {
+        active.add(q.questline);
+      }
+    }
+    // Always include the currently selected questline so the control never has a missing option
+    if (trackedQuestline) active.add(trackedQuestline);
+    return [...active].sort((a, b) => a.localeCompare(b));
+  }, [player, questStatuses, trackedQuestline]);
+
   const quests = useMemo(
     () =>
       allQuestsData
@@ -832,7 +844,7 @@ export function ToweringInvestmentPage() {
                   maxWidth: '100%',
                 }}
               >
-                {allQuestlineNames.map(name => (
+                {activeQuestlineNames.map(name => (
                   <option key={name} value={name}>{name}</option>
                 ))}
               </select>
