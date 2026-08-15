@@ -6,6 +6,8 @@ import { CraftworksSuggestions } from './CraftworksSuggestions';
 import type { DirectItem } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import masteriesData from '../data/masteries.json';
+import itemLocationsData from '../data/item-locations.json';
+import { Fish } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
 
@@ -13,7 +15,44 @@ interface Mastery { name: string; difficulty: number; method: string }
 const allMasteries = masteriesData as Mastery[];
 const craftingMasteries = allMasteries.filter((m) => m.method === 'crafting');
 
-type CraftworksTab = 'active' | 'focus' | 'mastery';
+const fishingMasteryNames = new Set(
+  allMasteries.filter((m) => m.method === 'fishing').map((m) => m.name)
+);
+
+const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
+
+// Fishing spot → list of fish that have a mastery, ranked by most mastery fish
+const fishingSpots: { spot: string; fish: string[] }[] = (() => {
+  const spotMap = new Map<string, string[]>();
+  for (const [item, sources] of Object.entries(itemLocations)) {
+    if (!fishingMasteryNames.has(item)) continue;
+    for (const src of sources) {
+      if (src.type !== 'fishing') continue;
+      if (!spotMap.has(src.name)) spotMap.set(src.name, []);
+      spotMap.get(src.name)!.push(item);
+    }
+  }
+  return [...spotMap.entries()]
+    .map(([spot, fish]) => ({ spot, fish }))
+    .sort((a, b) => b.fish.length - a.fish.length);
+})();
+
+// Crafting masteries using only Wood / Board / Straw / Nails / Rope / Twine chain
+const PASSIVE_MASTERY_ITEMS: { name: string; difficulty: number }[] = [
+  { name: 'Board',        difficulty: 1 },
+  { name: 'Broom',        difficulty: 1 },
+  { name: 'Ladder',       difficulty: 1 },
+  { name: 'Nailed Board', difficulty: 1 },
+  { name: 'Rope',         difficulty: 1 },
+  { name: 'Twine',        difficulty: 1 },
+  { name: 'Wooden Plank', difficulty: 1 },
+  { name: 'Yarn',         difficulty: 1 },
+  { name: 'Wagon Wheel',  difficulty: 2 },
+  { name: 'Wooden Box',   difficulty: 2 },
+  { name: 'Wooden Table', difficulty: 2 },
+];
+
+type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive';
 
 interface Props {
   activeQuests: Quest[];
@@ -58,19 +97,15 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     [focusQuestsWithStatus]
   );
 
-  // ── Tab 3: mastery-based suggestions ──────────────────────────────────────
+  // ── Tab 3: mastery crafting suggestions ───────────────────────────────────
   const masteryDirectItems = useMemo((): DirectItem[] => {
     const sorted = [...craftingMasteries].sort((a, b) => {
       const lvA = masteryLevels[a.name] ?? 0;
       const lvB = masteryLevels[b.name] ?? 0;
-      // Skip already mega-mastered (handled by filter below)
-      // In-progress (1 or 2) before unstarted (0)
       const inA = lvA > 0 && lvA < 3 ? 1 : 0;
       const inB = lvB > 0 && lvB < 3 ? 1 : 0;
       if (inA !== inB) return inB - inA;
-      // Within in-progress: higher level first (closer to done)
       if (inA && inB && lvA !== lvB) return lvB - lvA;
-      // Within unstarted: easiest first
       return a.difficulty - b.difficulty;
     });
 
@@ -91,10 +126,52 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       });
   }, [masteryLevels, inventoryMax]);
 
+  // ── Tab 4: fishing spot recommendation ────────────────────────────────────
+  const fishingRanking = useMemo(() =>
+    fishingSpots
+      .map(({ spot, fish }) => ({
+        spot,
+        unmastered: fish.filter((f) => (masteryLevels[f] ?? 0) < 3),
+      }))
+      .filter(({ unmastered }) => unmastered.length > 0)
+      .sort((a, b) => b.unmastered.length - a.unmastered.length),
+    [masteryLevels]
+  );
+
+  // ── Tab 5: passive wood/board crafting masteries ───────────────────────────
+  const passiveMasteryItems = useMemo((): DirectItem[] => {
+    const sorted = [...PASSIVE_MASTERY_ITEMS].sort((a, b) => {
+      const lvA = masteryLevels[a.name] ?? 0;
+      const lvB = masteryLevels[b.name] ?? 0;
+      const inA = lvA > 0 && lvA < 3 ? 1 : 0;
+      const inB = lvB > 0 && lvB < 3 ? 1 : 0;
+      if (inA !== inB) return inB - inA;
+      if (inA && inB && lvA !== lvB) return lvB - lvA;
+      return a.difficulty - b.difficulty;
+    });
+    return sorted
+      .filter((m) => (masteryLevels[m.name] ?? 0) < 3)
+      .map((m) => {
+        const lv = masteryLevels[m.name] ?? 0;
+        const label =
+          lv === 2 ? '→ Mega Master'
+          : lv === 1 ? '→ Grand Master'
+          : `diff ${m.difficulty}`;
+        return {
+          item: m.name,
+          quantity: inventoryMax,
+          label,
+          priority: lv > 0 ? 'active' : 'nextup',
+        };
+      });
+  }, [masteryLevels, inventoryMax]);
+
   const tabs: { id: CraftworksTab; label: string }[] = [
-    { id: 'active', label: 'All Active' },
-    { id: 'focus',  label: `Quest Focus` },
+    { id: 'active',  label: 'All Active' },
+    { id: 'focus',   label: 'Quest Focus' },
     { id: 'mastery', label: 'Mastery' },
+    { id: 'fishing', label: 'Fishing' },
+    { id: 'passive', label: 'Passive' },
   ];
 
   return (
@@ -156,7 +233,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         )
       )}
 
-      {/* Tab 3 — mastery suggestions */}
+      {/* Tab 3 — mastery crafting suggestions */}
       {tab === 'mastery' && (
         masteryDirectItems.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
@@ -170,6 +247,93 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
             directItems={masteryDirectItems}
             subtitle="mastery priority · in-progress first"
           />
+        )
+      )}
+
+      {/* Tab 4 — fishing spot recommendation */}
+      {tab === 'fishing' && (
+        fishingRanking.length === 0 ? (
+          <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              All fishing masteries are at Mega Master — nothing left to catch.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
+              Ranked by unmastered fish per spot
+            </p>
+            {fishingRanking.map(({ spot, unmastered }, i) => (
+              <div
+                key={spot}
+                className="rounded-xl p-4"
+                style={{
+                  background: 'var(--surface-card)',
+                  border: `1px solid ${i === 0 ? 'var(--accent-blue-border)' : 'var(--border-subtle)'}`,
+                }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Fish size={13} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                      {spot}
+                    </span>
+                    {i === 0 && (
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                        style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
+                      >
+                        best
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    {unmastered.length} remaining
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {unmastered.map((f) => {
+                    const lv = masteryLevels[f] ?? 0;
+                    return (
+                      <span
+                        key={f}
+                        className="text-[10px] px-1.5 py-0.5 rounded"
+                        style={{
+                          background: lv > 0 ? 'var(--accent-yellow-bg)' : 'var(--surface-inset)',
+                          color: lv > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)',
+                          border: `1px solid ${lv > 0 ? 'var(--accent-yellow-border)' : 'var(--border-subtle)'}`,
+                        }}
+                      >
+                        {f}{lv > 0 ? ` ·lv${lv}` : ''}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      )}
+
+      {/* Tab 5 — passive wood/board crafting masteries */}
+      {tab === 'passive' && (
+        passiveMasteryItems.length === 0 ? (
+          <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              All passive wood &amp; board masteries are at Mega Master.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
+              Crafts using only Wood · Board · Straw · in-progress first
+            </p>
+            <CraftworksSuggestions
+              quests={[]}
+              directItems={passiveMasteryItems}
+              subtitle="passive crafts · wood · board · straw"
+            />
+          </div>
         )
       )}
     </div>
