@@ -326,12 +326,12 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         ) : (
           <div className="space-y-2">
             <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
-              Crafts using only Wood · Board · Straw · in-progress first
+              Crafts using only Wood · Board · Straw · Stone · in-progress first
             </p>
             <CraftworksSuggestions
               quests={[]}
               directItems={passiveMasteryItems}
-              subtitle="passive crafts · wood · board · straw"
+              subtitle="passive crafts · wood · board · straw · stone"
             />
           </div>
         )
