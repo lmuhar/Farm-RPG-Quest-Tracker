@@ -1,16 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Users, ChevronDown, ChevronRight, Search, AlertTriangle, Gift } from 'lucide-react';
+import { Users, ChevronDown, ChevronRight, Search, AlertTriangle } from 'lucide-react';
 import { useStore } from '../store';
 import { getQuestStatus, compareQuests, parseItems } from '../utils';
 import npcsData from '../data/npcs.json';
 import questsData from '../data/quests.json';
-import npcRewardsData from '../data/npc-rewards.json';
 import type { Quest } from '../types';
 
 const allNpcs = npcsData as { name: string; items: string[] }[];
 const allQuests = questsData as Quest[];
-type RewardEntry = { level: number; items: string[] };
-const npcRewards = npcRewardsData as Record<string, RewardEntry[]>;
 
 function FavouriteItems({
   items,
@@ -222,8 +219,6 @@ export function NpcPage() {
           {npcs.map((npc) => {
             const isExpanded = expandedNpc === npc.name;
             const hasConflict = npc.conflictInStock.length > 0;
-            const rewards = npcRewards[npc.name] ?? [];
-            const nextReward = rewards.filter((r) => r.level > npc.level).sort((a, b) => a.level - b.level)[0];
             const isEditingLevel = editingNpc === npc.name;
             return (
               <div key={npc.name}>
@@ -303,40 +298,14 @@ export function NpcPage() {
                   </div>
                 </div>
 
-                {isExpanded && (npc.items.length > 0 || nextReward) && (
-                  <div className="px-4 pb-3 pt-2 space-y-3" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
-                    {nextReward && (
-                      <div
-                        className="rounded-lg px-3 py-2"
-                        style={{ background: 'var(--accent-yellow-bg)', border: '1px solid var(--accent-yellow-border)' }}
-                      >
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <Gift size={11} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
-                          <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--accent-yellow)' }}>
-                            Next reward — Lv {nextReward.level}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {nextReward.items.map((item) => (
-                            <span
-                              key={item}
-                              className="text-[11px] px-1.5 py-0.5 rounded font-medium"
-                              style={{ background: 'oklch(0 0 0 / 0.12)', color: 'var(--accent-yellow)' }}
-                            >
-                              {item}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                    {npc.items.length > 0 && (
-                      <FavouriteItems
-                        items={npc.items}
-                        inventory={inventory}
-                        activeNeeds={activeNeeds}
-                        upcomingNeeds={upcomingNeeds}
-                      />
-                    )}
+                {isExpanded && npc.items.length > 0 && (
+                  <div className="px-4 pb-3 pt-2" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
+                    <FavouriteItems
+                      items={npc.items}
+                      inventory={inventory}
+                      activeNeeds={activeNeeds}
+                      upcomingNeeds={upcomingNeeds}
+                    />
                   </div>
                 )}
               </div>
