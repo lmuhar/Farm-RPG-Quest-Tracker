@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react';
-import { Users, ChevronDown, ChevronRight, Search, AlertTriangle } from 'lucide-react';
+import { Users, ChevronDown, ChevronRight, Search, AlertTriangle, Gift } from 'lucide-react';
 import { useStore } from '../store';
 import { getQuestStatus, compareQuests, parseItems } from '../utils';
 import npcsData from '../data/npcs.json';
 import questsData from '../data/quests.json';
+import npcRewardsData from '../data/npc-rewards.json';
 import type { Quest } from '../types';
 
 const allNpcs = npcsData as { name: string; items: string[] }[];
 const allQuests = questsData as Quest[];
+type RewardEntry = { level: number; items: string[] };
+const npcRewards = npcRewardsData as Record<string, RewardEntry[]>;
 
 function FavouriteItems({
   items,
@@ -90,9 +93,11 @@ function FavouriteItems({
 }
 
 export function NpcPage() {
-  const { player, questStatuses, inventory } = useStore();
+  const { player, questStatuses, inventory, setNpcLevel } = useStore();
   const [search, setSearch] = useState('');
   const [expandedNpc, setExpandedNpc] = useState<string | null>(null);
+  const [editingNpc, setEditingNpc] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   const npcLevels = player.npcLevels ?? {};
 
@@ -217,64 +222,121 @@ export function NpcPage() {
           {npcs.map((npc) => {
             const isExpanded = expandedNpc === npc.name;
             const hasConflict = npc.conflictInStock.length > 0;
+            const rewards = npcRewards[npc.name] ?? [];
+            const nextReward = rewards.filter((r) => r.level > npc.level).sort((a, b) => a.level - b.level)[0];
+            const isEditingLevel = editingNpc === npc.name;
             return (
               <div key={npc.name}>
-                <button
-                  className="w-full flex items-center gap-3 px-4 py-3 text-left hover:opacity-80 transition-opacity"
-                  onClick={() => setExpandedNpc(isExpanded ? null : npc.name)}
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{npc.name}</span>
-                      {npc.safeInStock.length > 0 && (
-                        <span
-                          className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                          style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
-                        >
-                          {npc.safeInStock.length} safe to give
-                        </span>
-                      )}
-                      {hasConflict && (
-                        <span
-                          className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
-                          style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}
-                        >
-                          <AlertTriangle size={9} />
-                          {npc.conflictInStock.length} quest conflict
-                        </span>
-                      )}
-                      {npc.items.length === 0 && (
-                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>no favourites data</span>
+                <div className="flex items-center">
+                  <button
+                    className="flex-1 flex items-center gap-3 px-4 py-3 text-left hover:opacity-80 transition-opacity min-w-0"
+                    onClick={() => setExpandedNpc(isExpanded ? null : npc.name)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{npc.name}</span>
+                        {npc.safeInStock.length > 0 && (
+                          <span
+                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                            style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
+                          >
+                            {npc.safeInStock.length} safe to give
+                          </span>
+                        )}
+                        {hasConflict && (
+                          <span
+                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
+                            style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}
+                          >
+                            <AlertTriangle size={9} />
+                            {npc.conflictInStock.length} quest conflict
+                          </span>
+                        )}
+                        {npc.items.length === 0 && (
+                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>no favourites data</span>
+                        )}
+                      </div>
+                      {!isExpanded && npc.safeInStock.length > 0 && (
+                        <p className="text-[10px] mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
+                          {npc.safeInStock.slice(0, 4).join(', ')}{npc.safeInStock.length > 4 ? '…' : ''}
+                        </p>
                       )}
                     </div>
-                    {!isExpanded && npc.safeInStock.length > 0 && (
-                      <p className="text-[10px] mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                        {npc.safeInStock.slice(0, 4).join(', ')}{npc.safeInStock.length > 4 ? '…' : ''}
-                      </p>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span
-                      className="text-xs font-mono font-semibold px-2 py-0.5 rounded"
-                      style={{ background: 'var(--surface-raised)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
-                    >
-                      Lv {npc.level}
-                    </span>
                     {npc.items.length > 0 && (
                       isExpanded
-                        ? <ChevronDown size={13} style={{ color: 'var(--text-muted)' }} />
-                        : <ChevronRight size={13} style={{ color: 'var(--text-muted)' }} />
+                        ? <ChevronDown size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                        : <ChevronRight size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                    )}
+                  </button>
+
+                  {/* Level badge — editable, outside the expand button to allow input nesting */}
+                  <div className="pr-3 flex-shrink-0">
+                    {isEditingLevel ? (
+                      <input
+                        type="number"
+                        min={0}
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onBlur={() => {
+                          const lv = parseInt(editValue, 10);
+                          if (!isNaN(lv) && lv >= 0) setNpcLevel(npc.name, lv);
+                          setEditingNpc(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') e.currentTarget.blur();
+                          if (e.key === 'Escape') setEditingNpc(null);
+                        }}
+                        autoFocus
+                        className="w-14 text-xs font-mono font-semibold text-center px-1 py-0.5 rounded focus:outline-none"
+                        style={{ background: 'var(--surface-inset)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
+                      />
+                    ) : (
+                      <span
+                        className="text-xs font-mono font-semibold px-2 py-0.5 rounded cursor-pointer hover:opacity-70 transition-opacity"
+                        style={{ background: 'var(--surface-raised)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
+                        title="Click to edit level"
+                        onClick={() => { setEditingNpc(npc.name); setEditValue(String(npc.level)); }}
+                      >
+                        Lv {npc.level}
+                      </span>
                     )}
                   </div>
-                </button>
-                {isExpanded && npc.items.length > 0 && (
-                  <div className="px-4 pb-3 pt-2" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
-                    <FavouriteItems
-                      items={npc.items}
-                      inventory={inventory}
-                      activeNeeds={activeNeeds}
-                      upcomingNeeds={upcomingNeeds}
-                    />
+                </div>
+
+                {isExpanded && (npc.items.length > 0 || nextReward) && (
+                  <div className="px-4 pb-3 pt-2 space-y-3" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
+                    {nextReward && (
+                      <div
+                        className="rounded-lg px-3 py-2"
+                        style={{ background: 'var(--accent-yellow-bg)', border: '1px solid var(--accent-yellow-border)' }}
+                      >
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <Gift size={11} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+                          <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: 'var(--accent-yellow)' }}>
+                            Next reward — Lv {nextReward.level}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {nextReward.items.map((item) => (
+                            <span
+                              key={item}
+                              className="text-[11px] px-1.5 py-0.5 rounded font-medium"
+                              style={{ background: 'oklch(0 0 0 / 0.12)', color: 'var(--accent-yellow)' }}
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {npc.items.length > 0 && (
+                      <FavouriteItems
+                        items={npc.items}
+                        inventory={inventory}
+                        activeNeeds={activeNeeds}
+                        upcomingNeeds={upcomingNeeds}
+                      />
+                    )}
                   </div>
                 )}
               </div>
