@@ -1684,5 +1684,29 @@
       "name": "Pirate's Cove",
       "type": "fishing"
     }
+  ],
+  "Gold Peas": [
+    {
+      "name": "Farm",
+      "type": "farming"
+    }
+  ],
+  "Gold Carrot": [
+    {
+      "name": "Farm",
+      "type": "farming"
+    }
+  ],
+  "Gold Cucumber": [
+    {
+      "name": "Farm",
+      "type": "farming"
+    }
+  ],
+  "Gold Peppers": [
+    {
+      "name": "Farm",
+      "type": "farming"
+    }
   ]
 }
