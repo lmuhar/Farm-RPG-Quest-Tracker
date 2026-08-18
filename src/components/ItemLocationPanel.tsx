@@ -1,4 +1,4 @@
-import { Fish, Compass, PawPrint, KeyRound } from 'lucide-react';
+import { Fish, Compass, PawPrint, KeyRound, Sprout } from 'lucide-react';
 import locationData from '../data/item-locations.json';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
@@ -71,10 +71,10 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
         const coLocated = allNeededItems.filter(
           (other) => other !== item && (locations[other] ?? []).some((l) => l.name === loc.name)
         );
-        const Icon = loc.type === 'fishing' ? Fish : Compass;
-        const color = loc.type === 'fishing' ? 'var(--accent-blue)' : 'var(--accent-green)';
-        const bg = loc.type === 'fishing' ? 'var(--accent-blue-bg)' : 'var(--accent-green-bg)';
-        const border = loc.type === 'fishing' ? 'var(--accent-blue-border)' : 'var(--accent-green-border)';
+        const Icon = loc.type === 'fishing' ? Fish : loc.type === 'farming' ? Sprout : Compass;
+        const color = loc.type === 'fishing' ? 'var(--accent-blue)' : loc.type === 'farming' ? 'var(--accent-yellow)' : 'var(--accent-green)';
+        const bg = loc.type === 'fishing' ? 'var(--accent-blue-bg)' : loc.type === 'farming' ? 'var(--accent-yellow-bg)' : 'var(--accent-green-bg)';
+        const border = loc.type === 'fishing' ? 'var(--accent-blue-border)' : loc.type === 'farming' ? 'var(--accent-yellow-border)' : 'var(--accent-green-border)';
 
         return (
           <div key={loc.name} className="rounded-lg px-3 py-2" style={{ background: bg, border: `1px solid ${border}` }}>
@@ -192,10 +192,10 @@ export function LocationGroupPanel({ neededItems }: LocationGroupPanelProps) {
     <div className="space-y-2">
       {sorted.map(([locName, { type, items: locItems }]) => {
         const isLocksmith = type === 'locksmith' || type === 'grab_bag';
-        const Icon = type === 'fishing' ? Fish : type === 'pet' ? PawPrint : isLocksmith ? KeyRound : Compass;
-        const color = type === 'fishing' ? 'var(--accent-blue)' : type === 'pet' ? 'var(--accent-orange)' : isLocksmith ? 'var(--accent-purple)' : 'var(--accent-green)';
-        const bg = type === 'fishing' ? 'var(--accent-blue-bg)' : type === 'pet' ? 'var(--accent-orange-bg)' : isLocksmith ? 'var(--accent-purple-bg)' : 'var(--accent-green-bg)';
-        const border = type === 'fishing' ? 'var(--accent-blue-border)' : type === 'pet' ? 'var(--accent-orange-border)' : isLocksmith ? 'var(--accent-purple-border)' : 'var(--accent-green-border)';
+        const Icon = type === 'fishing' ? Fish : type === 'farming' ? Sprout : type === 'pet' ? PawPrint : isLocksmith ? KeyRound : Compass;
+        const color = type === 'fishing' ? 'var(--accent-blue)' : type === 'farming' ? 'var(--accent-yellow)' : type === 'pet' ? 'var(--accent-orange)' : isLocksmith ? 'var(--accent-purple)' : 'var(--accent-green)';
+        const bg = type === 'fishing' ? 'var(--accent-blue-bg)' : type === 'farming' ? 'var(--accent-yellow-bg)' : type === 'pet' ? 'var(--accent-orange-bg)' : isLocksmith ? 'var(--accent-purple-bg)' : 'var(--accent-green-bg)';
+        const border = type === 'fishing' ? 'var(--accent-blue-border)' : type === 'farming' ? 'var(--accent-yellow-border)' : type === 'pet' ? 'var(--accent-orange-border)' : isLocksmith ? 'var(--accent-purple-border)' : 'var(--accent-green-border)';
 
         return (
           <div key={locName} className="rounded-lg px-3 py-2" style={{ background: bg, border: `1px solid ${border}` }}>
@@ -203,7 +203,7 @@ export function LocationGroupPanel({ neededItems }: LocationGroupPanelProps) {
               <Icon size={11} style={{ color, flexShrink: 0 }} />
               <span className="text-xs font-semibold" style={{ color }}>{locName}</span>
               <span className="text-[10px]" style={{ color, opacity: 0.7 }}>
-                {type === 'grab_bag' ? 'grab bag' : type === 'locksmith' ? 'locksmith' : type}
+                {type === 'grab_bag' ? 'grab bag' : type === 'locksmith' ? 'locksmith' : type === 'farming' ? 'farming' : type}
               </span>
             </div>
             <div className="flex flex-wrap gap-1">
