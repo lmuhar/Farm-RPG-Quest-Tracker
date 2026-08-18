@@ -104,15 +104,16 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     }
 
     // Crop grows needed
-    const cropItems: { item: string; grows: number; growMinutes: number; totalMinutes: number }[] = [];
+    const cropItems: { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
+      if (totalNeeded > inventoryMax) continue; // can't hold this many
       const have = inventory[item] ?? 0;
       const deficit = totalNeeded - have;
       if (deficit <= 0) continue;
       const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
       if (crop) {
         const grows = calcGrowsNeeded(deficit, plotCount);
-        cropItems.push({ item, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes });
+        cropItems.push({ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes });
       }
     }
 
@@ -388,7 +389,7 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-green)' }}>Crops to grow</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {[...cropItems].sort((a, b) => a.totalMinutes - b.totalMinutes).map(({ item, grows, growMinutes, totalMinutes }) => {
+              {[...cropItems].sort((a, b) => a.totalMinutes - b.totalMinutes).map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes }) => {
                 const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
                 const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
                 const isToday = finishAt.toDateString() === new Date().toDateString();
@@ -397,7 +398,12 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
                   <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0">
                       <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                      <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <div className="min-w-0">
+                        <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                          have {have} / need {totalNeeded}
+                        </div>
+                      </div>
                     </div>
                     <div className="text-right flex-shrink-0">
                       <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
