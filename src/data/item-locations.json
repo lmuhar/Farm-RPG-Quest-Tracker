@@ -1696,5 +1696,17 @@
       "name": "Farm",
       "type": "farming"
     }
+  ],
+  "Gold Cucumber": [
+    {
+      "name": "Farm",
+      "type": "farming"
+    }
+  ],
+  "Gold Peppers": [
+    {
+      "name": "Farm",
+      "type": "farming"
+    }
   ]
 }
