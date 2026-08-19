@@ -27,8 +27,9 @@ const RARE_ITEMS = new Map<string, string>([
   ['Diamond',       'Ember Lagoon'],
   ['Herbs',         'Whispering Creek'],
   ['Onyx Scorpion', 'Jundland Desert'],
-  ['White Truffle', 'Pig (daily reset)'],
-  ['Black Truffle', 'Pig (daily reset)'],
+  ['White Truffle',    'Pig (daily reset)'],
+  ['Black Truffle',    'Pig (daily reset)'],
+  ['Steel Soap Belt', 'Borgen Shop'],
 ]);
 
 // Compute items that drop only from pets (not findable via explore/fishing and not craftable)
