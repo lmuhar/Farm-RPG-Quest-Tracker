@@ -1,11 +1,21 @@
 import { useMemo, useState } from 'react';
-import { Fish, Compass, MapPin } from 'lucide-react';
+import { Fish, Compass, MapPin, Sparkles } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems } from '../utils';
 import { useStore } from '../store';
 import locationData from '../data/item-locations.json';
 
 const locations = locationData as Record<string, { name: string; type: string }[]>;
+
+const WISHING_WELL = {
+  inputs: [
+    { item: 'Gouda',        chance: 33.3 },
+    { item: 'Small Gear',   chance: 33.3 },
+    { item: 'Witch Hat',    chance: 33.3 },
+    { item: 'Ancient Coin', chance: 8.3  },
+  ],
+  outputs: ['Wax Candle'],
+};
 
 interface Props {
   activeQuests: Quest[];
@@ -133,6 +143,72 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
 
   return (
     <div className="space-y-4">
+      {/* Wishing Well */}
+      <div
+        className="rounded-xl overflow-hidden"
+        style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
+      >
+        <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
+          <Sparkles size={13} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
+          <span className="text-sm font-semibold" style={{ color: 'var(--accent-purple)' }}>Wishing Well</span>
+          <span className="text-xs ml-1" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>— throw items in to receive rewards</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x" style={{ borderColor: 'var(--border-subtle)' }}>
+          {/* Inputs */}
+          <div>
+            <div className="px-4 py-2 flex items-center gap-1.5" style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-inset)' }}>
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Throw in</span>
+            </div>
+            <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+              {WISHING_WELL.inputs.map(({ item, chance }) => {
+                const have = inventory[item] ?? 0;
+                return (
+                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <div className="text-xs mt-0.5" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>
+                        {chance}% chance
+                      </div>
+                    </div>
+                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have > 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                      {have} in stock
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          {/* Outputs */}
+          <div>
+            <div className="px-4 py-2 flex items-center gap-1.5" style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-inset)' }}>
+              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Can receive</span>
+            </div>
+            <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+              {WISHING_WELL.outputs.map((item) => {
+                const have = inventory[item] ?? 0;
+                const needed = itemData.get(item);
+                return (
+                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                    <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    <div className="text-right flex-shrink-0">
+                      {needed ? (
+                        <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: have >= needed.totalNeeded ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                          {have}/{needed.totalNeeded} needed
+                        </span>
+                      ) : (
+                        <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                          {have} in stock
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Controls */}
       <div
         className="rounded-xl px-4 py-3 flex flex-wrap items-center gap-3"
