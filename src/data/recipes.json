@@ -2412,6 +2412,30 @@
     ]
   },
   {
+    "id": "713",
+    "name": "Pair of Boots",
+    "ingredients": [
+      {
+        "item": "Polished Boot",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "712",
+    "name": "Polished Boot",
+    "ingredients": [
+      {
+        "item": "Old Boot",
+        "quantity": 1
+      },
+      {
+        "item": "Corn Oil",
+        "quantity": 1
+      }
+    ]
+  },
+  {
     "id": "754",
     "name": "Potato Battery",
     "ingredients": [
