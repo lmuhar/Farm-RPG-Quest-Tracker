@@ -21,7 +21,7 @@ import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
-import { ToweringInvestmentPage } from './components/ToweringInvestmentPage';
+import { QuestFocusPage } from './components/QuestFocusPage';
 import { TheTowerPage } from './components/TheTowerPage';
 import { PetsPage } from './components/PetsPage';
 import { NpcPage } from './components/NpcPage';
@@ -356,7 +356,7 @@ export default function App() {
             {tab === 'locations' && (
               <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
-            {tab === 'tower' && <ToweringInvestmentPage />}
+            {tab === 'tower' && <QuestFocusPage />}
             {tab === 'the-tower' && <TheTowerPage />}
             {tab === 'inventory' && <InventoryPage />}
             {tab === 'pets' && <PetsPage activeQuests={activeQuests} />}
