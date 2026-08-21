@@ -4,48 +4,12 @@ import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, resolveRawIngredients, formatDuration } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
-import petsData from '../data/pets.json';
-import itemLocationsData from '../data/item-locations.json';
 import questsData from '../data/quests.json';
+import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
 const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLowerCase(), r]));
-
-// Curated list of rare bottleneck items and where to find them
-const RARE_ITEMS = new Map<string, string>([
-  ['Gold Feather',  'Forest / Misty Forest / Mt. Banon'],
-  ['Gold Leaf',     'Forest'],
-  ['Model Ship',    'Small Cave'],
-  ['Skull Coin',    'Small Spring'],
-  ['Tea Leaves',    'Cane Pole Ridge'],
-  ['Horned Beetle', 'Cane Pole Ridge'],
-  ['Lima Bean',     'Cane Pole Ridge'],
-  ['Spider',        'Misty Forest / Haunted House'],
-  ['Orange Gecko',  'Black Rock Canyon'],
-  ['Dragon Skull',  'Mount Banon'],
-  ['Bacon',         'Mount Banon'],
-  ['Diamond',       'Ember Lagoon'],
-  ['Herbs',         'Whispering Creek'],
-  ['Onyx Scorpion', 'Jundland Desert'],
-  ['White Truffle',    'Pig (daily reset)'],
-  ['Black Truffle',    'Pig (daily reset)'],
-  ['Steel Soap Belt',  'Borgen Shop'],
-  ['Wax Candle',       'Wishing Well'],
-]);
-
-// Compute items that drop only from pets (not findable via explore/fishing and not craftable)
-const _itemLocKeys = new Set(Object.keys(itemLocationsData as Record<string, unknown>).map(k => k.toLowerCase()));
-const _recipeKeys = new Set(allRecipes.map(r => r.name.toLowerCase()));
-const _petLootItems = new Set<string>();
-for (const pet of petsData as { loot: Record<string, string[]> }[]) {
-  for (const items of Object.values(pet.loot)) {
-    for (const item of items) _petLootItems.add(item);
-  }
-}
-const PET_ONLY_ITEMS = new Set<string>(
-  [..._petLootItems].filter(item => !_itemLocKeys.has(item.toLowerCase()) && !_recipeKeys.has(item.toLowerCase()))
-);
 
 // Gold fish items catchable only via manual fishing with mealworms, mapped to their fishing location
 const GOLD_FISH = new Map<string, string>([
