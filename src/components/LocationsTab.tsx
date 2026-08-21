@@ -14,7 +14,12 @@ const WISHING_WELL = {
     { item: 'Witch Hat',    chance: 33.3 },
     { item: 'Ancient Coin', chance: 8.3  },
   ],
-  outputs: ['Wax Candle'],
+  outputs: [
+    'Wax Candle',
+    'Carved Bear', 'Carved Camel', 'Carved Dragon', 'Carved Fox',
+    'Carved Moose', 'Carved Mouse', 'Carved Owl', 'Carved Rabbit',
+    'Carved Rhino', 'Carved Squirrel', 'Carved Squisquatch', 'Carved Warthog',
+  ],
 };
 
 interface Props {
