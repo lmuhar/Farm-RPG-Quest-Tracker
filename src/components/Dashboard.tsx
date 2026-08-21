@@ -6,6 +6,7 @@ import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import petsData from '../data/pets.json';
 import itemLocationsData from '../data/item-locations.json';
+import questsData from '../data/quests.json';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
@@ -29,7 +30,8 @@ const RARE_ITEMS = new Map<string, string>([
   ['Onyx Scorpion', 'Jundland Desert'],
   ['White Truffle',    'Pig (daily reset)'],
   ['Black Truffle',    'Pig (daily reset)'],
-  ['Steel Soap Belt', 'Borgen Shop'],
+  ['Steel Soap Belt',  'Borgen Shop'],
+  ['Wax Candle',       'Wishing Well'],
 ]);
 
 // Compute items that drop only from pets (not findable via explore/fishing and not craftable)
@@ -58,6 +60,8 @@ const GOLD_FISH = new Map<string, string>([
   ['Gold Boot',     'Large Island'],
 ]);
 
+const allQuestsData = questsData as Quest[];
+
 interface Props {
   activeQuests: Quest[];
   nextUpQuests: Quest[];
@@ -65,7 +69,7 @@ interface Props {
 }
 
 export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, trackedQuestline, questStatuses } = useStore();
   const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
 
   const recipeMap = useMemo(() => {
@@ -304,6 +308,49 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
     }
     return map;
   }, [activeQuests, inventory]);
+
+  const focusQuestlineItems = useMemo(() => {
+    if (!trackedQuestline) return { focusCrops: [], focusBottlenecks: [] };
+    const questlineQuests = allQuestsData.filter(
+      q => q.questline === trackedQuestline && questStatuses[q.id] !== 'completed'
+    );
+    if (questlineQuests.length === 0) return { focusCrops: [], focusBottlenecks: [] };
+    const itemMap = new Map<string, number>();
+    const itemQuestCount = new Map<string, number>();
+    for (const quest of questlineQuests) {
+      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
+        itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+        itemQuestCount.set(item, (itemQuestCount.get(item) ?? 0) + 1);
+      }
+    }
+    const focusCrops: { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number }[] = [];
+    for (const [item, totalNeeded] of itemMap.entries()) {
+      if (totalNeeded > inventoryMax) continue;
+      const have = inventory[item] ?? 0;
+      const deficit = totalNeeded - have;
+      if (deficit <= 0) continue;
+      const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
+      if (crop) {
+        const grows = calcGrowsNeeded(deficit, plotCount);
+        focusCrops.push({ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes });
+      }
+    }
+    const bnEntries: { item: string; have: number; need: number; location: string; questCount: number }[] = [];
+    for (const [item, totalNeeded] of itemMap.entries()) {
+      const have = inventory[item] ?? 0;
+      if (have >= totalNeeded) continue;
+      const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
+      if (crop) continue;
+      let location: string | undefined;
+      if (RARE_ITEMS.has(item)) location = RARE_ITEMS.get(item)!;
+      else if (PET_ONLY_ITEMS.has(item)) location = 'Pet drops';
+      else continue;
+      bnEntries.push({ item, have, need: totalNeeded, location, questCount: itemQuestCount.get(item) ?? 1 });
+    }
+    const focusBottlenecks = bnEntries.sort((a, b) => b.questCount - a.questCount).slice(0, 10);
+    return { focusCrops, focusBottlenecks };
+  }, [trackedQuestline, questStatuses, inventory, cropTimes, plotCount, inventoryMax]);
+  const { focusCrops, focusBottlenecks } = focusQuestlineItems;
 
   return (
     <div className="space-y-4">
@@ -627,6 +674,88 @@ export function Dashboard({ activeQuests, nextUpQuests, onTabChange }: Props) {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Quest Focus — crops + bottlenecks for the entire tracked questline */}
+      {trackedQuestline && (focusCrops.length > 0 || focusBottlenecks.length > 0) && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
+            <TrendingUp size={13} style={{ color: 'var(--accent-purple)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-purple)' }}>Quest Focus</span>
+            <span className="text-xs ml-1 truncate min-w-0" style={{ color: 'var(--accent-purple)', opacity: 0.75 }}>— {trackedQuestline}</span>
+          </div>
+          {focusCrops.length > 0 && (
+            <>
+              <div className="px-4 py-2 flex items-center gap-1.5" style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--accent-green-bg)' }}>
+                <Sprout size={11} style={{ color: 'var(--accent-green)' }} />
+                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--accent-green)' }}>Crops to grow</span>
+                <span className="text-[10px] ml-1" style={{ color: 'var(--accent-green)', opacity: 0.7 }}>entire questline</span>
+              </div>
+              <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+                {[...focusCrops].sort((a, b) => a.totalMinutes - b.totalMinutes).map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes }) => {
+                  const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+                  const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                  const isToday = finishAt.toDateString() === new Date().toDateString();
+                  const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+                  return (
+                    <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                        <div className="min-w-0">
+                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                            have {have} / need {totalNeeded}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                          {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
+                        </div>
+                        <div className="text-xs font-medium" style={{ color: 'var(--accent-green)' }}>{doneLabel}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {focusBottlenecks.length > 0 && (
+            <>
+              <div
+                className="px-4 py-2 flex items-center gap-1.5"
+                style={{ borderTop: focusCrops.length > 0 ? '2px solid var(--border-subtle)' : undefined, borderBottom: '1px solid var(--border-subtle)', background: 'var(--accent-orange-bg)' }}
+              >
+                <AlertTriangle size={11} style={{ color: 'var(--accent-orange)' }} />
+                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--accent-orange)' }}>Bottlenecks</span>
+                <span className="text-[10px] ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>entire questline</span>
+              </div>
+              <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+                {focusBottlenecks.map(({ item, have, need, location, questCount }) => (
+                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                        <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
+                        {questCount > 1 && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
+                            {questCount} quests
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= need ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                      {have}/{need}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
