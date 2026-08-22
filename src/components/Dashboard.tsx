@@ -72,11 +72,23 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       }
     }
 
-    // Crop grows needed — active + next-up quests
+    // Crop grows needed — active quests + all remaining questline quests (next-up)
     const nextupItemMap = new Map<string, number>();
     for (const q of nextUpQuests) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
         nextupItemMap.set(item, (nextupItemMap.get(item) ?? 0) + quantity);
+      }
+    }
+    // Also pull in all remaining quests from any tracked questline
+    if (trackedQuestline) {
+      const remainingQuestlineQuests = allQuestsData.filter(
+        q => q.questline === trackedQuestline && questStatuses[q.id] !== 'completed'
+      );
+      for (const q of remainingQuestlineQuests) {
+        if (activeQuests.find(a => a.id === q.id)) continue; // already in active
+        for (const { item, quantity } of parseItems(q.itemsRequired)) {
+          nextupItemMap.set(item, (nextupItemMap.get(item) ?? 0) + quantity);
+        }
       }
     }
     const cropItems: { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number; priority: 'active' | 'nextup' }[] = [];
@@ -178,7 +190,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       .sort((a, b) => a.item.localeCompare(b.item));
 
     return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, goldFishNeeds };
-  }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap]);
+  }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap, trackedQuestline, questStatuses]);
 
   const hasDoNow = readyToTurnIn.length > 0 || craftNowItems.length > 0;
 
