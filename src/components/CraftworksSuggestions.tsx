@@ -4,12 +4,19 @@ import type { Quest } from '../types';
 import { parseItems, resolveRawIngredients } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
+import masteriesData from '../data/masteries.json';
 
 interface Recipe {
   id: string;
   name: string;
   ingredients: { item: string; quantity: number }[];
 }
+
+interface Mastery { name: string; difficulty: number; method: string }
+const allMasteries = masteriesData as Mastery[];
+const cookingItemNames = new Set(
+  allMasteries.filter((m) => m.method === 'cooking').map((m) => m.name.toLowerCase())
+);
 
 const allRecipes = recipesData as Recipe[];
 const builtInRecipeMap = new Map<string, Recipe>(allRecipes.map((r) => [r.name.toLowerCase(), r]));
@@ -83,6 +90,8 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
     ) => {
       const recipe = recipeMap.get(item.toLowerCase());
       if (!recipe) return;
+      if (cookingItemNames.has(item.toLowerCase())) return;
+      if (recipe.ingredients.some((ing) => ing.item.toLowerCase() === 'cooking pot')) return;
       const have = inventory[item] ?? 0;
       if (have >= inventoryMax) return;
       const deficit = needed - have;
