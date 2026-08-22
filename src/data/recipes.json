@@ -82,6 +82,38 @@
     ]
   },
   {
+    "id": "634",
+    "name": "Mushroom Stew",
+    "ingredients": [
+      { "item": "Coal",        "quantity": 180 },
+      { "item": "Mushroom",    "quantity": 100 },
+      { "item": "Peppers",     "quantity": 60  },
+      { "item": "Carrot",      "quantity": 60  },
+      { "item": "Leek",        "quantity": 32  },
+      { "item": "Onion",       "quantity": 20  },
+      { "item": "Cooking Pot", "quantity": 1   },
+      { "item": "Bone Broth",  "quantity": 1   }
+    ]
+  },
+  {
+    "id": "644",
+    "name": "Quandary Chowder",
+    "ingredients": [
+      { "item": "Coal",        "quantity": 240 },
+      { "item": "Corn",        "quantity": 16  },
+      { "item": "Milk",        "quantity": 10  },
+      { "item": "Potato",      "quantity": 5   },
+      { "item": "Carrot",      "quantity": 3   },
+      { "item": "Red Berries", "quantity": 3   },
+      { "item": "Bacon",       "quantity": 2   },
+      { "item": "Herbs",       "quantity": 2   },
+      { "item": "Salt",        "quantity": 1   },
+      { "item": "Corn Oil",    "quantity": 1   },
+      { "item": "Cooking Pot", "quantity": 1   },
+      { "item": "Bone Broth",  "quantity": 1   }
+    ]
+  },
+  {
     "id": "635",
     "name": "Onion Soup",
     "ingredients": [
