@@ -32,6 +32,7 @@ export function ImportExport() {
       dailyGain: store.dailyGain,
       dailyResetTime: store.dailyResetTime,
       masteryLevels: store.masteryLevels,
+      masteryProgress: store.masteryProgress,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

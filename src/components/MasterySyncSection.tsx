@@ -1,8 +1,44 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { Trophy, RefreshCw, Copy, Check } from 'lucide-react';
+import { Trophy, RefreshCw, Copy, Check, ClipboardPaste, ChevronDown } from 'lucide-react';
+import { useStore } from '../store';
+
+function parseMasteryText(text: string): { levels: Record<string, number>; progress: Record<string, number> } {
+  const levels: Record<string, number> = {};
+  const progress: Record<string, number> = {};
+  let lv = -1;
+  let pn: string | null = null;
+
+  const save = () => { if (pn !== null && lv >= 1) levels[pn] = lv; pn = null; };
+
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  for (const l of lines) {
+    if (l.startsWith('Tier V (MM)')) { save(); lv = 2; continue; }
+    if (l.startsWith('Tier IV (GM)')) { save(); lv = 1; continue; }
+    if (l.startsWith('Mega Mastered')) { save(); lv = 3; continue; }
+    if (l.startsWith('Tier III (M)')) { save(); lv = 0; continue; }
+    if (l.startsWith('Tier II') || l.startsWith('Tier I') || l.startsWith('No Tier')) { save(); lv = -1; continue; }
+    if (lv < 0) continue;
+    if (['Track', 'Stop', 'Complete!', 'chevron_down', 'chevron_right'].includes(l)
+      || l.includes('%') || l.startsWith('Stop Tracking') || l.startsWith('Nothing ready') || l.startsWith('Ready to Claim')) continue;
+    const pm = l.match(/^([\d,]+)\s*\/.*Progress/);
+    if (pm) {
+      const cnt = parseInt(pm[1].replace(/,/g, ''), 10);
+      if (pn !== null && lv >= 0 && lv <= 2) progress[pn] = cnt;
+      save(); continue;
+    }
+    save();
+    pn = l;
+  }
+  save();
+  return { levels, progress };
+}
 
 export function MasterySyncSection() {
   const [copied, setCopied] = useState(false);
+  const [pasteOpen, setPasteOpen] = useState(false);
+  const [pasteText, setPasteText] = useState('');
+  const [pasteStatus, setPasteStatus] = useState<'idle' | 'ok' | 'error'>('idle');
+  const { importState, masteryProgress: existingProgress } = useStore();
   const anchorRef = useRef<HTMLAnchorElement>(null);
 
   const href = useMemo(() => {
@@ -59,6 +95,24 @@ export function MasterySyncSection() {
     });
   }, [href]);
 
+  const applyPaste = useCallback(() => {
+    try {
+      const { levels, progress } = parseMasteryText(pasteText);
+      const count = Object.keys(levels).length + Object.keys(progress).length;
+      if (count === 0) { setPasteStatus('error'); setTimeout(() => setPasteStatus('idle'), 2500); return; }
+      importState({
+        masteryLevels: levels,
+        masteryProgress: { ...existingProgress, ...progress },
+      });
+      setPasteStatus('ok');
+      setPasteText('');
+      setTimeout(() => setPasteStatus('idle'), 2500);
+    } catch {
+      setPasteStatus('error');
+      setTimeout(() => setPasteStatus('idle'), 2500);
+    }
+  }, [pasteText, importState, existingProgress]);
+
   return (
     <div
       className="rounded-xl p-4 space-y-4"
@@ -110,6 +164,58 @@ export function MasterySyncSection() {
           <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>What doesn't: </span>
           Items you've mastered but aren't currently tracking toward the next tier — add those manually.
         </p>
+      </div>
+
+      <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
+        <button
+          onClick={() => setPasteOpen((o) => !o)}
+          className="flex items-center gap-1.5 text-xs w-full text-left"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          <ClipboardPaste size={12} style={{ color: 'var(--accent-purple)' }} />
+          <span style={{ fontWeight: 600 }}>Paste mastery page text instead</span>
+          <ChevronDown size={12} style={{ marginLeft: 'auto', transform: pasteOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
+        </button>
+        {pasteOpen && (
+          <div className="mt-2 space-y-2">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              Go to <span style={{ color: 'var(--accent-purple)', fontFamily: 'var(--font-mono)' }}>farmrpg.com/mastery.php</span>, select all text on the page (Ctrl+A), copy, and paste below.
+            </p>
+            <textarea
+              rows={5}
+              placeholder="Paste mastery page text here..."
+              value={pasteText}
+              onChange={(e) => setPasteText(e.target.value)}
+              className="w-full rounded-lg px-2 py-1.5 text-xs resize-none focus:outline-none"
+              style={{
+                background: 'var(--surface-inset)',
+                border: '1px solid var(--border-default)',
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-mono)',
+              }}
+            />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={applyPaste}
+                disabled={!pasteText.trim()}
+                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg disabled:opacity-40"
+                style={{ background: 'var(--accent-purple)', color: '#fff', border: '1px solid var(--accent-purple-border)' }}
+              >
+                <ClipboardPaste size={11} /> Import
+              </button>
+              {pasteStatus === 'ok' && (
+                <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--accent-green)' }}>
+                  <Check size={11} /> Imported!
+                </span>
+              )}
+              {pasteStatus === 'error' && (
+                <span className="text-xs" style={{ color: 'var(--accent-orange, #f97316)' }}>
+                  No mastery data found — make sure you pasted from farmrpg.com/mastery.php
+                </span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
