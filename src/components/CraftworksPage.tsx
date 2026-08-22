@@ -193,17 +193,19 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       });
   }, [masteryLevels, inventoryMax]);
 
-  // ── Tab 6: ascension points — items sorted by value then % toward milestone ──
+  // ── Tab 6: ascension points — sorted by tier, then craft difficulty, then % done ──
   const ascensionDirectItems = useMemo((): DirectItem[] => {
-    type Candidate = { item: string; count: number; target: number; pts: number; pct: number; priority: 'active' | 'nextup' };
+    const craftDiff = new Map<string, number>(craftingMasteries.map((m) => [m.name, m.difficulty]));
+    type Candidate = { item: string; count: number; target: number; pts: number; pct: number; diff: number; priority: 'active' | 'nextup' };
     const candidates: Candidate[] = [];
     for (const [item, count] of Object.entries(masteryProgress)) {
       const level = masteryLevels[item] ?? 0;
-      if (level === 0) candidates.push({ item, count, target: 10_000, pts: 10, pct: Math.min(1, count / 10_000), priority: 'active' });
-      else if (level === 1) candidates.push({ item, count, target: 100_000, pts: 100, pct: Math.min(1, count / 100_000), priority: 'nextup' });
+      const diff = craftDiff.get(item) ?? Infinity;
+      if (level === 0) candidates.push({ item, count, target: 10_000, pts: 10, pct: Math.min(1, count / 10_000), diff, priority: 'active' });
+      else if (level === 1) candidates.push({ item, count, target: 100_000, pts: 100, pct: Math.min(1, count / 100_000), diff, priority: 'nextup' });
     }
-    // 10pt items first, then 100pt — within each tier, closest to milestone first
-    candidates.sort((a, b) => a.pts - b.pts || b.pct - a.pct);
+    // 10k first, then 100k; within each tier: easiest craft first, then closest to milestone
+    candidates.sort((a, b) => a.pts - b.pts || a.diff - b.diff || b.pct - a.pct);
     return candidates.map(({ item, count, target, pts, pct, priority }) => {
       const remaining = target - count;
       const done = count >= target;
