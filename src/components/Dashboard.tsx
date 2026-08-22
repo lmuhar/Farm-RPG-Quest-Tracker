@@ -4,11 +4,13 @@ import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
+import questsData from '../data/quests.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, WISHING_WELL_SOURCES } from '../data/bottlenecks';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
 const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLowerCase(), r]));
+const allQuestsData = questsData as Quest[];
 
 // Gold fish items catchable only via manual fishing with mealworms, mapped to their fishing location
 const GOLD_FISH = new Map<string, string>([
@@ -29,7 +31,7 @@ interface Props {
 }
 
 export function Dashboard({ activeQuests, nextUpQuests }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, questStatuses } = useStore();
 
   const recipeMap = useMemo(() => {
     const map = new Map<string, Recipe>(recipeByName);
@@ -256,6 +258,53 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, inventory, inventoryMax]);
 
+  const craftingCrops = useMemo(() => {
+    const activeQuestIds = new Set(activeQuests.map(q => q.id));
+    const nextUpQuestIds = new Set(nextUpQuests.map(q => q.id));
+    const activeQuestlineNames = new Set(
+      activeQuests.map(q => q.questline).filter((ql): ql is string => !!ql)
+    );
+
+    const questlineQuests = allQuestsData.filter(
+      q => q.questline && activeQuestlineNames.has(q.questline) && questStatuses[q.id] !== 'completed'
+    );
+
+    const priorityOrder = { active: 0, nextup: 1, other: 2 } as const;
+    const agg = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' | 'other' }>();
+
+    for (const quest of questlineQuests) {
+      const tier: 'active' | 'nextup' | 'other' = activeQuestIds.has(quest.id) ? 'active'
+        : nextUpQuestIds.has(quest.id) ? 'nextup'
+        : 'other';
+
+      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
+        if (cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase())) continue;
+        const recipe = recipeMap.get(item.toLowerCase());
+        if (!recipe) continue;
+        for (const { item: ing, quantity: ingQty } of recipe.ingredients) {
+          if (!cropTimes.some(c => c.item.toLowerCase() === ing.toLowerCase())) continue;
+          const existing = agg.get(ing);
+          const newPriority = !existing || priorityOrder[tier] < priorityOrder[existing.priority] ? tier : existing.priority;
+          agg.set(ing, { totalNeeded: (existing?.totalNeeded ?? 0) + ingQty * quantity, priority: newPriority });
+        }
+      }
+    }
+
+    return [...agg.entries()]
+      .flatMap(([item, { totalNeeded, priority }]) => {
+        const have = inventory[item] ?? 0;
+        const deficit = totalNeeded - have;
+        if (deficit <= 0) return [];
+        const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase())!;
+        const grows = calcGrowsNeeded(deficit, plotCount);
+        return [{ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes, priority }];
+      })
+      .sort((a, b) => {
+        if (priorityOrder[a.priority] !== priorityOrder[b.priority]) return priorityOrder[a.priority] - priorityOrder[b.priority];
+        return a.totalMinutes - b.totalMinutes;
+      });
+  }, [activeQuests, nextUpQuests, questStatuses, inventory, cropTimes, plotCount, recipeMap]);
+
   return (
     <div className="space-y-4">
       {/* Do right now */}
@@ -387,6 +436,58 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
                       </div>
                       <div className="text-xs font-medium" style={{ color: 'var(--accent-green)' }}>{doneLabel}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Crops for crafting */}
+        {craftingCrops.length > 0 && (
+          <div
+            className="rounded-xl overflow-hidden"
+            style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+          >
+            <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-blue-bg)', borderBottom: '1px solid var(--accent-blue-border)' }}>
+              <Hammer size={13} style={{ color: 'var(--accent-blue)' }} />
+              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Crops for crafting</span>
+            </div>
+            <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+              {craftingCrops.map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority }) => {
+                const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+                const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                const isToday = finishAt.toDateString() === new Date().toDateString();
+                const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+                return (
+                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          {priority === 'nextup' && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                              next up
+                            </span>
+                          )}
+                          {priority === 'other' && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}>
+                              upcoming
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                          have {have} / need {totalNeeded}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                        {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: 'var(--accent-blue)' }}>{doneLabel}</div>
                     </div>
                   </div>
                 );
