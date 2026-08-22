@@ -100,6 +100,32 @@ app.post('/api/sync-inventory', (req, res) => {
   }
 });
 
+app.post('/api/merge-masteries', (req, res) => {
+  try {
+    const { levels, progress } = req.body as {
+      levels?: Record<string, number>;
+      progress?: Record<string, number>;
+    };
+    if (!levels && !progress) {
+      res.status(400).json({ error: 'Expected { levels?, progress? }' });
+      return;
+    }
+    const state = (readState() as Record<string, unknown>) ?? {};
+    if (levels) {
+      const existing = (state.masteryLevels as Record<string, number>) ?? {};
+      state.masteryLevels = { ...existing, ...levels };
+    }
+    if (progress) {
+      const existing = (state.masteryProgress as Record<string, number>) ?? {};
+      state.masteryProgress = { ...existing, ...progress };
+    }
+    writeState(state);
+    res.json({ ok: true });
+  } catch (e) {
+    res.status(500).json({ error: String(e) });
+  }
+});
+
 app.get('/api/widget', (_req, res) => {
   const state = readState() as AppState | null;
   if (!state) {

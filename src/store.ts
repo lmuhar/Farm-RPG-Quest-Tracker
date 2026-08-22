@@ -50,6 +50,8 @@ interface Store extends AppState {
   setDailyGain: (gain: number) => void;
   setDailyResetTime: (time: string) => void;
   setMasteryLevel: (item: string, level: number) => void;
+  setMasteryProgress: (item: string, count: number) => void;
+  mergeMasteryProgress: (data: Record<string, number>) => void;
 }
 
 const defaultCropTimes = [
@@ -140,6 +142,7 @@ export const useStore = create<Store>()(
       dailyGain: 14,
       dailyResetTime: '00:00',
       masteryLevels: {},
+      masteryProgress: {},
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -219,6 +222,7 @@ export const useStore = create<Store>()(
           dailyGain: 14,
           dailyResetTime: '00:00',
           masteryLevels: {},
+          masteryProgress: {},
         }),
 
       importState: (data) =>
@@ -247,6 +251,9 @@ export const useStore = create<Store>()(
           dailyGain: data.dailyGain ?? s.dailyGain,
           dailyResetTime: data.dailyResetTime ?? s.dailyResetTime,
           masteryLevels: data.masteryLevels ?? s.masteryLevels,
+          masteryProgress: data.masteryProgress
+            ? { ...s.masteryProgress, ...data.masteryProgress }
+            : s.masteryProgress,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -296,6 +303,16 @@ export const useStore = create<Store>()(
           }
           return { masteryLevels: { ...s.masteryLevels, [item]: level } };
         }),
+
+      setMasteryProgress: (item, count) =>
+        set((s) => ({
+          masteryProgress: { ...s.masteryProgress, [item]: count },
+        })),
+
+      mergeMasteryProgress: (data) =>
+        set((s) => ({
+          masteryProgress: { ...s.masteryProgress, ...data },
+        })),
     }),
     {
       name: 'farm-rpg-tracker',

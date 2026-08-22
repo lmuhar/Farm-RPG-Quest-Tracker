@@ -76,4 +76,5 @@ export interface AppState {
   dailyGain: number;
   dailyResetTime: string;
   masteryLevels: Record<string, number>;
+  masteryProgress: Record<string, number>;
 }
