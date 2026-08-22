@@ -193,18 +193,32 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       });
   }, [masteryLevels, inventoryMax]);
 
-  // ── Tab 6: ascension points — items close to 10k / 100k milestones ──────────
-  const ascensionCandidates = useMemo(() => {
-    const masteriesMap = new Map(allMasteries.map((m) => [m.name, m]));
-    return Object.entries(masteryProgress)
-      .flatMap(([item, count]) => {
-        const level = masteryLevels[item] ?? 0;
-        if (level === 0) return [{ item, count, target: 10_000, pts: 10, pct: Math.min(1, count / 10_000), masterItem: masteriesMap.get(item) }];
-        if (level === 1) return [{ item, count, target: 100_000, pts: 100, pct: Math.min(1, count / 100_000), masterItem: masteriesMap.get(item) }];
-        return [];
-      })
-      .sort((a, b) => b.pts - a.pts || b.pct - a.pct);
-  }, [masteryProgress, masteryLevels]);
+  // ── Tab 6: ascension points — sorted by tier, then craft difficulty, then % done ──
+  const ascensionDirectItems = useMemo((): DirectItem[] => {
+    const craftDiff = new Map<string, number>(craftingMasteries.map((m) => [m.name, m.difficulty]));
+    type Candidate = { item: string; count: number; target: number; pts: number; pct: number; diff: number; priority: 'active' | 'nextup' };
+    const candidates: Candidate[] = [];
+    for (const [item, count] of Object.entries(masteryProgress)) {
+      const level = masteryLevels[item] ?? 0;
+      const diff = craftDiff.get(item) ?? Infinity;
+      if (level === 0) candidates.push({ item, count, target: 10_000, pts: 10, pct: Math.min(1, count / 10_000), diff, priority: 'active' });
+      else if (level === 1) candidates.push({ item, count, target: 100_000, pts: 100, pct: Math.min(1, count / 100_000), diff, priority: 'nextup' });
+    }
+    // 10k first, then 100k; within each tier: easiest craft first, then closest to milestone
+    candidates.sort((a, b) => a.pts - b.pts || a.diff - b.diff || b.pct - a.pct);
+    return candidates.map(({ item, count, target, pts, pct, priority }) => {
+      const remaining = target - count;
+      const done = count >= target;
+      return {
+        item,
+        quantity: inventoryMax,
+        label: done
+          ? `+${pts} pts · complete!`
+          : `+${pts} pts · ${count.toLocaleString()}/${target.toLocaleString()} (${Math.round(pct * 100)}% · ${remaining.toLocaleString()} left)`,
+        priority,
+      };
+    });
+  }, [masteryProgress, masteryLevels, inventoryMax]);
 
   const tabs: { id: CraftworksTab; label: string; dot?: boolean }[] = [
     { id: 'active',    label: 'All Active' },
@@ -212,7 +226,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     { id: 'mastery',   label: 'Mastery' },
     { id: 'fishing',   label: 'Fishing' },
     { id: 'passive',   label: 'Passive' },
-    { id: 'ascension', label: 'Ascension Pts', dot: ascensionCandidates.length > 0 },
+    { id: 'ascension', label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
   ];
 
   return (
@@ -393,7 +407,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
 
       {/* Tab 6 — ascension points */}
       {tab === 'ascension' && (
-        ascensionCandidates.length === 0 ? (
+        ascensionDirectItems.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
             <TrendingUp size={20} className="mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
@@ -403,71 +417,13 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         ) : (
           <div className="space-y-2">
             <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
-              Items tracking toward 10k (10 pts) or 100k (100 pts) — highest value and closest first
+              10k milestones (+10 pts) first, then 100k (+100 pts) — closest to done within each tier
             </p>
-            <div
-              className="rounded-xl overflow-hidden"
-              style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-            >
-              <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-                {ascensionCandidates.map(({ item, count, target, pts, pct, masterItem }) => {
-                  const remaining = target - count;
-                  const done = count >= target;
-                  const ptColor = pts === 100 ? 'var(--accent-yellow)' : 'var(--accent-green)';
-                  return (
-                    <div key={item} className="px-4 py-2.5">
-                      <div className="flex items-center justify-between gap-3 mb-1">
-                        <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                          <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>
-                            {item}
-                          </span>
-                          {masterItem && (
-                            <>
-                              <span
-                                className="text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0"
-                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}
-                              >
-                                {masterItem.method}
-                              </span>
-                              <span
-                                className="text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0"
-                                style={{
-                                  background: masterItem.difficulty <= 3 ? 'var(--accent-green-bg)' : masterItem.difficulty <= 6 ? 'var(--accent-yellow-bg)' : 'var(--accent-orange-bg)',
-                                  color: masterItem.difficulty <= 3 ? 'var(--accent-green)' : masterItem.difficulty <= 6 ? 'var(--accent-yellow)' : 'var(--accent-orange)',
-                                  border: `1px solid ${masterItem.difficulty <= 3 ? 'var(--accent-green-border)' : masterItem.difficulty <= 6 ? 'var(--accent-yellow-border)' : 'var(--accent-orange-border)'}`,
-                                }}
-                              >
-                                diff {masterItem.difficulty}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="text-xs font-bold" style={{ fontFamily: 'var(--font-mono)', color: ptColor }}>
-                            +{pts} pts
-                          </span>
-                          <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                            {count.toLocaleString()}/{target.toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                          <div
-                            className="h-full rounded-full"
-                            style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : ptColor }}
-                          />
-                        </div>
-                        <span className="text-[10px] flex-shrink-0" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                          {Math.round(pct * 100)}%
-                          {!done && ` · ${remaining.toLocaleString()} left`}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <CraftworksSuggestions
+              quests={[]}
+              directItems={ascensionDirectItems}
+              subtitle="ascension pts · 10k first, closest to done"
+            />
           </div>
         )
       )}
