@@ -30,6 +30,7 @@ function snapshotState(): AppState {
     dailyGain: s.dailyGain,
     dailyResetTime: s.dailyResetTime,
     masteryLevels: s.masteryLevels,
+    masteryProgress: s.masteryProgress,
   };
 }
 
