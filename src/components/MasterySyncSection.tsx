@@ -12,8 +12,10 @@ export function MasterySyncSection() {
     // Uses name-follows-name to capture items even when accordion rows are collapsed
     // and their progress text is hidden (not in innerText).
     const code = `(function(){`
-      + `var T='${origin}',m={},lv=-1,pn=null;`
-      + `function sv(){if(pn!==null&&lv>=0)m[pn]=lv;pn=null;}`
+      // levels: item→tier (1=completed 10k, 2=completed 100k, 3=completed 1M)
+      // progress: item→current count (for items working toward 10k or 100k)
+      + `var T='${origin}',m={},p={},lv=-1,pn=null;`
+      + `function sv(){if(pn!==null&&lv>=1)m[pn]=lv;pn=null;}`
       + `function proc(text){`
       + `lv=-1;pn=null;`
       + `var lines=text.split('\\n').map(function(l){return l.trim();}).filter(Boolean);`
@@ -22,14 +24,15 @@ export function MasterySyncSection() {
       + `if(l.indexOf('Tier V (MM)')===0){sv();lv=2;continue;}`
       + `if(l.indexOf('Tier IV (GM)')===0){sv();lv=1;continue;}`
       + `if(l.indexOf('Mega Mastered')===0){sv();lv=3;continue;}`
-      + `if(l.indexOf('Tier III (M)')===0){sv();lv=-1;continue;}`
-      + `if(l.indexOf('Tier II')===0){sv();lv=-1;continue;}`
-      + `if(l.indexOf('Tier I')===0||l.indexOf('No Tier')===0){sv();lv=-1;continue;}`
+      + `if(l.indexOf('Tier III (M)')===0){sv();lv=0;continue;}`
+      + `if(l.indexOf('Tier II')===0||l.indexOf('Tier I')===0||l.indexOf('No Tier')===0){sv();lv=-1;continue;}`
       + `if(lv<0)continue;`
       + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'`
       + `||l.indexOf('%')!==-1||l.indexOf('Stop Tracking')===0`
       + `||l.indexOf('Nothing ready')===0||l.indexOf('Ready to Claim')===0)continue;`
-      + `if(l.indexOf('/')!==-1&&l.indexOf('Progress')!==-1){sv();continue;}`
+      // Parse "9,121 / 10,000 Progress" to capture the count
+      + `var pm=l.match(/^([\\d,]+)\\s*\\/.*Progress/);`
+      + `if(pm){var cnt=parseInt(pm[1].replace(/,/g,''),10);if(pn!==null&&lv>=0&&lv<=2)p[pn]=cnt;sv();continue;}`
       + `sv();pn=l;`
       + `}`
       + `sv();`
@@ -38,9 +41,9 @@ export function MasterySyncSection() {
       + `document.querySelectorAll('iframe').forEach(function(f){`
       + `try{var d=f.contentDocument||f.contentWindow.document;if(d&&d.body)proc(d.body.innerText);}catch(e){}`
       + `});`
-      + `var c=Object.keys(m).length;`
+      + `var c=Object.keys(m).length+Object.keys(p).length;`
       + `if(!c){alert('No mastery data found — make sure you\\'re on farmrpg.com/mastery.php');return;}`
-      + `window.open(T+'/#sync-masteries='+encodeURIComponent(JSON.stringify(m)),'_blank');`
+      + `window.open(T+'/#sync-masteries='+encodeURIComponent(JSON.stringify({levels:m,progress:p})),'_blank');`
       + `})();`;
     return `javascript:${code}`;
   }, []);
@@ -101,7 +104,7 @@ export function MasterySyncSection() {
       <div className="text-xs space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12, color: 'var(--text-muted)' }}>
         <p>
           <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>What syncs: </span>
-          Items in Tier IV→V progress (sets Grand Master), Tier III→IV progress (sets Mastered), and Mega Mastered items.
+          Tier levels for all completed milestones, plus exact progress counts for items working toward 10k, 100k, or 1M — used to surface ascension point opportunities.
         </p>
         <p>
           <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>What doesn't: </span>

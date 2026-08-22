@@ -79,6 +79,7 @@ export default function App() {
     const hash = window.location.hash;
     let hashInv: Record<string, number> | null = null;
     let hashMasteries: Record<string, number> | null = null;
+    let hashMasteryProgress: Record<string, number> | null = null;
 
     if (hash.startsWith('#sync-inv=')) {
       try {
@@ -93,7 +94,14 @@ export default function App() {
       try {
         const parsed = JSON.parse(decodeURIComponent(hash.slice('#sync-masteries='.length)));
         if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-          hashMasteries = parsed as Record<string, number>;
+          if ('levels' in parsed && 'progress' in parsed) {
+            // New format: {levels: {item: tier}, progress: {item: count}}
+            hashMasteries = parsed.levels as Record<string, number>;
+            hashMasteryProgress = parsed.progress as Record<string, number>;
+          } else {
+            // Old format: {item: tier}
+            hashMasteries = parsed as Record<string, number>;
+          }
         }
       } catch { /* ignore malformed hash */ }
       history.replaceState(null, '', window.location.pathname + window.location.search);
@@ -107,6 +115,10 @@ export default function App() {
       if (hashMasteries) {
         const current = useStore.getState().masteryLevels;
         importState({ masteryLevels: { ...current, ...hashMasteries } });
+      }
+      if (hashMasteryProgress) {
+        const current = useStore.getState().masteryProgress;
+        importState({ masteryProgress: { ...current, ...hashMasteryProgress } });
       }
     };
 
