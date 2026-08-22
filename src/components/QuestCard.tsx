@@ -139,7 +139,7 @@ export function QuestCard({ quest, status }: Props) {
                         <span className="text-slate-300 flex items-center gap-1">
                           <span className="font-mono text-slate-100">{quantity}x</span> {item}
                           {need > 0 && (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && (
-                            <AlertTriangle size={9} className="text-orange-400 flex-shrink-0" title="Bottleneck item — hard to obtain" />
+                            <AlertTriangle size={9} className="text-orange-400 flex-shrink-0" />
                           )}
                           {recipe && (
                             <button
