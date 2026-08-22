@@ -78,6 +78,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     }
     const cropItems: { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number; priority: 'active' | 'nextup' }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
+      if (totalNeeded > inventoryMax) continue;
       const have = inventory[item] ?? 0;
       const deficit = totalNeeded - have;
       if (deficit <= 0) continue;
@@ -90,6 +91,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     const activeItemKeys = new Set(cropItems.map(c => c.item.toLowerCase()));
     for (const [item, totalNeeded] of nextupItemMap.entries()) {
       if (activeItemKeys.has(item.toLowerCase())) continue;
+      if (totalNeeded > inventoryMax) continue;
       const have = inventory[item] ?? 0;
       const deficit = totalNeeded - have;
       if (deficit <= 0) continue;
