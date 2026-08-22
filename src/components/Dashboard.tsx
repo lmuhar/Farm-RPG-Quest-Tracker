@@ -4,7 +4,6 @@ import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
-import questsData from '../data/quests.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, WISHING_WELL_SOURCES } from '../data/bottlenecks';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
@@ -24,15 +23,13 @@ const GOLD_FISH = new Map<string, string>([
   ['Gold Boot',     'Large Island'],
 ]);
 
-const allQuestsData = questsData as Quest[];
-
 interface Props {
   activeQuests: Quest[];
   nextUpQuests: Quest[];
 }
 
 export function Dashboard({ activeQuests, nextUpQuests }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, trackedQuestline, questStatuses } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player } = useStore();
 
   const recipeMap = useMemo(() => {
     const map = new Map<string, Recipe>(recipeByName);
@@ -72,7 +69,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       }
     }
 
-    // Crop grows needed — active + next-up quests
+    // Crop grows needed — active quests + immediate next-up quest per questline
     const nextupItemMap = new Map<string, number>();
     for (const q of nextUpQuests) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
@@ -259,33 +256,6 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [player, inventory, inventoryMax]);
 
-  const focusCrops = useMemo((): { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number }[] => {
-    if (!trackedQuestline) return [];
-    const questlineQuests = allQuestsData.filter(
-      q => q.questline === trackedQuestline && questStatuses[q.id] !== 'completed'
-    );
-    if (questlineQuests.length === 0) return [];
-    const itemMap = new Map<string, number>();
-    for (const quest of questlineQuests) {
-      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
-        itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
-      }
-    }
-    const result: { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number }[] = [];
-    for (const [item, totalNeeded] of itemMap.entries()) {
-      if (totalNeeded > inventoryMax) continue;
-      const have = inventory[item] ?? 0;
-      const deficit = totalNeeded - have;
-      if (deficit <= 0) continue;
-      const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
-      if (crop) {
-        const grows = calcGrowsNeeded(deficit, plotCount);
-        result.push({ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes });
-      }
-    }
-    return result;
-  }, [trackedQuestline, questStatuses, inventory, cropTimes, plotCount, inventoryMax]);
-
   return (
     <div className="space-y-4">
       {/* Do right now */}
@@ -376,7 +346,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         )}
 
         {/* Crops to grow */}
-        {(cropItems.length > 0 || focusCrops.length > 0) && (
+        {cropItems.length > 0 && (
           <div
             className="rounded-xl overflow-hidden"
             style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
@@ -386,52 +356,41 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-green)' }}>Crops to grow</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {(() => {
-                // Merge active/nextup crops + focus crops (dedup by item name)
-                const allCrops = [...cropItems];
-                const seenItems = new Set(cropItems.map(c => c.item.toLowerCase()));
-                for (const fc of focusCrops) {
-                  if (!seenItems.has(fc.item.toLowerCase())) {
-                    allCrops.push({ ...fc, priority: 'nextup' as const });
-                    seenItems.add(fc.item.toLowerCase());
-                  }
-                }
-                return allCrops.sort((a, b) => {
-                  if (a.priority !== b.priority) return a.priority === 'active' ? -1 : 1;
-                  return a.totalMinutes - b.totalMinutes;
-                }).map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority }) => {
-                  const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
-                  const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-                  const isToday = finishAt.toDateString() === new Date().toDateString();
-                  const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
-                  return (
-                    <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                            {priority === 'nextup' && (
-                              <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
-                                next up
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                            have {have} / need {totalNeeded}
-                          </div>
+              {cropItems.sort((a, b) => {
+                if (a.priority !== b.priority) return a.priority === 'active' ? -1 : 1;
+                return a.totalMinutes - b.totalMinutes;
+              }).map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority }) => {
+                const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+                const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                const isToday = finishAt.toDateString() === new Date().toDateString();
+                const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+                return (
+                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          {priority === 'nextup' && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                              next up
+                            </span>
+                          )}
                         </div>
-                      </div>
-                      <div className="text-right flex-shrink-0">
                         <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                          {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
+                          have {have} / need {totalNeeded}
                         </div>
-                        <div className="text-xs font-medium" style={{ color: 'var(--accent-green)' }}>{doneLabel}</div>
                       </div>
                     </div>
-                  );
-                });
-              })()}
+                    <div className="text-right flex-shrink-0">
+                      <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                        {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(growMinutes)}/cycle
+                      </div>
+                      <div className="text-xs font-medium" style={{ color: 'var(--accent-green)' }}>{doneLabel}</div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
