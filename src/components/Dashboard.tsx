@@ -322,8 +322,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         </div>
       )}
 
-      {/* Bottleneck items */}
-      {bottlenecks.length > 0 && (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Bottleneck items */}
+        {bottlenecks.length > 0 && (
           <div
             className="rounded-xl overflow-hidden"
             style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
@@ -372,10 +373,10 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               })}
             </div>
           </div>
-      )}
+        )}
 
-      {/* Crops to grow */}
-      {(cropItems.length > 0 || focusCrops.length > 0) && (
+        {/* Crops to grow */}
+        {(cropItems.length > 0 || focusCrops.length > 0) && (
           <div
             className="rounded-xl overflow-hidden"
             style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
@@ -433,7 +434,8 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               })()}
             </div>
           </div>
-      )}
+        )}
+      </div>
 
       {/* Gold fish — Use your mealworms here */}
       {goldFishNeeds.length > 0 && (
