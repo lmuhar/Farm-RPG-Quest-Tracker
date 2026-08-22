@@ -182,8 +182,69 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
   );
 }
 
-// Items close to a mastery threshold that yields ascension points
-// level 0 → targeting 10k (10 pts); level 1 → targeting 100k (100 pts)
+function AscensionRow({ item, count, target, pts, pct }: { item: string; count: number; target: number; pts: number; pct: number }) {
+  const remaining = target - count;
+  const done = count >= target;
+  const color = pts === 100 ? 'var(--accent-yellow)' : 'var(--accent-green)';
+  const masterItem = masteries.find((m) => m.name === item);
+  return (
+    <div className="px-4 py-2.5">
+      <div className="flex items-center justify-between gap-3 mb-1">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
+          {masterItem && (
+            <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{METHOD_LABELS[masterItem.method] ?? masterItem.method}</span>
+          )}
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+            {count.toLocaleString()}/{target.toLocaleString()}
+          </span>
+          {!done && (
+            <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>({remaining.toLocaleString()} left)</span>
+          )}
+        </div>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
+        <div className="h-full rounded-full" style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : color }} />
+      </div>
+    </div>
+  );
+}
+
+function AscensionSection({
+  label, pts, color, items,
+}: {
+  label: string; pts: number; color: string;
+  items: { item: string; count: number; target: number; pts: number; pct: number }[];
+}) {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? items : items.slice(0, 5);
+  const hidden = items.length - 5;
+  return (
+    <div>
+      <div className="px-4 py-2 flex items-center gap-2" style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-inset)' }}>
+        <span className="text-xs font-bold" style={{ color }}>{label}</span>
+        <span className="text-xs font-semibold ml-auto" style={{ color, fontFamily: 'var(--font-mono)' }}>+{pts} pts each</span>
+      </div>
+      <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+        {visible.map((c) => <AscensionRow key={c.item} {...c} />)}
+      </div>
+      {items.length > 5 && (
+        <button
+          onClick={() => setShowAll((v) => !v)}
+          className="w-full text-xs py-2 text-center"
+          style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)' }}
+        >
+          {showAll ? 'Show less' : `Show ${hidden} more`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Items with progress data targeting a milestone that yields ascension points:
+// level 0 → 10k milestone → 10 pts; level 1 → 100k milestone → 100 pts
 function AscensionPointsPanel({
   masteryLevels,
   masteryProgress,
@@ -191,81 +252,42 @@ function AscensionPointsPanel({
   masteryLevels: Record<string, number>;
   masteryProgress: Record<string, number>;
 }) {
-  // Build list of items with progress data that are targeting a points milestone
-  const candidates = useMemo(() => {
-    return Object.entries(masteryProgress)
-      .flatMap(([item, count]) => {
-        const level = masteryLevels[item] ?? 0;
-        if (level === 0) {
-          // Targeting 10k → 10 pts
-          const pct = Math.min(1, count / 10_000);
-          return [{ item, count, target: 10_000, pts: 10, pct, level }];
-        }
-        if (level === 1) {
-          // Targeting 100k → 100 pts
-          const pct = Math.min(1, count / 100_000);
-          return [{ item, count, target: 100_000, pts: 100, pct, level }];
-        }
-        return [];
-      })
-      // 100pt items first, then by % completion descending
-      .sort((a, b) => b.pts - a.pts || b.pct - a.pct);
+  const { tenK, hundredK } = useMemo(() => {
+    const tenK: { item: string; count: number; target: number; pts: number; pct: number }[] = [];
+    const hundredK: { item: string; count: number; target: number; pts: number; pct: number }[] = [];
+    for (const [item, count] of Object.entries(masteryProgress)) {
+      const level = masteryLevels[item] ?? 0;
+      if (level === 0) {
+        const pct = Math.min(1, count / 10_000);
+        tenK.push({ item, count, target: 10_000, pts: 10, pct });
+      } else if (level === 1) {
+        const pct = Math.min(1, count / 100_000);
+        hundredK.push({ item, count, target: 100_000, pts: 100, pct });
+      }
+    }
+    tenK.sort((a, b) => b.pct - a.pct);
+    hundredK.sort((a, b) => b.pct - a.pct);
+    return { tenK, hundredK };
   }, [masteryLevels, masteryProgress]);
 
-  if (candidates.length === 0) return null;
+  if (tenK.length === 0 && hundredK.length === 0) return null;
 
   return (
-    <div
-      className="rounded-xl overflow-hidden"
-      style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
-    >
+    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--accent-purple-border)' }}>
       <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
         <TrendingUp size={13} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
         <span className="text-sm font-semibold" style={{ color: 'var(--accent-purple)' }}>Ascension Points</span>
-        <span className="text-xs ml-1" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>— items working toward 10k / 100k milestones</span>
       </div>
-      <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-        {candidates.map(({ item, count, target, pts, pct }) => {
-          const remaining = target - count;
-          const done = count >= target;
-          const color = pts === 100 ? 'var(--accent-yellow)' : 'var(--accent-green)';
-          const masterItem = masteries.find((m) => m.name === item);
-          return (
-            <div key={item} className="px-4 py-2.5">
-              <div className="flex items-center justify-between gap-3 mb-1">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>
-                    {item}
-                  </span>
-                  {masterItem && (
-                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                      {METHOD_LABELS[masterItem.method] ?? masterItem.method}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-xs font-semibold" style={{ fontFamily: 'var(--font-mono)', color }}>
-                    +{pts} pts
-                  </span>
-                  <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
-                    {count.toLocaleString()}/{target.toLocaleString()}
-                  </span>
-                  {!done && (
-                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                      ({remaining.toLocaleString()} left)
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
-                <div
-                  className="h-full rounded-full"
-                  style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : color, transition: 'var(--transition-default)' }}
-                />
-              </div>
-            </div>
-          );
-        })}
+      <div style={{ background: 'var(--surface-card)' }}>
+        {hundredK.length > 0 && (
+          <AscensionSection label="100k milestone" pts={100} color="var(--accent-yellow)" items={hundredK} />
+        )}
+        {tenK.length > 0 && hundredK.length > 0 && (
+          <div style={{ borderTop: '2px solid var(--border-subtle)' }} />
+        )}
+        {tenK.length > 0 && (
+          <AscensionSection label="10k milestone" pts={10} color="var(--accent-green)" items={tenK} />
+        )}
       </div>
     </div>
   );
