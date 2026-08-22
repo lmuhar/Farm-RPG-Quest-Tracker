@@ -1,16 +1,15 @@
 import { useState, useMemo } from 'react';
-import { ListTodo, GitBranch, ShoppingCart } from 'lucide-react';
+import { ListTodo, GitBranch } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems } from '../utils';
 import { useStore } from '../store';
 import { ActiveQuestsSummary } from './ActiveQuestsSummary';
 import { ActiveQuestLine } from './ActiveQuestLine';
 import { DailyActionCard } from './DailyActionCard';
-import { NeedsTab } from './NeedsTab';
 import { NpcGatesCard } from './NpcGatesCard';
 import { QuestCard } from './QuestCard';
 
-type SubTab = 'plan' | 'needs' | 'questlines';
+type SubTab = 'plan' | 'questlines';
 
 interface Props {
   activeQuests: Quest[];
@@ -75,7 +74,6 @@ export function ActiveTab({ activeQuests, nextUpQuests, questlineGroups }: Props
       >
         {([
           { id: 'plan', label: 'Action Plan', Icon: ListTodo },
-          { id: 'needs', label: 'Needs', Icon: ShoppingCart },
           { id: 'questlines', label: 'Questlines', Icon: GitBranch },
         ] as const).map(({ id, label, Icon }) => (
           <button
@@ -112,8 +110,6 @@ export function ActiveTab({ activeQuests, nextUpQuests, questlineGroups }: Props
           <ActiveQuestsSummary quests={activeQuests} nextUpQuests={nextUpQuests} />
         </>
       )}
-
-      {subTab === 'needs' && <NeedsTab activeQuests={activeQuests} />}
 
       {subTab === 'questlines' && (
         <>

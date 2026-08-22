@@ -360,7 +360,7 @@ export default function App() {
         <div className="flex-1 min-w-0 px-4 md:px-6 py-6">
           <main className="space-y-4">
             {tab === 'dashboard' && (
-              <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} onTabChange={(t) => setTab(t as Tab)} />
+              <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
             {tab === 'active' && (
               <ActiveTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} questlineGroups={questlineGroups} />
