@@ -1,8 +1,9 @@
-import { CheckCircle, Circle, Clock, Lock, Play, ChevronDown, ChevronUp, Hammer } from 'lucide-react';
+import { CheckCircle, Circle, Clock, Lock, Play, ChevronDown, ChevronUp, Hammer, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import type { Quest, QuestStatus } from '../types';
 import { parseItems, npcColor, statusColor, formatDuration, calcGrowsNeeded } from '../utils';
 import { useStore, getPendingExpandId } from '../store';
+import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 
 interface Props {
   quest: Quest;
@@ -31,6 +32,11 @@ export function QuestCard({ quest, status }: Props) {
 
   const required = parseItems(quest.itemsRequired);
   const rewards = parseItems(quest.rewardItems);
+
+  const hasUnfilledBottleneck = required.some(({ item, quantity }) => {
+    const have = inventory[item] ?? 0;
+    return have < quantity && (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item));
+  });
 
   const cycleStatus = () => {
     if (status === 'locked') return;
@@ -88,6 +94,11 @@ export function QuestCard({ quest, status }: Props) {
             {note && (
               <span className="text-xs text-yellow-400" title={note}>📝</span>
             )}
+            {hasUnfilledBottleneck && (
+              <span className="text-xs bg-orange-500/20 text-orange-300 border border-orange-500/30 px-1.5 py-0.5 rounded flex items-center gap-1">
+                <AlertTriangle size={9} /> bottleneck
+              </span>
+            )}
           </div>
           <p className="text-sm font-medium text-slate-100 mt-1">{quest.name}</p>
           <p className="text-xs text-slate-500 mt-0.5 truncate">
@@ -127,6 +138,9 @@ export function QuestCard({ quest, status }: Props) {
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-slate-300 flex items-center gap-1">
                           <span className="font-mono text-slate-100">{quantity}x</span> {item}
+                          {need > 0 && (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && (
+                            <AlertTriangle size={9} className="text-orange-400 flex-shrink-0" title="Bottleneck item — hard to obtain" />
+                          )}
                           {recipe && (
                             <button
                               onClick={(e) => { e.stopPropagation(); toggleRecipe(item); }}
