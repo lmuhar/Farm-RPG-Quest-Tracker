@@ -5,7 +5,6 @@ import { parseItems } from '../utils';
 import { useStore } from '../store';
 import { ActiveQuestsSummary } from './ActiveQuestsSummary';
 import { ActiveQuestLine } from './ActiveQuestLine';
-import { DailyActionCard } from './DailyActionCard';
 import { NpcGatesCard } from './NpcGatesCard';
 import { QuestCard } from './QuestCard';
 
@@ -66,8 +65,6 @@ export function ActiveTab({ activeQuests, nextUpQuests, questlineGroups }: Props
 
   return (
     <div className="space-y-3">
-      <DailyActionCard activeQuests={activeQuests} />
-
       <div
         className="flex gap-1 p-1 rounded-lg"
         style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}
