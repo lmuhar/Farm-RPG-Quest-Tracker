@@ -5,7 +5,7 @@ import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlass
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, WISHING_WELL_SOURCES } from '../data/bottlenecks';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
@@ -335,29 +335,42 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— no easy source</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {bottlenecks.map(({ item, active, nextup, have, need, location }) => (
-                <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                      <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
-                      {active > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
-                          {active} active
-                        </span>
-                      )}
-                      {nextup > 0 && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
-                          {nextup} next up
-                        </span>
-                      )}
+              {bottlenecks.map(({ item, active, nextup, have, need, location }) => {
+                const wellSources = WISHING_WELL_SOURCES.get(item);
+                return (
+                  <div key={item} className="px-4 py-2.5">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                          <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
+                          {active > 0 && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
+                              {active} active
+                            </span>
+                          )}
+                          {nextup > 0 && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                              {nextup} next up
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= need ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                        {have}/{need}
+                      </span>
                     </div>
+                    {wellSources && (
+                      <div className="mt-1 text-[10px] flex flex-wrap gap-x-2 gap-y-0.5" style={{ color: 'var(--text-muted)' }}>
+                        <span style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>throw in:</span>
+                        {wellSources.map(({ item: src, pct }) => (
+                          <span key={src}>{src} <span style={{ opacity: 0.6 }}>{pct}%</span></span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= need ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
-                    {have}/{need}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
