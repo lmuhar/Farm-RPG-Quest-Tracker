@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CheckCircle2, Hammer, Landmark, Sprout, Moon, Coffee, Clock, Zap } from 'lucide-react';
+import { CheckCircle2, Hammer, Landmark, Sprout, Moon, Clock, Zap } from 'lucide-react';
 import { useStore } from '../store';
 import {
   parseItems, calcGrowsNeeded, calcHoneyRuns, calcCutlassRuns,
@@ -118,19 +118,17 @@ export function DailyActionCard({ activeQuests }: Props) {
   }, [activeQuests, inventory, cropTimes, plotCount]);
 
   // Partition crops by time-of-day bucket
-  const fastCrops = cropActions.filter(c => c.growMinutes <= 10);
-  const afkCrops = cropActions.filter(c => c.growMinutes > 10 && c.growMinutes <= 60);
+  const afkCrops = cropActions.filter(c => c.growMinutes <= 60);
   const bedCrops = cropActions.filter(c => c.growMinutes > 60);
 
   const doNowTemples = templeActions.filter(t => t.materialsReady);
   const doLaterTemples = templeActions.filter(t => !t.materialsReady);
 
   const hasDoNow = turnInReady.length > 0 || craftNow.length > 0 || doNowTemples.length > 0;
-  const has10Min = fastCrops.length > 0;
   const hasAfk = afkCrops.length > 0;
   const hasBed = bedCrops.length > 0 || doLaterTemples.length > 0;
 
-  if (!hasDoNow && !has10Min && !hasAfk && !hasBed) return null;
+  if (!hasDoNow && !hasAfk && !hasBed) return null;
 
   const SectionHeader = ({ icon, label, color }: { icon: React.ReactNode; label: string; color: string }) => (
     <div className="flex items-center gap-2 pb-1" style={{ borderBottom: `1px solid var(--border-subtle)` }}>
@@ -202,20 +200,6 @@ export function DailyActionCard({ activeQuests }: Props) {
           )}
 
           {doNowTemples.map(t => <TempleRow key={t.type} t={t} />)}
-        </div>
-      )}
-
-      {/* If you have 10 minutes */}
-      {has10Min && (
-        <div className="space-y-2">
-          <SectionHeader icon={<Coffee size={11} />} label="If you have 10 minutes" color="var(--accent-blue)" />
-          <div className="flex items-start gap-2">
-            <Sprout size={12} style={{ color: 'var(--accent-green)', flexShrink: 0, marginTop: 1 }} />
-            <div className="flex-1 min-w-0 space-y-1">
-              <span className="text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>Plant fast crops</span>
-              {fastCrops.map(c => <CropRow key={c.item} c={c} />)}
-            </div>
-          </div>
         </div>
       )}
 

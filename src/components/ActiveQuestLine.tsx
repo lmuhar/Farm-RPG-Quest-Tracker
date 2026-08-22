@@ -5,6 +5,7 @@ import { getQuestStatus, parseItems, formatDuration, calcGrowsNeeded, calcHoneyR
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
+import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 
 interface Recipe {
   id: string;
@@ -126,6 +127,7 @@ function ItemProgressRow({
 
 function UpcomingQuestRow({ quest, inventory }: { quest: Quest; inventory: Record<string, number> }) {
   const [open, setOpen] = useState(false);
+  const { cropTimes, plotCount } = useStore();
   const items = parseItems(quest.itemsRequired);
 
   return (
@@ -157,21 +159,52 @@ function UpcomingQuestRow({ quest, inventory }: { quest: Quest; inventory: Recor
             items.map(({ item, quantity }) => {
               const have = inventory[item] ?? 0;
               const done = have >= quantity;
+              const deficit = Math.max(0, quantity - have);
               const pct = Math.min(100, quantity > 0 ? Math.round((have / quantity) * 100) : 100);
-              const recipe = recipeByName.get(item.toLowerCase());
+              const isHoney = item.toLowerCase() === 'honey';
+              const honey = isHoney && !done ? calcHoneyRuns(deficit) : null;
+              const recipe = !isHoney ? recipeByName.get(item.toLowerCase()) : undefined;
+              const cropTime = !isHoney ? cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase()) : undefined;
+              const grows = cropTime && !done ? calcGrowsNeeded(deficit, plotCount) : null;
+              const location = RARE_ITEMS.get(item) ?? (PET_ONLY_ITEMS.has(item) ? 'Pet drops' : undefined);
               return (
                 <div key={item} className="space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 min-w-0">
+                    <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
                       <span className="text-xs truncate" style={{ color: done ? 'var(--accent-green)' : 'var(--text-secondary)' }}>{item}</span>
+                      {isHoney && (
+                        <span className="text-[10px] px-1 rounded inline-flex items-center gap-0.5" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)' }}>
+                          <Landmark size={8} /> temple
+                        </span>
+                      )}
                       {recipe && (
-                        <span className="text-[10px] px-1 rounded" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)' }}>crafted</span>
+                        <span className="text-[10px] px-1 rounded inline-flex items-center gap-0.5" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)' }}>
+                          <Hammer size={8} /> crafted
+                        </span>
+                      )}
+                      {location && (
+                        <span className="text-[10px] italic" style={{ color: 'var(--text-muted)' }}>{location}</span>
                       )}
                     </div>
                     <span className="text-[11px] flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--text-muted)' }}>
                       {have}/{quantity}
                     </span>
                   </div>
+                  {!done && (
+                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      {honey && (
+                        <span style={{ color: 'var(--accent-yellow)' }}>
+                          {honey.runs} run{honey.runs !== 1 ? 's' : ''} · {honey.radishes.toLocaleString()} radishes
+                        </span>
+                      )}
+                      {cropTime && grows && (
+                        <span className="flex items-center gap-1">
+                          <Clock size={9} style={{ color: 'var(--accent-green)' }} />
+                          {grows} grow{grows !== 1 ? 's' : ''} · {formatDuration(grows * cropTime.growMinutes)}
+                        </span>
+                      )}
+                    </div>
+                  )}
                   <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
                     <div
                       className="h-full rounded-full"
