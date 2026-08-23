@@ -10,7 +10,8 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
 
   const save = () => { if (pn !== null && lv >= 1) levels[pn] = lv; pn = null; };
 
-  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  // Browser clipboard adds "* " bullet prefix to list items — strip it before parsing
+  const lines = text.split('\n').map((l) => l.trim().replace(/^\*\s+/, '')).filter(Boolean);
   for (const l of lines) {
     if (l.startsWith('Tier V (MM)')) { save(); lv = 2; continue; }
     if (l.startsWith('Tier IV (GM)')) { save(); lv = 1; continue; }
@@ -18,8 +19,9 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
     if (l.startsWith('Tier III (M)')) { save(); lv = 0; continue; }
     if (l.startsWith('Tier II') || l.startsWith('Tier I') || l.startsWith('No Tier')) { save(); lv = -1; continue; }
     if (lv < 0) continue;
-    if (['Track', 'Stop', 'Complete!', 'chevron_down', 'chevron_right'].includes(l)
-      || l.includes('%') || l.startsWith('Stop Tracking') || l.startsWith('Nothing ready') || l.startsWith('Ready to Claim')) continue;
+    if (['Track', 'Stop', 'Complete!', 'chevron_down', 'chevron_right', 'Mastery In-Progress'].includes(l)
+      || l.includes('%') || l.startsWith('Stop Tracking') || l.startsWith('Nothing ready')
+      || l.startsWith('Ready to Claim') || l.startsWith('[')) continue;
     const pm = l.match(/^([\d,]+)\s*\/.*Progress/);
     if (pm) {
       const cnt = parseInt(pm[1].replace(/,/g, ''), 10);
@@ -55,7 +57,7 @@ export function MasterySyncSection() {
       + `function sv(){if(pn!==null&&lv>=1)m[pn]=lv;pn=null;}`
       + `function proc(text){`
       + `lv=-1;pn=null;`
-      + `var lines=text.split('\\n').map(function(l){return l.trim();}).filter(Boolean);`
+      + `var lines=text.split('\\n').map(function(l){return l.trim().replace(/^\\*\\s+/,'');}).filter(Boolean);`
       + `for(var i=0;i<lines.length;i++){`
       + `var l=lines[i];`
       + `if(l.indexOf('Tier V (MM)')===0){sv();lv=2;continue;}`
@@ -64,9 +66,9 @@ export function MasterySyncSection() {
       + `if(l.indexOf('Tier III (M)')===0){sv();lv=0;continue;}`
       + `if(l.indexOf('Tier II')===0||l.indexOf('Tier I')===0||l.indexOf('No Tier')===0){sv();lv=-1;continue;}`
       + `if(lv<0)continue;`
-      + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'`
+      + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'||l==='Mastery In-Progress'`
       + `||l.indexOf('%')!==-1||l.indexOf('Stop Tracking')===0`
-      + `||l.indexOf('Nothing ready')===0||l.indexOf('Ready to Claim')===0)continue;`
+      + `||l.indexOf('Nothing ready')===0||l.indexOf('Ready to Claim')===0||l.charAt(0)==='[')continue;`
       // Parse "9,121 / 10,000 Progress"; "/ ∞ Progress" means mega mastered
       + `var pm=l.match(/^([\\d,]+)\\s*\\/.*Progress/);`
       + `if(pm){var cnt=parseInt(pm[1].replace(/,/g,''),10);`
