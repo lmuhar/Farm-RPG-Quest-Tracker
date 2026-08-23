@@ -67,12 +67,13 @@ const META_ITEMS: NavItem[] = [
 ];
 
 export default function App() {
-  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, importState } = useStore();
+  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, masteryLevels, masteryProgress, importState } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Load state from server on mount; apply any bookmarklet hash-sync after server state loads
   useEffect(() => {
@@ -124,31 +125,24 @@ export default function App() {
 
     fetch('/api/state')
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data) {
-          // Masteries are managed client-side; ignore any mastery fields from the server
-          // so a stale server-side sync can't overwrite local state on page load.
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { masteryLevels: _ml, masteryProgress: _mp, ...rest } = data as Record<string, unknown>;
-          importState(rest);
-        }
-        applyHashData();
-      })
-      .catch(() => { applyHashData(); });
+      .then((data) => { if (data) importState(data); applyHashData(); })
+      .catch(() => { applyHashData(); })
+      .finally(() => setLoading(false));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Debounced save to server on every state change
+  // Debounced save to server on every state change (skip until initial load is done)
   useEffect(() => {
+    if (loading) return;
     const timer = setTimeout(() => {
       fetch('/api/state', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes }),
+        body: JSON.stringify({ questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, masteryLevels, masteryProgress }),
       }).catch(() => {});
     }, 1500);
     return () => clearTimeout(timer);
-  }, [questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes]);
+  }, [loading, questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, masteryLevels, masteryProgress]);
 
   const questsWithStatus = useMemo(
     () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
@@ -211,6 +205,12 @@ export default function App() {
     isActive
       ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
       : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' };
+
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--surface-app)', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
+      <p className="text-sm">Loading...</p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--surface-app)', color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>

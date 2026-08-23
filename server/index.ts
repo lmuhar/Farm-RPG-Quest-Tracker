@@ -16,6 +16,8 @@ interface AppState {
   cropTimes?: CropTime[];
   plotCount?: number;
   growQueue?: GrowQueueItem[];
+  masteryLevels?: Record<string, number>;
+  masteryProgress?: Record<string, number>;
 }
 
 function parseItemsServer(raw: string): { item: string; quantity: number }[] {
@@ -71,12 +73,7 @@ function writeState(data: unknown): void {
 }
 
 app.get('/api/state', (_req, res) => {
-  const state = readState() as Record<string, unknown> | null;
-  if (!state) { res.json(null); return; }
-  // Masteries are managed client-side; strip any stale server-side mastery data
-  // so a bad sync can't resurrect via server restore on next page load.
-  const { masteryLevels: _ml, masteryProgress: _mp, ...rest } = state;
-  res.json(rest);
+  res.json(readState());
 });
 
 app.post('/api/state', (req, res) => {

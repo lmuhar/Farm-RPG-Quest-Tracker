@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import type { AppState, GrowQueueItem, ParsedItem, PlayerProfile, Quest, QuestStatus } from './types';
 import questsData from './data/quests.json';
 import { compareQuests } from './utils';
@@ -119,9 +118,7 @@ function mergeCropTimes(
   return [...defaultCropTimes.filter((d) => !savedItems.has(d.item)), ...migrated];
 }
 
-export const useStore = create<Store>()(
-  persist(
-    (set) => ({
+export const useStore = create<Store>()((set) => ({
       questStatuses: {},
       inventory: {},
       player: defaultPlayer,
@@ -316,26 +313,4 @@ export const useStore = create<Store>()(
         })),
 
       replaceMasteryProgress: (data) => set({ masteryProgress: data }),
-    }),
-    {
-      name: 'farm-rpg-tracker',
-      version: 1,
-      migrate: (persistedState, version) => {
-        const s = persistedState as Partial<AppState>;
-        if (version < 1) {
-          // Reset crop times to updated defaults (all crops now 50% faster)
-          return { ...s, cropTimes: defaultCropTimes };
-        }
-        return s;
-      },
-      merge: (persisted, current) => {
-        const p = persisted as Partial<AppState>;
-        return {
-          ...(current as Store),
-          ...(p as object),
-          cropTimes: p.cropTimes ? mergeCropTimes(p.cropTimes) : (current as Store).cropTimes,
-        };
-      },
-    }
-  )
-);
+    }));
