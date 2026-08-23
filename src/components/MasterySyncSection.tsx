@@ -41,7 +41,7 @@ export function MasterySyncSection() {
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState('');
   const [pasteStatus, setPasteStatus] = useState<'idle' | 'ok' | 'error'>('idle');
-  const { importState, masteryProgress: existingProgress } = useStore();
+  const { importState, replaceMasteryProgress } = useStore();
   const anchorRef = useRef<HTMLAnchorElement>(null);
 
   const href = useMemo(() => {
@@ -105,10 +105,10 @@ export function MasterySyncSection() {
       const { levels, progress } = parseMasteryText(pasteText);
       const count = Object.keys(levels).length + Object.keys(progress).length;
       if (count === 0) { setPasteStatus('error'); setTimeout(() => setPasteStatus('idle'), 2500); return; }
-      importState({
-        masteryLevels: levels,
-        masteryProgress: { ...existingProgress, ...progress },
-      });
+      // Paste is a full-page sync: replace both masteryLevels and masteryProgress entirely
+      // so stale keys from previous broken imports (e.g. '* Radish' from old clipboard bug) are cleared.
+      importState({ masteryLevels: levels });
+      replaceMasteryProgress(progress);
       setPasteStatus('ok');
       setPasteText('');
       setTimeout(() => setPasteStatus('idle'), 2500);
@@ -116,7 +116,7 @@ export function MasterySyncSection() {
       setPasteStatus('error');
       setTimeout(() => setPasteStatus('idle'), 2500);
     }
-  }, [pasteText, importState, existingProgress]);
+  }, [pasteText, importState, replaceMasteryProgress]);
 
   return (
     <div

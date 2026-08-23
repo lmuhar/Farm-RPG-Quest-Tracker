@@ -52,6 +52,7 @@ interface Store extends AppState {
   setMasteryLevel: (item: string, level: number) => void;
   setMasteryProgress: (item: string, count: number) => void;
   mergeMasteryProgress: (data: Record<string, number>) => void;
+  replaceMasteryProgress: (data: Record<string, number>) => void;
 }
 
 const defaultCropTimes = [
@@ -313,6 +314,8 @@ export const useStore = create<Store>()(
         set((s) => ({
           masteryProgress: { ...s.masteryProgress, ...data },
         })),
+
+      replaceMasteryProgress: (data) => set({ masteryProgress: data }),
     }),
     {
       name: 'farm-rpg-tracker',
