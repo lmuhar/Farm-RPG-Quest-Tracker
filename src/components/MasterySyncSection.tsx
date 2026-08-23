@@ -23,6 +23,7 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
     const pm = l.match(/^([\d,]+)\s*\/.*Progress/);
     if (pm) {
       const cnt = parseInt(pm[1].replace(/,/g, ''), 10);
+      if (/\/\s*∞/.test(l) && pn !== null) { levels[pn] = 3; pn = null; continue; }
       if (pn !== null && lv >= 0 && lv <= 2) progress[pn] = cnt;
       save(); continue;
     }
@@ -66,9 +67,11 @@ export function MasterySyncSection() {
       + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'`
       + `||l.indexOf('%')!==-1||l.indexOf('Stop Tracking')===0`
       + `||l.indexOf('Nothing ready')===0||l.indexOf('Ready to Claim')===0)continue;`
-      // Parse "9,121 / 10,000 Progress" to capture the count
+      // Parse "9,121 / 10,000 Progress"; "/ ∞ Progress" means mega mastered
       + `var pm=l.match(/^([\\d,]+)\\s*\\/.*Progress/);`
-      + `if(pm){var cnt=parseInt(pm[1].replace(/,/g,''),10);if(pn!==null&&lv>=0&&lv<=2)p[pn]=cnt;sv();continue;}`
+      + `if(pm){var cnt=parseInt(pm[1].replace(/,/g,''),10);`
+      + `if(/\\/\\s*∞/.test(l)&&pn!==null){m[pn]=3;pn=null;continue;}`
+      + `if(pn!==null&&lv>=0&&lv<=2)p[pn]=cnt;sv();continue;}`
       + `sv();pn=l;`
       + `}`
       + `sv();`
