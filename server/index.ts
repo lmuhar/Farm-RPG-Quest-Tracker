@@ -71,7 +71,12 @@ function writeState(data: unknown): void {
 }
 
 app.get('/api/state', (_req, res) => {
-  res.json(readState());
+  const state = readState() as Record<string, unknown> | null;
+  if (!state) { res.json(null); return; }
+  // Masteries are managed client-side; strip any stale server-side mastery data
+  // so a bad sync can't resurrect via server restore on next page load.
+  const { masteryLevels: _ml, masteryProgress: _mp, ...rest } = state;
+  res.json(rest);
 });
 
 app.post('/api/state', (req, res) => {
