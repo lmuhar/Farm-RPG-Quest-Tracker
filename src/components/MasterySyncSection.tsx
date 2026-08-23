@@ -19,10 +19,10 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
   // Browser clipboard adds "* " bullet prefix to list items — strip it before parsing
   const lines = text.split('\n').map((l) => l.trim().replace(/^\*\s+/, '')).filter(Boolean);
   for (const l of lines) {
-    if (l.startsWith('Tier V (MM)')) { save(); lv = 2; continue; }
-    if (l.startsWith('Tier IV (GM)')) { save(); lv = 1; continue; }
+    if (l.startsWith('Tier V (MM)')) { save(); lv = 3; continue; }
+    if (l.startsWith('Tier IV (GM)')) { save(); lv = 2; continue; }
     if (l.startsWith('Mega Mastered')) { save(); lv = 3; continue; }
-    if (l.startsWith('Tier III (M)')) { save(); lv = 0; continue; }
+    if (l.startsWith('Tier III (M)')) { save(); lv = 1; continue; }
     if (l.startsWith('Tier II') || l.startsWith('Tier I') || l.startsWith('No Tier')) { save(); lv = -1; continue; }
     if (lv < 0) continue;
     if (['Track', 'Stop', 'Complete!', 'chevron_down', 'chevron_right', 'Mastery In-Progress'].includes(l)
@@ -68,10 +68,10 @@ export function MasterySyncSection() {
       + `var lines=text.split('\\n').map(function(l){return l.trim().replace(/^\\*\\s+/,'');}).filter(Boolean);`
       + `for(var i=0;i<lines.length;i++){`
       + `var l=lines[i];`
-      + `if(l.indexOf('Tier V (MM)')===0){sv();lv=2;continue;}`
-      + `if(l.indexOf('Tier IV (GM)')===0){sv();lv=1;continue;}`
+      + `if(l.indexOf('Tier V (MM)')===0){sv();lv=3;continue;}`
+      + `if(l.indexOf('Tier IV (GM)')===0){sv();lv=2;continue;}`
       + `if(l.indexOf('Mega Mastered')===0){sv();lv=3;continue;}`
-      + `if(l.indexOf('Tier III (M)')===0){sv();lv=0;continue;}`
+      + `if(l.indexOf('Tier III (M)')===0){sv();lv=1;continue;}`
       + `if(l.indexOf('Tier II')===0||l.indexOf('Tier I')===0||l.indexOf('No Tier')===0){sv();lv=-1;continue;}`
       + `if(lv<0)continue;`
       + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'||l==='Mastery In-Progress'`
