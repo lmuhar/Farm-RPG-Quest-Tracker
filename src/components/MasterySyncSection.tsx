@@ -22,9 +22,9 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
     const pm = l.match(/^([\d,]+)\s*\/.*Progress/);
     if (pm && pending !== null) {
       const count = parseInt(pm[1].replace(/,/g, ''), 10);
-      const lv = count >= 1_000_000 ? 4 : count >= 100_000 ? 3 : count >= 10_000 ? 2 : count >= 1_000 ? 1 : 0;
+      const lv = count >= 1_000_000 ? 3 : count >= 100_000 ? 2 : count >= 10_000 ? 1 : 0;
       if (lv >= 1) levels[pending] = lv;
-      if (lv >= 1 && lv <= 2) progress[pending] = count;
+      if (lv <= 1) progress[pending] = count; // toward 10k (lv=0) or 100k (lv=1)
       pending = null;
       continue;
     }
@@ -61,9 +61,9 @@ export function MasterySyncSection() {
       + `var pm=l.match(/^([\\d,]+)\\s*\\/.*Progress/);`
       + `if(pm&&pending!==null){`
       + `var cnt=parseInt(pm[1].replace(/,/g,''),10);`
-      + `var lv=cnt>=1000000?4:cnt>=100000?3:cnt>=10000?2:cnt>=1000?1:0;`
+      + `var lv=cnt>=1000000?3:cnt>=100000?2:cnt>=10000?1:0;`
       + `if(lv>=1)m[pending]=lv;`
-      + `if(lv>=1&&lv<=2)p[pending]=cnt;`
+      + `if(lv<=1)p[pending]=cnt;`
       + `pending=null;continue;}`
       + `if(N.has(l)){pending=l;}else{pending=null;}`
       + `}`

@@ -51,15 +51,14 @@ function diffLabel(d: number) {
   return 'Expert';
 }
 
-// Tier III = Mastery (1,000×), Tier IV = Grand Master (10,000×), Tier V = Mega Mastery (100,000×), lv4 = Mega Mastered (1,000,000×)
-const TIER_LABELS   = ['', 'T.III', 'T.IV', 'T.V', 'MM'] as const;
-const TIER_NAMES    = ['', 'Tier III · Mastery', 'Tier IV · Grand Master', 'Tier V · Mega Mastery', 'Mega Mastered'] as const;
-const TIER_TITLES   = ['', 'Tier III · Mastery (1,000×)', 'Tier IV · Grand Master (10,000×)', 'Tier V · Mega Mastery (100,000×)', 'Mega Mastered (1,000,000×)'] as const;
+// Milestones: 10k (lv=1, 10 AP), 100k (lv=2, 100 AP), 1M (lv=3)
+const TIER_LABELS   = ['', '10k', '100k', '1M'] as const;
+const TIER_NAMES    = ['', '10k Milestone', '100k Milestone', '1M Milestone'] as const;
+const TIER_TITLES   = ['', '10,000 crafts — 10 Ascension Points', '100,000 crafts — 100 Ascension Points', '1,000,000 crafts'] as const;
 const TIER_COLORS = [
   '',
   '#cd7f32',
   '#c0c0c0',
-  '#ffd700',
   '#ffd700',
 ] as const;
 const TIER_BG = [
@@ -67,14 +66,12 @@ const TIER_BG = [
   'rgba(205,127,50,0.18)',
   'rgba(192,192,192,0.18)',
   'rgba(255,215,0,0.18)',
-  'rgba(255,215,0,0.28)',
 ] as const;
 const TIER_BORDER = [
   '',
   'rgba(205,127,50,0.4)',
   'rgba(192,192,192,0.4)',
   'rgba(255,215,0,0.4)',
-  'rgba(255,215,0,0.6)',
 ] as const;
 
 const ALL_METHODS: MethodFilter[] = ['all', 'crafting', 'fishing', 'farming', 'cooking', 'exploring', 'steelworks', 'other'];
@@ -93,11 +90,11 @@ function itemMatchesStatus(level: number, filter: StatusFilter) {
   if (filter === 'none') return level === 0;
   if (filter === 'mastered') return level === 1;
   if (filter === 'grand-mastered') return level === 2;
-  return level >= 3; // mega-mastered: T.V (100k) or Mega Mastered (1M)
+  return level === 3; // mega-mastered: 1M
 }
 
-const NEXT_STEP_LABEL = ['→ T.III', '→ T.IV', '→ T.V', '→ MM', ''] as const;
-const NEXT_STEP_TIER = [1, 2, 3, 4] as const; // next tier to achieve for level 0,1,2,3
+const NEXT_STEP_LABEL = ['→ 10k', '→ 100k', '→ 1M', ''] as const;
+const NEXT_STEP_TIER = [1, 2, 3] as const; // next milestone for level 0,1,2
 
 interface ItemCardProps {
   item: MasteryItem;
@@ -108,7 +105,7 @@ interface ItemCardProps {
 
 function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
   const ms = METHOD_STYLES[item.method] ?? METHOD_STYLES.other;
-  const nextTier = level < 4 ? NEXT_STEP_TIER[level] : null;
+  const nextTier = level < 3 ? NEXT_STEP_TIER[level] : null;
 
   const handleTierClick = (tier: 1 | 2 | 3) => {
     if (level === tier) {
@@ -129,16 +126,7 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
             <p className="text-sm font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>
               {item.name}
             </p>
-            {level === 4 && (
-              <span
-                className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
-                style={{ background: TIER_BG[4], color: TIER_COLORS[4], border: `1px solid ${TIER_BORDER[4]}` }}
-                title="Mega Mastered (1,000,000×)"
-              >
-                1M ★
-              </span>
-            )}
-            {showNextStep && nextTier && level < 4 && (
+            {showNextStep && nextTier && (
               <span
                 className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
                 style={{ background: TIER_BG[nextTier], color: TIER_COLORS[nextTier], border: `1px solid ${TIER_BORDER[nextTier]}` }}
@@ -256,7 +244,7 @@ function AscensionSection({
 }
 
 // Items with progress data targeting a milestone that yields ascension points:
-// level 0/1 (unstarted/Tier III) → 10k milestone → 10 pts; level 2 (Tier IV/GM) → 100k milestone → 100 pts
+// level 0 (below 10k) → 10k milestone → 10 pts; level 1 (at 10k) → 100k milestone → 100 pts
 function AscensionPointsPanel({
   masteryLevels,
   masteryProgress,
@@ -269,10 +257,10 @@ function AscensionPointsPanel({
     const hundredK: { item: string; count: number; target: number; pts: number; pct: number }[] = [];
     for (const [item, count] of Object.entries(masteryProgress)) {
       const level = masteryLevels[item] ?? 0;
-      if (level <= 1) {
+      if (level === 0) {
         const pct = Math.min(1, count / 10_000);
         tenK.push({ item, count, target: 10_000, pts: 10, pct });
-      } else if (level === 2) {
+      } else if (level === 1) {
         const pct = Math.min(1, count / 100_000);
         hundredK.push({ item, count, target: 100_000, pts: 100, pct });
       }
@@ -313,15 +301,14 @@ export function MasteriesPage() {
   const [diffFilter, setDiffFilter] = useState<DiffFilter>('all');
 
   const stats = useMemo(() => {
-    let started = 0, m = 0, gm = 0, mm = 0, megaMastered = 0;
+    let started = 0, tenK = 0, hundredK = 0, oneMil = 0;
     for (const item of masteries) {
       const lv = masteryLevels[item.name] ?? 0;
-      if (lv >= 1) { started++; m++; }
-      if (lv >= 2) gm++;
-      if (lv >= 3) mm++;
-      if (lv >= 4) megaMastered++;
+      if (lv >= 1) { started++; tenK++; }
+      if (lv >= 2) hundredK++;
+      if (lv >= 3) oneMil++;
     }
-    return { started, m, gm, mm, megaMastered, total: masteries.length };
+    return { started, tenK, hundredK, oneMil, total: masteries.length };
   }, [masteryLevels]);
 
   const suggestions = useMemo(() => {
@@ -337,12 +324,12 @@ export function MasteriesPage() {
 
   const suggestionSubtitle = useMemo(() => {
     if (suggestions.some((item) => (masteryLevels[item.name] ?? 0) === 2)) {
-      return '· Tier IV · Grand Master — 1 step from Tier V · Mega Mastery';
+      return '· at 100k — push to 1M';
     }
     if (suggestions.some((item) => (masteryLevels[item.name] ?? 0) === 1)) {
-      return '· Tier III · Mastery — push these to Tier V before starting new ones';
+      return '· at 10k — push to 100k before starting new ones';
     }
-    return '· nothing in progress — easiest items to start';
+    return '· nothing at 10k yet — easiest items to start';
   }, [suggestions, masteryLevels]);
 
   const filtered = useMemo(() => {
@@ -388,16 +375,15 @@ export function MasteriesPage() {
             <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Started</div>
           </div>
           {([
-            { label: TIER_NAMES[1], count: stats.m, color: TIER_COLORS[1], bg: TIER_BG[1], sub: null },
-            { label: TIER_NAMES[2], count: stats.gm, color: TIER_COLORS[2], bg: TIER_BG[2], sub: null },
-            { label: TIER_NAMES[3], count: stats.mm, color: TIER_COLORS[3], bg: TIER_BG[3], sub: stats.megaMastered > 0 ? `${stats.megaMastered} at 1M` : null },
-          ] as const).map(({ label, count, color, bg, sub }) => (
+            { label: TIER_NAMES[1], count: stats.tenK, color: TIER_COLORS[1], bg: TIER_BG[1] },
+            { label: TIER_NAMES[2], count: stats.hundredK, color: TIER_COLORS[2], bg: TIER_BG[2] },
+            { label: TIER_NAMES[3], count: stats.oneMil, color: TIER_COLORS[3], bg: TIER_BG[3] },
+          ] as const).map(({ label, count, color, bg }) => (
             <div key={label} className="rounded-lg p-3 text-center" style={{ background: bg }}>
               <div className="text-2xl font-bold" style={{ fontFamily: 'var(--font-mono)', color }}>
                 {count}
               </div>
               <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{label}</div>
-              {sub && <div className="text-[10px] mt-0.5 font-semibold" style={{ color }}>{sub}</div>}
             </div>
           ))}
         </div>
@@ -496,9 +482,9 @@ export function MasteriesPage() {
               {([
                 { id: 'all', label: 'All' },
                 { id: 'none', label: 'Not started' },
-                { id: 'mastered', label: 'T.III' },
-                { id: 'grand-mastered', label: 'T.IV' },
-                { id: 'mega-mastered', label: 'T.V' },
+                { id: 'mastered', label: '10k' },
+                { id: 'grand-mastered', label: '100k' },
+                { id: 'mega-mastered', label: '1M' },
               ] as const).map(({ id, label }) => (
                 <button
                   key={id}
