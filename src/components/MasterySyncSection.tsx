@@ -11,35 +11,25 @@ const MASTERY_NAMES_JSON = JSON.stringify([...MASTERY_NAMES]);
 function parseMasteryText(text: string): { levels: Record<string, number>; progress: Record<string, number> } {
   const levels: Record<string, number> = {};
   const progress: Record<string, number> = {};
-  let lv = -1;
-  let pn: string | null = null;
+  let pending: string | null = null;
 
-  const save = () => { if (pn !== null && lv >= 1) levels[pn] = lv; pn = null; };
-
+  const SKIP = new Set(['Track', 'Stop', 'Complete!', 'chevron_down', 'chevron_right',
+    'Mastery In-Progress', 'Stop Tracking All', 'Ready to Claim', 'Nothing ready yet']);
   // Browser clipboard adds "* " bullet prefix to list items — strip it before parsing
   const lines = text.split('\n').map((l) => l.trim().replace(/^\*\s+/, '')).filter(Boolean);
   for (const l of lines) {
-    if (l.startsWith('Tier V (MM)')) { save(); lv = 3; continue; }
-    if (l.startsWith('Tier IV (GM)')) { save(); lv = 2; continue; }
-    if (l.startsWith('Mega Mastered')) { save(); lv = 3; continue; }
-    if (l.startsWith('Tier III (M)')) { save(); lv = 1; continue; }
-    if (l.startsWith('Tier II') || l.startsWith('Tier I') || l.startsWith('No Tier')) { save(); lv = -1; continue; }
-    if (lv < 0) continue;
-    if (['Track', 'Stop', 'Complete!', 'chevron_down', 'chevron_right', 'Mastery In-Progress'].includes(l)
-      || l.includes('%') || l.startsWith('Stop Tracking') || l.startsWith('Nothing ready')
-      || l.startsWith('Ready to Claim') || l.startsWith('[')) continue;
+    if (SKIP.has(l) || l.includes('%') || l.startsWith('[')) continue;
     const pm = l.match(/^([\d,]+)\s*\/.*Progress/);
-    if (pm) {
-      const cnt = parseInt(pm[1].replace(/,/g, ''), 10);
-      if (/\/\s*∞/.test(l) && pn !== null) { levels[pn] = 3; pn = null; continue; }
-      if (pn !== null && lv >= 0 && lv <= 2) progress[pn] = cnt;
-      save(); continue;
+    if (pm && pending !== null) {
+      const count = parseInt(pm[1].replace(/,/g, ''), 10);
+      const lv = count >= 100_000 ? 3 : count >= 10_000 ? 2 : count >= 1_000 ? 1 : 0;
+      if (lv >= 1) levels[pending] = lv;
+      if (lv >= 1 && lv <= 2) progress[pending] = count;
+      pending = null;
+      continue;
     }
-    save();
-    // Only accept known mastery item names; drop descriptions, headers, stats, etc.
-    if (MASTERY_NAMES.has(l)) pn = l;
+    if (MASTERY_NAMES.has(l)) { pending = l; } else { pending = null; }
   }
-  save();
   return { levels, progress };
 }
 
@@ -57,40 +47,32 @@ export function MasterySyncSection() {
     // Checks main document and any iframes (Framework7 hash nav loads pages in iframes).
     // Uses name-follows-name to capture items even when accordion rows are collapsed
     // and their progress text is hidden (not in innerText).
+    // Derives tier from craft count (≥1k=lv1, ≥10k=lv2, ≥100k=lv3) — no tier-label parsing.
+    // Reads all tracked items plus the "Mega Mastered" section at the bottom of mastery.php.
     const code = `(function(){`
-      // levels: item→tier (1=completed 10k, 2=completed 100k, 3=completed 1M)
-      // progress: item→current count (for items working toward 10k or 100k)
-      // N: whitelist of known mastery item names — drops descriptions, headers, stats
-      + `var N=new Set(${MASTERY_NAMES_JSON}),T='${origin}',m={},p={},lv=-1,pn=null;`
-      + `function sv(){if(pn!==null&&lv>=1)m[pn]=lv;pn=null;}`
+      + `var N=new Set(${MASTERY_NAMES_JSON}),T='${origin}',m={},p={},pending=null;`
+      + `var SKIP=new Set(['Track','Stop','Complete!','chevron_down','chevron_right','Mastery In-Progress','Stop Tracking All','Ready to Claim','Nothing ready yet']);`
       + `function proc(text){`
-      + `lv=-1;pn=null;`
+      + `pending=null;`
       + `var lines=text.split('\\n').map(function(l){return l.trim().replace(/^\\*\\s+/,'');}).filter(Boolean);`
       + `for(var i=0;i<lines.length;i++){`
       + `var l=lines[i];`
-      + `if(l.indexOf('Tier V (MM)')===0){sv();lv=3;continue;}`
-      + `if(l.indexOf('Tier IV (GM)')===0){sv();lv=2;continue;}`
-      + `if(l.indexOf('Mega Mastered')===0){sv();lv=3;continue;}`
-      + `if(l.indexOf('Tier III (M)')===0){sv();lv=1;continue;}`
-      + `if(l.indexOf('Tier II')===0||l.indexOf('Tier I')===0||l.indexOf('No Tier')===0){sv();lv=-1;continue;}`
-      + `if(lv<0)continue;`
-      + `if(l==='Track'||l==='Stop'||l==='Complete!'||l==='chevron_down'||l==='chevron_right'||l==='Mastery In-Progress'`
-      + `||l.indexOf('%')!==-1||l.indexOf('Stop Tracking')===0`
-      + `||l.indexOf('Nothing ready')===0||l.indexOf('Ready to Claim')===0||l.charAt(0)==='[')continue;`
-      // Parse "9,121 / 10,000 Progress"; "/ ∞ Progress" means mega mastered
+      + `if(SKIP.has(l)||l.indexOf('%')!==-1||l.charAt(0)==='[')continue;`
       + `var pm=l.match(/^([\\d,]+)\\s*\\/.*Progress/);`
-      + `if(pm){var cnt=parseInt(pm[1].replace(/,/g,''),10);`
-      + `if(/\\/\\s*∞/.test(l)&&pn!==null){m[pn]=3;pn=null;continue;}`
-      + `if(pn!==null&&lv>=0&&lv<=2)p[pn]=cnt;sv();continue;}`
-      + `sv();if(N.has(l))pn=l;`
+      + `if(pm&&pending!==null){`
+      + `var cnt=parseInt(pm[1].replace(/,/g,''),10);`
+      + `var lv=cnt>=100000?3:cnt>=10000?2:cnt>=1000?1:0;`
+      + `if(lv>=1)m[pending]=lv;`
+      + `if(lv>=1&&lv<=2)p[pending]=cnt;`
+      + `pending=null;continue;}`
+      + `if(N.has(l)){pending=l;}else{pending=null;}`
       + `}`
-      + `sv();`
       + `}`
       + `proc(document.body.innerText);`
       + `document.querySelectorAll('iframe').forEach(function(f){`
       + `try{var d=f.contentDocument||f.contentWindow.document;if(d&&d.body)proc(d.body.innerText);}catch(e){}`
       + `});`
-      + `var c=Object.keys(m).length+Object.keys(p).length;`
+      + `var c=Object.keys(m).length;`
       + `if(!c){alert('No mastery data found — make sure you\\'re on farmrpg.com/mastery.php');return;}`
       + `window.open(T+'/#sync-masteries='+encodeURIComponent(JSON.stringify({levels:m,progress:p})),'_blank');`
       + `})();`;
