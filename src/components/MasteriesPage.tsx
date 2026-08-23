@@ -244,7 +244,7 @@ function AscensionSection({
 }
 
 // Items with progress data targeting a milestone that yields ascension points:
-// level 0 → 10k milestone → 10 pts; level 1 → 100k milestone → 100 pts
+// level 0/1 (unstarted/Tier III) → 10k milestone → 10 pts; level 2 (Tier IV/GM) → 100k milestone → 100 pts
 function AscensionPointsPanel({
   masteryLevels,
   masteryProgress,
@@ -257,10 +257,10 @@ function AscensionPointsPanel({
     const hundredK: { item: string; count: number; target: number; pts: number; pct: number }[] = [];
     for (const [item, count] of Object.entries(masteryProgress)) {
       const level = masteryLevels[item] ?? 0;
-      if (level === 0) {
+      if (level <= 1) {
         const pct = Math.min(1, count / 10_000);
         tenK.push({ item, count, target: 10_000, pts: 10, pct });
-      } else if (level === 1) {
+      } else if (level === 2) {
         const pct = Math.min(1, count / 100_000);
         hundredK.push({ item, count, target: 100_000, pts: 100, pct });
       }
