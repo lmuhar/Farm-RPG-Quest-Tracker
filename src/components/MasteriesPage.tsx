@@ -51,14 +51,15 @@ function diffLabel(d: number) {
   return 'Expert';
 }
 
-// Tier III = Mastery (1,000×), Tier IV = Grand Master (10,000×), Tier V = Mega Mastery (100,000×)
-const TIER_LABELS   = ['', 'T.III', 'T.IV', 'T.V'] as const;
-const TIER_NAMES    = ['', 'Tier III · Mastery', 'Tier IV · Grand Master', 'Tier V · Mega Mastery'] as const;
-const TIER_TITLES   = ['', 'Tier III · Mastery (1,000×)', 'Tier IV · Grand Master (10,000×)', 'Tier V · Mega Mastery (100,000×)'] as const;
+// Tier III = Mastery (1,000×), Tier IV = Grand Master (10,000×), Tier V = Mega Mastery (100,000×), lv4 = Mega Mastered (1,000,000×)
+const TIER_LABELS   = ['', 'T.III', 'T.IV', 'T.V', 'MM'] as const;
+const TIER_NAMES    = ['', 'Tier III · Mastery', 'Tier IV · Grand Master', 'Tier V · Mega Mastery', 'Mega Mastered'] as const;
+const TIER_TITLES   = ['', 'Tier III · Mastery (1,000×)', 'Tier IV · Grand Master (10,000×)', 'Tier V · Mega Mastery (100,000×)', 'Mega Mastered (1,000,000×)'] as const;
 const TIER_COLORS = [
   '',
   '#cd7f32',
   '#c0c0c0',
+  '#ffd700',
   '#ffd700',
 ] as const;
 const TIER_BG = [
@@ -66,12 +67,14 @@ const TIER_BG = [
   'rgba(205,127,50,0.18)',
   'rgba(192,192,192,0.18)',
   'rgba(255,215,0,0.18)',
+  'rgba(255,215,0,0.28)',
 ] as const;
 const TIER_BORDER = [
   '',
   'rgba(205,127,50,0.4)',
   'rgba(192,192,192,0.4)',
   'rgba(255,215,0,0.4)',
+  'rgba(255,215,0,0.6)',
 ] as const;
 
 const ALL_METHODS: MethodFilter[] = ['all', 'crafting', 'fishing', 'farming', 'cooking', 'exploring', 'steelworks', 'other'];
@@ -90,11 +93,11 @@ function itemMatchesStatus(level: number, filter: StatusFilter) {
   if (filter === 'none') return level === 0;
   if (filter === 'mastered') return level === 1;
   if (filter === 'grand-mastered') return level === 2;
-  return level === 3;
+  return level >= 3; // mega-mastered: T.V (100k) or Mega Mastered (1M)
 }
 
-const NEXT_STEP_LABEL = ['→ T.III', '→ T.IV', '→ T.V', ''] as const;
-const NEXT_STEP_TIER = [1, 2, 3] as const; // next tier to achieve for level 0,1,2
+const NEXT_STEP_LABEL = ['→ T.III', '→ T.IV', '→ T.V', '→ MM', ''] as const;
+const NEXT_STEP_TIER = [1, 2, 3, 4] as const; // next tier to achieve for level 0,1,2,3
 
 interface ItemCardProps {
   item: MasteryItem;
@@ -105,7 +108,7 @@ interface ItemCardProps {
 
 function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
   const ms = METHOD_STYLES[item.method] ?? METHOD_STYLES.other;
-  const nextTier = level < 3 ? NEXT_STEP_TIER[level] : null;
+  const nextTier = level < 4 ? NEXT_STEP_TIER[level] : null;
 
   const handleTierClick = (tier: 1 | 2 | 3) => {
     if (level === tier) {
@@ -126,7 +129,16 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
             <p className="text-sm font-medium leading-snug" style={{ color: 'var(--text-primary)' }}>
               {item.name}
             </p>
-            {showNextStep && nextTier && (
+            {level === 4 && (
+              <span
+                className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                style={{ background: TIER_BG[4], color: TIER_COLORS[4], border: `1px solid ${TIER_BORDER[4]}` }}
+                title="Mega Mastered (1,000,000×)"
+              >
+                1M ★
+              </span>
+            )}
+            {showNextStep && nextTier && level < 4 && (
               <span
                 className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
                 style={{ background: TIER_BG[nextTier], color: TIER_COLORS[nextTier], border: `1px solid ${TIER_BORDER[nextTier]}` }}
@@ -155,7 +167,7 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
       <div className="flex gap-1">
         {([1, 2, 3] as const).map((tier) => {
           const isCurrent = level === tier;
-          const isDone = level > tier;
+          const isDone = level > tier; // lv=4 makes all three isDone
           const isNext = showNextStep && nextTier === tier;
           return (
             <button
@@ -301,14 +313,15 @@ export function MasteriesPage() {
   const [diffFilter, setDiffFilter] = useState<DiffFilter>('all');
 
   const stats = useMemo(() => {
-    let started = 0, m = 0, gm = 0, mm = 0;
+    let started = 0, m = 0, gm = 0, mm = 0, megaMastered = 0;
     for (const item of masteries) {
       const lv = masteryLevels[item.name] ?? 0;
       if (lv >= 1) { started++; m++; }
       if (lv >= 2) gm++;
       if (lv >= 3) mm++;
+      if (lv >= 4) megaMastered++;
     }
-    return { started, m, gm, mm, total: masteries.length };
+    return { started, m, gm, mm, megaMastered, total: masteries.length };
   }, [masteryLevels]);
 
   const suggestions = useMemo(() => {
@@ -375,15 +388,16 @@ export function MasteriesPage() {
             <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Started</div>
           </div>
           {([
-            { label: TIER_NAMES[1], count: stats.m, color: TIER_COLORS[1], bg: TIER_BG[1] },
-            { label: TIER_NAMES[2], count: stats.gm, color: TIER_COLORS[2], bg: TIER_BG[2] },
-            { label: TIER_NAMES[3], count: stats.mm, color: TIER_COLORS[3], bg: TIER_BG[3] },
-          ] as const).map(({ label, count, color, bg }) => (
+            { label: TIER_NAMES[1], count: stats.m, color: TIER_COLORS[1], bg: TIER_BG[1], sub: null },
+            { label: TIER_NAMES[2], count: stats.gm, color: TIER_COLORS[2], bg: TIER_BG[2], sub: null },
+            { label: TIER_NAMES[3], count: stats.mm, color: TIER_COLORS[3], bg: TIER_BG[3], sub: stats.megaMastered > 0 ? `${stats.megaMastered} at 1M` : null },
+          ] as const).map(({ label, count, color, bg, sub }) => (
             <div key={label} className="rounded-lg p-3 text-center" style={{ background: bg }}>
               <div className="text-2xl font-bold" style={{ fontFamily: 'var(--font-mono)', color }}>
                 {count}
               </div>
               <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{label}</div>
+              {sub && <div className="text-[10px] mt-0.5 font-semibold" style={{ color }}>{sub}</div>}
             </div>
           ))}
         </div>
