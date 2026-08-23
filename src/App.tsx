@@ -124,7 +124,16 @@ export default function App() {
 
     fetch('/api/state')
       .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data) importState(data); applyHashData(); })
+      .then((data) => {
+        if (data) {
+          // Masteries are managed client-side; ignore any mastery fields from the server
+          // so a stale server-side sync can't overwrite local state on page load.
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { masteryLevels: _ml, masteryProgress: _mp, ...rest } = data as Record<string, unknown>;
+          importState(rest);
+        }
+        applyHashData();
+      })
       .catch(() => { applyHashData(); });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

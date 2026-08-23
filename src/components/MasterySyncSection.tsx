@@ -1,6 +1,12 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Trophy, RefreshCw, Copy, Check, ClipboardPaste, ChevronDown } from 'lucide-react';
 import { useStore } from '../store';
+import masteriesData from '../data/masteries.json';
+
+// Whitelist of known mastery item names — anything not in this set is page chrome
+// (item descriptions, category headers, stats text) and must be ignored.
+const MASTERY_NAMES = new Set((masteriesData as { name: string }[]).map((m) => m.name));
+const MASTERY_NAMES_JSON = JSON.stringify([...MASTERY_NAMES]);
 
 function parseMasteryText(text: string): { levels: Record<string, number>; progress: Record<string, number> } {
   const levels: Record<string, number> = {};
@@ -30,7 +36,8 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
       save(); continue;
     }
     save();
-    pn = l;
+    // Only accept known mastery item names; drop descriptions, headers, stats, etc.
+    if (MASTERY_NAMES.has(l)) pn = l;
   }
   save();
   return { levels, progress };
@@ -53,7 +60,8 @@ export function MasterySyncSection() {
     const code = `(function(){`
       // levels: item→tier (1=completed 10k, 2=completed 100k, 3=completed 1M)
       // progress: item→current count (for items working toward 10k or 100k)
-      + `var T='${origin}',m={},p={},lv=-1,pn=null;`
+      // N: whitelist of known mastery item names — drops descriptions, headers, stats
+      + `var N=new Set(${MASTERY_NAMES_JSON}),T='${origin}',m={},p={},lv=-1,pn=null;`
       + `function sv(){if(pn!==null&&lv>=1)m[pn]=lv;pn=null;}`
       + `function proc(text){`
       + `lv=-1;pn=null;`
@@ -74,7 +82,7 @@ export function MasterySyncSection() {
       + `if(pm){var cnt=parseInt(pm[1].replace(/,/g,''),10);`
       + `if(/\\/\\s*∞/.test(l)&&pn!==null){m[pn]=3;pn=null;continue;}`
       + `if(pn!==null&&lv>=0&&lv<=2)p[pn]=cnt;sv();continue;}`
-      + `sv();pn=l;`
+      + `sv();if(N.has(l))pn=l;`
       + `}`
       + `sv();`
       + `}`
