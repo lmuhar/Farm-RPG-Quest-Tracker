@@ -4167,5 +4167,13 @@
       { "item": "Red Dye", "quantity": 4  },
       { "item": "Leather", "quantity": 3  }
     ]
+  },
+  {
+    "id": "761",
+    "name": "Blue Purse",
+    "ingredients": [
+      { "item": "Coin Purse", "quantity": 1 },
+      { "item": "Blue Dye",   "quantity": 1 }
+    ]
   }
 ]
