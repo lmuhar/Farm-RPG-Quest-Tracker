@@ -62,6 +62,7 @@ export const RARE_ITEMS = new Map<string, string>([
   ['Carved Squirrel',   'Wishing Well'],
   ['Carved Squisquatch','Wishing Well'],
   ['Carved Warthog',    'Wishing Well'],
+  ['Freaky Picture',    'Wishing Well'],
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
@@ -78,4 +79,5 @@ export const WISHING_WELL_SOURCES = new Map<string, { item: string; pct: number 
   ['Carved Squirrel',   [{ item: 'Carved Warthog', pct: 25 }, { item: 'Spectacles', pct: 20 }, { item: 'Block of Wood', pct: 6.3 }]],
   ['Carved Squisquatch',[{ item: 'Carved Warthog', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
   ['Carved Warthog',    [{ item: 'Carved Owl', pct: 33.3 }, { item: 'Carved Rabbit', pct: 25 }, { item: 'Small Flute', pct: 20 }, { item: 'Teapot', pct: 14.3 }, { item: 'Block of Wood', pct: 6.3 }]],
+  ['Freaky Picture',    [{ item: 'Strange Letter', pct: 25 }, { item: 'Teapot', pct: 14.3 }, { item: 'Ancient Coin', pct: 8.3 }]],
 ]);
