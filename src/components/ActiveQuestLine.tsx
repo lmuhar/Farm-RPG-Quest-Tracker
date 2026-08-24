@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { ChevronDown, CheckCircle2, Clock, Hammer, Landmark, Pin } from 'lucide-react';
+import { ChevronDown, CheckCircle2, Clock, Hammer, Landmark, Pin, AlertTriangle } from 'lucide-react';
 import type { Quest } from '../types';
 import { getQuestStatus, parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, compareQuests } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
+import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 
 interface Recipe {
@@ -41,6 +42,8 @@ function ItemProgressRow({
   const cropTime = !isHoney ? cropTimes.find((c) => c.item.toLowerCase() === item.toLowerCase()) : undefined;
   const grows = cropTime && !done ? calcGrowsNeeded(deficit, plotCount) : null;
   const totalTime = cropTime && grows ? grows * cropTime.growMinutes : null;
+  const isBottleneck = !done && (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item));
+  const bottleneckSource = RARE_ITEMS.get(item) ?? (PET_ONLY_ITEMS.has(item) ? 'Pet drops' : undefined);
 
   // Show raw materials hint when chain goes deeper
   const rawHint = useMemo(() => {
@@ -67,6 +70,15 @@ function ItemProgressRow({
           {recipe && (
             <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[var(--accent-blue-bg)] text-[var(--accent-blue)] border border-[var(--accent-blue-border)]">
               <Hammer size={9} /> crafted
+            </span>
+          )}
+          {isBottleneck && (
+            <span
+              className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+              style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}
+              title={bottleneckSource}
+            >
+              <AlertTriangle size={9} /> {bottleneckSource ?? 'rare'}
             </span>
           )}
         </div>
@@ -256,31 +268,49 @@ export function ActiveQuestLine({ questline, quests }: Props) {
     return items.every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity);
   };
 
+  const hasBottleneck = activeQuestsInLine.some((quest) =>
+    parseItems(quest.itemsRequired).some(({ item, quantity }) => {
+      const have = inventory[item] ?? 0;
+      return have < quantity && (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item));
+    })
+  );
+
   return (
     <div
       className="rounded-xl overflow-hidden"
       style={{
         background: 'var(--surface-card)',
-        border: '1px solid var(--border-subtle)',
+        border: hasBottleneck ? '1px solid var(--accent-orange-border)' : '1px solid var(--border-subtle)',
       }}
     >
       {/* Card header */}
       <div
         className="px-5 pt-4 pb-3"
-        style={{ borderBottom: '1px solid var(--border-subtle)', background: isPinned ? 'var(--accent-yellow-bg)' : undefined }}
+        style={{
+          borderBottom: '1px solid var(--border-subtle)',
+          background: isPinned ? 'var(--accent-yellow-bg)' : hasBottleneck ? 'var(--accent-orange-bg)' : undefined,
+        }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
               <p
                 className="text-[11px] font-semibold uppercase tracking-wider"
-                style={{ color: isPinned ? 'var(--accent-yellow)' : 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
+                style={{ color: isPinned ? 'var(--accent-yellow)' : hasBottleneck ? 'var(--accent-orange)' : 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
               >
                 {questline}
               </p>
               {isPinned && (
                 <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--accent-yellow)', color: '#0f172a' }}>
                   ⚡ priority
+                </span>
+              )}
+              {hasBottleneck && (
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full inline-flex items-center gap-1"
+                  style={{ background: 'var(--accent-orange)', color: '#fff' }}
+                >
+                  <AlertTriangle size={9} /> bottleneck
                 </span>
               )}
             </div>

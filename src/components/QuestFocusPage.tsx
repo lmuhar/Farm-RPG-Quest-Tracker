@@ -28,7 +28,7 @@ const recipeByName = new Map<string, Recipe>(
   (recipesData as Recipe[]).map((r) => [r.name.toLowerCase(), r])
 );
 
-type QuestFilter = 'incomplete' | 'active' | 'upcoming' | 'completed';
+type QuestFilter = 'active' | 'upcoming' | 'completed';
 
 function getItemTierData(
   item: string,
@@ -746,7 +746,7 @@ type TowerSubTab = 'summary' | 'quests' | 'gathering' | 'craftworks';
 
 export function QuestFocusPage() {
   const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline, inventoryMax } = useStore();
-  const [filter, setFilter] = useState<QuestFilter>('incomplete');
+  const [filter, setFilter] = useState<QuestFilter>('active');
   const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
   const activeQuestlineNames = useMemo(() => {
@@ -777,7 +777,6 @@ export function QuestFocusPage() {
   const completedCount = questsWithStatus.filter(({ status }) => status === 'completed').length;
   const activeCount    = questsWithStatus.filter(({ status }) => status === 'active').length;
   const upcomingCount  = questsWithStatus.filter(({ status }) => status !== 'completed' && status !== 'active').length;
-  const incompleteCount = activeCount + upcomingCount;
   const progress = Math.round((completedCount / quests.length) * 100);
 
   const allNeededItems = useMemo(() => {
@@ -829,10 +828,9 @@ export function QuestFocusPage() {
   }, [questsWithStatus, inventory, cropTimes]);
 
   const filtered = useMemo(() => {
-    if (filter === 'active')    return questsWithStatus.filter(({ status }) => status === 'active');
     if (filter === 'upcoming')  return questsWithStatus.filter(({ status }) => status !== 'completed' && status !== 'active');
     if (filter === 'completed') return questsWithStatus.filter(({ status }) => status === 'completed');
-    return questsWithStatus.filter(({ status }) => status !== 'completed');
+    return questsWithStatus.filter(({ status }) => status === 'active');
   }, [questsWithStatus, filter]);
 
   const sortedFiltered = useMemo(() => {
@@ -860,7 +858,7 @@ export function QuestFocusPage() {
               <Building2 size={18} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
               <select
                 value={trackedQuestline}
-                onChange={(e) => { setTrackedQuestline(e.target.value); setFilter('incomplete'); setTowerSubTab('summary'); }}
+                onChange={(e) => { setTrackedQuestline(e.target.value); setFilter('active'); setTowerSubTab('summary'); }}
                 className="flex-1 min-w-0 text-xl font-bold rounded-lg px-2 py-0.5 focus:outline-none"
                 style={{
                   fontFamily: 'var(--font-display)',
@@ -915,14 +913,6 @@ export function QuestFocusPage() {
       {/* Summary sub-tab — aggregate resource view */}
       {towerSubTab === 'summary' && (
         <>
-          <SummaryPanel
-            questsWithStatus={questsWithStatus}
-            inventory={inventory}
-            cropTimes={cropTimes}
-            plotCount={plotCount}
-            allNeededItems={allNeededItems}
-            inventoryMax={inventoryMax}
-          />
           {focusBottlenecks.length > 0 && (
             <div
               className="rounded-xl overflow-hidden"
@@ -955,6 +945,14 @@ export function QuestFocusPage() {
               </div>
             </div>
           )}
+          <SummaryPanel
+            questsWithStatus={questsWithStatus}
+            inventory={inventory}
+            cropTimes={cropTimes}
+            plotCount={plotCount}
+            allNeededItems={allNeededItems}
+            inventoryMax={inventoryMax}
+          />
         </>
       )}
 
@@ -985,7 +983,6 @@ export function QuestFocusPage() {
           <div className="flex gap-1 p-1 rounded-lg"
             style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}>
             {([
-              { id: 'incomplete', label: `In Progress (${incompleteCount})` },
               { id: 'active',     label: `Active (${activeCount})` },
               { id: 'upcoming',   label: `Upcoming (${upcomingCount})` },
               { id: 'completed',  label: `Done (${completedCount})` },
