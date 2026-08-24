@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Users, ChevronDown, ChevronRight, Search, AlertTriangle } from 'lucide-react';
+import { Users, ChevronDown, ChevronRight, Search, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useStore } from '../store';
 import { getQuestStatus, compareQuests, parseItems } from '../utils';
 import npcsData from '../data/npcs.json';
@@ -90,13 +90,14 @@ function FavouriteItems({
 }
 
 export function NpcPage() {
-  const { player, questStatuses, inventory, setNpcLevel } = useStore();
+  const { player, questStatuses, inventory, setNpcLevel, toggleNpcLevelingComplete } = useStore();
   const [search, setSearch] = useState('');
   const [expandedNpc, setExpandedNpc] = useState<string | null>(null);
   const [editingNpc, setEditingNpc] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
 
   const npcLevels = player.npcLevels ?? {};
+  const completedSet = useMemo(() => new Set(player.completedNpcLeveling ?? []), [player.completedNpcLeveling]);
 
   const questsWithStatus = useMemo(
     () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
@@ -163,22 +164,25 @@ export function NpcPage() {
       })
       .map((npc) => {
         const level = npcLevels[npc.name] ?? 0;
+        const levelingDone = completedSet.has(npc.name);
         const safeInStock = npc.items.filter(
           (item) => (inventory[item] ?? 0) > 0 && !activeNeeds.has(item) && !upcomingNeeds.has(item)
         );
         const conflictInStock = npc.items.filter(
           (item) => (inventory[item] ?? 0) > 0 && (activeNeeds.has(item) || upcomingNeeds.has(item))
         );
-        return { ...npc, level, safeInStock, conflictInStock };
+        return { ...npc, level, levelingDone, safeInStock, conflictInStock };
       })
       .sort((a, b) => {
+        // Completed leveling NPCs sink to the bottom
+        if (a.levelingDone !== b.levelingDone) return a.levelingDone ? 1 : -1;
         // NPCs with safe giveables first, then by name
         const aScore = a.safeInStock.length * 2 + a.conflictInStock.length;
         const bScore = b.safeInStock.length * 2 + b.conflictInStock.length;
         if (bScore !== aScore) return bScore - aScore;
         return a.name.localeCompare(b.name);
       });
-  }, [search, npcLevels, inventory, questNpcNames, activeNeeds, upcomingNeeds]);
+  }, [search, npcLevels, completedSet, inventory, questNpcNames, activeNeeds, upcomingNeeds]);
 
   return (
     <div className="space-y-4">
@@ -221,7 +225,7 @@ export function NpcPage() {
             const hasConflict = npc.conflictInStock.length > 0;
             const isEditingLevel = editingNpc === npc.name;
             return (
-              <div key={npc.name}>
+              <div key={npc.name} style={npc.levelingDone ? { opacity: 0.55 } : undefined}>
                 <div className="flex items-center">
                   <button
                     className="flex-1 flex items-center gap-3 px-4 py-3 text-left hover:opacity-80 transition-opacity min-w-0"
@@ -230,6 +234,14 @@ export function NpcPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{npc.name}</span>
+                        {npc.levelingDone && (
+                          <span
+                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
+                            style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
+                          >
+                            <CheckCircle size={9} /> Leveling done
+                          </span>
+                        )}
                         {npc.safeInStock.length > 0 && (
                           <span
                             className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
@@ -262,6 +274,18 @@ export function NpcPage() {
                         ? <ChevronDown size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                         : <ChevronRight size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                     )}
+                  </button>
+
+                  {/* Leveling complete toggle */}
+                  <button
+                    className="px-2 py-1 flex-shrink-0 transition-opacity hover:opacity-70"
+                    title={npc.levelingDone ? 'Mark leveling incomplete' : 'Mark leveling complete'}
+                    onClick={() => toggleNpcLevelingComplete(npc.name)}
+                  >
+                    <CheckCircle
+                      size={15}
+                      style={{ color: npc.levelingDone ? 'var(--accent-green)' : 'var(--border-default)' }}
+                    />
                   </button>
 
                   {/* Level badge — editable, outside the expand button to allow input nesting */}

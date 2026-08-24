@@ -27,6 +27,7 @@ export interface PlayerProfile {
   exploringLv: number;
   cookingLv: number;
   npcLevels: Record<string, number>;
+  completedNpcLeveling?: string[];
 }
 
 export interface CropTime {
