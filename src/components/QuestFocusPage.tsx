@@ -913,14 +913,6 @@ export function QuestFocusPage() {
       {/* Summary sub-tab — aggregate resource view */}
       {towerSubTab === 'summary' && (
         <>
-          <SummaryPanel
-            questsWithStatus={questsWithStatus}
-            inventory={inventory}
-            cropTimes={cropTimes}
-            plotCount={plotCount}
-            allNeededItems={allNeededItems}
-            inventoryMax={inventoryMax}
-          />
           {focusBottlenecks.length > 0 && (
             <div
               className="rounded-xl overflow-hidden"
@@ -953,6 +945,14 @@ export function QuestFocusPage() {
               </div>
             </div>
           )}
+          <SummaryPanel
+            questsWithStatus={questsWithStatus}
+            inventory={inventory}
+            cropTimes={cropTimes}
+            plotCount={plotCount}
+            allNeededItems={allNeededItems}
+            inventoryMax={inventoryMax}
+          />
         </>
       )}
 
