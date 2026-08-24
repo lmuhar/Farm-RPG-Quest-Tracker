@@ -1,25 +1,11 @@
 import { useMemo, useState } from 'react';
-import { Package, Plus, Trash2, Search, X, AlignLeft, Lock, ChevronDown } from 'lucide-react';
+import { Package, Plus, Trash2, Search, X, Lock, ChevronDown } from 'lucide-react';
 import questsData from '../data/quests.json';
 import type { Quest } from '../types';
 import { useStore } from '../store';
 import { parseItems, getQuestStatus, compareQuests } from '../utils';
 
 const allQuests = questsData as Quest[];
-
-function parseBulkLine(line: string): { item: string; quantity: number } | null {
-  const s = line.trim();
-  if (!s) return null;
-  let m = s.match(/^(\d+)[xX]\s+(.+)$/);
-  if (m) return { quantity: parseInt(m[1]), item: m[2].trim() };
-  m = s.match(/^(.+?)\s+[xX](\d+)$/);
-  if (m) return { quantity: parseInt(m[2]), item: m[1].trim() };
-  m = s.match(/^(.+?):\s*(\d+)$/);
-  if (m) return { quantity: parseInt(m[2]), item: m[1].trim() };
-  m = s.match(/^(\d+)\s+(.+)$/);
-  if (m) return { quantity: parseInt(m[1]), item: m[2].trim() };
-  return null;
-}
 
 // Inline badge component
 function Badge({ tone, children }: { tone: 'deficit' | 'success' | 'locked' | 'future'; children: React.ReactNode }) {
@@ -44,8 +30,6 @@ export function InventoryPage() {
   const [search, setSearch] = useState('');
   const [newItem, setNewItem] = useState('');
   const [newQty, setNewQty] = useState('');
-  const [showBulk, setShowBulk] = useState(false);
-  const [bulkText, setBulkText] = useState('');
   const [lookupItem, setLookupItem] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'name' | 'qty' | 'deficit'>('deficit');
 
@@ -149,11 +133,6 @@ export function InventoryPage() {
     });
   }, [inventory, search, sortBy, activeNeeds, futureNeeds]);
 
-  const parsedBulk = useMemo(
-    () => bulkText.split('\n').map(parseBulkLine).filter(Boolean) as { item: string; quantity: number }[],
-    [bulkText]
-  );
-
   const addItem = () => {
     const trimmed = newItem.trim();
     if (!trimmed) return;
@@ -161,14 +140,6 @@ export function InventoryPage() {
     setInventoryItem(trimmed, (inventory[trimmed] ?? 0) + qty);
     setNewItem('');
     setNewQty('');
-  };
-
-  const commitBulk = () => {
-    for (const { item, quantity } of parsedBulk) {
-      setInventoryItem(item, (inventory[item] ?? 0) + quantity);
-    }
-    setBulkText('');
-    setShowBulk(false);
   };
 
   const totalItems = Object.values(inventory).filter((q) => q > 0).length;
@@ -198,188 +169,9 @@ export function InventoryPage() {
             {totalItems} tracked
           </span>
         </div>
-        <div className="flex gap-2 sm:ml-auto">
-          <button
-            onClick={() => setShowBulk(!showBulk)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs px-3 py-2 rounded-lg transition-colors"
-            style={
-              showBulk
-                ? { background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }
-                : { color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
-            }
-          >
-            <AlignLeft size={12} /> Bulk Add
-          </button>
-        </div>
       </div>
 
-      {/* Bulk add panel */}
-      {showBulk && (
-        <div
-          className="rounded-xl p-4 space-y-3"
-          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-yellow-border)' }}
-        >
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            One item per line. Formats: <code className="text-[var(--accent-yellow)]">50x Carrot</code>, <code className="text-[var(--accent-yellow)]">Carrot: 50</code>, <code className="text-[var(--accent-yellow)]">50 Carrot</code>
-          </p>
-          <textarea
-            value={bulkText}
-            onChange={(e) => setBulkText(e.target.value)}
-            rows={5}
-            placeholder={"50x Carrot\nCarrot: 50\n50 Carrot"}
-            className="w-full rounded-lg px-3 py-2 text-sm resize-none focus:outline-none"
-            style={{
-              background: 'var(--surface-inset)',
-              border: '1px solid var(--border-default)',
-              color: 'var(--text-primary)',
-              fontFamily: 'var(--font-mono)',
-            }}
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              {parsedBulk.length > 0 ? `${parsedBulk.length} items ready` : 'Paste items above'}
-            </span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => { setShowBulk(false); setBulkText(''); }}
-                className="text-xs px-3 py-1.5"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={commitBulk}
-                disabled={parsedBulk.length === 0}
-                className="text-xs rounded-lg px-4 py-1.5 font-medium disabled:opacity-40"
-                style={{ background: 'var(--accent-yellow)', color: '#0f172a' }}
-              >
-                Add {parsedBulk.length > 0 ? parsedBulk.length : ''} Items
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="grid lg:grid-cols-2 gap-4">
-        {/* Left: Active Quest Needs */}
-        <div className="space-y-3">
-          <h3
-            className="text-[11px] font-semibold uppercase tracking-wider"
-            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
-          >
-            Active Quest Needs
-          </h3>
-
-          {activeNeeds.size === 0 ? (
-            <div
-              className="rounded-xl p-6 text-center"
-              style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-            >
-              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No active quests with item requirements.</p>
-              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>Mark quests as active to see what you need here.</p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {/* Pending items */}
-              {[...activeNeeds.entries()].filter(([, n]) => n.deficit > 0).length > 0 && (
-                <div
-                  className="rounded-xl overflow-hidden"
-                  style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-                >
-                  <div
-                    className="px-4 py-2.5"
-                    style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--accent-orange-bg)' }}
-                  >
-                    <span className="text-xs font-semibold" style={{ color: 'var(--accent-orange)' }}>Still needed</span>
-                  </div>
-                  <div>
-                    {[...activeNeeds.entries()]
-                      .filter(([, n]) => n.deficit > 0)
-                      .sort(([, a], [, b]) => b.deficit / b.needed - a.deficit / a.needed)
-                      .map(([item, { needed, have, deficit, quests }]) => {
-                        const pct = Math.round((have / needed) * 100);
-                        return (
-                          <div
-                            key={item}
-                            className="px-4 py-3"
-                            style={{ borderBottom: '1px solid var(--border-subtle)' }}
-                          >
-                            <div className="flex items-start justify-between gap-3 mb-1.5">
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
-                                  {item}
-                                </p>
-                                <p
-                                  className="text-xs truncate mt-0.5"
-                                  style={{ color: 'var(--text-muted)' }}
-                                  title={quests.join(', ')}
-                                >
-                                  {quests.slice(0, 2).join(', ')}{quests.length > 2 ? ` +${quests.length - 2} more` : ''}
-                                </p>
-                              </div>
-                              <div className="text-right flex-shrink-0">
-                                <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
-                                  {have}/{needed}
-                                </span>
-                                <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>need {deficit} more</p>
-                              </div>
-                            </div>
-                            {/* Progress bar */}
-                            <div className="h-1.5 rounded-full overflow-hidden mb-2" style={{ background: 'var(--border-default)' }}>
-                              <div
-                                className="h-full rounded-full"
-                                style={{ width: `${pct}%`, background: 'var(--accent-orange)', transition: 'var(--transition-default)' }}
-                              />
-                            </div>
-                            {/* Stepper */}
-                            <div className="flex items-center gap-1">
-                              <button
-                                onClick={() => setInventoryItem(item, Math.max(0, have - 1))}
-                                className="w-7 h-7 flex items-center justify-center rounded text-sm transition-colors"
-                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
-                              >−</button>
-                              <button
-                                onClick={() => setInventoryItem(item, have + 1)}
-                                className="w-7 h-7 flex items-center justify-center rounded text-sm transition-colors"
-                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
-                              >+</button>
-                              <button
-                                onClick={() => setInventoryItem(item, needed)}
-                                className="text-xs px-2 py-1 rounded transition-colors"
-                                style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
-                                title="Mark as fully stocked"
-                              >
-                                Fill
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              )}
-
-              {/* Future needs */}
-              {futureNeeds.size > 0 && (
-                <FutureNeedsPanel futureNeeds={futureNeeds} />
-              )}
-
-              {/* Fulfilled */}
-              {[...activeNeeds.entries()].filter(([, n]) => n.deficit === 0).length > 0 && (
-                <FulfilledPanel needs={activeNeeds} />
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right: Full inventory */}
-        <div className="space-y-3">
-          <h3
-            className="text-[11px] font-semibold uppercase tracking-wider"
-            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-body)', letterSpacing: '0.06em' }}
-          >
-            Your Items
-          </h3>
+      <div className="space-y-3">
 
           {/* Add single item */}
           <div className="flex gap-2">
@@ -476,7 +268,7 @@ export function InventoryPage() {
               ) : (
                 <>
                   <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No items tracked yet.</p>
-                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>Add items above or use Bulk Add.</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>Add items using the form above.</p>
                 </>
               )}
             </div>
@@ -616,102 +408,6 @@ export function InventoryPage() {
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-// Sub-components for collapsible sections
-function FutureNeedsPanel({ futureNeeds }: { futureNeeds: Map<string, { needed: number; have: number; entries: { questName: string; stepsAhead: number }[]; minSteps: number }> }) {
-  const [open, setOpen] = useState(false);
-  const items = [...futureNeeds.entries()];
-  return (
-    <div
-      className="rounded-xl overflow-hidden"
-      style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
-    >
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center gap-2 px-4 py-2.5 transition-colors"
-        style={{ background: 'var(--accent-purple-bg)' }}
-      >
-        <Lock size={12} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
-        <span className="flex-1 text-left text-xs font-semibold" style={{ color: 'var(--accent-purple)' }}>
-          {items.length} item{items.length !== 1 ? 's' : ''} needed in next 5 quests
-        </span>
-        <ChevronDown
-          size={12}
-          style={{ color: 'var(--text-muted)', transform: open ? 'rotate(180deg)' : 'none', transition: 'var(--transition-fast)' }}
-        />
-      </button>
-      {open && (
-        <div>
-          {items.map(([item, { needed, have, entries, minSteps }]) => (
-            <div
-              key={item}
-              className="px-4 py-2.5 flex items-start justify-between gap-3"
-              style={{ borderTop: '1px solid var(--border-subtle)' }}
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <Lock size={10} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
-                  <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</p>
-                </div>
-                <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                  In {minSteps} quest{minSteps !== 1 ? 's' : ''} — {entries[0].questName}
-                  {entries.length > 1 ? ` +${entries.length - 1} more` : ''}
-                </p>
-              </div>
-              <span
-                className="text-sm font-semibold flex-shrink-0"
-                style={{ fontFamily: 'var(--font-mono)', color: have >= needed ? 'var(--accent-green)' : 'var(--text-secondary)' }}
-              >
-                {have}/{needed}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function FulfilledPanel({ needs }: { needs: Map<string, { needed: number; have: number; deficit: number; quests: string[] }> }) {
-  const [open, setOpen] = useState(false);
-  const items = [...needs.entries()].filter(([, n]) => n.deficit === 0);
-  return (
-    <div
-      className="rounded-xl overflow-hidden"
-      style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-    >
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center gap-2 px-4 py-2.5 transition-colors"
-        style={{ background: 'var(--accent-green-bg)' }}
-      >
-        <span className="flex-1 text-left text-xs font-semibold" style={{ color: 'var(--accent-green)' }}>
-          ✓ {items.length} item{items.length !== 1 ? 's' : ''} fully stocked
-        </span>
-        <ChevronDown
-          size={12}
-          style={{ color: 'var(--text-muted)', transform: open ? 'rotate(180deg)' : 'none', transition: 'var(--transition-fast)' }}
-        />
-      </button>
-      {open && (
-        <div>
-          {items.map(([item, { needed, have }]) => (
-            <div
-              key={item}
-              className="px-4 py-2.5 flex items-center justify-between"
-              style={{ borderTop: '1px solid var(--border-subtle)' }}
-            >
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{item}</span>
-              <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
-                {have}/{needed} ✓
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
