@@ -27,19 +27,6 @@ export function StatsTab({ questlineGroups }: Props) {
     return { completed, active, available, locked, total: allQuests.length };
   }, [questsWithStatus]);
 
-  const byNpc = useMemo(() => {
-    const map = new Map<string, { completed: number; total: number }>();
-    for (const { quest, status } of questsWithStatus) {
-      const entry = map.get(quest.npc) ?? { completed: 0, total: 0 };
-      entry.total++;
-      if (status === 'completed') entry.completed++;
-      map.set(quest.npc, entry);
-    }
-    return [...map.entries()]
-      .map(([npc, counts]) => ({ npc, ...counts }))
-      .sort((a, b) => b.completed - a.completed || a.npc.localeCompare(b.npc));
-  }, [questsWithStatus]);
-
   const bySkill = useMemo(() => {
     const skills = [
       { key: 'farmingLv' as const, label: 'Farming', emoji: '🌾' },
@@ -97,27 +84,6 @@ export function StatsTab({ questlineGroups }: Props) {
           ))}
         </div>
         <p className="text-xs text-slate-500 mt-2 text-center">{overall.total} total quests</p>
-      </div>
-
-      {/* By NPC */}
-      <div className="bg-slate-800/40 rounded-xl border border-slate-700 p-5">
-        <h2 className="text-sm font-semibold text-slate-200 uppercase tracking-wider mb-4">By NPC</h2>
-        <div className="space-y-2">
-          {byNpc.map(({ npc, completed, total }) => {
-            const pct = Math.round((completed / total) * 100);
-            return (
-              <div key={npc}>
-                <div className="flex items-center justify-between text-xs mb-0.5">
-                  <span className="text-slate-300">{npc}</span>
-                  <span className="text-slate-400">{completed}/{total}</span>
-                </div>
-                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500 rounded-full" style={{ width: `${pct}%` }} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </div>
 
       {/* By skill */}

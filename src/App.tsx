@@ -11,15 +11,14 @@ import { getQuestStatus, compareQuests } from './utils';
 import { useStore } from './store';
 import { useSync } from './hooks/useSync';
 import { SkillsPanel } from './components/SkillsPanel';
-import { CropTimerPanel } from './components/CropTimerPanel';
 import { SyncSection } from './components/SyncSection';
 import { ImportExport } from './components/ImportExport';
-import { RecipesPanel } from './components/RecipesPanel';
 import { SetupWizard } from './components/SetupWizard';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
+
 import { QuestFocusPage } from './components/QuestFocusPage';
 import { TheTowerPage } from './components/TheTowerPage';
 import { PetsPage } from './components/PetsPage';
@@ -406,8 +405,6 @@ export default function App() {
                 <div className="space-y-4">
                   <InventoryGrowthCard />
                   <ImportExport />
-                  <CropTimerPanel />
-                  <RecipesPanel />
                 </div>
               </div>
             )}

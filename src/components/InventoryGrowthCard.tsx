@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TrendingUp, Target, Calendar } from 'lucide-react';
+import { TrendingUp, Target, Calendar, Package } from 'lucide-react';
 import { useStore } from '../store';
 
 function computeGoalDate(inventoryMax: number, inventoryGoal: number, dailyGain: number, dailyResetTime: string): {
@@ -35,10 +35,12 @@ function computeGoalDate(inventoryMax: number, inventoryGoal: number, dailyGain:
 
 export function InventoryGrowthCard() {
   const {
-    inventoryMax, inventoryGoal, dailyGain, dailyResetTime,
-    setInventoryGoal, setDailyGain, setDailyResetTime,
+    inventoryMax, inventoryGoal, dailyGain, dailyResetTime, plotCount,
+    setInventoryMax, setInventoryGoal, setDailyGain, setDailyResetTime, setPlotCount,
   } = useStore();
 
+  const [slotsInput, setSlotsInput] = useState(String(inventoryMax));
+  const [plotsInput, setPlotsInput] = useState(String(plotCount));
   const [goalInput, setGoalInput] = useState(String(inventoryGoal));
   const [gainInput, setGainInput] = useState(String(dailyGain));
   const [resetTimeInput, setResetTimeInput] = useState(dailyResetTime);
@@ -67,17 +69,30 @@ export function InventoryGrowthCard() {
         </p>
       </div>
 
-      {/* Current + goal */}
-      <div className="flex items-end gap-4">
+      {/* Slot + plot config */}
+      <div className="flex flex-wrap gap-x-6 gap-y-3">
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: 'var(--text-muted)' }}>Current slots</p>
-          <p className="text-2xl font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
-            {inventoryMax.toLocaleString()}
-          </p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)' }}>Current slots</p>
+          <input
+            type="number"
+            value={slotsInput}
+            onChange={e => setSlotsInput(e.target.value)}
+            onBlur={() => {
+              const val = parseInt(slotsInput, 10);
+              if (!isNaN(val) && val > 0) setInventoryMax(val);
+              else setSlotsInput(String(inventoryMax));
+            }}
+            className="w-24 text-xl font-bold rounded-lg px-2 py-0.5 focus:outline-none"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--text-primary)',
+              background: 'var(--surface-inset)',
+              border: '1px solid var(--border-default)',
+            }}
+          />
         </div>
-        <div className="text-xl mb-1" style={{ color: 'var(--text-muted)' }}>→</div>
         <div>
-          <p className="text-[10px] font-semibold uppercase tracking-widest mb-0.5" style={{ color: 'var(--text-muted)' }}>Goal</p>
+          <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)' }}>Goal</p>
           <input
             type="number"
             value={goalInput}
@@ -95,6 +110,30 @@ export function InventoryGrowthCard() {
               border: '1px solid var(--border-default)',
             }}
           />
+        </div>
+        <div className="flex items-end gap-1.5 pb-0.5">
+          <Package size={13} style={{ color: 'var(--text-muted)', marginBottom: 4, flexShrink: 0 }} />
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: 'var(--text-muted)' }}>Plots available</p>
+            <input
+              type="number"
+              min={1}
+              value={plotsInput}
+              onChange={e => setPlotsInput(e.target.value)}
+              onBlur={() => {
+                const val = parseInt(plotsInput, 10);
+                if (!isNaN(val) && val > 0) setPlotCount(val);
+                else setPlotsInput(String(plotCount));
+              }}
+              className="w-20 text-xl font-bold rounded-lg px-2 py-0.5 focus:outline-none"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                color: 'var(--text-primary)',
+                background: 'var(--surface-inset)',
+                border: '1px solid var(--border-default)',
+              }}
+            />
+          </div>
         </div>
       </div>
 
