@@ -17,18 +17,99 @@ const WISHING_WELL_OUTPUTS: { item: string; inputs: { item: string; chance: numb
       { item: 'Ancient Coin', chance: 8.3  },
     ],
   },
-  { item: 'Carved Bear',        inputs: null },
-  { item: 'Carved Camel',       inputs: null },
-  { item: 'Carved Dragon',      inputs: null },
-  { item: 'Carved Fox',         inputs: null },
-  { item: 'Carved Moose',       inputs: null },
-  { item: 'Carved Mouse',       inputs: null },
-  { item: 'Carved Owl',         inputs: null },
-  { item: 'Carved Rabbit',      inputs: null },
-  { item: 'Carved Rhino',       inputs: null },
-  { item: 'Carved Squirrel',    inputs: null },
-  { item: 'Carved Squisquatch', inputs: null },
-  { item: 'Carved Warthog',     inputs: null },
+  {
+    item: 'Carved Bear',
+    inputs: [
+      { item: 'Pirate Bandana', chance: 25   },
+      { item: 'Block of Wood',  chance: 6.3  },
+    ],
+  },
+  {
+    item: 'Carved Camel',
+    inputs: [
+      { item: 'Carved Owl',    chance: 33.3 },
+      { item: 'Block of Wood', chance: 6.3  },
+    ],
+  },
+  {
+    item: 'Carved Dragon',
+    inputs: [
+      { item: 'Block of Wood', chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Fox',
+    inputs: [
+      { item: 'Carved Bear',   chance: 25  },
+      { item: 'Wooden Box',    chance: 25  },
+      { item: 'Block of Wood', chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Moose',
+    inputs: [
+      { item: 'Carved Warthog', chance: 25  },
+      { item: 'Carved Bear',    chance: 25  },
+      { item: 'Block of Wood',  chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Mouse',
+    inputs: [
+      { item: 'Carved Rabbit', chance: 25  },
+      { item: 'Block of Wood', chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Owl',
+    inputs: [
+      { item: 'Wooden Mask',   chance: 33.3 },
+      { item: 'Carved Rabbit', chance: 25   },
+      { item: 'Teapot',        chance: 14.3 },
+      { item: 'Block of Wood', chance: 6.3  },
+    ],
+  },
+  {
+    item: 'Carved Rabbit',
+    inputs: [
+      { item: 'Carved Warthog', chance: 25  },
+      { item: 'Block of Wood',  chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Rhino',
+    inputs: [
+      { item: 'Carved Owl',    chance: 33.3 },
+      { item: 'Carved Bear',   chance: 25   },
+      { item: 'Teapot',        chance: 14.3 },
+      { item: 'Block of Wood', chance: 6.3  },
+    ],
+  },
+  {
+    item: 'Carved Squirrel',
+    inputs: [
+      { item: 'Carved Warthog', chance: 25  },
+      { item: 'Spectacles',     chance: 20  },
+      { item: 'Block of Wood',  chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Squisquatch',
+    inputs: [
+      { item: 'Carved Warthog', chance: 25  },
+      { item: 'Block of Wood',  chance: 6.3 },
+    ],
+  },
+  {
+    item: 'Carved Warthog',
+    inputs: [
+      { item: 'Carved Owl',    chance: 33.3 },
+      { item: 'Carved Rabbit', chance: 25   },
+      { item: 'Small Flute',   chance: 20   },
+      { item: 'Teapot',        chance: 14.3 },
+      { item: 'Block of Wood', chance: 6.3  },
+    ],
+  },
 ];
 
 interface Props {
