@@ -6,7 +6,6 @@ import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
-import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 
 interface Recipe {
   id: string;
