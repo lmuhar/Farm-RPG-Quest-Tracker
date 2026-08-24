@@ -1,6 +1,20 @@
 import petsData from './pets.json';
 import itemLocationsData from './item-locations.json';
 import recipesData from './recipes.json';
+import towerLevelsData from './tower-levels.json';
+
+interface TowerLevelRow { level: number; items: { item: string; quantity: number }[] }
+const _allTowerLevels = towerLevelsData as TowerLevelRow[];
+
+export function findTowerLevel(item: string, currentLevel: number, window = 10): { level: number; levelsAway: number } | undefined {
+  const cap = currentLevel + window;
+  for (const row of _allTowerLevels) {
+    if (row.level <= currentLevel) continue;
+    if (row.level > cap) break;
+    if (row.items.some(i => i.item === item)) return { level: row.level, levelsAway: row.level - currentLevel };
+  }
+  return undefined;
+}
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
@@ -48,6 +62,7 @@ export const RARE_ITEMS = new Map<string, string>([
   ['Carved Squirrel',   'Wishing Well'],
   ['Carved Squisquatch','Wishing Well'],
   ['Carved Warthog',    'Wishing Well'],
+  ['Freaky Picture',    'Wishing Well'],
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
@@ -64,4 +79,5 @@ export const WISHING_WELL_SOURCES = new Map<string, { item: string; pct: number 
   ['Carved Squirrel',   [{ item: 'Carved Warthog', pct: 25 }, { item: 'Spectacles', pct: 20 }, { item: 'Block of Wood', pct: 6.3 }]],
   ['Carved Squisquatch',[{ item: 'Carved Warthog', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
   ['Carved Warthog',    [{ item: 'Carved Owl', pct: 33.3 }, { item: 'Carved Rabbit', pct: 25 }, { item: 'Small Flute', pct: 20 }, { item: 'Teapot', pct: 14.3 }, { item: 'Block of Wood', pct: 6.3 }]],
+  ['Freaky Picture',    [{ item: 'Strange Letter', pct: 25 }, { item: 'Teapot', pct: 14.3 }, { item: 'Ancient Coin', pct: 8.3 }]],
 ]);

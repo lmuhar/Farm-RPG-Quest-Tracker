@@ -16,7 +16,7 @@ import { ItemLocationPanel } from './ItemLocationPanel';
 import { CraftworksSuggestions } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import itemLocationsData from '../data/item-locations.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel } from '../data/bottlenecks';
 
 const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
@@ -745,7 +745,7 @@ function QuestSection({
 type TowerSubTab = 'summary' | 'quests' | 'gathering' | 'craftworks';
 
 export function QuestFocusPage() {
-  const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline, inventoryMax } = useStore();
+  const { inventory, cropTimes, plotCount, player, questStatuses, setQuestStatus, trackedQuestline, setTrackedQuestline, inventoryMax, towerLevel } = useStore();
   const [filter, setFilter] = useState<QuestFilter>('active');
   const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
@@ -812,7 +812,7 @@ export function QuestFocusPage() {
           itemQuestCount.set(item, (itemQuestCount.get(item) ?? 0) + 1);
         });
       });
-    const entries: { item: string; have: number; need: number; location: string; questCount: number }[] = [];
+    const entries: { item: string; have: number; need: number; location: string; questCount: number; towerLv?: { level: number; levelsAway: number } }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;
       if (have >= totalNeeded) continue;
@@ -822,10 +822,10 @@ export function QuestFocusPage() {
       if (RARE_ITEMS.has(item)) location = RARE_ITEMS.get(item)!;
       else if (PET_ONLY_ITEMS.has(item)) location = 'Pet drops';
       else continue;
-      entries.push({ item, have, need: totalNeeded, location, questCount: itemQuestCount.get(item) ?? 1 });
+      entries.push({ item, have, need: totalNeeded, location, questCount: itemQuestCount.get(item) ?? 1, towerLv: findTowerLevel(item, towerLevel) });
     }
     return entries.sort((a, b) => b.questCount - a.questCount).slice(0, 10);
-  }, [questsWithStatus, inventory, cropTimes]);
+  }, [questsWithStatus, inventory, cropTimes, towerLevel]);
 
   const filtered = useMemo(() => {
     if (filter === 'upcoming')  return questsWithStatus.filter(({ status }) => status !== 'completed' && status !== 'active');
@@ -924,12 +924,17 @@ export function QuestFocusPage() {
                 <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— entire questline</span>
               </div>
               <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-                {focusBottlenecks.map(({ item, have, need, location, questCount }) => (
+                {focusBottlenecks.map(({ item, have, need, location, questCount, towerLv }) => (
                   <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                       <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                         <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
+                        {towerLv && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
+                            Tower Lv {towerLv.level} ({towerLv.levelsAway} away)
+                          </span>
+                        )}
                         {questCount > 1 && (
                           <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
                             {questCount} quests
