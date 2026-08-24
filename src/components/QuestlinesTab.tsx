@@ -6,12 +6,17 @@ import { QuestLineView } from './QuestLineView';
 
 interface Props {
   questlineGroups: { name: string; quests: Quest[] }[];
+  globalSearch?: string;
+  setGlobalSearch?: (v: string) => void;
 }
 
-export function QuestlinesTab({ questlineGroups }: Props) {
+export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }: Props) {
   const { questStatuses } = useStore();
-  const [search, setSearch] = useState('');
+  const [localSearch, setLocalSearch] = useState('');
   const [showCompleted, setShowCompleted] = useState(true);
+
+  const search = globalSearch ?? localSearch;
+  const setSearch = setGlobalSearch ?? setLocalSearch;
 
   const filtered = useMemo(() => {
     if (!search) return questlineGroups;
