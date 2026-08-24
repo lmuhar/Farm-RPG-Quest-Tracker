@@ -232,27 +232,29 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
   return (
     <div className="space-y-4">
       {/* Tab bar */}
-      <div
-        className="flex gap-1 p-1 rounded-lg"
-        style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', width: 'fit-content' }}
-      >
-        {tabs.map(({ id, label, dot }) => (
-          <button
-            key={id}
-            onClick={() => setTab(id)}
-            className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1"
-            style={
-              tab === id
-                ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
-                : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
-            }
-          >
-            {label}
-            {dot && tab !== id && (
-              <span className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0" style={{ background: 'var(--accent-green)' }} />
-            )}
-          </button>
-        ))}
+      <div className="overflow-x-auto">
+        <div
+          className="flex gap-1 p-1 rounded-lg w-max"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+        >
+          {tabs.map(({ id, label, dot }) => (
+            <button
+              key={id}
+              onClick={() => setTab(id)}
+              className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1"
+              style={
+                tab === id
+                  ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
+                  : { color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }
+              }
+            >
+              {label}
+              {dot && tab !== id && (
+                <span className="w-1.5 h-1.5 rounded-full inline-block flex-shrink-0" style={{ background: 'var(--accent-green)' }} />
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Tab 1 — all active quests (excluding focus questline) */}
