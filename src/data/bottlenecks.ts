@@ -1,6 +1,20 @@
 import petsData from './pets.json';
 import itemLocationsData from './item-locations.json';
 import recipesData from './recipes.json';
+import towerLevelsData from './tower-levels.json';
+
+interface TowerLevelRow { level: number; items: { item: string; quantity: number }[] }
+const _allTowerLevels = towerLevelsData as TowerLevelRow[];
+
+export function findTowerLevel(item: string, currentLevel: number, window = 10): { level: number; levelsAway: number } | undefined {
+  const cap = currentLevel + window;
+  for (const row of _allTowerLevels) {
+    if (row.level <= currentLevel) continue;
+    if (row.level > cap) break;
+    if (row.items.some(i => i.item === item)) return { level: row.level, levelsAway: row.level - currentLevel };
+  }
+  return undefined;
+}
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];

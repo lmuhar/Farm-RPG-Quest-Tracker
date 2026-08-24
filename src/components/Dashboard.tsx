@@ -5,7 +5,7 @@ import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlass
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS, WISHING_WELL_SOURCES } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, WISHING_WELL_SOURCES, findTowerLevel } from '../data/bottlenecks';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
@@ -31,7 +31,7 @@ interface Props {
 }
 
 export function Dashboard({ activeQuests, nextUpQuests }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, questStatuses } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, questStatuses, towerLevel } = useStore();
 
   const recipeMap = useMemo(() => {
     const map = new Map<string, Recipe>(recipeByName);
@@ -105,7 +105,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     }
 
     // Bottleneck items — curated rare items + pet-only drops
-    const bottleneckMap = new Map<string, { active: number; nextup: number; have: number; need: number; location: string }>();
+    const bottleneckMap = new Map<string, { active: number; nextup: number; have: number; need: number; location: string; towerLv?: { level: number; levelsAway: number } }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
@@ -121,7 +121,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         } else {
           continue;
         }
-        const existing = bottleneckMap.get(item) ?? { active: 0, nextup: 0, have, need: 0, location };
+        const existing = bottleneckMap.get(item) ?? { active: 0, nextup: 0, have, need: 0, location, towerLv: findTowerLevel(item, towerLevel) };
         if (isNextUp) existing.nextup++;
         else existing.active++;
         existing.need = Math.max(existing.need, quantity);
@@ -153,7 +153,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     }
 
     const bottlenecks = [...bottleneckMap.entries()]
-      .map(([item, { active, nextup, have, need, location }]) => ({ item, active, nextup, have, need, location }))
+      .map(([item, { active, nextup, have, need, location, towerLv }]) => ({ item, active, nextup, have, need, location, towerLv }))
       .sort((a, b) => b.active - a.active || b.nextup - a.nextup)
       .slice(0, 10);
 
@@ -177,7 +177,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       .sort((a, b) => a.item.localeCompare(b.item));
 
     return { readyToTurnIn, craftNowItems, cropItems, bottlenecks, goldFishNeeds };
-  }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap]);
+  }, [activeQuests, nextUpQuests, inventory, cropTimes, plotCount, inventoryMax, recipeMap, towerLevel]);
 
   const hasDoNow = readyToTurnIn.length > 0 || craftNowItems.length > 0;
 
@@ -354,7 +354,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— no easy source</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {bottlenecks.map(({ item, active, nextup, have, need, location }) => {
+              {bottlenecks.map(({ item, active, nextup, have, need, location, towerLv }) => {
                 const wellSources = WISHING_WELL_SOURCES.get(item);
                 return (
                   <div key={item} className="px-4 py-2.5">
@@ -363,6 +363,11 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                           <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
+                          {towerLv && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
+                              Tower Lv {towerLv.level} ({towerLv.levelsAway} away)
+                            </span>
+                          )}
                           {active > 0 && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
                               {active} active
