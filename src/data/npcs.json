@@ -3,17 +3,10 @@
     "name": "Baba Gec",
     "items": [
       "Cabbage",
+      "Cabbage Stew",
       "Frozen Cabbage",
-      "Onion",
-      "Rope",
-      "Snail",
-      "Leek",
-      "Worms",
-      "Horned Beetle",
-      "Stone",
       "Peach Juice",
-      "Wooden Button",
-      "Cabbage Stew"
+      "Wooden Button"
     ]
   },
   {
@@ -39,50 +32,22 @@
   {
     "name": "Borgen",
     "items": [
-      "Ancient Coin",
-      "Cheese",
-      "Old Boot",
-      "Milk",
-      "Purple Flower",
-      "Valentines Card",
-      "Slimestone",
-      "Gold Carrot",
-      "Gold Cucumber",
-      "Green Dye",
-      "Glass Orb",
-      "Worms",
-      "Gold Peas",
-      "Grubs",
       "Gold Catfish",
       "Skull Coin",
+      "Cheese",
+      "Ancient Coin",
       "Wooden Box"
     ]
   },
   {
     "name": "Buddy",
     "items": [
-      "Mushroom",
-      "Gummy Worms",
-      "Snail",
-      "Bone",
-      "Giant Centipede",
-      "Bucket",
-      "Gold Peppers",
-      "Lemon",
-      "Lemonade",
-      "Crappie",
-      "Snowball",
-      "Spider",
-      "Peppers",
-      "Drum",
-      "Worms",
-      "Grubs",
-      "Buddystone",
       "Pirate Bandana",
-      "Purple Flower",
       "Valentines Card",
+      "Buddy Doll",
+      "Purple Flower",
       "Pirate Flag",
-      "Buddy Doll"
+      "Buddystone"
     ]
   },
   {
@@ -92,39 +57,25 @@
   {
     "name": "Captain Thomas",
     "items": [
-      "Radish",
-      "Spider",
-      "Worms",
-      "Blue Crab",
-      "Minnows",
-      "Large Net",
-      "Gold Catfish",
-      "Gold Trout",
       "Fishing Net",
+      "Gold Catfish",
       "Gold Drum",
+      "Large Net",
+      "Gold Trout",
       "Slobster"
     ]
   },
   {
     "name": "Cecil",
     "items": [
-      "Snail",
-      "Slimestone",
-      "Mushroom",
-      "Grapes",
-      "Feathers",
-      "Worms",
-      "Giant Centipede",
-      "Ladder",
-      "Milk",
-      "Aquamarine",
-      "Old Boot",
-      "Yarn",
       "MIAB",
       "Shiny Beetle",
+      "Old Boot",
+      "Yarn",
       "Horned Beetle",
       "Grasshopper",
-      "Leather"
+      "Leather",
+      "Gold Aquamarine Ring"
     ]
   },
   {
@@ -159,18 +110,12 @@
   {
     "name": "Cid",
     "items": [
+      "Spider",
       "Explosive",
       "Diamonds",
-      "Mushroom Stew",
-      "Spider",
       "Bomb",
-      "Safety Goggles",
-      "Stone",
-      "Shimmer Stone",
-      "Black Powder",
-      "Blue Feathers",
-      "Worms",
-      "Cheese"
+      "Mushroom Stew",
+      "Safety Goggles"
     ]
   },
   {
@@ -182,57 +127,29 @@
   {
     "name": "Gary Bearson V",
     "items": [
+      "Yarn",
       "Gold Trout",
       "You Rock Card",
-      "Hide",
-      "Trout",
-      "Oak",
-      "Feathers",
-      "Tomato",
-      "Radish",
-      "Black Powder",
-      "Bucket",
-      "Worms",
-      "Yarn",
       "Apple Cider"
     ]
   },
   {
     "name": "Geist",
     "items": [
-      "Worms",
-      "Blue Crab",
-      "Green Chromis",
-      "Stingray",
-      "Yellow Perch",
-      "Axe",
-      "Gummy Worms",
-      "Black Powder",
-      "Explosive",
+      "Gold Catfish",
       "Shrimp-a-Plenty",
       "Sea Pincher Special",
-      "Gold Catfish",
       "Goldgill"
     ]
   },
   {
     "name": "George",
     "items": [
-      "Apple Cider",
-      "Orange Juice",
-      "Bone",
-      "Hops",
-      "Glass Orb",
-      "Arrowhead",
-      "Bird Egg",
-      "Worms",
-      "Cheese",
-      "Fish Bones",
-      "Mushroom Stew",
-      "Mug of Beer",
+      "Hide",
       "Spider",
+      "Apple Cider",
       "Carbon Sphere",
-      "Hide"
+      "Mug of Beer"
     ]
   },
   {
@@ -242,23 +159,11 @@
   {
     "name": "Goostav",
     "items": [
-      "Snail",
-      "Salt",
-      "Swamp Algae",
-      "Sporefly",
-      "Green Butterfly",
-      "Worms",
-      "Frog",
-      "Glowshroom",
-      "Gold Slimeback",
-      "Salt Rock",
-      "Slimestone",
-      "Sand",
-      "Swamp Gourd",
       "Slime Egg Shell",
+      "Glowshroom",
+      "Swamp Gourd",
       "Mini Slime Squid",
-      "Essence of Slime",
-      "Welcome Card"
+      "Gold Slimeback"
     ]
   },
   {
@@ -289,25 +194,13 @@
   {
     "name": "Jill",
     "items": [
-      "Peach",
-      "Old Boot",
-      "Tomato",
-      "Grubs",
-      "Scrap Metal",
-      "Stingray",
-      "Spider",
-      "Hops",
-      "Snowball",
-      "Cheese",
-      "Milk",
-      "Grapes",
-      "Worms",
       "Yellow Perch",
-      "Corn Husk Doll",
-      "MIAB",
       "Mushroom Paste",
+      "MIAB",
+      "Corn",
       "Leather",
-      "Corn"
+      "Corn Husk Doll",
+      "Peach"
     ]
   },
   {
@@ -325,71 +218,36 @@
   {
     "name": "Lorn",
     "items": [
-      "Gold Peas",
-      "Iced Tea",
-      "Iron Cup",
-      "Old Boot",
-      "Purple Parchment",
-      "Green Parchment",
-      "3-leaf Clover",
-      "Snail",
-      "Worms",
-      "Bucket",
-      "Spider",
-      "Peas",
-      "Crappie",
-      "Apple Cider",
-      "Shrimp",
       "Glass Orb",
       "Milk",
-      "Small Prawn"
+      "Gold Peas",
+      "Small Prawn",
+      "Shrimp"
     ]
   },
   {
     "name": "Mariya",
     "items": [
-      "Radish",
-      "Worms",
-      "Spider",
-      "Black Powder",
-      "Explosive",
-      "Iced Tea",
-      "Milk",
-      "Eggs",
-      "Peach",
-      "Eggplant",
-      "Cucumber",
-      "Onion Soup",
+      "Tomato",
       "Shrimp-a-Plenty",
-      "Cat's Meow",
+      "Onion Soup",
       "Quandary Chowder",
-      "Sea Pincher Special",
       "Over The Moon",
+      "Cat's Meow",
+      "Sea Pincher Special",
       "Leather Diary",
-      "Mushroom Stew",
-      "Tomato"
+      "Mushroom Stew"
     ]
   },
   {
     "name": "Mummy",
     "items": [
-      "Pumpkin Spiced Milk",
-      "Toilet Paper",
-      "Cheese",
-      "Fish Bones",
-      "Coal",
-      "Drum",
-      "Hammer",
-      "Yarn",
-      "Treat Bag 01",
-      "Box of Chocolate 01",
-      "Snowball",
-      "Worms",
-      "Treat Bag 02",
       "Bone",
-      "Valentines Card",
+      "Spider",
       "Treat Bag 03",
-      "Spider"
+      "Valentines Card",
+      "Toilet Paper",
+      "Pumpkin Spiced Milk"
     ]
   },
   {
@@ -424,22 +282,6 @@
   {
     "name": "Ric Ryph",
     "items": [
-      "Cheese",
-      "Bucket",
-      "Unpolished Shimmer Stone",
-      "Milk",
-      "Ladder",
-      "Valentines Card",
-      "Carbon Sphere",
-      "Coal",
-      "Caterpillar",
-      "Arrowhead",
-      "Green Parchment",
-      "Old Boot",
-      "Aquamarine",
-      "Worms",
-      "Black Powder",
-      "5 Gold",
       "Mushroom Paste",
       "Shovel",
       "Hammer"
@@ -448,33 +290,15 @@
   {
     "name": "Rosalie",
     "items": [
-      "Worms",
-      "Fish Bones",
-      "Spider",
-      "Fireworks",
-      "Iced Tea",
-      "Garnet Ring",
-      "Ruby Ring",
-      "Carrot",
-      "Purple Flower",
-      "Carp",
-      "Grubs",
-      "Horned Beetle",
-      "Apple Cider",
-      "Aquamarine",
-      "Coal",
-      "Apple",
-      "Caterpillar",
-      "Iron Cup",
-      "Fire Ant",
-      "Old Boot",
       "Gold Carrot",
-      "Valentines Card",
-      "Box of Chocolate 01",
-      "Blue Dye",
       "Green Dye",
+      "Blue Dye",
+      "Valentines Card",
       "Purple Dye",
-      "Red Dye"
+      "Box of Chocolate 01",
+      "Garnet Ring",
+      "Red Dye",
+      "Ruby Ring"
     ]
   },
   {
@@ -498,86 +322,40 @@
   {
     "name": "Star Meerif",
     "items": [
-      "Eggs",
-      "Worms",
-      "Grubs",
-      "Lemon",
-      "Bone",
-      "Lemonade",
-      "Linked Lantern",
-      "Cheese",
-      "Iron Cup",
-      "Feathers",
       "Blue Feathers",
-      "Gold Feather"
+      "Gold Feathers",
+      "Linked Lantern"
     ]
   },
   {
     "name": "Thomas",
     "items": [
-      "Chum",
-      "Worms",
-      "Iced Tea",
-      "Gummy Worms",
-      "Minnows",
-      "Largemouth Bass",
-      "Mealworms",
-      "Green Dye",
-      "Carp",
-      "Leek",
-      "Drum",
-      "Eggs",
+      "Flier",
       "Fishing Net",
       "Gold Catfish",
-      "Goldgill",
+      "Chum",
       "Gold Trout",
-      "Flier"
+      "Goldgill"
     ]
   },
   {
     "name": "Vincent",
     "items": [
-      "Wooden Box",
-      "Hops",
-      "Worms",
-      "Valentines Card",
-      "Aquamarine",
-      "Leather Diary",
-      "Purple Flower",
-      "Horn",
-      "Apple",
-      "Purple Parchment",
-      "Acorn",
-      "Cheese",
-      "Shovel",
-      "Shrimp",
       "Mushroom Paste",
-      "5 Gold",
-      "Apple Cider",
       "Lemonade",
+      "Sturdy Sword",
+      "Onion Soup",
       "Axe",
       "Orange Juice",
-      "Onion Soup"
+      "Apple Cider"
     ]
   },
   {
     "name": "frank",
     "items": [
-      "Feathers",
-      "Bucket",
-      "Caterpillar",
-      "Grasshopper",
-      "Blue Feathers",
-      "Blue Dye",
-      "Worms",
-      "Mushroom",
-      "Eggs",
-      "Trout",
-      "Peas",
-      "Fire Ant",
       "Gold Carrot",
-      "Cabbage",
-      "Carrot"
+      "Carrot",
+      "Cabbage"
     ]
   }
 ]
