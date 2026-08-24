@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import {
-  ListTodo, GitBranch, Search, X, Wand2, Sprout as SproutIcon, BarChart2, Package,
+  ListTodo, GitBranch, Search, X, Wand2, BarChart2, Package,
   Settings, Hammer, RefreshCw, Menu, MapPin, Building2, PawPrint, Users, Layers,
   LayoutDashboard, Trophy,
 } from 'lucide-react';
@@ -16,7 +16,6 @@ import { SyncSection } from './components/SyncSection';
 import { ImportExport } from './components/ImportExport';
 import { RecipesPanel } from './components/RecipesPanel';
 import { SetupWizard } from './components/SetupWizard';
-import { GrowPlanner } from './components/GrowPlanner';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
@@ -39,7 +38,7 @@ const allQuests = questsData as Quest[];
 
 type Tab =
   | 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory'
-  | 'pets' | 'npcs' | 'quests' | 'questlines' | 'grow' | 'craftworks' | 'recipes'
+  | 'pets' | 'npcs' | 'quests' | 'questlines' | 'craftworks' | 'recipes'
   | 'masteries' | 'stats' | 'settings';
 
 interface NavItem { id: Tab; label: string; Icon: LucideIcon }
@@ -55,7 +54,6 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'npcs',       label: 'NPCs',         Icon: Users },
   { id: 'quests',     label: 'All Quests',   Icon: Search },
   { id: 'questlines', label: 'Quest Lines',  Icon: GitBranch },
-  { id: 'grow',       label: 'Grow Planner', Icon: SproutIcon },
   { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
   { id: 'recipes',    label: 'Recipes',      Icon: Hammer },
   { id: 'masteries',  label: 'Masteries',    Icon: Trophy },
@@ -388,7 +386,6 @@ export default function App() {
             {tab === 'questlines' && (
               <QuestlinesTab questlineGroups={questlineGroups} />
             )}
-            {tab === 'grow' && <GrowPlanner questlineGroups={questlineGroups} />}
             {tab === 'craftworks' && (
               <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
