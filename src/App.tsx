@@ -29,7 +29,6 @@ import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
 import { ActiveTab } from './components/ActiveTab';
-import { QuestsTab } from './components/QuestsTab';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
 import { MasterySyncSection } from './components/MasterySyncSection';
@@ -38,7 +37,7 @@ const allQuests = questsData as Quest[];
 
 type Tab =
   | 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory'
-  | 'pets' | 'npcs' | 'quests' | 'questlines' | 'craftworks' | 'recipes'
+  | 'pets' | 'npcs' | 'questlines' | 'craftworks' | 'recipes'
   | 'masteries' | 'stats' | 'settings';
 
 interface NavItem { id: Tab; label: string; Icon: LucideIcon }
@@ -52,7 +51,6 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'inventory',  label: 'Inventory',    Icon: Package },
   { id: 'pets',       label: 'Pets',         Icon: PawPrint },
   { id: 'npcs',       label: 'NPCs',         Icon: Users },
-  { id: 'quests',     label: 'All Quests',   Icon: Search },
   { id: 'questlines', label: 'Quest Lines',  Icon: GitBranch },
   { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
   { id: 'recipes',    label: 'Recipes',      Icon: Hammer },
@@ -245,7 +243,7 @@ export default function App() {
               value={globalSearch}
               onChange={(e) => {
                 setGlobalSearch(e.target.value);
-                if (e.target.value) setTab('quests');
+                if (e.target.value) setTab('questlines');
               }}
               className="w-full rounded-lg pl-8 pr-8 py-1.5 text-sm focus:outline-none"
               style={{
@@ -380,11 +378,8 @@ export default function App() {
             {tab === 'inventory' && <InventoryPage />}
             {tab === 'pets' && <PetsPage activeQuests={activeQuests} />}
             {tab === 'npcs' && <NpcPage />}
-            {tab === 'quests' && (
-              <QuestsTab globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
-            )}
             {tab === 'questlines' && (
-              <QuestlinesTab questlineGroups={questlineGroups} />
+              <QuestlinesTab questlineGroups={questlineGroups} globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
             )}
             {tab === 'craftworks' && (
               <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
