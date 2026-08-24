@@ -158,6 +158,11 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
   const multiItemLocations = locationGroups.filter(([, { items }]) => items.length > 1);
   const singleItemLocations = locationGroups.filter(([, { items }]) => items.length === 1);
 
+  const neededWishingWellOutputs = WISHING_WELL_OUTPUTS.filter(({ item }) => {
+    const d = itemData.get(item);
+    return d !== undefined && d.have < d.totalNeeded;
+  });
+
   if (activeQuests.length === 0) {
     return (
       <div
@@ -238,7 +243,8 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
 
   return (
     <div className="space-y-4">
-      {/* Wishing Well */}
+      {/* Wishing Well — only shown when quest items need wishing well outputs */}
+      {neededWishingWellOutputs.length > 0 && (
       <div
         className="rounded-xl overflow-hidden"
         style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
@@ -249,25 +255,18 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
           <span className="text-xs ml-1" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>— throw items in to receive rewards</span>
         </div>
         <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-          {WISHING_WELL_OUTPUTS.map(({ item, inputs }) => {
+          {neededWishingWellOutputs.map(({ item, inputs }) => {
             const have = inventory[item] ?? 0;
-            const needed = itemData.get(item);
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const needed = itemData.get(item)!;
             return (
               <div key={item}>
                 {/* Output item header */}
                 <div className="px-4 py-2.5 flex items-center justify-between gap-3" style={{ background: 'var(--surface-inset)' }}>
                   <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                  <div className="text-right flex-shrink-0">
-                    {needed ? (
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: have >= needed.totalNeeded ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
-                        {have}/{needed.totalNeeded} needed
-                      </span>
-                    ) : (
-                      <span className="text-sm font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
-                        {have} in stock
-                      </span>
-                    )}
-                  </div>
+                  <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= needed.totalNeeded ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
+                    {have}/{needed.totalNeeded} needed
+                  </span>
                 </div>
                 {/* Per-item inputs */}
                 {inputs === null ? (
@@ -297,6 +296,7 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
           })}
         </div>
       </div>
+      )}
 
       {/* Controls */}
       <div
