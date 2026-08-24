@@ -27,6 +27,7 @@ interface Store extends AppState {
   setInventoryItem: (item: string, qty: number) => void;
   setPlayer: (player: PlayerProfile) => void;
   setNpcLevel: (npc: string, level: number) => void;
+  toggleNpcLevelingComplete: (npc: string) => void;
   setCropTime: (item: string, growMinutes: number) => void;
   removeCropTime: (item: string) => void;
   setPlotCount: (count: number) => void;
@@ -184,6 +185,15 @@ export const useStore = create<Store>()((set) => ({
             npcLevels: { ...s.player.npcLevels, [npc]: level },
           },
         })),
+
+      toggleNpcLevelingComplete: (npc) =>
+        set((s) => {
+          const current = s.player.completedNpcLeveling ?? [];
+          const next = current.includes(npc)
+            ? current.filter((n) => n !== npc)
+            : [...current, npc];
+          return { player: { ...s.player, completedNpcLeveling: next } };
+        }),
 
       setCropTime: (item, growMinutes) =>
         set((s) => {
