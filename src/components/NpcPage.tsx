@@ -1,342 +1,243 @@
 import { useMemo, useState } from 'react';
-import { Users, ChevronDown, ChevronRight, Search, AlertTriangle, CheckCircle } from 'lucide-react';
+import { CheckCircle, Gift, Star, Users } from 'lucide-react';
 import { useStore } from '../store';
-import { getQuestStatus, compareQuests, parseItems } from '../utils';
 import npcsData from '../data/npcs.json';
-import questsData from '../data/quests.json';
-import type { Quest } from '../types';
 
 const allNpcs = npcsData as { name: string; items: string[] }[];
-const allQuests = questsData as Quest[];
+const npcItemsMap = new Map(allNpcs.map((n) => [n.name, n.items]));
 
-function FavouriteItems({
-  items,
-  inventory,
-  activeNeeds,
-  upcomingNeeds,
-}: {
+const REWARD_MILESTONES: { npc: string; nextRewardLv: number }[] = [
+  { npc: 'Rosalie',       nextRewardLv: 40 },
+  { npc: 'Thomas',        nextRewardLv: 40 },
+  { npc: 'Cecil',         nextRewardLv: 30 },
+  { npc: 'George',        nextRewardLv: 40 },
+  { npc: 'Jill',          nextRewardLv: 60 },
+  { npc: 'Vincent',       nextRewardLv: 30 },
+  { npc: 'Borgen',        nextRewardLv: 60 },
+  { npc: 'Ric Ryph',      nextRewardLv: 30 },
+  { npc: 'Mummy',         nextRewardLv: 30 },
+  { npc: 'Star Meerif',   nextRewardLv: 18 },
+  { npc: 'Captain Thomas',nextRewardLv: 20 },
+  { npc: 'frank',         nextRewardLv: 40 },
+  { npc: 'Mariya',        nextRewardLv: 40 },
+  { npc: 'Baba Gec',      nextRewardLv: 30 },
+  { npc: 'Geist',         nextRewardLv: 20 },
+  { npc: 'Cid',           nextRewardLv: 30 },
+  { npc: 'Goostav',       nextRewardLv: 20 },
+];
+
+const HELP_MILESTONES: { npc: string; nextHelpLv: number }[] = [
+  { npc: 'Buddy',         nextHelpLv: 60 },
+  { npc: 'Captain Thomas',nextHelpLv: 25 },
+  { npc: 'Geist',         nextHelpLv: 25 },
+  { npc: 'ROOMBA',        nextHelpLv: 40 },
+  { npc: 'Lorn',          nextHelpLv: 60 },
+  { npc: 'George',        nextHelpLv: 70 },
+  { npc: 'Jill',          nextHelpLv: 96 },
+  { npc: 'Gary Bearson V',nextHelpLv: 80 },
+  { npc: 'Goostav',       nextHelpLv: 80 },
+];
+
+interface NpcEntry {
+  npc: string;
+  nextRewardLv?: number;
+  nextHelpLv?: number;
   items: string[];
-  inventory: Record<string, number>;
-  activeNeeds: Map<string, string[]>;
-  upcomingNeeds: Map<string, string[]>;
-}) {
-  const keepItems = items.filter((i) => activeNeeds.has(i) || upcomingNeeds.has(i));
-  const safeItems = items.filter((i) => !activeNeeds.has(i) && !upcomingNeeds.has(i));
-
-  return (
-    <div className="space-y-2.5">
-      {keepItems.length > 0 && (
-        <div className="rounded-lg p-2.5 space-y-1.5" style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)' }}>
-          <p className="text-[10px] font-bold uppercase tracking-wide flex items-center gap-1" style={{ color: '#f87171' }}>
-            <AlertTriangle size={10} />
-            Don't give — needed for your quests
-          </p>
-          {keepItems.map((item) => {
-            const have = inventory[item] ?? 0;
-            const isActive = activeNeeds.has(item);
-            const quests = (isActive ? activeNeeds.get(item) : upcomingNeeds.get(item)) ?? [];
-            const label = isActive ? 'active' : 'upcoming';
-            const labelColor = isActive ? '#f87171' : 'var(--accent-yellow)';
-            return (
-              <div key={item} className="flex items-baseline gap-2 flex-wrap">
-                <span
-                  className="text-[11px] px-2 py-0.5 rounded-full font-medium flex-shrink-0"
-                  style={
-                    have > 0
-                      ? { background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }
-                      : { background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }
-                  }
-                >
-                  {item}{have > 0 ? ` ×${have}` : ''}
-                </span>
-                <span className="text-[10px]" style={{ color: labelColor }}>
-                  {label}: {quests.slice(0, 2).join(', ')}{quests.length > 2 ? ` +${quests.length - 2} more` : ''}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {safeItems.length > 0 && (
-        <div>
-          {keepItems.length > 0 && (
-            <p className="text-[10px] font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--accent-green)' }}>
-              Safe to give
-            </p>
-          )}
-          <div className="flex flex-wrap gap-1">
-            {safeItems.map((item) => {
-              const have = inventory[item] ?? 0;
-              return (
-                <span
-                  key={item}
-                  className="text-[11px] px-2 py-0.5 rounded-full font-medium"
-                  style={
-                    have > 0
-                      ? { background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }
-                      : { background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }
-                  }
-                >
-                  {item}{have > 0 ? ` ×${have}` : ''}
-                </span>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </div>
-  );
 }
 
+// Build merged NPC list — reward milestones first, then help-only NPCs
+const NPC_ENTRIES: NpcEntry[] = (() => {
+  const map = new Map<string, NpcEntry>();
+  for (const { npc, nextRewardLv } of REWARD_MILESTONES) {
+    map.set(npc, { npc, nextRewardLv, items: npcItemsMap.get(npc) ?? [] });
+  }
+  for (const { npc, nextHelpLv } of HELP_MILESTONES) {
+    const existing = map.get(npc);
+    if (existing) {
+      existing.nextHelpLv = nextHelpLv;
+    } else {
+      map.set(npc, { npc, nextHelpLv, items: npcItemsMap.get(npc) ?? [] });
+    }
+  }
+  return [...map.values()];
+})();
+
 export function NpcPage() {
-  const { player, questStatuses, inventory, setNpcLevel, toggleNpcLevelingComplete } = useStore();
-  const [search, setSearch] = useState('');
-  const [expandedNpc, setExpandedNpc] = useState<string | null>(null);
+  const { player, inventory, inventoryMax, setNpcLevel, toggleNpcLevelingComplete } = useStore();
   const [editingNpc, setEditingNpc] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
 
   const npcLevels = player.npcLevels ?? {};
-  const completedSet = useMemo(() => new Set(player.completedNpcLeveling ?? []), [player.completedNpcLeveling]);
-
-  const questsWithStatus = useMemo(
-    () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
-    [player, questStatuses]
+  const completedSet = useMemo(
+    () => new Set(player.completedNpcLeveling ?? []),
+    [player.completedNpcLeveling]
   );
 
-  const activeQuests = useMemo(
-    () => questsWithStatus.filter((q) => q.status === 'active').map((q) => q.quest),
-    [questsWithStatus]
-  );
+  const entries = useMemo(() => {
+    return NPC_ENTRIES.map((entry) => {
+      const level = npcLevels[entry.npc] ?? 0;
+      const levelingDone = completedSet.has(entry.npc);
+      const rewardGap = entry.nextRewardLv !== undefined ? entry.nextRewardLv - level : Infinity;
+      const helpGap   = entry.nextHelpLv   !== undefined ? entry.nextHelpLv   - level : Infinity;
+      const minGap    = Math.min(rewardGap, helpGap);
+      return { ...entry, level, levelingDone, rewardGap, helpGap, minGap };
+    }).sort((a, b) => {
+      if (a.levelingDone !== b.levelingDone) return a.levelingDone ? 1 : -1;
+      return a.minGap - b.minGap;
+    });
+  }, [npcLevels, completedSet]);
 
-  // Items with a deficit in active quests: item → quest names
-  const activeNeeds = useMemo(() => {
-    const map = new Map<string, string[]>();
-    for (const quest of activeQuests) {
-      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
-        const have = inventory[item] ?? 0;
-        if (have < quantity) {
-          if (!map.has(item)) map.set(item, []);
-          map.get(item)!.push(quest.name);
-        }
-      }
-    }
-    return map;
-  }, [activeQuests, inventory]);
-
-  // Items needed in upcoming questline quests: item → quest names
-  const upcomingNeeds = useMemo(() => {
-    const activeIds = new Set(activeQuests.map((q) => q.id));
-    const groups = new Map<string, Quest[]>();
-    for (const q of allQuests) {
-      if (!q.questline) continue;
-      if (!groups.has(q.questline)) groups.set(q.questline, []);
-      groups.get(q.questline)!.push(q);
-    }
-
-    const map = new Map<string, string[]>();
-    for (const quests of groups.values()) {
-      if (!quests.some((q) => activeIds.has(q.id))) continue;
-      const sorted = [...quests].sort((a, b) => compareQuests(a.name, b.name));
-      const lastActiveIdx = sorted.reduce((max, q, i) => (activeIds.has(q.id) ? i : max), -1);
-      if (lastActiveIdx < 0) continue;
-      for (const quest of sorted.slice(lastActiveIdx + 1)) {
-        if (questStatuses[quest.id] === 'completed') continue;
-        for (const { item } of parseItems(quest.itemsRequired)) {
-          if (activeNeeds.has(item)) continue; // already flagged as active need
-          if (!map.has(item)) map.set(item, []);
-          map.get(item)!.push(quest.name);
-        }
-      }
-    }
-    return map;
-  }, [activeQuests, questStatuses, activeNeeds]);
-
-  const questNpcNames = useMemo(() => new Set(allQuests.map((q) => q.npc)), []);
-
-  const npcs = useMemo(() => {
-    const s = search.toLowerCase();
-    return allNpcs
-      .filter((npc) => {
-        if (!questNpcNames.has(npc.name)) return false;
-        if (s) return npc.name.toLowerCase().includes(s) || npc.items.some((i) => i.toLowerCase().includes(s));
-        return true;
-      })
-      .map((npc) => {
-        const level = npcLevels[npc.name] ?? 0;
-        const levelingDone = completedSet.has(npc.name);
-        const safeInStock = npc.items.filter(
-          (item) => (inventory[item] ?? 0) > 0 && !activeNeeds.has(item) && !upcomingNeeds.has(item)
-        );
-        const conflictInStock = npc.items.filter(
-          (item) => (inventory[item] ?? 0) > 0 && (activeNeeds.has(item) || upcomingNeeds.has(item))
-        );
-        return { ...npc, level, levelingDone, safeInStock, conflictInStock };
-      })
-      .sort((a, b) => {
-        // Completed leveling NPCs sink to the bottom
-        if (a.levelingDone !== b.levelingDone) return a.levelingDone ? 1 : -1;
-        // NPCs with safe giveables first, then by name
-        const aScore = a.safeInStock.length * 2 + a.conflictInStock.length;
-        const bScore = b.safeInStock.length * 2 + b.conflictInStock.length;
-        if (bScore !== aScore) return bScore - aScore;
-        return a.name.localeCompare(b.name);
-      });
-  }, [search, npcLevels, completedSet, inventory, questNpcNames, activeNeeds, upcomingNeeds]);
+  const activeCount = entries.filter((e) => !e.levelingDone).length;
 
   return (
-    <div className="space-y-4">
-      <div className="relative">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
-        <input
-          type="text"
-          placeholder="Search NPCs or items…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none"
-          style={{
-            background: 'var(--surface-card)',
-            border: '1px solid var(--border-default)',
-            color: 'var(--text-primary)',
-          }}
-        />
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 px-1">
+        <Users size={14} style={{ color: 'var(--accent-purple)' }} />
+        <p className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+          NPC Milestones
+        </p>
+        <span
+          className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+          style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
+        >
+          {activeCount} active
+        </span>
       </div>
 
-      <div
-        className="rounded-xl overflow-hidden"
-        style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-      >
-        <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <Users size={14} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
-          <p className="text-sm font-semibold" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
-            NPC Friendship
-          </p>
-          <span
-            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-            style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
-          >
-            {npcs.length}
-          </span>
-        </div>
+      {entries.map(({ npc, nextRewardLv, nextHelpLv, items, level, levelingDone, rewardGap, helpGap }) => {
+        const isEditing = editingNpc === npc;
 
-        <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-          {npcs.map((npc) => {
-            const isExpanded = expandedNpc === npc.name;
-            const hasConflict = npc.conflictInStock.length > 0;
-            const isEditingLevel = editingNpc === npc.name;
-            return (
-              <div key={npc.name} style={npc.levelingDone ? { opacity: 0.55 } : undefined}>
-                <div className="flex items-center">
-                  <button
-                    className="flex-1 flex items-center gap-3 px-4 py-3 text-left hover:opacity-80 transition-opacity min-w-0"
-                    onClick={() => setExpandedNpc(isExpanded ? null : npc.name)}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{npc.name}</span>
-                        {npc.levelingDone && (
-                          <span
-                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
-                            style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
-                          >
-                            <CheckCircle size={9} /> Leveling done
-                          </span>
-                        )}
-                        {npc.safeInStock.length > 0 && (
-                          <span
-                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                            style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
-                          >
-                            {npc.safeInStock.length} safe to give
-                          </span>
-                        )}
-                        {hasConflict && (
-                          <span
-                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"
-                            style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}
-                          >
-                            <AlertTriangle size={9} />
-                            {npc.conflictInStock.length} quest conflict
-                          </span>
-                        )}
-                        {npc.items.length === 0 && (
-                          <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>no favourites data</span>
-                        )}
-                      </div>
-                      {!isExpanded && npc.safeInStock.length > 0 && (
-                        <p className="text-[10px] mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
-                          {npc.safeInStock.slice(0, 4).join(', ')}{npc.safeInStock.length > 4 ? '…' : ''}
-                        </p>
+        const rewardColor  = rewardGap <= 0 ? 'var(--accent-green)' : rewardGap <= 5 ? 'var(--accent-yellow)' : 'var(--accent-orange)';
+        const rewardBg     = rewardGap <= 0 ? 'var(--accent-green-bg)' : rewardGap <= 5 ? 'var(--accent-yellow-bg)' : 'var(--accent-orange-bg)';
+        const rewardBorder = rewardGap <= 0 ? 'var(--accent-green-border)' : rewardGap <= 5 ? 'var(--accent-yellow-border)' : 'var(--accent-orange-border)';
+
+        const helpColor  = helpGap <= 0 ? 'var(--accent-green)' : helpGap <= 5 ? 'var(--accent-yellow)' : 'var(--accent-purple)';
+        const helpBg     = helpGap <= 0 ? 'var(--accent-green-bg)' : helpGap <= 5 ? 'var(--accent-yellow-bg)' : 'var(--accent-purple-bg)';
+        const helpBorder = helpGap <= 0 ? 'var(--accent-green-border)' : helpGap <= 5 ? 'var(--accent-yellow-border)' : 'var(--accent-purple-border)';
+
+        return (
+          <div
+            key={npc}
+            className="rounded-xl overflow-hidden"
+            style={{
+              background: 'var(--surface-card)',
+              border: '1px solid var(--border-subtle)',
+              opacity: levelingDone ? 0.5 : 1,
+              transition: 'opacity 0.15s',
+            }}
+          >
+            {/* Header row */}
+            <div
+              className="px-4 py-2.5 flex items-center gap-2 flex-wrap"
+              style={{ background: 'var(--surface-inset)', borderBottom: items.length > 0 ? '1px solid var(--border-subtle)' : undefined }}
+            >
+              <span className="text-sm font-semibold flex-1 min-w-0" style={{ color: 'var(--text-primary)' }}>
+                {npc}
+              </span>
+
+              {/* Reward milestone badge */}
+              {nextRewardLv !== undefined && (
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 flex-shrink-0"
+                  style={{ background: rewardBg, color: rewardColor, border: `1px solid ${rewardBorder}` }}
+                  title="Next reward milestone"
+                >
+                  <Star size={8} />
+                  lv {level}/{nextRewardLv}
+                  {rewardGap > 0 && <span style={{ opacity: 0.7 }}> · {rewardGap} to go</span>}
+                </span>
+              )}
+
+              {/* Help milestone badge */}
+              {nextHelpLv !== undefined && (
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                  style={{ background: helpBg, color: helpColor, border: `1px solid ${helpBorder}` }}
+                  title="Next help request level"
+                >
+                  help lv {level}/{nextHelpLv}
+                  {helpGap > 0 && <span style={{ opacity: 0.7 }}> · {helpGap} to go</span>}
+                </span>
+              )}
+
+              {/* Editable level */}
+              {isEditing ? (
+                <input
+                  type="number"
+                  min={0}
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onBlur={() => {
+                    const lv = parseInt(editValue, 10);
+                    if (!isNaN(lv) && lv >= 0) setNpcLevel(npc, lv);
+                    setEditingNpc(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.currentTarget.blur();
+                    if (e.key === 'Escape') setEditingNpc(null);
+                  }}
+                  autoFocus
+                  className="w-14 text-xs font-mono font-semibold text-center px-1 py-0.5 rounded focus:outline-none flex-shrink-0"
+                  style={{ background: 'var(--surface-card)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
+                />
+              ) : (
+                <span
+                  className="text-xs font-mono font-semibold px-2 py-0.5 rounded cursor-pointer hover:opacity-70 transition-opacity flex-shrink-0"
+                  style={{ background: 'var(--surface-raised)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
+                  title="Click to edit level"
+                  onClick={() => { setEditingNpc(npc); setEditValue(String(level)); }}
+                >
+                  Lv {level}
+                </span>
+              )}
+
+              {/* Leveling done toggle */}
+              <button
+                onClick={() => toggleNpcLevelingComplete(npc)}
+                title={levelingDone ? 'Mark leveling incomplete' : 'Mark leveling complete'}
+                className="flex-shrink-0 hover:opacity-70 transition-opacity"
+              >
+                <CheckCircle size={15} style={{ color: levelingDone ? 'var(--accent-green)' : 'var(--border-default)' }} />
+              </button>
+            </div>
+
+            {/* Loved items */}
+            {items.length > 0 && (
+              <div className="px-4 py-2.5 flex flex-wrap gap-1.5">
+                {items.map((item) => {
+                  const have = inventory[item] ?? 0;
+                  const pct  = inventoryMax > 0 ? have / inventoryMax : 0;
+                  const atMax   = have >= inventoryMax;
+                  const nearMax = !atMax && pct >= 0.9;
+                  const hasAny  = have > 0;
+                  return (
+                    <div
+                      key={item}
+                      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                      style={{
+                        background: atMax ? 'var(--accent-green-bg)' : nearMax ? 'var(--accent-yellow-bg)' : hasAny ? 'var(--surface-raised)' : 'var(--surface-inset)',
+                        border: `1px solid ${atMax ? 'var(--accent-green-border)' : nearMax ? 'var(--accent-yellow-border)' : 'var(--border-subtle)'}`,
+                      }}
+                    >
+                      {(atMax || nearMax) && (
+                        <Gift size={9} style={{ color: atMax ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />
+                      )}
+                      <span style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : hasAny ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                        {item}
+                      </span>
+                      {hasAny && (
+                        <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
+                          ×{have}
+                        </span>
                       )}
                     </div>
-                    {npc.items.length > 0 && (
-                      isExpanded
-                        ? <ChevronDown size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                        : <ChevronRight size={13} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-                    )}
-                  </button>
-
-                  {/* Leveling complete toggle */}
-                  <button
-                    className="px-2 py-1 flex-shrink-0 transition-opacity hover:opacity-70"
-                    title={npc.levelingDone ? 'Mark leveling incomplete' : 'Mark leveling complete'}
-                    onClick={() => toggleNpcLevelingComplete(npc.name)}
-                  >
-                    <CheckCircle
-                      size={15}
-                      style={{ color: npc.levelingDone ? 'var(--accent-green)' : 'var(--border-default)' }}
-                    />
-                  </button>
-
-                  {/* Level badge — editable, outside the expand button to allow input nesting */}
-                  <div className="pr-3 flex-shrink-0">
-                    {isEditingLevel ? (
-                      <input
-                        type="number"
-                        min={0}
-                        value={editValue}
-                        onChange={(e) => setEditValue(e.target.value)}
-                        onBlur={() => {
-                          const lv = parseInt(editValue, 10);
-                          if (!isNaN(lv) && lv >= 0) setNpcLevel(npc.name, lv);
-                          setEditingNpc(null);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') e.currentTarget.blur();
-                          if (e.key === 'Escape') setEditingNpc(null);
-                        }}
-                        autoFocus
-                        className="w-14 text-xs font-mono font-semibold text-center px-1 py-0.5 rounded focus:outline-none"
-                        style={{ background: 'var(--surface-inset)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
-                      />
-                    ) : (
-                      <span
-                        className="text-xs font-mono font-semibold px-2 py-0.5 rounded cursor-pointer hover:opacity-70 transition-opacity"
-                        style={{ background: 'var(--surface-raised)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }}
-                        title="Click to edit level"
-                        onClick={() => { setEditingNpc(npc.name); setEditValue(String(npc.level)); }}
-                      >
-                        Lv {npc.level}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {isExpanded && npc.items.length > 0 && (
-                  <div className="px-4 pb-3 pt-2" style={{ background: 'var(--surface-inset)', borderTop: '1px solid var(--border-subtle)' }}>
-                    <FavouriteItems
-                      items={npc.items}
-                      inventory={inventory}
-                      activeNeeds={activeNeeds}
-                      upcomingNeeds={upcomingNeeds}
-                    />
-                  </div>
-                )}
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
-      </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
