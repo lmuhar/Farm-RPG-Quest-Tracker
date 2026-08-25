@@ -68,13 +68,14 @@ function getItemTierData(
   const allLocs = itemLocations[item] ?? [];
   const fishingSources = allLocs.filter(l => l.type === 'fishing').map(l => l.name);
   const exploreSources = allLocs.filter(l => l.type === 'explore').map(l => l.name);
+  const farmingSources = allLocs.filter(l => l.type === 'farming').map(l => l.name);
   return {
     item, quantity, have, deficit, pct, done,
     recipe, directIngredients, rawMaterials,
     isDirectCraftNow, isRawCraftNow, isCraftNow,
     cropTime, grows, totalTime, seedsHave, seedsToBuy,
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave,
-    fishingSources, exploreSources,
+    fishingSources, exploreSources, farmingSources,
   };
 }
 
@@ -102,7 +103,7 @@ function TierItemRow({
 }: {
   data: ItemData;
   inventory: Record<string, number>;
-  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore';
+  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore' | 'farming';
   openLoc: boolean;
   onToggleLoc: () => void;
   allNeededItems: string[];
@@ -118,6 +119,7 @@ function TierItemRow({
     tier === 'rawCraft' ? 'var(--accent-purple)' :
     tier === 'craftingQueue' ? 'var(--accent-yellow)' :
     tier === 'crop' ? 'var(--accent-green)' :
+    tier === 'farming' ? 'var(--accent-green)' :
     tier === 'fishing' ? 'var(--accent-blue)' :
     tier === 'explore' ? 'var(--accent-purple)' :
     'var(--accent-orange)';
@@ -270,6 +272,14 @@ function TierItemRow({
             </p>
           )}
 
+          {/* Farming locations */}
+          {tier === 'farming' && data.farmingSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+              <Sprout size={10} />
+              {data.farmingSources.join(' · ')} (gold crop drop)
+            </p>
+          )}
+
           {/* Temple items */}
           {isHoney && honey && (
             <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
@@ -410,7 +420,7 @@ function SummaryPanel({
           <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
           {tiers.collecting.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory}
-              tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
+              tier={d.isHoney || d.isCutlass ? 'temple' : d.fishingSources.length > 0 ? 'fishing' : d.exploreSources.length > 0 ? 'explore' : d.farmingSources.length > 0 ? 'farming' : 'collecting'}
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
               allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
@@ -695,7 +705,7 @@ function QuestSection({
                   <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
                   {tiers.collecting.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory}
-                      tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
+                      tier={d.isHoney || d.isCutlass ? 'temple' : d.fishingSources.length > 0 ? 'fishing' : d.exploreSources.length > 0 ? 'explore' : d.farmingSources.length > 0 ? 'farming' : 'collecting'}
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
                       allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
