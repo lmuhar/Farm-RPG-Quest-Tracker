@@ -113,11 +113,11 @@ export function PetsPage({ activeQuests }: Props) {
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Recommendations */}
       {recommendations.length > 0 && (
         <section
-          className="rounded-xl p-4 space-y-3"
+          className="rounded-xl p-3 space-y-2"
           style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
         >
           <div className="flex items-center gap-2">
@@ -126,18 +126,15 @@ export function PetsPage({ activeQuests }: Props) {
               Recommended for Your Quests
             </p>
           </div>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            Pets that produce items your active quests need right now.
-          </p>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {recommendations.map(({ pet, matchItems, targetLevel, isUpgrade, currentLevel }) => (
               <div
                 key={pet.id}
-                className="flex items-start gap-3 rounded-lg p-3"
+                className="flex items-start gap-2 rounded-lg p-2"
                 style={{ background: 'var(--surface-raised)', border: '1px solid var(--accent-yellow-border)' }}
               >
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{pet.name}</span>
                     {isUpgrade ? (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
@@ -149,19 +146,19 @@ export function PetsPage({ activeQuests }: Props) {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs mt-1" style={{ color: 'var(--accent-yellow)' }}>
-                    Produces: {matchItems.join(', ')}
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--accent-yellow)' }}>
+                    {matchItems.join(', ')}
                   </p>
                   {!isUpgrade && petRequirements(pet).length > 0 && (
-                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
-                      Requires: {petRequirements(pet).join(', ')}
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      Req: {petRequirements(pet).join(', ')}
                     </p>
                   )}
                 </div>
                 {!isUpgrade && (
                   <button
                     onClick={() => setOwnedPetLevel(pet.id, 1)}
-                    className="flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-opacity hover:opacity-80"
+                    className="flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg transition-opacity hover:opacity-80"
                     style={{ background: 'var(--accent-green)', color: '#0f172a' }}
                   >
                     <Plus size={11} /> Add
@@ -170,10 +167,10 @@ export function PetsPage({ activeQuests }: Props) {
                 {isUpgrade && (
                   <button
                     onClick={() => setOwnedPetLevel(pet.id, targetLevel)}
-                    className="flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-opacity hover:opacity-80"
+                    className="flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-lg transition-opacity hover:opacity-80"
                     style={{ background: 'var(--accent-blue)', color: '#fff' }}
                   >
-                    <Star size={11} /> Level up
+                    <Star size={11} /> Level
                   </button>
                 )}
               </div>
@@ -184,11 +181,11 @@ export function PetsPage({ activeQuests }: Props) {
 
       {neededItems.size === 0 && activeQuests.length > 0 && (
         <div
-          className="rounded-xl p-4 flex items-center gap-3"
+          className="rounded-xl p-3 flex items-center gap-2"
           style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
         >
-          <Star size={15} style={{ color: 'var(--accent-yellow)' }} />
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          <Star size={14} style={{ color: 'var(--accent-yellow)' }} />
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             All quest items are in stock — no pet recommendations right now.
           </p>
         </div>
@@ -196,11 +193,11 @@ export function PetsPage({ activeQuests }: Props) {
 
       {activeQuests.length === 0 && (
         <div
-          className="rounded-xl p-4 flex items-center gap-3"
+          className="rounded-xl p-3 flex items-center gap-2"
           style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
         >
-          <AlertCircle size={15} style={{ color: 'var(--text-muted)' }} />
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          <AlertCircle size={14} style={{ color: 'var(--text-muted)' }} />
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             Activate some quests to get pet recommendations.
           </p>
         </div>
@@ -208,7 +205,7 @@ export function PetsPage({ activeQuests }: Props) {
 
       {/* My Pets */}
       <section
-        className="rounded-xl p-4 space-y-3"
+        className="rounded-xl p-3 space-y-2"
         style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
       >
         <div className="flex items-center gap-2">
@@ -242,15 +239,15 @@ export function PetsPage({ activeQuests }: Props) {
                   className="rounded-lg overflow-hidden"
                   style={{ background: 'var(--surface-raised)', border: '1px solid var(--border-default)' }}
                 >
-                  <div className="flex items-center gap-2 p-3">
+                  <div className="flex items-center gap-2 p-2">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
                         <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{pet.name}</span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                           Lv {level}
                         </span>
                       </div>
-                      <p className="text-xs mt-0.5 truncate" style={{ color: 'var(--text-muted)' }}>
+                      <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
                         {loot.slice(0, 4).join(' · ')}
                         {loot.length > 4 && ` +${loot.length - 4}`}
                       </p>
@@ -290,14 +287,14 @@ export function PetsPage({ activeQuests }: Props) {
                   </div>
 
                   {isExpanded && (
-                    <div className="px-3 pb-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <div className="px-2 pb-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
                       {LOOT_TIERS.map((lv) => {
                         const tierItems = pet.loot[String(lv)] ?? [];
                         const unlocked = lv <= level;
                         return (
                           <div key={lv}>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider mt-2 mb-1" style={{ color: unlocked ? 'var(--text-muted)' : 'var(--border-default)' }}>
-                              Level {lv} {unlocked ? '' : '(locked)'}
+                            <p className="text-[10px] font-semibold uppercase tracking-wider mt-1.5 mb-0.5" style={{ color: unlocked ? 'var(--text-muted)' : 'var(--border-default)' }}>
+                              Lv {lv} {unlocked ? '' : '(locked)'}
                             </p>
                             <div className="flex flex-wrap gap-1">
                               {tierItems.map((item) => (
@@ -346,7 +343,7 @@ export function PetsPage({ activeQuests }: Props) {
         </button>
 
         {catalogExpanded && (
-          <div className="px-4 pb-4 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+          <div className="px-3 pb-3 space-y-1.5" style={{ borderTop: '1px solid var(--border-subtle)' }}>
             {allPets.map((pet) => {
               const owned = ownedPets[pet.id];
               const isOwned = owned !== undefined;
@@ -354,7 +351,7 @@ export function PetsPage({ activeQuests }: Props) {
               return (
                 <div
                   key={pet.id}
-                  className="rounded-lg p-3 space-y-2"
+                  className="rounded-lg p-2 space-y-1"
                   style={{
                     background: 'var(--surface-raised)',
                     border: `1px solid ${isOwned ? 'var(--accent-purple-border)' : 'var(--border-subtle)'}`,
@@ -365,7 +362,7 @@ export function PetsPage({ activeQuests }: Props) {
                       {pet.name}
                     </span>
                     <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
-                      {formatCost(pet.cost)} silver
+                      {formatCost(pet.cost)}s
                     </span>
                     {isOwned ? (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
@@ -389,14 +386,14 @@ export function PetsPage({ activeQuests }: Props) {
                   )}
 
                   {/* Loot by tier */}
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {LOOT_TIERS.map((lv) => {
                       const tierItems = pet.loot[String(lv)] ?? [];
                       const unlocked = isOwned && (owned ?? 0) >= lv;
                       return (
-                        <div key={lv} className="flex items-start gap-2">
+                        <div key={lv} className="flex items-start gap-1.5">
                           <span
-                            className="text-[10px] font-semibold px-1.5 py-0.5 rounded flex-shrink-0 mt-0.5"
+                            className="text-[10px] font-semibold px-1 py-0.5 rounded flex-shrink-0 mt-0.5"
                             style={
                               unlocked
                                 ? { background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }
