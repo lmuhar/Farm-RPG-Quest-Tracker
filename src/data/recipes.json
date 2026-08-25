@@ -4175,5 +4175,20 @@
       { "item": "Coin Purse", "quantity": 1 },
       { "item": "Blue Dye",   "quantity": 1 }
     ]
+  },
+  {
+    "id": "723",
+    "name": "Red Berry Pie",
+    "ingredients": [
+      { "item": "Coal",        "quantity": 750 },
+      { "item": "Red Berries", "quantity": 200 },
+      { "item": "Sweet Root",  "quantity": 100 },
+      { "item": "Flour",       "quantity": 25  },
+      { "item": "Eggs",        "quantity": 10  },
+      { "item": "Salt",        "quantity": 10  },
+      { "item": "Butter",      "quantity": 5   },
+      { "item": "Milk",        "quantity": 1   },
+      { "item": "Pie Pan",     "quantity": 1   }
+    ]
   }
 ]
