@@ -56,9 +56,12 @@ interface Store extends AppState {
 }
 
 const defaultCropTimes = [
-  { item: 'Peppers',    growMinutes: 0.0915 },  // ~5.5 secs
-  { item: 'Carrot',     growMinutes: 0.1915 },  // ~11.5 secs
-  { item: 'Peas',       growMinutes: 0.2915 },  // ~17.5 secs
+  { item: 'Peppers',      growMinutes: 0.0915 },  // ~5.5 secs
+  { item: 'Gold Peppers', growMinutes: 0.0915 },
+  { item: 'Carrot',       growMinutes: 0.1915 },  // ~11.5 secs
+  { item: 'Gold Carrot',  growMinutes: 0.1915 },
+  { item: 'Peas',         growMinutes: 0.2915 },  // ~17.5 secs
+  { item: 'Gold Peas',    growMinutes: 0.2915 },
   { item: 'Cucumber',   growMinutes: 0.3915 },  // ~23.5 secs
   { item: 'Eggplant',   growMinutes: 0.5 },     // 30 secs
   { item: 'Radish',     growMinutes: 1 },

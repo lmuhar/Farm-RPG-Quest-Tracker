@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
-import { CheckCircle2, Hammer, Sprout, AlertTriangle, Zap, Clock, ChefHat, Gift, Fish, Users } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS, WISHING_WELL_SOURCES, findTowerLevel } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel } from '../data/bottlenecks';
+import { BottleneckPanel } from './BottleneckPanel';
+import type { BottleneckEntry } from './BottleneckPanel';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
@@ -105,7 +107,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     }
 
     // Bottleneck items — curated rare items + pet-only drops
-    const bottleneckMap = new Map<string, { active: number; nextup: number; have: number; need: number; location: string; towerLv?: { level: number; levelsAway: number } }>();
+    const bottleneckMap = new Map<string, { activeCount: number; nextupCount: number; have: number; need: number; location: string; towerLv?: { level: number; levelsAway: number } }>();
     for (const q of allQ) {
       const isNextUp = !activeQuests.includes(q);
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
@@ -121,9 +123,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         } else {
           continue;
         }
-        const existing = bottleneckMap.get(item) ?? { active: 0, nextup: 0, have, need: 0, location, towerLv: findTowerLevel(item, towerLevel) };
-        if (isNextUp) existing.nextup++;
-        else existing.active++;
+        const existing = bottleneckMap.get(item) ?? { activeCount: 0, nextupCount: 0, have, need: 0, location, towerLv: findTowerLevel(item, towerLevel) };
+        if (isNextUp) existing.nextupCount++;
+        else existing.activeCount++;
         existing.need = Math.max(existing.need, quantity);
         bottleneckMap.set(item, existing);
       }
@@ -148,13 +150,13 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         const have = inventory[templeItem] ?? 0;
         const deficit = Math.max(0, totalNeed - have);
         const { runs } = calcRuns(deficit);
-        bottleneckMap.set(templeItem, { active: activeCount, nextup: nextupCount, have, need: totalNeed, location: `${location} · ${runs} run${runs !== 1 ? 's' : ''}` });
+        bottleneckMap.set(templeItem, { activeCount, nextupCount, have, need: totalNeed, location: `${location} · ${runs} run${runs !== 1 ? 's' : ''}` });
       }
     }
 
-    const bottlenecks = [...bottleneckMap.entries()]
-      .map(([item, { active, nextup, have, need, location, towerLv }]) => ({ item, active, nextup, have, need, location, towerLv }))
-      .sort((a, b) => b.active - a.active || b.nextup - a.nextup)
+    const bottlenecks: BottleneckEntry[] = [...bottleneckMap.entries()]
+      .map(([item, { activeCount, nextupCount, have, need, location, towerLv }]) => ({ item, activeCount, nextupCount, have, need, location, towerLv }))
+      .sort((a, b) => (b.activeCount ?? 0) - (a.activeCount ?? 0) || (b.nextupCount ?? 0) - (a.nextupCount ?? 0))
       .slice(0, 10);
 
     // Gold fish needed for active/next-up quests
@@ -343,61 +345,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Bottleneck items */}
-        {bottlenecks.length > 0 && (
-          <div
-            className="rounded-xl overflow-hidden"
-            style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
-          >
-            <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}>
-              <AlertTriangle size={13} style={{ color: 'var(--accent-orange)' }} />
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-orange)' }}>Bottlenecks</span>
-              <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— no easy source</span>
-            </div>
-            <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {bottlenecks.map(({ item, active, nextup, have, need, location, towerLv }) => {
-                const wellSources = WISHING_WELL_SOURCES.get(item);
-                return (
-                  <div key={item} className="px-4 py-2.5">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                          <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
-                          {towerLv && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
-                              Tower Lv {towerLv.level} ({towerLv.levelsAway} away)
-                            </span>
-                          )}
-                          {active > 0 && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: '1px solid var(--accent-yellow-border)' }}>
-                              {active} active
-                            </span>
-                          )}
-                          {nextup > 0 && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
-                              {nextup} next up
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= need ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
-                        {have}/{need}
-                      </span>
-                    </div>
-                    {wellSources && (
-                      <div className="mt-1 text-[10px] flex flex-wrap gap-x-2 gap-y-0.5" style={{ color: 'var(--text-muted)' }}>
-                        <span style={{ color: 'var(--accent-blue)', fontWeight: 600 }}>throw in:</span>
-                        {wellSources.map(({ item: src, pct }) => (
-                          <span key={src}>{src} <span style={{ opacity: 0.6 }}>{pct}%</span></span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <BottleneckPanel entries={bottlenecks} hint="— no easy source" />
 
         {/* Crops to grow */}
         {cropItems.length > 0 && (

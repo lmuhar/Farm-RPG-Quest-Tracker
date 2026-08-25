@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, AlertTriangle,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -17,6 +17,7 @@ import { CraftworksSuggestions } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import itemLocationsData from '../data/item-locations.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel } from '../data/bottlenecks';
+import { BottleneckPanel } from './BottleneckPanel';
 
 const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
@@ -68,13 +69,14 @@ function getItemTierData(
   const allLocs = itemLocations[item] ?? [];
   const fishingSources = allLocs.filter(l => l.type === 'fishing').map(l => l.name);
   const exploreSources = allLocs.filter(l => l.type === 'explore').map(l => l.name);
+  const farmingSources = allLocs.filter(l => l.type === 'farming').map(l => l.name);
   return {
     item, quantity, have, deficit, pct, done,
     recipe, directIngredients, rawMaterials,
     isDirectCraftNow, isRawCraftNow, isCraftNow,
     cropTime, grows, totalTime, seedsHave, seedsToBuy,
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave,
-    fishingSources, exploreSources,
+    fishingSources, exploreSources, farmingSources,
   };
 }
 
@@ -102,7 +104,7 @@ function TierItemRow({
 }: {
   data: ItemData;
   inventory: Record<string, number>;
-  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore';
+  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore' | 'farming';
   openLoc: boolean;
   onToggleLoc: () => void;
   allNeededItems: string[];
@@ -118,6 +120,7 @@ function TierItemRow({
     tier === 'rawCraft' ? 'var(--accent-purple)' :
     tier === 'craftingQueue' ? 'var(--accent-yellow)' :
     tier === 'crop' ? 'var(--accent-green)' :
+    tier === 'farming' ? 'var(--accent-green)' :
     tier === 'fishing' ? 'var(--accent-blue)' :
     tier === 'explore' ? 'var(--accent-purple)' :
     'var(--accent-orange)';
@@ -270,6 +273,14 @@ function TierItemRow({
             </p>
           )}
 
+          {/* Farming locations */}
+          {tier === 'farming' && data.farmingSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-green)' }}>
+              <Sprout size={10} />
+              {data.farmingSources.join(' · ')} (gold crop drop)
+            </p>
+          )}
+
           {/* Temple items */}
           {isHoney && honey && (
             <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
@@ -410,7 +421,7 @@ function SummaryPanel({
           <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
           {tiers.collecting.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory}
-              tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
+              tier={d.isHoney || d.isCutlass ? 'temple' : d.fishingSources.length > 0 ? 'fishing' : d.exploreSources.length > 0 ? 'explore' : d.farmingSources.length > 0 ? 'farming' : 'collecting'}
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
               allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
@@ -695,7 +706,7 @@ function QuestSection({
                   <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
                   {tiers.collecting.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory}
-                      tier={d.isHoney || d.isCutlass ? 'temple' : 'collecting'}
+                      tier={d.isHoney || d.isCutlass ? 'temple' : d.fishingSources.length > 0 ? 'fishing' : d.exploreSources.length > 0 ? 'explore' : d.farmingSources.length > 0 ? 'farming' : 'collecting'}
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
                       allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
@@ -913,43 +924,7 @@ export function QuestFocusPage() {
       {/* Summary sub-tab — aggregate resource view */}
       {towerSubTab === 'summary' && (
         <>
-          {focusBottlenecks.length > 0 && (
-            <div
-              className="rounded-xl overflow-hidden"
-              style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-orange-border)' }}
-            >
-              <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}>
-                <AlertTriangle size={13} style={{ color: 'var(--accent-orange)' }} />
-                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-orange)' }}>Bottlenecks</span>
-                <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— entire questline</span>
-              </div>
-              <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-                {focusBottlenecks.map(({ item, have, need, location, questCount, towerLv }) => (
-                  <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
-                      <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                        <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
-                        {towerLv && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}>
-                            Tower Lv {towerLv.level} ({towerLv.levelsAway} away)
-                          </span>
-                        )}
-                        {questCount > 1 && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
-                            {questCount} quests
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= need ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
-                      {have}/{need}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <BottleneckPanel entries={focusBottlenecks} hint="— entire questline" />
           <SummaryPanel
             questsWithStatus={questsWithStatus}
             inventory={inventory}
