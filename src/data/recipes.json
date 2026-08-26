@@ -4177,6 +4177,21 @@
     ]
   },
   {
+    "id": "724",
+    "name": "Hickory Omelette",
+    "ingredients": [
+      { "item": "Bird Egg", "quantity": 550 },
+      { "item": "Coal",     "quantity": 240 },
+      { "item": "Peppers",  "quantity": 6   },
+      { "item": "Tomato",   "quantity": 3   },
+      { "item": "Salt",     "quantity": 3   },
+      { "item": "Milk",     "quantity": 2   },
+      { "item": "Cheese",   "quantity": 2   },
+      { "item": "Herbs",    "quantity": 2   },
+      { "item": "Butter",   "quantity": 1   }
+    ]
+  },
+  {
     "id": "723",
     "name": "Red Berry Pie",
     "ingredients": [
