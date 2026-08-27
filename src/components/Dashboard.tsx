@@ -5,6 +5,7 @@ import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlass
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
+import npcsData from '../data/npcs.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
 import type { BottleneckEntry } from './BottleneckPanel';
@@ -13,6 +14,7 @@ interface Recipe { id: string; name: string; ingredients: { item: string; quanti
 const allRecipes = recipesData as Recipe[];
 const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLowerCase(), r]));
 const allQuestsData = questsData as Quest[];
+const npcItemsMap = new Map((npcsData as { name: string; items: string[] }[]).map(n => [n.name, n.items]));
 
 // Gold fish items catchable only via manual fishing with mealworms, mapped to their fishing location
 const GOLD_FISH = new Map<string, string>([
@@ -232,15 +234,26 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
   }, [player, inventory, inventoryMax]);
 
   const HELP_REQUEST_NPCS = [
-    { npc: 'Buddy',          nextHelpLv: 60, lovedItems: ['Pirate Bandana', 'Valentines Card', 'Buddy Doll', 'Purple Flower', 'Pirate Flag', 'Buddystone'] },
-    { npc: 'Captain Thomas', nextHelpLv: 25, lovedItems: ['Fishing Net', 'Gold Catfish', 'Large Net', 'Gold Drum', 'Gold Trout', 'Slobster'] },
-    { npc: 'Geist',          nextHelpLv: 25, lovedItems: ['Gold Catfish', 'Shrimp-a-Plenty', 'Sea Pincher Special', 'Goldgill'] },
-    { npc: 'ROOMBA',         nextHelpLv: 40, lovedItems: ['Cogwheel', 'Carbon Sphere', 'Scrap Metal'] },
-    { npc: 'Lorn',           nextHelpLv: 60, lovedItems: ['Glass Orb', 'Milk', 'Gold Peas', 'Small Prawn', 'Shrimp'] },
-    { npc: 'George',         nextHelpLv: 70, lovedItems: ['Hide', 'Spider', 'Apple Cider', 'Mug of Beer', 'Carbon Sphere'] },
-    { npc: 'Jill',           nextHelpLv: 96, lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'] },
-    { npc: 'Gary Bearson V', nextHelpLv: 80, lovedItems: ['Yarn', 'Gold Trout', 'You Rock Card', 'Apple Cider'] },
-    { npc: 'Goostav',        nextHelpLv: 80, lovedItems: ['Slime Egg Shell', 'Glowshroom', 'Swamp Gourd', 'Mini Slime Squid', 'Gold Slimeback'] },
+    { npc: 'Buddy',          nextHelpLv: 90 },
+    { npc: 'Captain Thomas', nextHelpLv: 20 },
+    { npc: 'Geist',          nextHelpLv: 25 },
+    { npc: 'ROOMBA',         nextHelpLv: 40 },
+    { npc: 'Lorn',           nextHelpLv: 60 },
+    { npc: 'George',         nextHelpLv: 70 },
+    { npc: 'Jill',           nextHelpLv: 96 },
+    { npc: 'Gary Bearson V', nextHelpLv: 80 },
+    { npc: 'Goostav',        nextHelpLv: 80 },
+    { npc: 'Rosalie',        nextHelpLv: 50 },
+    { npc: 'Thomas',         nextHelpLv: 40 },
+    { npc: 'Vincent',        nextHelpLv: 30 },
+    { npc: 'Borgen',         nextHelpLv: 60 },
+    { npc: 'Ric Ryph',       nextHelpLv: 30 },
+    { npc: 'Mummy',          nextHelpLv: 30 },
+    { npc: 'Star Meerif',    nextHelpLv: 30 },
+    { npc: 'frank',          nextHelpLv: 40 },
+    { npc: 'Mariya',         nextHelpLv: 50 },
+    { npc: 'Baba Gec',       nextHelpLv: 30 },
+    { npc: 'Cid',            nextHelpLv: 30 },
   ];
 
   const helpRequestHints = useMemo(() => {
@@ -248,7 +261,8 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       .map((entry) => {
         const npcLv = player.npcLevels[entry.npc] ?? 0;
         const met = npcLv >= entry.nextHelpLv;
-        const lovedItemStats = entry.lovedItems.map((item) => {
+        const lovedItems = npcItemsMap.get(entry.npc) ?? [];
+        const lovedItemStats = lovedItems.map((item) => {
           const have = inventory[item] ?? 0;
           const pct = inventoryMax > 0 ? have / inventoryMax : 0;
           return { item, have, atMax: have >= inventoryMax, nearMax: pct >= 0.9 };

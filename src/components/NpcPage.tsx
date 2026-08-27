@@ -27,8 +27,8 @@ const REWARD_MILESTONES: { npc: string; nextRewardLv: number }[] = [
 ];
 
 const HELP_MILESTONES: { npc: string; nextHelpLv: number }[] = [
-  { npc: 'Buddy',         nextHelpLv: 60 },
-  { npc: 'Captain Thomas',nextHelpLv: 25 },
+  { npc: 'Buddy',         nextHelpLv: 90 },
+  { npc: 'Captain Thomas',nextHelpLv: 20 },
   { npc: 'Geist',         nextHelpLv: 25 },
   { npc: 'ROOMBA',        nextHelpLv: 40 },
   { npc: 'Lorn',          nextHelpLv: 60 },
@@ -36,6 +36,17 @@ const HELP_MILESTONES: { npc: string; nextHelpLv: number }[] = [
   { npc: 'Jill',          nextHelpLv: 96 },
   { npc: 'Gary Bearson V',nextHelpLv: 80 },
   { npc: 'Goostav',       nextHelpLv: 80 },
+  { npc: 'Rosalie',       nextHelpLv: 50 },
+  { npc: 'Thomas',        nextHelpLv: 40 },
+  { npc: 'Vincent',       nextHelpLv: 30 },
+  { npc: 'Borgen',        nextHelpLv: 60 },
+  { npc: 'Ric Ryph',      nextHelpLv: 30 },
+  { npc: 'Mummy',         nextHelpLv: 30 },
+  { npc: 'Star Meerif',   nextHelpLv: 30 },
+  { npc: 'frank',         nextHelpLv: 40 },
+  { npc: 'Mariya',        nextHelpLv: 50 },
+  { npc: 'Baba Gec',      nextHelpLv: 30 },
+  { npc: 'Cid',           nextHelpLv: 30 },
 ];
 
 interface NpcEntry {
