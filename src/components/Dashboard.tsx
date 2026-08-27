@@ -264,8 +264,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         const lovedItems = npcItemsMap.get(entry.npc) ?? [];
         const lovedItemStats = lovedItems.map((item) => {
           const have = inventory[item] ?? 0;
-          const pct = inventoryMax > 0 ? have / inventoryMax : 0;
-          return { item, have, atMax: have >= inventoryMax, nearMax: pct >= 0.9 };
+          return { item, have, atMax: have >= inventoryMax, nearMax: have >= 200 };
         });
         return { ...entry, npcLv, met, lovedItemStats, gap: entry.nextHelpLv - npcLv };
       })
