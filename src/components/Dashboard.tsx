@@ -232,8 +232,8 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
   }, [player, inventory, inventoryMax]);
 
   const HELP_REQUEST_NPCS = [
-    { npc: 'Buddy',          nextHelpLv: 60, lovedItems: ['Pirate Bandana', 'Valentines Card', 'Buddy Doll', 'Purple Flower', 'Pirate Flag', 'Buddystone'] },
-    { npc: 'Captain Thomas', nextHelpLv: 25, lovedItems: ['Fishing Net', 'Gold Catfish', 'Large Net', 'Gold Drum', 'Gold Trout', 'Slobster'] },
+    { npc: 'Buddy',          nextHelpLv: 90, lovedItems: ['Pirate Bandana', 'Valentines Card', 'Buddy Doll', 'Purple Flower', 'Pirate Flag', 'Buddystone'] },
+    { npc: 'Captain Thomas', nextHelpLv: 20, lovedItems: ['Fishing Net', 'Gold Catfish', 'Large Net', 'Gold Drum', 'Gold Trout', 'Slobster'] },
     { npc: 'Geist',          nextHelpLv: 25, lovedItems: ['Gold Catfish', 'Shrimp-a-Plenty', 'Sea Pincher Special', 'Goldgill'] },
     { npc: 'ROOMBA',         nextHelpLv: 40, lovedItems: ['Cogwheel', 'Carbon Sphere', 'Scrap Metal'] },
     { npc: 'Lorn',           nextHelpLv: 60, lovedItems: ['Glass Orb', 'Milk', 'Gold Peas', 'Small Prawn', 'Shrimp'] },
@@ -241,6 +241,17 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     { npc: 'Jill',           nextHelpLv: 96, lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'] },
     { npc: 'Gary Bearson V', nextHelpLv: 80, lovedItems: ['Yarn', 'Gold Trout', 'You Rock Card', 'Apple Cider'] },
     { npc: 'Goostav',        nextHelpLv: 80, lovedItems: ['Slime Egg Shell', 'Glowshroom', 'Swamp Gourd', 'Mini Slime Squid', 'Gold Slimeback'] },
+    { npc: 'Rosalie',        nextHelpLv: 50, lovedItems: [] },
+    { npc: 'Thomas',         nextHelpLv: 40, lovedItems: [] },
+    { npc: 'Vincent',        nextHelpLv: 30, lovedItems: [] },
+    { npc: 'Borgen',         nextHelpLv: 60, lovedItems: [] },
+    { npc: 'Ric Ryph',       nextHelpLv: 30, lovedItems: [] },
+    { npc: 'Mummy',          nextHelpLv: 30, lovedItems: [] },
+    { npc: 'Star Meerif',    nextHelpLv: 30, lovedItems: [] },
+    { npc: 'frank',          nextHelpLv: 40, lovedItems: [] },
+    { npc: 'Mariya',         nextHelpLv: 50, lovedItems: [] },
+    { npc: 'Baba Gec',       nextHelpLv: 30, lovedItems: [] },
+    { npc: 'Cid',            nextHelpLv: 30, lovedItems: [] },
   ];
 
   const helpRequestHints = useMemo(() => {
