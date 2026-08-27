@@ -321,6 +321,58 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       });
   }, [activeQuests, nextUpQuests, questStatuses, inventory, cropTimes, plotCount, recipeMap]);
 
+  const craftItems = useMemo(() => {
+    const EXCLUDED = new Set(['board', 'rope', 'twine']);
+    const cropSet = new Set(cropTimes.map(c => c.item.toLowerCase()));
+
+    const allItemMap = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' }>();
+    for (const q of activeQuests) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        const ex = allItemMap.get(item);
+        allItemMap.set(item, { totalNeeded: (ex?.totalNeeded ?? 0) + quantity, priority: 'active' });
+      }
+    }
+    for (const q of nextUpQuests) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        if (allItemMap.has(item)) continue;
+        allItemMap.set(item, { totalNeeded: quantity, priority: 'nextup' });
+      }
+    }
+
+    const result: {
+      item: string;
+      deficit: number;
+      totalNeeded: number;
+      priority: 'active' | 'nextup';
+      readiness: 'now' | 'soon';
+      ingredients: { item: string; needed: number; have: number; ready: boolean }[];
+    }[] = [];
+
+    for (const [item, { totalNeeded, priority }] of allItemMap.entries()) {
+      if (EXCLUDED.has(item.toLowerCase())) continue;
+      if (cropSet.has(item.toLowerCase())) continue;
+      if (totalNeeded > inventoryMax) continue;
+      const have = inventory[item] ?? 0;
+      const deficit = totalNeeded - have;
+      if (deficit <= 0) continue;
+      const recipe = recipeMap.get(item.toLowerCase());
+      if (!recipe) continue;
+      const ingredients = recipe.ingredients.map(({ item: ing, quantity: qty }) => {
+        const needed = qty * deficit;
+        const haveIng = inventory[ing] ?? 0;
+        return { item: ing, needed, have: haveIng, ready: haveIng >= needed };
+      });
+      const allReady = ingredients.every(i => i.ready);
+      result.push({ item, deficit, totalNeeded, priority, readiness: allReady ? 'now' : 'soon', ingredients });
+    }
+
+    return result.sort((a, b) => {
+      if (a.readiness !== b.readiness) return a.readiness === 'now' ? -1 : 1;
+      if (a.priority !== b.priority) return a.priority === 'active' ? -1 : 1;
+      return a.item.localeCompare(b.item);
+    });
+  }, [activeQuests, nextUpQuests, inventory, inventoryMax, recipeMap, cropTimes]);
+
   return (
     <div className="space-y-4">
       {/* Do right now */}
@@ -463,6 +515,63 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           </div>
         )}
       </div>
+
+      {/* Things to craft */}
+      {craftItems.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}>
+            <Hammer size={13} style={{ color: 'var(--accent-orange)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-orange)' }}>Things to craft</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {craftItems.map(({ item, deficit, totalNeeded, priority, readiness, ingredients }) => {
+              const have = inventory[item] ?? 0;
+              return (
+                <div key={item} className="px-4 py-3">
+                  <div className="flex items-center gap-2 flex-wrap mb-2">
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
+                      ×{deficit} to craft · {have}/{totalNeeded}
+                    </span>
+                    {priority === 'nextup' && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                        next up
+                      </span>
+                    )}
+                    {readiness === 'now' && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold ml-auto" style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}>
+                        ready!
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {ingredients.map(({ item: ing, needed, have: haveIng, ready }) => (
+                      <div
+                        key={ing}
+                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                        style={{
+                          background: ready ? 'var(--accent-green-bg)' : haveIng > 0 ? 'var(--accent-yellow-bg)' : 'var(--surface-inset)',
+                          border: `1px solid ${ready ? 'var(--accent-green-border)' : haveIng > 0 ? 'var(--accent-yellow-border)' : 'var(--border-subtle)'}`,
+                        }}
+                      >
+                        <span style={{ color: ready ? 'var(--accent-green)' : haveIng > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
+                          {ing}
+                        </span>
+                        <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : haveIng > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
+                          {haveIng}/{needed}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Gold fish — Use your mealworms here */}
       {goldFishNeeds.length > 0 && (
