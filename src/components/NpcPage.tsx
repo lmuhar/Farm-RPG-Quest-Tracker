@@ -20,7 +20,7 @@ const REWARD_MILESTONES: { npc: string; nextRewardLv: number }[] = [
   { npc: 'Captain Thomas',nextRewardLv: 20 },
   { npc: 'frank',         nextRewardLv: 40 },
   { npc: 'Mariya',        nextRewardLv: 40 },
-  { npc: 'Baba Gec',      nextRewardLv: 30 },
+  { npc: 'Baba Gec',      nextRewardLv: 40 },
   { npc: 'Geist',         nextRewardLv: 20 },
   { npc: 'Cid',           nextRewardLv: 30 },
   { npc: 'Goostav',       nextRewardLv: 20 },
