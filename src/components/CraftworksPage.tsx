@@ -196,7 +196,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
   // ── Tab 6: passive 100k — chain items worth actively targeting for 100 AK pts ──
   // Excludes terminal items (Broom, Ladder, Wagon Wheel, Wooden Box, Wooden Table) and
   // Nailed Board (its key ingredient, Nails, accumulates passively from stone drops).
-  const PASSIVE_100K_ITEMS = ['Board', 'Rope', 'Twine', 'Wooden Plank', 'Yarn'] as const;
+  const PASSIVE_100K_ITEMS = ['Board', 'Broom', 'Ladder', 'Rope', 'Twine', 'Wooden Plank', 'Wooden Box', 'Wooden Table', 'Wagon Wheel', 'Yarn'] as const;
   const passive100kItems = useMemo((): DirectItem[] => {
     type Candidate = { item: string; count: number; level: number; pct: number };
     const candidates: Candidate[] = [];
