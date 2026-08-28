@@ -85,32 +85,92 @@
     "id": "634",
     "name": "Mushroom Stew",
     "ingredients": [
-      { "item": "Coal",        "quantity": 180 },
-      { "item": "Mushroom",    "quantity": 100 },
-      { "item": "Peppers",     "quantity": 60  },
-      { "item": "Carrot",      "quantity": 60  },
-      { "item": "Leek",        "quantity": 32  },
-      { "item": "Onion",       "quantity": 20  },
-      { "item": "Cooking Pot", "quantity": 1   },
-      { "item": "Bone Broth",  "quantity": 1   }
+      {
+        "item": "Coal",
+        "quantity": 180
+      },
+      {
+        "item": "Mushroom",
+        "quantity": 100
+      },
+      {
+        "item": "Peppers",
+        "quantity": 60
+      },
+      {
+        "item": "Carrot",
+        "quantity": 60
+      },
+      {
+        "item": "Leek",
+        "quantity": 32
+      },
+      {
+        "item": "Onion",
+        "quantity": 20
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      }
     ]
   },
   {
     "id": "644",
     "name": "Quandary Chowder",
     "ingredients": [
-      { "item": "Coal",        "quantity": 240 },
-      { "item": "Corn",        "quantity": 16  },
-      { "item": "Milk",        "quantity": 10  },
-      { "item": "Potato",      "quantity": 5   },
-      { "item": "Carrot",      "quantity": 3   },
-      { "item": "Red Berries", "quantity": 3   },
-      { "item": "Bacon",       "quantity": 2   },
-      { "item": "Herbs",       "quantity": 2   },
-      { "item": "Salt",        "quantity": 1   },
-      { "item": "Corn Oil",    "quantity": 1   },
-      { "item": "Cooking Pot", "quantity": 1   },
-      { "item": "Bone Broth",  "quantity": 1   }
+      {
+        "item": "Coal",
+        "quantity": 240
+      },
+      {
+        "item": "Corn",
+        "quantity": 16
+      },
+      {
+        "item": "Milk",
+        "quantity": 10
+      },
+      {
+        "item": "Potato",
+        "quantity": 5
+      },
+      {
+        "item": "Carrot",
+        "quantity": 3
+      },
+      {
+        "item": "Red Berries",
+        "quantity": 3
+      },
+      {
+        "item": "Bacon",
+        "quantity": 2
+      },
+      {
+        "item": "Herbs",
+        "quantity": 2
+      },
+      {
+        "item": "Salt",
+        "quantity": 1
+      },
+      {
+        "item": "Corn Oil",
+        "quantity": 1
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      }
     ]
   },
   {
@@ -4044,48 +4104,6 @@
     ]
   },
   {
-    "id": "etl_723",
-    "name": "Red Berry Pie",
-    "ingredients": [
-      {
-        "item": "Eggs",
-        "quantity": 10
-      },
-      {
-        "item": "Milk",
-        "quantity": 1
-      },
-      {
-        "item": "Sweet Root",
-        "quantity": 100
-      },
-      {
-        "item": "Coal",
-        "quantity": 750
-      },
-      {
-        "item": "Flour",
-        "quantity": 25
-      },
-      {
-        "item": "Salt",
-        "quantity": 10
-      },
-      {
-        "item": "Red Berries",
-        "quantity": 200
-      },
-      {
-        "item": "Butter",
-        "quantity": 5
-      },
-      {
-        "item": "Pie Pan",
-        "quantity": 1
-      }
-    ]
-  },
-  {
     "id": "etl_616",
     "name": "Toilet Paper",
     "ingredients": [
@@ -4151,59 +4169,180 @@
     "id": "717",
     "name": "Frost Shield",
     "ingredients": [
-      { "item": "Nails",              "quantity": 3 },
-      { "item": "Blue Gel",           "quantity": 3 },
-      { "item": "Hammer",             "quantity": 1 },
-      { "item": "Red Shield",         "quantity": 1 },
-      { "item": "Frost Snapper Shell","quantity": 1 }
+      {
+        "item": "Nails",
+        "quantity": 3
+      },
+      {
+        "item": "Blue Gel",
+        "quantity": 3
+      },
+      {
+        "item": "Hammer",
+        "quantity": 1
+      },
+      {
+        "item": "Red Shield",
+        "quantity": 1
+      },
+      {
+        "item": "Frost Snapper Shell",
+        "quantity": 1
+      }
     ]
   },
   {
     "id": "760",
     "name": "Red Trunk",
     "ingredients": [
-      { "item": "Nails",   "quantity": 16 },
-      { "item": "Steel",   "quantity": 8  },
-      { "item": "Red Dye", "quantity": 4  },
-      { "item": "Leather", "quantity": 3  }
+      {
+        "item": "Nails",
+        "quantity": 16
+      },
+      {
+        "item": "Steel",
+        "quantity": 8
+      },
+      {
+        "item": "Red Dye",
+        "quantity": 4
+      },
+      {
+        "item": "Leather",
+        "quantity": 3
+      }
     ]
   },
   {
     "id": "761",
     "name": "Blue Purse",
     "ingredients": [
-      { "item": "Coin Purse", "quantity": 1 },
-      { "item": "Blue Dye",   "quantity": 1 }
+      {
+        "item": "Coin Purse",
+        "quantity": 1
+      },
+      {
+        "item": "Blue Dye",
+        "quantity": 1
+      }
     ]
   },
   {
     "id": "724",
     "name": "Hickory Omelette",
     "ingredients": [
-      { "item": "Bird Egg", "quantity": 550 },
-      { "item": "Coal",     "quantity": 240 },
-      { "item": "Peppers",  "quantity": 6   },
-      { "item": "Tomato",   "quantity": 3   },
-      { "item": "Salt",     "quantity": 3   },
-      { "item": "Milk",     "quantity": 2   },
-      { "item": "Cheese",   "quantity": 2   },
-      { "item": "Herbs",    "quantity": 2   },
-      { "item": "Butter",   "quantity": 1   }
+      {
+        "item": "Bird Egg",
+        "quantity": 550
+      },
+      {
+        "item": "Coal",
+        "quantity": 240
+      },
+      {
+        "item": "Peppers",
+        "quantity": 6
+      },
+      {
+        "item": "Tomato",
+        "quantity": 3
+      },
+      {
+        "item": "Salt",
+        "quantity": 3
+      },
+      {
+        "item": "Milk",
+        "quantity": 2
+      },
+      {
+        "item": "Cheese",
+        "quantity": 2
+      },
+      {
+        "item": "Herbs",
+        "quantity": 2
+      },
+      {
+        "item": "Butter",
+        "quantity": 1
+      }
     ]
   },
   {
     "id": "723",
     "name": "Red Berry Pie",
     "ingredients": [
-      { "item": "Coal",        "quantity": 750 },
-      { "item": "Red Berries", "quantity": 200 },
-      { "item": "Sweet Root",  "quantity": 100 },
-      { "item": "Flour",       "quantity": 25  },
-      { "item": "Eggs",        "quantity": 10  },
-      { "item": "Salt",        "quantity": 10  },
-      { "item": "Butter",      "quantity": 5   },
-      { "item": "Milk",        "quantity": 1   },
-      { "item": "Pie Pan",     "quantity": 1   }
+      {
+        "item": "Coal",
+        "quantity": 750
+      },
+      {
+        "item": "Red Berries",
+        "quantity": 200
+      },
+      {
+        "item": "Sweet Root",
+        "quantity": 100
+      },
+      {
+        "item": "Flour",
+        "quantity": 25
+      },
+      {
+        "item": "Eggs",
+        "quantity": 10
+      },
+      {
+        "item": "Salt",
+        "quantity": 10
+      },
+      {
+        "item": "Butter",
+        "quantity": 5
+      },
+      {
+        "item": "Milk",
+        "quantity": 1
+      },
+      {
+        "item": "Pie Pan",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1512",
+    "name": "Breakfast Boost",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 120
+      },
+      {
+        "item": "Flour",
+        "quantity": 4
+      },
+      {
+        "item": "Eggs",
+        "quantity": 3
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 2
+      },
+      {
+        "item": "Butter",
+        "quantity": 1
+      },
+      {
+        "item": "Cheese",
+        "quantity": 1
+      },
+      {
+        "item": "Grape Juice",
+        "quantity": 1
+      }
     ]
   }
 ]
