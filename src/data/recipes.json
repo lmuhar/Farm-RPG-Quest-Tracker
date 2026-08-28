@@ -4310,5 +4310,39 @@
         "quantity": 1
       }
     ]
+  },
+  {
+    "id": "1512",
+    "name": "Breakfast Boost",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 120
+      },
+      {
+        "item": "Flour",
+        "quantity": 4
+      },
+      {
+        "item": "Eggs",
+        "quantity": 3
+      },
+      {
+        "item": "Cabbage",
+        "quantity": 2
+      },
+      {
+        "item": "Butter",
+        "quantity": 1
+      },
+      {
+        "item": "Cheese",
+        "quantity": 1
+      },
+      {
+        "item": "Grape Juice",
+        "quantity": 1
+      }
+    ]
   }
 ]
