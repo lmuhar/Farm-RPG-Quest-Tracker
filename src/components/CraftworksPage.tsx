@@ -449,7 +449,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
             <CraftworksSuggestions
               quests={[]}
               directItems={passive100kItems}
-              questlineOnly
+              noFiller
               subtitle="passive 100k · wood · board · straw · stone"
             />
           </div>

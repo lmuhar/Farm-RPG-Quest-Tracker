@@ -53,11 +53,12 @@ interface Props {
   quests: Quest[];
   nextUpQuests?: Quest[];
   questlineOnly?: boolean;
+  noFiller?: boolean;
   directItems?: DirectItem[];
   subtitle?: string;
 }
 
-export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly = false, directItems = [], subtitle = 'auto-chain order' }: Props) {
+export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly = false, noFiller = false, directItems = [], subtitle = 'auto-chain order' }: Props) {
   const { inventory, inventoryMax, craftingRecipes, craftworksSlots, setCraftworksSlots } = useStore();
   const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Set<number>>(new Set());
@@ -181,7 +182,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
 
     // ── Passive filler: fully passive items to fill remaining slots ───────
     // Skipped when questlineOnly — craftworks should only surface questline items.
-    if (!questlineOnly) {
+    if (!questlineOnly && !noFiller) {
       const questCount = candidateMap.size;
       if (questCount < craftworksSlots) {
         for (const [, recipe] of recipeMap) {
