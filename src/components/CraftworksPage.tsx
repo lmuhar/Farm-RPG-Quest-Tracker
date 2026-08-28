@@ -7,8 +7,9 @@ import type { DirectItem } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import masteriesData from '../data/masteries.json';
 import itemLocationsData from '../data/item-locations.json';
+import recipesData from '../data/recipes.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
-import { Fish, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Fish, AlertTriangle, TrendingUp, CheckCircle2 } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
 
@@ -39,6 +40,12 @@ const fishingSpots: { spot: string; fish: string[] }[] = (() => {
 })();
 
 // Crafting masteries using only Wood / Board / Straw / Nails / Rope / Twine chain
+interface RecipeEntry { id: string; name: string; ingredients: { item: string; quantity: number }[] }
+const allRecipeData = recipesData as RecipeEntry[];
+const passiveChainRecipes = new Map<string, RecipeEntry>(allRecipeData.map(r => [r.name.toLowerCase(), r]));
+
+const PASSIVE_100K_NAMES = ['Board', 'Broom', 'Ladder', 'Rope', 'Twine', 'Wooden Plank', 'Wooden Box', 'Wooden Table', 'Wagon Wheel', 'Yarn'] as const;
+
 const PASSIVE_MASTERY_ITEMS: { name: string; difficulty: number }[] = [
   { name: 'Board',        difficulty: 1 },
   { name: 'Broom',        difficulty: 1 },
@@ -193,30 +200,35 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       });
   }, [masteryLevels, inventoryMax]);
 
-  // ── Tab 6: passive 100k — chain items worth actively targeting for 100 AK pts ──
-  // Excludes terminal items (Broom, Ladder, Wagon Wheel, Wooden Box, Wooden Table) and
-  // Nailed Board (its key ingredient, Nails, accumulates passively from stone drops).
-  const PASSIVE_100K_ITEMS = ['Board', 'Broom', 'Ladder', 'Rope', 'Twine', 'Wooden Plank', 'Wooden Box', 'Wooden Table', 'Wagon Wheel', 'Yarn'] as const;
-  const passive100kItems = useMemo((): DirectItem[] => {
-    type Candidate = { item: string; count: number; level: number; pct: number };
-    const candidates: Candidate[] = [];
-    for (const name of PASSIVE_100K_ITEMS) {
+  // ── Tab 6: passive 100k — standalone mastery tracker, no quest/craftworks logic ──
+  const passive100kData = useMemo(() => {
+    const items = (PASSIVE_100K_NAMES as readonly string[]).map(name => {
       const level = masteryLevels[name] ?? 0;
       const count = masteryProgress[name] ?? 0;
-      if (level >= 2 || count >= 100_000) continue;
-      candidates.push({ item: name, count, level, pct: Math.min(1, count / 100_000) });
-    }
-    candidates.sort((a, b) => {
-      if (a.level !== b.level) return b.level - a.level;
-      return b.pct - a.pct;
+      const done = level >= 2 || count >= 100_000;
+      return { name, level, count, done, pct: Math.min(1, count / 100_000) };
     });
-    return candidates.map(({ item, count, level, pct }) => ({
-      item,
-      quantity: inventoryMax,
-      label: `100k · ${count.toLocaleString()}/100,000 (${Math.round(pct * 100)}% · ${(100_000 - count).toLocaleString()} left)`,
-      priority: level > 0 ? 'active' : 'nextup',
-    }));
-  }, [masteryProgress, masteryLevels, inventoryMax]);
+
+    // Primary: items still under 100k, sorted in-progress first then closest to target
+    const primary = items
+      .filter(i => !i.done)
+      .sort((a, b) => (b.level - a.level) || (b.pct - a.pct));
+
+    // Build steps: past-100k items that are a direct ingredient for a primary item
+    const buildSteps = items
+      .filter(i => i.done)
+      .flatMap(i => {
+        const neededFor = primary
+          .filter(j => {
+            const recipe = passiveChainRecipes.get(j.name.toLowerCase());
+            return recipe?.ingredients.some(ing => ing.item.toLowerCase() === i.name.toLowerCase());
+          })
+          .map(j => j.name);
+        return neededFor.length > 0 ? [{ name: i.name, neededFor }] : [];
+      });
+
+    return { primary, buildSteps };
+  }, [masteryProgress, masteryLevels]);
 
   // ── Tab 7: ascension points — sorted by tier, then craft difficulty, then % done ──
   const ascensionDirectItems = useMemo((): DirectItem[] => {
@@ -251,7 +263,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     { id: 'mastery',   label: 'Mastery' },
     { id: 'fishing',   label: 'Fishing' },
     { id: 'passive',    label: 'Passive' },
-    { id: 'passive100k', label: 'Passive 100k', dot: passive100kItems.length > 0 },
+    { id: 'passive100k', label: 'Passive 100k', dot: passive100kData.primary.length > 0 },
     { id: 'ascension',  label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
   ];
 
@@ -433,25 +445,76 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         )
       )}
 
-      {/* Tab 6 — passive 100k */}
+      {/* Tab 6 — passive 100k (standalone mastery tracker) */}
       {tab === 'passive100k' && (
-        passive100kItems.length === 0 ? (
+        passive100kData.primary.length === 0 && passive100kData.buildSteps.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <CheckCircle2 size={20} className="mx-auto mb-2" style={{ color: 'var(--accent-green)' }} />
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               All passive items have hit 100k crafted — 100 AK pts each claimed!
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
-              Passive items not yet at 100k crafted (+100 AK pts) — in-progress first, then closest to done
+              +100 AK pts each — in-progress first, then closest to done
             </p>
-            <CraftworksSuggestions
-              quests={[]}
-              directItems={passive100kItems}
-              noFiller
-              subtitle="passive 100k · wood · board · straw · stone"
-            />
+
+            {/* Primary progress list */}
+            <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+              <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+                {passive100kData.primary.map(({ name, level, count, pct }) => (
+                  <div key={name} className="px-4 py-3">
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>{name}</span>
+                        {level === 1 && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}>
+                            in progress
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs tabular-nums flex-shrink-0" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                        {count.toLocaleString()} / 100,000
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-inset)' }}>
+                        <div className="h-full rounded-full transition-all" style={{ width: `${pct * 100}%`, background: level > 0 ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
+                      </div>
+                      <span className="text-[11px] tabular-nums w-8 text-right flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
+                        {Math.round(pct * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Build steps: past-100k items still needed as ingredients */}
+            {passive100kData.buildSteps.length > 0 && (
+              <div>
+                <p className="text-[11px] px-1 mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                  Also needed as a build step:
+                </p>
+                <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+                  <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+                    {passive100kData.buildSteps.map(({ name, neededFor }) => (
+                      <div key={name} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{name}</span>
+                        <div className="flex flex-wrap gap-1 justify-end">
+                          {neededFor.map(n => (
+                            <span key={n} className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}>
+                              for {n}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )
       )}
