@@ -53,7 +53,7 @@ const PASSIVE_MASTERY_ITEMS: { name: string; difficulty: number }[] = [
   { name: 'Wooden Table', difficulty: 2 },
 ];
 
-type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'ascension';
+type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'passive100k' | 'ascension';
 
 interface Props {
   activeQuests: Quest[];
@@ -193,7 +193,29 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       });
   }, [masteryLevels, inventoryMax]);
 
-  // ── Tab 6: ascension points — sorted by tier, then craft difficulty, then % done ──
+  // ── Tab 6: passive 100k — passive items not yet at 100k crafted (100 AK pts each) ──
+  const passive100kItems = useMemo((): DirectItem[] => {
+    type Candidate = { item: string; count: number; level: number; pct: number };
+    const candidates: Candidate[] = [];
+    for (const m of PASSIVE_MASTERY_ITEMS) {
+      const level = masteryLevels[m.name] ?? 0;
+      if (level >= 2) continue;
+      const count = masteryProgress[m.name] ?? 0;
+      candidates.push({ item: m.name, count, level, pct: Math.min(1, count / 100_000) });
+    }
+    candidates.sort((a, b) => {
+      if (a.level !== b.level) return b.level - a.level;
+      return b.pct - a.pct;
+    });
+    return candidates.map(({ item, count, level, pct }) => ({
+      item,
+      quantity: inventoryMax,
+      label: `100k · ${count.toLocaleString()}/100,000 (${Math.round(pct * 100)}% · ${(100_000 - count).toLocaleString()} left)`,
+      priority: level > 0 ? 'active' : 'nextup',
+    }));
+  }, [masteryProgress, masteryLevels, inventoryMax]);
+
+  // ── Tab 7: ascension points — sorted by tier, then craft difficulty, then % done ──
   const ascensionDirectItems = useMemo((): DirectItem[] => {
     const craftDiff = new Map<string, number>(craftingMasteries.map((m) => [m.name, m.difficulty]));
     type Candidate = { item: string; count: number; target: number; pts: number; pct: number; diff: number; priority: 'active' | 'nextup' };
@@ -225,8 +247,9 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     { id: 'focus',     label: 'Quest Focus' },
     { id: 'mastery',   label: 'Mastery' },
     { id: 'fishing',   label: 'Fishing' },
-    { id: 'passive',   label: 'Passive' },
-    { id: 'ascension', label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
+    { id: 'passive',    label: 'Passive' },
+    { id: 'passive100k', label: 'Passive 100k', dot: passive100kItems.length > 0 },
+    { id: 'ascension',  label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
   ];
 
   return (
@@ -407,7 +430,29 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         )
       )}
 
-      {/* Tab 6 — ascension points */}
+      {/* Tab 6 — passive 100k */}
+      {tab === 'passive100k' && (
+        passive100kItems.length === 0 ? (
+          <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              All passive items have hit 100k crafted — 100 AK pts each claimed!
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
+              Passive items not yet at 100k crafted (+100 AK pts) — in-progress first, then closest to done
+            </p>
+            <CraftworksSuggestions
+              quests={[]}
+              directItems={passive100kItems}
+              subtitle="passive 100k · wood · board · straw · stone"
+            />
+          </div>
+        )
+      )}
+
+      {/* Tab 7 — ascension points */}
       {tab === 'ascension' && (
         ascensionDirectItems.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
