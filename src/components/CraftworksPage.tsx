@@ -38,8 +38,16 @@ const fishingSpots: { spot: string; fish: string[] }[] = (() => {
     .sort((a, b) => b.fish.length - a.fish.length);
 })();
 
-// Crafting masteries using only Wood / Board / Straw / Nails / Rope / Twine chain
-const PASSIVE_100K_NAMES = ['Board', 'Broom', 'Ladder', 'Rope', 'Twine', 'Wooden Plank', 'Wooden Box', 'Wooden Table', 'Wagon Wheel', 'Yarn'] as const;
+// Crafting masteries using only passive inputs (Wood, Stone, Nails, Straw, Iron, Worms, Grubs, Minnows)
+const PASSIVE_100K_NAMES = [
+  'Awl', 'Board', 'Broom', 'Bucket', 'Butter Churn', 'Chum',
+  'Fancy Pipe', 'Horseshoe', 'Iron Cup', 'Iron Ring',
+  'Ladder', 'Red Scarf', 'Rope',
+  'Sturdy Box', 'Sturdy Shield',
+  'Treasure Chest', 'Twine',
+  'Wagon Wheel', 'Wooden Barrel', 'Wooden Box', 'Wooden Button',
+  'Wooden Plank', 'Wooden Shield', 'Wooden Sword', 'Wooden Table', 'Yarn',
+] as const;
 
 const PASSIVE_MASTERY_ITEMS: { name: string; difficulty: number }[] = [
   { name: 'Board',        difficulty: 1 },
