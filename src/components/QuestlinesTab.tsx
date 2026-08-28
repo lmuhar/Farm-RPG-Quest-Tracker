@@ -14,6 +14,7 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
   const { questStatuses } = useStore();
   const [localSearch, setLocalSearch] = useState('');
   const [showCompleted, setShowCompleted] = useState(true);
+  const [activeOnly, setActiveOnly] = useState(false);
 
   const search = globalSearch ?? localSearch;
   const setSearch = setGlobalSearch ?? setLocalSearch;
@@ -34,11 +35,15 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
   }, [questlineGroups, search]);
 
   const visible = useMemo(() => {
-    if (showCompleted) return filtered;
-    return filtered.filter(
-      ({ quests }) => quests.filter((q) => questStatuses[q.id] === 'completed').length < quests.length
-    );
-  }, [filtered, showCompleted, questStatuses]);
+    let result = filtered;
+    if (!showCompleted)
+      result = result.filter(
+        ({ quests }) => quests.filter((q) => questStatuses[q.id] === 'completed').length < quests.length
+      );
+    if (activeOnly)
+      result = result.filter(({ quests }) => quests.some((q) => questStatuses[q.id] === 'active'));
+    return result;
+  }, [filtered, showCompleted, activeOnly, questStatuses]);
 
   return (
     <div className="space-y-3">
@@ -68,19 +73,32 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
         )}
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{visible.length} quest lines</p>
-        <button
-          onClick={() => setShowCompleted((v) => !v)}
-          className="text-xs px-2 py-1 rounded transition-colors"
-          style={{
-            background: showCompleted ? 'var(--surface-inset)' : 'var(--surface-card)',
-            color: showCompleted ? 'var(--text-secondary)' : 'var(--text-muted)',
-            border: '1px solid var(--border-default)',
-          }}
-        >
-          {showCompleted ? 'Hide completed lines' : 'Show completed lines'}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setActiveOnly((v) => !v)}
+            className="text-xs px-2 py-1 rounded transition-colors"
+            style={{
+              background: activeOnly ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
+              color: activeOnly ? 'var(--accent-green)' : 'var(--text-muted)',
+              border: `1px solid ${activeOnly ? 'var(--accent-green-border)' : 'var(--border-default)'}`,
+            }}
+          >
+            Active only
+          </button>
+          <button
+            onClick={() => setShowCompleted((v) => !v)}
+            className="text-xs px-2 py-1 rounded transition-colors"
+            style={{
+              background: showCompleted ? 'var(--surface-inset)' : 'var(--surface-card)',
+              color: showCompleted ? 'var(--text-secondary)' : 'var(--text-muted)',
+              border: '1px solid var(--border-default)',
+            }}
+          >
+            {showCompleted ? 'Hide completed' : 'Show completed'}
+          </button>
+        </div>
       </div>
 
       {visible.map(({ name, quests }) => (
