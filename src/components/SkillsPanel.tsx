@@ -10,6 +10,7 @@ export function SkillsPanel() {
     { key: 'craftingLv', label: 'Crafting', emoji: '🔨' },
     { key: 'exploringLv', label: 'Exploring', emoji: '🗺️' },
     { key: 'cookingLv', label: 'Cooking', emoji: '🍳' },
+    { key: 'miningLv', label: 'Mining', emoji: '⛏️' },
   ] as const;
 
   return (
