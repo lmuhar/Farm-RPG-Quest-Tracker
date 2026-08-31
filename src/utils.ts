@@ -67,7 +67,8 @@ export function getQuestStatus(
     player.farmingLv >= quest.farmingLv &&
     player.fishingLv >= quest.fishingLv &&
     player.craftingLv >= quest.craftingLv &&
-    player.exploringLv >= quest.exploringLv;
+    player.exploringLv >= quest.exploringLv &&
+    (player.miningLv ?? 1) >= (quest.miningLv ?? 0);
   const meetsNpc = npcLevel >= quest.requiredNpcLevel;
 
   if (meetsSkills && meetsNpc) return 'available';

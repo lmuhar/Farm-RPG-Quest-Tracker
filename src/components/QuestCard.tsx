@@ -58,6 +58,8 @@ export function QuestCard({ quest, status }: Props) {
       lockedReasons.push(`🔨 Need Crafting ${quest.craftingLv} (you have ${player.craftingLv})`);
     if (quest.exploringLv > 0 && player.exploringLv < quest.exploringLv)
       lockedReasons.push(`🗺️ Need Exploring ${quest.exploringLv} (you have ${player.exploringLv})`);
+    if ((quest.miningLv ?? 0) > 0 && (player.miningLv ?? 1) < (quest.miningLv ?? 0))
+      lockedReasons.push(`⛏️ Need Mining ${quest.miningLv} (you have ${player.miningLv ?? 1})`);
     if (quest.requiredNpcLevel > 0 && (player.npcLevels[quest.npc] ?? 0) < quest.requiredNpcLevel)
       lockedReasons.push(`💬 Need ${quest.npc} lv ${quest.requiredNpcLevel} (you have ${player.npcLevels[quest.npc] ?? 0})`);
   }
@@ -195,6 +197,7 @@ export function QuestCard({ quest, status }: Props) {
             {quest.fishingLv > 0 && <span>🎣 Lv{quest.fishingLv}</span>}
             {quest.craftingLv > 0 && <span>🔨 Lv{quest.craftingLv}</span>}
             {quest.exploringLv > 0 && <span>🗺️ Lv{quest.exploringLv}</span>}
+            {(quest.miningLv ?? 0) > 0 && <span>⛏️ Lv{quest.miningLv}</span>}
             {quest.requiredNpcLevel > 0 && <span>💬 NPC Lv{quest.requiredNpcLevel}</span>}
             {isLimited && (
               <span className="text-orange-400">

@@ -12,6 +12,7 @@ export interface Quest {
   fishingLv: number;
   craftingLv: number;
   exploringLv: number;
+  miningLv: number;
   description: string;
 }
 
@@ -26,6 +27,7 @@ export interface PlayerProfile {
   craftingLv: number;
   exploringLv: number;
   cookingLv: number;
+  miningLv: number;
   npcLevels: Record<string, number>;
   completedNpcLeveling?: string[];
 }
