@@ -31,6 +31,21 @@ export const PET_ONLY_ITEMS = new Set<string>(
   [..._petLootItems].filter(item => !_itemLocKeys.has(item.toLowerCase()) && !_recipeKeys.has(item.toLowerCase()))
 );
 
+// Raw materials dug up in the Mining minigame — not tied to a discrete
+// location the way fishing/exploring drops are, per the game's own API
+// (dropRatesItems comes back empty for these).
+export const MINING_ITEMS = new Set<string>([
+  'Esperium',
+  'Briomine',
+  'Calcifite',
+  'Green Halite',
+  'Unpolished Aquacite',
+  'Bone Fragments',
+  'Cave Mushroom',
+  'Fossilized Print',
+  'Bird Skull 01',
+]);
+
 export const RARE_ITEMS = new Map<string, string>([
   ['Gold Feather',    'Forest / Misty Forest / Mt. Banon'],
   ['Gold Leaf',       'Forest'],

@@ -41,6 +41,7 @@
 
   --accent-red:            oklch(0.66 0.19 25);
   --accent-red-bg:         oklch(0.66 0.19 25 / 0.14);
+  --accent-red-border:     oklch(0.66 0.19 25 / 0.35);
 
   /* Typography */
   --font-display: "Space Grotesk", system-ui, sans-serif;

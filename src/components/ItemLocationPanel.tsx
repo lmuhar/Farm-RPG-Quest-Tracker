@@ -1,7 +1,8 @@
-import { Fish, Compass, PawPrint, KeyRound, Sprout } from 'lucide-react';
+import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem } from 'lucide-react';
 import locationData from '../data/item-locations.json';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
+import { MINING_ITEMS } from '../data/bottlenecks';
 import { useStore } from '../store';
 
 type LocationEntry = { name: string; type: string };
@@ -41,6 +42,10 @@ export function getLocationGroups(neededItems: string[]): Map<string, { type: st
       if (!groups.has(loc.name)) groups.set(loc.name, { type: loc.type, items: [] });
       if (!groups.get(loc.name)!.items.includes(item)) groups.get(loc.name)!.items.push(item);
     }
+    if (MINING_ITEMS.has(item)) {
+      if (!groups.has('Mine it')) groups.set('Mine it', { type: 'mining', items: [] });
+      if (!groups.get('Mine it')!.items.includes(item)) groups.get('Mine it')!.items.push(item);
+    }
   }
   return groups;
 }
@@ -56,8 +61,9 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
   const itemLocs = locations[item] ?? [];
   const itemPets = petLootMap[item] ?? [];
   const itemChests = locksmithSources[item] ?? [];
+  const isMined = MINING_ITEMS.has(item);
 
-  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0) {
+  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && !isMined) {
     return (
       <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
         No location data available for this item
@@ -91,6 +97,21 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
           </div>
         );
       })}
+
+      {isMined && (
+        <div
+          className="rounded-lg px-3 py-2"
+          style={{ background: 'var(--accent-red-bg)', border: '1px solid var(--accent-red-border)' }}
+        >
+          <div className="flex items-center gap-1.5">
+            <Gem size={11} style={{ color: 'var(--accent-red)', flexShrink: 0 }} />
+            <span className="text-xs font-semibold" style={{ color: 'var(--accent-red)' }}>Mine it</span>
+          </div>
+          <p className="text-[11px] mt-1" style={{ color: 'var(--accent-red)' }}>
+            Dug up in the mining minigame, not tied to a specific location.
+          </p>
+        </div>
+      )}
 
       {itemPets.length > 0 && (
         <div
@@ -192,10 +213,10 @@ export function LocationGroupPanel({ neededItems }: LocationGroupPanelProps) {
     <div className="space-y-2">
       {sorted.map(([locName, { type, items: locItems }]) => {
         const isLocksmith = type === 'locksmith' || type === 'grab_bag';
-        const Icon = type === 'fishing' ? Fish : type === 'farming' ? Sprout : type === 'pet' ? PawPrint : isLocksmith ? KeyRound : Compass;
-        const color = type === 'fishing' ? 'var(--accent-blue)' : type === 'farming' ? 'var(--accent-yellow)' : type === 'pet' ? 'var(--accent-orange)' : isLocksmith ? 'var(--accent-purple)' : 'var(--accent-green)';
-        const bg = type === 'fishing' ? 'var(--accent-blue-bg)' : type === 'farming' ? 'var(--accent-yellow-bg)' : type === 'pet' ? 'var(--accent-orange-bg)' : isLocksmith ? 'var(--accent-purple-bg)' : 'var(--accent-green-bg)';
-        const border = type === 'fishing' ? 'var(--accent-blue-border)' : type === 'farming' ? 'var(--accent-yellow-border)' : type === 'pet' ? 'var(--accent-orange-border)' : isLocksmith ? 'var(--accent-purple-border)' : 'var(--accent-green-border)';
+        const Icon = type === 'fishing' ? Fish : type === 'farming' ? Sprout : type === 'pet' ? PawPrint : type === 'mining' ? Gem : isLocksmith ? KeyRound : Compass;
+        const color = type === 'fishing' ? 'var(--accent-blue)' : type === 'farming' ? 'var(--accent-yellow)' : type === 'pet' ? 'var(--accent-orange)' : type === 'mining' ? 'var(--accent-red)' : isLocksmith ? 'var(--accent-purple)' : 'var(--accent-green)';
+        const bg = type === 'fishing' ? 'var(--accent-blue-bg)' : type === 'farming' ? 'var(--accent-yellow-bg)' : type === 'pet' ? 'var(--accent-orange-bg)' : type === 'mining' ? 'var(--accent-red-bg)' : isLocksmith ? 'var(--accent-purple-bg)' : 'var(--accent-green-bg)';
+        const border = type === 'fishing' ? 'var(--accent-blue-border)' : type === 'farming' ? 'var(--accent-yellow-border)' : type === 'pet' ? 'var(--accent-orange-border)' : type === 'mining' ? 'var(--accent-red-border)' : isLocksmith ? 'var(--accent-purple-border)' : 'var(--accent-green-border)';
 
         return (
           <div key={locName} className="rounded-lg px-3 py-2" style={{ background: bg, border: `1px solid ${border}` }}>
