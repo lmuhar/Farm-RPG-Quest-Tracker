@@ -91,6 +91,7 @@ const defaultPlayer: PlayerProfile = {
   craftingLv: 1,
   exploringLv: 1,
   cookingLv: 1,
+  miningLv: 1,
   npcLevels: {},
 };
 

@@ -33,6 +33,7 @@ export function StatsTab({ questlineGroups }: Props) {
       { key: 'fishingLv' as const, label: 'Fishing', emoji: '🎣' },
       { key: 'craftingLv' as const, label: 'Crafting', emoji: '🔨' },
       { key: 'exploringLv' as const, label: 'Exploring', emoji: '🗺️' },
+      { key: 'miningLv' as const, label: 'Mining', emoji: '⛏️' },
     ];
     return skills.map(({ key, label, emoji }) => {
       const relevant = questsWithStatus.filter(({ quest }) => quest[key] > 0);
