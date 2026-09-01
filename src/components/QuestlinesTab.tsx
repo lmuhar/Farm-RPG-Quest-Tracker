@@ -1,8 +1,15 @@
 import { useState, useMemo } from 'react';
 import { Search, X } from 'lucide-react';
 import type { Quest } from '../types';
+import questsData from '../data/quests.json';
 import { useStore } from '../store';
+import { getQuestStatus, compareQuests } from '../utils';
 import { QuestLineView } from './QuestLineView';
+import { QuestCard } from './QuestCard';
+
+const standaloneQuests = (questsData as Quest[])
+  .filter((q) => !q.questline)
+  .sort((a, b) => compareQuests(a.name, b.name));
 
 interface Props {
   questlineGroups: { name: string; quests: Quest[] }[];
@@ -11,7 +18,7 @@ interface Props {
 }
 
 export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }: Props) {
-  const { questStatuses } = useStore();
+  const { player, questStatuses } = useStore();
   const [localSearch, setLocalSearch] = useState('');
   const [showCompleted, setShowCompleted] = useState(true);
   const [activeOnly, setActiveOnly] = useState(false);
@@ -45,6 +52,27 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
     return result;
   }, [filtered, showCompleted, activeOnly, questStatuses]);
 
+  // Quests with no questline (never grouped above) — shown individually so they're
+  // still discoverable/searchable instead of only appearing once made active.
+  const visibleStandalone = useMemo(() => {
+    let result = standaloneQuests;
+    if (search) {
+      const s = search.toLowerCase();
+      result = result.filter(
+        (q) =>
+          q.name.toLowerCase().includes(s) ||
+          q.itemsRequired.toLowerCase().includes(s) ||
+          q.npc.toLowerCase().includes(s)
+      );
+    }
+    const withStatus = result.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) }));
+    return withStatus.filter(({ status }) => {
+      if (!showCompleted && status === 'completed') return false;
+      if (activeOnly && status !== 'active') return false;
+      return true;
+    });
+  }, [search, showCompleted, activeOnly, player, questStatuses]);
+
   return (
     <div className="space-y-3">
       <div className="relative">
@@ -74,7 +102,10 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
       </div>
 
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{visible.length} quest lines</p>
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+          {visible.length} quest lines
+          {visibleStandalone.length > 0 && ` · ${visibleStandalone.length} standalone`}
+        </p>
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setActiveOnly((v) => !v)}
@@ -104,6 +135,24 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
       {visible.map(({ name, quests }) => (
         <QuestLineView key={name} questline={name} quests={quests} />
       ))}
+
+      {visibleStandalone.length > 0 && (
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px" style={{ background: 'var(--border-subtle)' }} />
+            <span
+              className="text-xs font-semibold uppercase tracking-wider whitespace-nowrap"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              Standalone quests
+            </span>
+            <div className="flex-1 h-px" style={{ background: 'var(--border-subtle)' }} />
+          </div>
+          {visibleStandalone.map(({ quest, status }) => (
+            <QuestCard key={quest.id} quest={quest} status={status} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
