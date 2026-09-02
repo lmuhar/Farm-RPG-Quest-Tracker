@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users } from 'lucide-react';
 import { useStore } from '../store';
-import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns } from '../utils';
+import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns, resolveRawIngredients } from '../utils';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
@@ -372,6 +372,66 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     });
   }, [activeQuests, nextUpQuests, inventory, inventoryMax, recipeMap, cropTimes]);
 
+  // Active quests that are only held up by items with a known crafting recipe —
+  // no rare/pet-only bottleneck anywhere in the chain, so completion is just a
+  // matter of crafting (possibly a chain of crafts).
+  const craftableQuests = useMemo(() => {
+    const isBottleneck = (item: string) => RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item);
+    const isCrop = (item: string) => cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
+
+    const results: {
+      quest: Quest;
+      rawNeeds: { item: string; have: number; need: number }[];
+      pctReady: number;
+      closeToReady: boolean;
+    }[] = [];
+
+    for (const q of activeQuests) {
+      const items = parseItems(q.itemsRequired);
+      if (items.length === 0) continue;
+
+      const missing = items.filter(({ item, quantity }) => (inventory[item] ?? 0) < quantity);
+      if (missing.length === 0) continue; // already ready to turn in
+
+      const craftableMissing = missing.filter(({ item }) => recipeMap.has(item.toLowerCase()));
+      if (craftableMissing.length === 0) continue; // nothing here needs crafting
+
+      const nonCraftableMissing = missing.filter(({ item }) => !recipeMap.has(item.toLowerCase()));
+      if (nonCraftableMissing.some(({ item }) => isBottleneck(item) && !isCrop(item))) continue;
+
+      const rawMap = new Map<string, number>();
+      for (const { item, quantity } of craftableMissing) {
+        const have = inventory[item] ?? 0;
+        const deficit = quantity - have;
+        for (const [rawItem, rawQty] of resolveRawIngredients(item, deficit, recipeMap)) {
+          rawMap.set(rawItem, (rawMap.get(rawItem) ?? 0) + rawQty);
+        }
+      }
+
+      let rawBlocked = false;
+      const rawNeeds: { item: string; have: number; need: number }[] = [];
+      for (const [rawItem, need] of rawMap) {
+        const have = inventory[rawItem] ?? 0;
+        if (have < need && isBottleneck(rawItem) && !isCrop(rawItem)) rawBlocked = true;
+        rawNeeds.push({ item: rawItem, have, need });
+      }
+      if (rawBlocked) continue;
+
+      rawNeeds.sort((a, b) => a.item.localeCompare(b.item));
+
+      let totalNeed = 0, totalHave = 0;
+      for (const { have, need } of rawNeeds) {
+        totalNeed += need;
+        totalHave += Math.min(have, need);
+      }
+      const pctReady = totalNeed > 0 ? totalHave / totalNeed : 1;
+
+      results.push({ quest: q, rawNeeds, pctReady, closeToReady: pctReady >= 0.75 });
+    }
+
+    return results.sort((a, b) => b.pctReady - a.pctReady);
+  }, [activeQuests, inventory, recipeMap, cropTimes]);
+
   return (
     <div className="space-y-4">
       {/* Do right now */}
@@ -404,6 +464,64 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Craft to complete */}
+      {craftableQuests.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-blue-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-blue-bg)', borderBottom: '1px solid var(--accent-blue-border)' }}>
+            <Hammer size={13} style={{ color: 'var(--accent-blue)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Craft to complete</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>— clear path, just needs crafting</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {craftableQuests.map(({ quest, rawNeeds, pctReady, closeToReady }) => (
+              <div key={quest.id} className="px-4 py-3">
+                <div className="flex items-center gap-2 flex-wrap mb-1.5">
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{quest.name}</span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{quest.npc}</span>
+                  {closeToReady && (
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold ml-auto"
+                      style={{ background: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: '1px solid var(--accent-green-border)' }}
+                    >
+                      almost there — {Math.round(pctReady * 100)}%
+                    </span>
+                  )}
+                </div>
+                <div className="h-1 rounded-full overflow-hidden mb-2" style={{ background: 'var(--border-default)' }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${Math.round(pctReady * 100)}%`, background: closeToReady ? 'var(--accent-green)' : 'var(--accent-blue)' }}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {rawNeeds.map(({ item, have, need }) => {
+                    const ready = have >= need;
+                    return (
+                      <div
+                        key={item}
+                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                        style={{
+                          background: ready ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
+                          border: `1px solid ${ready ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
+                        }}
+                      >
+                        <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>{item}</span>
+                        <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+                          {have}/{need}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
