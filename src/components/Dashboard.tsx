@@ -381,7 +381,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
 
     const results: {
       quest: Quest;
-      rawNeeds: { item: string; have: number; need: number }[];
+      craftItems: {
+        item: string;
+        have: number;
+        need: number;
+        ingredients: { item: string; have: number; needed: number; ready: boolean }[];
+      }[];
       pctReady: number;
       closeToReady: boolean;
     }[] = [];
@@ -399,34 +404,38 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       const nonCraftableMissing = missing.filter(({ item }) => !recipeMap.has(item.toLowerCase()));
       if (nonCraftableMissing.some(({ item }) => isBottleneck(item) && !isCrop(item))) continue;
 
+      // Items that need to be crafted for this quest — shown with their direct ingredients
+      const craftItems: typeof results[number]['craftItems'] = [];
       const rawMap = new Map<string, number>();
       for (const { item, quantity } of craftableMissing) {
         const have = inventory[item] ?? 0;
         const deficit = quantity - have;
+        const recipe = recipeMap.get(item.toLowerCase())!;
+        const ingredients = recipe.ingredients.map(({ item: ing, quantity: ingQty }) => {
+          const needed = ingQty * deficit;
+          const haveIng = inventory[ing] ?? 0;
+          return { item: ing, have: haveIng, needed, ready: haveIng >= needed };
+        });
+        craftItems.push({ item, have, need: quantity, ingredients });
+        // Fully-resolved raw materials, used only to score overall readiness / bottleneck check below
         for (const [rawItem, rawQty] of resolveRawIngredients(item, deficit, recipeMap)) {
           rawMap.set(rawItem, (rawMap.get(rawItem) ?? 0) + rawQty);
         }
       }
 
       let rawBlocked = false;
-      const rawNeeds: { item: string; have: number; need: number }[] = [];
+      let totalNeed = 0, totalHave = 0;
       for (const [rawItem, need] of rawMap) {
         const have = inventory[rawItem] ?? 0;
         if (have < need && isBottleneck(rawItem) && !isCrop(rawItem)) rawBlocked = true;
-        rawNeeds.push({ item: rawItem, have, need });
-      }
-      if (rawBlocked) continue;
-
-      rawNeeds.sort((a, b) => a.item.localeCompare(b.item));
-
-      let totalNeed = 0, totalHave = 0;
-      for (const { have, need } of rawNeeds) {
         totalNeed += need;
         totalHave += Math.min(have, need);
       }
+      if (rawBlocked) continue;
+
       const pctReady = totalNeed > 0 ? totalHave / totalNeed : 1;
 
-      results.push({ quest: q, rawNeeds, pctReady, closeToReady: pctReady >= 0.75 });
+      results.push({ quest: q, craftItems, pctReady, closeToReady: pctReady >= 0.75 });
     }
 
     return results.sort((a, b) => b.pctReady - a.pctReady);
@@ -480,7 +489,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
             <span className="text-xs ml-1" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>— clear path, just needs crafting</span>
           </div>
           <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {craftableQuests.map(({ quest, rawNeeds, pctReady, closeToReady }) => (
+            {craftableQuests.map(({ quest, craftItems, pctReady, closeToReady }) => (
               <div key={quest.id} className="px-4 py-3">
                 <div className="flex items-center gap-2 flex-wrap mb-1.5">
                   <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{quest.name}</span>
@@ -494,31 +503,41 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                     </span>
                   )}
                 </div>
-                <div className="h-1 rounded-full overflow-hidden mb-2" style={{ background: 'var(--border-default)' }}>
+                <div className="h-1 rounded-full overflow-hidden mb-2.5" style={{ background: 'var(--border-default)' }}>
                   <div
                     className="h-full rounded-full"
                     style={{ width: `${Math.round(pctReady * 100)}%`, background: closeToReady ? 'var(--accent-green)' : 'var(--accent-blue)' }}
                   />
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {rawNeeds.map(({ item, have, need }) => {
-                    const ready = have >= need;
-                    return (
-                      <div
-                        key={item}
-                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                        style={{
-                          background: ready ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
-                          border: `1px solid ${ready ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
-                        }}
-                      >
-                        <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>{item}</span>
-                        <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+                <div className="space-y-2">
+                  {craftItems.map(({ item, have, need, ingredients }) => (
+                    <div key={item}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <Hammer size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+                        <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           {have}/{need}
                         </span>
                       </div>
-                    );
-                  })}
+                      <div className="flex flex-wrap gap-1.5 ml-4">
+                        {ingredients.map(({ item: ing, have: haveIng, needed, ready }) => (
+                          <div
+                            key={ing}
+                            className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                            style={{
+                              background: ready ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
+                              border: `1px solid ${ready ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
+                            }}
+                          >
+                            <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>{ing}</span>
+                            <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+                              {haveIng}/{needed}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
