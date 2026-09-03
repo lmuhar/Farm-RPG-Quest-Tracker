@@ -2,6 +2,7 @@ import petsData from './pets.json';
 import itemLocationsData from './item-locations.json';
 import recipesData from './recipes.json';
 import towerLevelsData from './tower-levels.json';
+import masteriesData from './masteries.json';
 
 interface TowerLevelRow { level: number; items: { item: string; quantity: number }[] }
 const _allTowerLevels = towerLevelsData as TowerLevelRow[];
@@ -30,6 +31,20 @@ for (const pet of petsData as { loot: Record<string, string[]> }[]) {
 export const PET_ONLY_ITEMS = new Set<string>(
   [..._petLootItems].filter(item => !_itemLocKeys.has(item.toLowerCase()) && !_recipeKeys.has(item.toLowerCase()))
 );
+
+// Items masteries.json classifies as farmable — the definitive source for "is this
+// a crop", independent of whether a given player has personally configured a grow
+// time for it. PET_ONLY_ITEMS sweeps up ordinary crops (Corn, Tomato, Potato, ...)
+// since they're absent from item-locations.json/recipes.json but present in pet
+// loot tables; without this, an untracked crop reads as a real bottleneck.
+const _farmingItemNames = new Set<string>(
+  (masteriesData as { name: string; method: string }[])
+    .filter(m => m.method === 'farming')
+    .map(m => m.name.toLowerCase())
+);
+export function isFarmableItem(item: string, cropTimes: { item: string }[]): boolean {
+  return _farmingItemNames.has(item.toLowerCase()) || cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
+}
 
 // Raw materials dug up in the Mining minigame — not tied to a discrete
 // location the way fishing/exploring drops are, per the game's own API

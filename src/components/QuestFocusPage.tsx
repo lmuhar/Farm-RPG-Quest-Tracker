@@ -16,7 +16,7 @@ import { ItemLocationPanel } from './ItemLocationPanel';
 import { CraftworksSuggestions } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import itemLocationsData from '../data/item-locations.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
 
 const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
@@ -777,8 +777,9 @@ export function QuestFocusPage() {
     // A crop is never a bottleneck — it can always just be grown. PET_ONLY_ITEMS is
     // derived from "not in item-locations.json or recipes.json", which sweeps up
     // ordinary crops (Corn, Tomato, Potato, ...) that live in cropTimes instead.
-    const isCrop = (item: string) => cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
-    const isBottleneck = (item: string) => (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && !isCrop(item);
+    // isFarmableItem also checks masteries.json's farming list, so this still holds
+    // even if the player hasn't personally configured that crop's grow time.
+    const isBottleneck = (item: string) => (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && !isFarmableItem(item, cropTimes);
 
     const withBottleneckInfo = [...active].map((name) => {
       const lineQuests = allQuestsData
@@ -869,8 +870,7 @@ export function QuestFocusPage() {
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;
       if (have >= totalNeeded) continue;
-      const isCrop = cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
-      if (isCrop) continue;
+      if (isFarmableItem(item, cropTimes)) continue;
       let location: string | undefined;
       if (RARE_ITEMS.has(item)) location = RARE_ITEMS.get(item)!;
       else if (PET_ONLY_ITEMS.has(item)) location = 'Pet drops';

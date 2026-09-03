@@ -6,7 +6,7 @@ import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
 import npcsData from '../data/npcs.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
 import type { BottleneckEntry } from './BottleneckPanel';
 
@@ -115,8 +115,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
         const have = inventory[item] ?? 0;
         if (have >= quantity) continue;
-        const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase());
-        if (crop) continue;
+        if (isFarmableItem(item, cropTimes)) continue;
         let location: string | undefined;
         if (RARE_ITEMS.has(item)) {
           location = RARE_ITEMS.get(item)!;
@@ -376,8 +375,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
   // and/or items that can simply be grown — excluded only when a real
   // rare/pet-only bottleneck sits somewhere in the chain.
   const craftGrowQuests = useMemo(() => {
-    const isBottleneck = (item: string) => RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item);
+    // isCrop is strict (only what the player has personally configured a grow time
+    // for) since it feeds cropItems, which needs real growMinutes to render.
+    // isBottleneck instead uses the broader masteries-backed farmable check, so an
+    // untracked crop (e.g. Potato) never wrongly excludes a quest from this section.
     const isCrop = (item: string) => cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
+    const isBottleneck = (item: string) => (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && !isFarmableItem(item, cropTimes);
 
     const results: {
       quest: Quest;
@@ -430,7 +433,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       let totalNeed = 0, totalHave = 0;
       for (const [rawItem, need] of rawMap) {
         const have = inventory[rawItem] ?? 0;
-        if (have < need && isBottleneck(rawItem) && !isCrop(rawItem)) rawBlocked = true;
+        if (have < need && isBottleneck(rawItem)) rawBlocked = true;
         totalNeed += need;
         totalHave += Math.min(have, need);
       }
