@@ -760,6 +760,10 @@ export function QuestFocusPage() {
   const [filter, setFilter] = useState<QuestFilter>('active');
   const [towerSubTab, setTowerSubTab] = useState<TowerSubTab>('summary');
 
+  // Questlines with an active quest, ordered: no-bottleneck lines first, then
+  // bottlenecked lines ranked by how much runway is left before the wall —
+  // a "bottleneck" here is a rare/pet-only item a quest needs that isn't
+  // already stocked (having it already means it's not blocking anything).
   const activeQuestlineNames = useMemo(() => {
     const active = new Set<string>();
     for (const q of allQuestsData) {
@@ -769,8 +773,36 @@ export function QuestFocusPage() {
     }
     // Always include the currently selected questline so the control never has a missing option
     if (trackedQuestline) active.add(trackedQuestline);
-    return [...active].sort((a, b) => a.localeCompare(b));
-  }, [player, questStatuses, trackedQuestline]);
+
+    const isBottleneck = (item: string) => RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item);
+
+    const withBottleneckInfo = [...active].map((name) => {
+      const lineQuests = allQuestsData
+        .filter((q) => q.questline === name)
+        .sort((a, b) => compareQuests(a.name, b.name));
+      const startIdx = lineQuests.findIndex((q) => getQuestStatus(q, player, questStatuses) !== 'completed');
+      let questsUntilBottleneck: number | null = null;
+      if (startIdx >= 0) {
+        for (let i = startIdx; i < lineQuests.length; i++) {
+          const blocked = parseItems(lineQuests[i].itemsRequired).some(
+            ({ item, quantity }) => isBottleneck(item) && (inventory[item] ?? 0) < quantity
+          );
+          if (blocked) { questsUntilBottleneck = i - startIdx; break; }
+        }
+      }
+      return { name, questsUntilBottleneck };
+    });
+
+    return withBottleneckInfo.sort((a, b) => {
+      const aNone = a.questsUntilBottleneck === null;
+      const bNone = b.questsUntilBottleneck === null;
+      if (aNone !== bNone) return aNone ? -1 : 1;
+      if (!aNone && !bNone && a.questsUntilBottleneck !== b.questsUntilBottleneck) {
+        return b.questsUntilBottleneck! - a.questsUntilBottleneck!;
+      }
+      return a.name.localeCompare(b.name);
+    });
+  }, [player, questStatuses, trackedQuestline, inventory]);
 
   const quests = useMemo(
     () =>
@@ -879,8 +911,12 @@ export function QuestFocusPage() {
                   maxWidth: '100%',
                 }}
               >
-                {activeQuestlineNames.map(name => (
-                  <option key={name} value={name}>{name}</option>
+                {activeQuestlineNames.map(({ name, questsUntilBottleneck }) => (
+                  <option key={name} value={name}>
+                    {questsUntilBottleneck === null
+                      ? name
+                      : `${name} (${questsUntilBottleneck} quest${questsUntilBottleneck !== 1 ? 's' : ''} until bottleneck)`}
+                  </option>
                 ))}
               </select>
             </div>
