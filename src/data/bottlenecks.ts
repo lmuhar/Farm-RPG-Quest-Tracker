@@ -85,6 +85,10 @@ export const RARE_ITEMS = new Map<string, string>([
   ['Carved Squisquatch','Wishing Well'],
   ['Carved Warthog',    'Wishing Well'],
   ['Freaky Picture',    'Wishing Well'],
+  ['Peafowl Feather',   'Borgen Shop'],
+  ['Langstaff Crest',   'Jundland Desert'],
+  ['Bananas',           'Unknown — no reliable source found'],
+  ['Pineapple',         'Unknown — no reliable source found'],
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
