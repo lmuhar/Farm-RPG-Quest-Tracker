@@ -372,10 +372,10 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     });
   }, [activeQuests, nextUpQuests, inventory, inventoryMax, recipeMap, cropTimes]);
 
-  // Active quests that are only held up by items with a known crafting recipe —
-  // no rare/pet-only bottleneck anywhere in the chain, so completion is just a
-  // matter of crafting (possibly a chain of crafts).
-  const craftableQuests = useMemo(() => {
+  // Active quests that are only held up by items with a known crafting recipe
+  // and/or items that can simply be grown — excluded only when a real
+  // rare/pet-only bottleneck sits somewhere in the chain.
+  const craftGrowQuests = useMemo(() => {
     const isBottleneck = (item: string) => RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item);
     const isCrop = (item: string) => cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
 
@@ -387,6 +387,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         need: number;
         ingredients: { item: string; have: number; needed: number; ready: boolean }[];
       }[];
+      cropItems: { item: string; have: number; need: number; grows: number; growMinutes: number; totalMinutes: number }[];
       pctReady: number;
       closeToReady: boolean;
     }[] = [];
@@ -398,11 +399,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       const missing = items.filter(({ item, quantity }) => (inventory[item] ?? 0) < quantity);
       if (missing.length === 0) continue; // already ready to turn in
 
-      const craftableMissing = missing.filter(({ item }) => recipeMap.has(item.toLowerCase()));
-      if (craftableMissing.length === 0) continue; // nothing here needs crafting
+      const craftableMissing = missing.filter(({ item }) => !isCrop(item) && recipeMap.has(item.toLowerCase()));
+      const cropMissing = missing.filter(({ item }) => isCrop(item));
+      if (craftableMissing.length === 0 && cropMissing.length === 0) continue; // nothing here to craft or grow
 
-      const nonCraftableMissing = missing.filter(({ item }) => !recipeMap.has(item.toLowerCase()));
-      if (nonCraftableMissing.some(({ item }) => isBottleneck(item) && !isCrop(item))) continue;
+      const otherMissing = missing.filter(({ item }) => !isCrop(item) && !recipeMap.has(item.toLowerCase()));
+      if (otherMissing.some(({ item }) => isBottleneck(item))) continue; // real bottleneck — hide from this section
 
       // Items that need to be crafted for this quest — shown with their direct ingredients
       const craftItems: typeof results[number]['craftItems'] = [];
@@ -433,13 +435,25 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       }
       if (rawBlocked) continue;
 
+      // Items that just need to be grown — shown with grow count and time
+      const cropItems: typeof results[number]['cropItems'] = [];
+      for (const { item, quantity } of cropMissing) {
+        const have = inventory[item] ?? 0;
+        const deficit = quantity - have;
+        const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase())!;
+        const grows = calcGrowsNeeded(deficit, plotCount);
+        cropItems.push({ item, have, need: quantity, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes });
+        totalNeed += quantity;
+        totalHave += Math.min(have, quantity);
+      }
+
       const pctReady = totalNeed > 0 ? totalHave / totalNeed : 1;
 
-      results.push({ quest: q, craftItems, pctReady, closeToReady: pctReady >= 0.75 });
+      results.push({ quest: q, craftItems, cropItems, pctReady, closeToReady: pctReady >= 0.75 });
     }
 
     return results.sort((a, b) => b.pctReady - a.pctReady);
-  }, [activeQuests, inventory, recipeMap, cropTimes]);
+  }, [activeQuests, inventory, recipeMap, cropTimes, plotCount]);
 
   return (
     <div className="space-y-4">
@@ -477,19 +491,19 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         </div>
       )}
 
-      {/* Craft to complete */}
-      {craftableQuests.length > 0 && (
+      {/* Craft/Grow to complete */}
+      {craftGrowQuests.length > 0 && (
         <div
           className="rounded-xl overflow-hidden"
           style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-blue-border)' }}
         >
           <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-blue-bg)', borderBottom: '1px solid var(--accent-blue-border)' }}>
             <Hammer size={13} style={{ color: 'var(--accent-blue)' }} />
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Craft to complete</span>
-            <span className="text-xs ml-1" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>— clear path, just needs crafting</span>
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Craft/Grow to complete</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>— clear path, just needs crafting or growing</span>
           </div>
           <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {craftableQuests.map(({ quest, craftItems, pctReady, closeToReady }) => (
+            {craftGrowQuests.map(({ quest, craftItems, cropItems, pctReady, closeToReady }) => (
               <div key={quest.id} className="px-4 py-3">
                 <div className="flex items-center gap-2 flex-wrap mb-1.5">
                   <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{quest.name}</span>
@@ -538,6 +552,29 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       </div>
                     </div>
                   ))}
+                  {cropItems.map(({ item, have, need, grows, totalMinutes }) => {
+                    const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+                    const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                    const isToday = finishAt.toDateString() === new Date().toDateString();
+                    const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+                    const ready = have >= need;
+                    return (
+                      <div key={item} className="flex items-center justify-between gap-2 ml-4">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Sprout size={10} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                            {have}/{need}
+                          </span>
+                        </div>
+                        {!ready && (
+                          <span className="text-[11px] flex-shrink-0" style={{ color: 'var(--accent-green)' }}>
+                            {grows} grow{grows !== 1 ? 's' : ''} · {doneLabel}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ))}
