@@ -785,6 +785,10 @@ export function QuestFocusPage() {
         .filter((q) => q.questline === name)
         .sort((a, b) => compareQuests(a.name, b.name));
       const startIdx = lineQuests.findIndex((q) => getQuestStatus(q, player, questStatuses) !== 'completed');
+      // Blocked by inventory: the very next quest needs more of an item than the
+      // player's inventory can ever hold at once — no amount of collecting fixes this.
+      const blockedByInventory = startIdx >= 0 &&
+        parseItems(lineQuests[startIdx].itemsRequired).some(({ quantity }) => quantity > inventoryMax);
       let questsUntilBottleneck: number | null = null;
       if (startIdx >= 0) {
         for (let i = startIdx; i < lineQuests.length; i++) {
@@ -794,10 +798,12 @@ export function QuestFocusPage() {
           if (blocked) { questsUntilBottleneck = i - startIdx; break; }
         }
       }
-      return { name, questsUntilBottleneck };
+      return { name, questsUntilBottleneck, blockedByInventory };
     });
 
     return withBottleneckInfo.sort((a, b) => {
+      if (a.blockedByInventory !== b.blockedByInventory) return a.blockedByInventory ? 1 : -1;
+      if (a.blockedByInventory && b.blockedByInventory) return a.name.localeCompare(b.name);
       const aNone = a.questsUntilBottleneck === null;
       const bNone = b.questsUntilBottleneck === null;
       if (aNone !== bNone) return aNone ? -1 : 1;
@@ -806,7 +812,7 @@ export function QuestFocusPage() {
       }
       return a.name.localeCompare(b.name);
     });
-  }, [player, questStatuses, trackedQuestline, inventory, cropTimes]);
+  }, [player, questStatuses, trackedQuestline, inventory, cropTimes, inventoryMax]);
 
   const quests = useMemo(
     () =>
@@ -915,13 +921,15 @@ export function QuestFocusPage() {
                   maxWidth: '100%',
                 }}
               >
-                {activeQuestlineNames.map(({ name, questsUntilBottleneck }) => (
+                {activeQuestlineNames.map(({ name, questsUntilBottleneck, blockedByInventory }) => (
                   <option key={name} value={name}>
-                    {questsUntilBottleneck === null
-                      ? name
-                      : questsUntilBottleneck === 0
-                        ? `${name} (at bottleneck)`
-                        : `${name} (${questsUntilBottleneck} quest${questsUntilBottleneck !== 1 ? 's' : ''} until bottleneck)`}
+                    {blockedByInventory
+                      ? `${name} (blocked by inventory)`
+                      : questsUntilBottleneck === null
+                        ? name
+                        : questsUntilBottleneck === 0
+                          ? `${name} (at bottleneck)`
+                          : `${name} (${questsUntilBottleneck} quest${questsUntilBottleneck !== 1 ? 's' : ''} until bottleneck)`}
                   </option>
                 ))}
               </select>

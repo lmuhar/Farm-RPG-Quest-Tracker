@@ -395,6 +395,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     for (const q of activeQuests) {
       const items = parseItems(q.itemsRequired);
       if (items.length === 0) continue;
+      if (items.some(({ quantity }) => quantity > inventoryMax)) continue; // can never hold enough to complete this
 
       const missing = items.filter(({ item, quantity }) => (inventory[item] ?? 0) < quantity);
       if (missing.length === 0) continue; // already ready to turn in
@@ -453,7 +454,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     }
 
     return results.sort((a, b) => b.pctReady - a.pctReady);
-  }, [activeQuests, inventory, recipeMap, cropTimes, plotCount]);
+  }, [activeQuests, inventory, recipeMap, cropTimes, plotCount, inventoryMax]);
 
   return (
     <div className="space-y-4">
