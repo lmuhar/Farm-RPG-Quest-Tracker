@@ -7,7 +7,7 @@ import type { DirectItem } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import masteriesData from '../data/masteries.json';
 import itemLocationsData from '../data/item-locations.json';
-import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
+import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks';
 import { Fish, AlertTriangle, TrendingUp } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
@@ -123,8 +123,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;
       if (have >= totalNeeded) continue;
-      const isCrop = cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
-      if (isCrop) continue;
+      if (isFarmableItem(item, cropTimes)) continue;
       let location: string | undefined;
       if (RARE_ITEMS.has(item)) location = RARE_ITEMS.get(item)!;
       else if (PET_ONLY_ITEMS.has(item)) location = 'Pet drops';

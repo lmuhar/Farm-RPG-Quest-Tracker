@@ -1,5 +1,15 @@
 [
   {
+    "id": "1438",
+    "name": "Shimmer Stone",
+    "ingredients": [
+      {
+        "item": "Unpolished Shimmer Stone",
+        "quantity": 2
+      }
+    ]
+  },
+  {
     "id": "1437",
     "name": "Veggie Juice",
     "ingredients": [
