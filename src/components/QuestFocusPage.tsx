@@ -774,7 +774,11 @@ export function QuestFocusPage() {
     // Always include the currently selected questline so the control never has a missing option
     if (trackedQuestline) active.add(trackedQuestline);
 
-    const isBottleneck = (item: string) => RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item);
+    // A crop is never a bottleneck — it can always just be grown. PET_ONLY_ITEMS is
+    // derived from "not in item-locations.json or recipes.json", which sweeps up
+    // ordinary crops (Corn, Tomato, Potato, ...) that live in cropTimes instead.
+    const isCrop = (item: string) => cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
+    const isBottleneck = (item: string) => (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && !isCrop(item);
 
     const withBottleneckInfo = [...active].map((name) => {
       const lineQuests = allQuestsData
@@ -802,7 +806,7 @@ export function QuestFocusPage() {
       }
       return a.name.localeCompare(b.name);
     });
-  }, [player, questStatuses, trackedQuestline, inventory]);
+  }, [player, questStatuses, trackedQuestline, inventory, cropTimes]);
 
   const quests = useMemo(
     () =>
