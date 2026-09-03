@@ -919,7 +919,9 @@ export function QuestFocusPage() {
                   <option key={name} value={name}>
                     {questsUntilBottleneck === null
                       ? name
-                      : `${name} (${questsUntilBottleneck} quest${questsUntilBottleneck !== 1 ? 's' : ''} until bottleneck)`}
+                      : questsUntilBottleneck === 0
+                        ? `${name} (at bottleneck)`
+                        : `${name} (${questsUntilBottleneck} quest${questsUntilBottleneck !== 1 ? 's' : ''} until bottleneck)`}
                   </option>
                 ))}
               </select>
