@@ -45,6 +45,7 @@ export function useSync() {
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userRef = useRef<User | null>(null);
   const initializedRef = useRef(false);
+  const initUserPromiseRef = useRef<Promise<void> | null>(null);
 
   const saveToCloud = useCallback(async (userId: string, state: AppState) => {
     setSyncStatus('syncing');
@@ -87,11 +88,20 @@ export function useSync() {
   }, [saveToCloud]);
 
   const initUser = useCallback(async (signedInUser: User) => {
-    if (initializedRef.current && userRef.current?.id === signedInUser.id) return;
+    // getSession() and onAuthStateChange's initial firing both call this on
+    // load; the second caller must await the same in-flight load rather than
+    // returning early, or initialLoadDone can flip true before the real
+    // cloud data has finished applying.
+    if (initializedRef.current && userRef.current?.id === signedInUser.id) {
+      if (initUserPromiseRef.current) await initUserPromiseRef.current;
+      return;
+    }
     initializedRef.current = true;
     userRef.current = signedInUser;
     setUser(signedInUser);
-    await loadAndApply(signedInUser.id, true);
+    const p = loadAndApply(signedInUser.id, true);
+    initUserPromiseRef.current = p;
+    await p;
   }, [loadAndApply]);
 
   // Auth state listener
