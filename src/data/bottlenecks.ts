@@ -105,6 +105,7 @@ export const RARE_ITEMS = new Map<string, string>([
   ['Bananas',           'Unknown — no reliable source found'],
   ['Pineapple',         'Unknown — no reliable source found'],
   ['Prune Juice',       'Unknown — no reliable source found'],
+  ['Bell',              'Wishing Well / Exchange Centre (250 Hammer)'],
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
@@ -124,4 +125,5 @@ export const WISHING_WELL_SOURCES = new Map<string, { item: string; pct: number 
   ['Freaky Picture',    [{ item: 'Strange Letter', pct: 25 }, { item: 'Teapot', pct: 14.3 }, { item: 'Ancient Coin', pct: 8.3 }]],
   ['Captain\'s Log',    [{ item: 'Pirate Bandana', pct: 25 }, { item: 'Small Flute', pct: 20 }, { item: 'Teapot', pct: 14.3 }, { item: 'Ancient Coin', pct: 8.3 }]],
   ['Popcorn',           [{ item: 'Water Lily', pct: 33.3 }]],
+  ['Bell',              [{ item: 'Grasshopper', pct: 50 }]],
 ]);
