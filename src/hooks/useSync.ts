@@ -72,7 +72,10 @@ export function useSync() {
       setSyncStatus('synced');
       setLastSynced(new Date());
     } else if (migrateIfEmpty) {
-      // First sign-in: migrate existing localStorage data to cloud
+      // First sign-in with no existing cloud row yet: seed it from whatever is
+      // currently in the in-memory store (this session only — never a browser
+      // storage read). Only runs when Supabase has nothing for this user, so
+      // it can't clobber real cloud data.
       const local = snapshotState();
       const hasData =
         Object.keys(local.questStatuses).length > 0 ||
