@@ -8,17 +8,19 @@ Always reset the feature branch to main immediately after a squash merge, withou
 
 ```bash
 git fetch origin main
-git checkout -B claude/fly-io-deployment-hmegwg origin/main
-git push --force-with-lease origin claude/fly-io-deployment-hmegwg
+git checkout -B claude/mining-skill-quest-filter-t0fl6l origin/main
+git push --force-with-lease origin claude/mining-skill-quest-filter-t0fl6l
 ```
 
 Do this as a single step right after `merge_pull_request` succeeds — never attempt `git push` without the force flag after a squash merge.
 
 ### Development branch
 
-Always develop on: `claude/fly-io-deployment-hmegwg`
+Always develop on: `claude/mining-skill-quest-filter-t0fl6l`
 Always merge into: `main`
 Always use squash merge.
+
+Note: this branch name comes from whatever session/task Claude Code was assigned when it started — it will differ across sessions. Update this file to match the branch actually named in your task assignment rather than assuming the name above is still current.
 
 ## Code Quality
 
