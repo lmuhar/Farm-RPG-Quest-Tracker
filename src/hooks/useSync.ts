@@ -37,6 +37,9 @@ function snapshotState(): AppState {
 export function useSync() {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  // True once the initial session check (and, for a signed-in user, the initial
+  // Supabase data load) has finished — the only signal App.tsx should gate on.
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle');
   const [lastSynced, setLastSynced] = useState<Date | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -90,9 +93,10 @@ export function useSync() {
 
   // Auth state listener
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) initUser(session.user);
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) await initUser(session.user);
       setAuthLoading(false);
+      setInitialLoadDone(true);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -157,5 +161,5 @@ export function useSync() {
     if (userRef.current) loadAndApply(userRef.current.id, false);
   }, [loadAndApply]);
 
-  return { user, authLoading, syncStatus, lastSynced, signIn, signOut, pullNow };
+  return { user, authLoading, initialLoadDone, syncStatus, lastSynced, signIn, signOut, pullNow };
 }

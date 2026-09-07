@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ListTodo, GitBranch, Search, X, Wand2, BarChart2, Package,
   Settings, Hammer, RefreshCw, Menu, MapPin, Building2, PawPrint, Users, Layers,
@@ -61,16 +61,24 @@ const META_ITEMS: NavItem[] = [
   { id: 'settings', label: 'Settings', Icon: Settings },
 ];
 
+interface HashSyncPayload {
+  inventory: Record<string, number> | null;
+  masteryLevels: Record<string, number> | null;
+  masteryProgress: Record<string, number> | null;
+}
+
 export default function App() {
-  const { player, questStatuses, inventory, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, masteryLevels, masteryProgress, importState } = useStore();
+  const { player, questStatuses, importState } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const hashDataRef = useRef<HashSyncPayload | null>(null);
+  const hashAppliedRef = useRef(false);
 
-  // Load state from server on mount; apply any bookmarklet hash-sync after server state loads
+  // Parse any bookmarklet hash-sync payload on mount and switch tabs right
+  // away, but stash the actual data for the effect below to apply.
   useEffect(() => {
     const hash = window.location.hash;
     let hashInv: Record<string, number> | null = null;
@@ -104,40 +112,30 @@ export default function App() {
       setTab('masteries');
     }
 
-    const applyHashData = () => {
-      // Inventory: replace entirely (absent items mean qty dropped to 0)
-      if (hashInv) importState({ inventory: hashInv });
-      // Masteries: merge — bookmarklet only sees actively-tracked items, don't wipe the rest
-      if (hashMasteries) {
-        const current = useStore.getState().masteryLevels;
-        importState({ masteryLevels: { ...current, ...hashMasteries } });
-      }
-      if (hashMasteryProgress) {
-        const current = useStore.getState().masteryProgress;
-        importState({ masteryProgress: { ...current, ...hashMasteryProgress } });
-      }
-    };
-
-    fetch('/api/state')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => { if (data) importState(data); applyHashData(); })
-      .catch(() => { applyHashData(); })
-      .finally(() => setLoading(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    hashDataRef.current = { inventory: hashInv, masteryLevels: hashMasteries, masteryProgress: hashMasteryProgress };
   }, []);
 
-  // Debounced save to server on every state change (skip until initial load is done)
+  // Apply the bookmarklet payload only after the initial cloud load finishes —
+  // Supabase is the sole source of truth, so this must never race against it
+  // (previously a separate server-side "session" file could load stale data
+  // here and then get saved right back, clobbering progress on device switch).
   useEffect(() => {
-    if (loading) return;
-    const timer = setTimeout(() => {
-      fetch('/api/state', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, masteryLevels, masteryProgress }),
-      }).catch(() => {});
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [loading, questStatuses, inventory, player, cropTimes, plotCount, craftingRecipes, growQueue, questNotes, masteryLevels, masteryProgress]);
+    if (!sync.initialLoadDone || hashAppliedRef.current) return;
+    hashAppliedRef.current = true;
+    const hashData = hashDataRef.current;
+    if (!hashData) return;
+    // Inventory: replace entirely (absent items mean qty dropped to 0)
+    if (hashData.inventory) importState({ inventory: hashData.inventory });
+    // Masteries: merge — bookmarklet only sees actively-tracked items, don't wipe the rest
+    if (hashData.masteryLevels) {
+      const current = useStore.getState().masteryLevels;
+      importState({ masteryLevels: { ...current, ...hashData.masteryLevels } });
+    }
+    if (hashData.masteryProgress) {
+      const current = useStore.getState().masteryProgress;
+      importState({ masteryProgress: { ...current, ...hashData.masteryProgress } });
+    }
+  }, [sync.initialLoadDone, importState]);
 
   const questsWithStatus = useMemo(
     () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
@@ -201,7 +199,7 @@ export default function App() {
       ? { background: 'var(--accent-purple)', color: '#fff', fontFamily: 'var(--font-body)' }
       : { color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' };
 
-  if (loading) return (
+  if (!sync.initialLoadDone) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--surface-app)', color: 'var(--text-muted)', fontFamily: 'var(--font-body)' }}>
       <p className="text-sm">Loading...</p>
     </div>
