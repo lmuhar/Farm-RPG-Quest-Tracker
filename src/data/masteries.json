@@ -231,7 +231,7 @@
   {"name": "Pumpkin", "difficulty": 9, "method": "farming"},
   {"name": "Red Trunk", "difficulty": 9, "method": "crafting"},
   {"name": "Sea Pincher Special", "difficulty": 9, "method": "cooking"},
-  {"name": "Seaweed", "difficulty": 9, "method": "farming"},
+  {"name": "Seaweed", "difficulty": 9, "method": "fishing"},
   {"name": "Wheat", "difficulty": 9, "method": "farming"},
   {"name": "Acorn Butter", "difficulty": 10, "method": "cooking"},
   {"name": "Amber Cane", "difficulty": 10, "method": "crafting"},
