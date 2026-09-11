@@ -1,7 +1,15 @@
 import { useState, useMemo } from 'react';
-import { Search, X, Trophy, Star, Zap, TrendingUp } from 'lucide-react';
+import { Search, X, Trophy, Star, Zap, TrendingUp, Sprout } from 'lucide-react';
 import masteriesData from '../data/masteries.json';
 import { useStore } from '../store';
+import { formatDuration } from '../utils';
+
+function formatLongDuration(minutes: number): string {
+  if (minutes < 1440) return formatDuration(minutes);
+  const days = Math.floor(minutes / 1440);
+  const hours = Math.round((minutes % 1440) / 60);
+  return hours > 0 ? `${days}d ${hours}h` : `${days}d`;
+}
 
 interface MasteryItem {
   name: string;
@@ -293,8 +301,125 @@ function AscensionPointsPanel({
   );
 }
 
+const FARMING_ITEM_NAMES = new Set(masteries.filter((m) => m.method === 'farming').map((m) => m.name));
+
+function CropGrowthRow({
+  item, count, target, pts, pct, growMinutes, plotCount,
+}: { item: string; count: number; target: number; pts: number; pct: number; growMinutes?: number; plotCount: number }) {
+  const remaining = Math.max(0, target - count);
+  const done = count >= target;
+  const color = pts === 100 ? 'var(--accent-yellow)' : 'var(--accent-green)';
+  const grows = plotCount > 0 ? Math.ceil(remaining / plotCount) : 0;
+  return (
+    <div className="px-4 py-2.5">
+      <div className="flex items-center justify-between gap-3 mb-1">
+        <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
+        <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+          {count.toLocaleString()}/{target.toLocaleString()}
+        </span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden mb-1" style={{ background: 'var(--border-default)' }}>
+        <div className="h-full rounded-full" style={{ width: `${Math.round(pct * 100)}%`, background: done ? 'var(--accent-green)' : color }} />
+      </div>
+      {!done && (
+        <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          {grows.toLocaleString()} grow{grows !== 1 ? 's' : ''} (full {plotCount} plots)
+          {growMinutes != null && <> · ≈ {formatLongDuration(grows * growMinutes)}</>}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function CropGrowthSection({
+  label, pts, color, items, plotCount,
+}: {
+  label: string; pts: number; color: string; plotCount: number;
+  items: { item: string; count: number; target: number; pts: number; pct: number; growMinutes?: number }[];
+}) {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? items : items.slice(0, 5);
+  const hidden = items.length - 5;
+  return (
+    <div>
+      <div className="px-4 py-2 flex items-center gap-2" style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--surface-inset)' }}>
+        <span className="text-xs font-bold" style={{ color }}>{label}</span>
+      </div>
+      <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+        {visible.map((c) => <CropGrowthRow key={c.item} {...c} plotCount={plotCount} />)}
+      </div>
+      {items.length > 5 && (
+        <button
+          onClick={() => setShowAll((v) => !v)}
+          className="w-full text-xs py-2 text-center"
+          style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)' }}
+        >
+          {showAll ? 'Show less' : `Show ${hidden} more`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Crops in progress toward 10k/100k, with grows-needed and ETA computed from the
+// player's configured grow times and plot count (assumes all plots dedicated to
+// that crop, same simplifying assumption as the rest of the grow-time tooling).
+function CropGrowthPanel({
+  masteryLevels, masteryProgress, cropTimes, plotCount,
+}: {
+  masteryLevels: Record<string, number>;
+  masteryProgress: Record<string, number>;
+  cropTimes: { item: string; growMinutes: number }[];
+  plotCount: number;
+}) {
+  const cropTimeMap = useMemo(() => new Map(cropTimes.map((c) => [c.item, c.growMinutes])), [cropTimes]);
+
+  const { tenK, hundredK } = useMemo(() => {
+    const tenK: { item: string; count: number; target: number; pts: number; pct: number; growMinutes?: number }[] = [];
+    const hundredK: { item: string; count: number; target: number; pts: number; pct: number; growMinutes?: number }[] = [];
+    for (const item of FARMING_ITEM_NAMES) {
+      const level = masteryLevels[item] ?? 0;
+      const count = masteryProgress[item] ?? 0;
+      const growMinutes = cropTimeMap.get(item);
+      if (level === 0) {
+        const pct = Math.min(1, count / 10_000);
+        tenK.push({ item, count, target: 10_000, pts: 10, pct, growMinutes });
+      } else if (level === 1) {
+        const pct = Math.min(1, count / 100_000);
+        hundredK.push({ item, count, target: 100_000, pts: 100, pct, growMinutes });
+      }
+    }
+    tenK.sort((a, b) => b.pct - a.pct);
+    hundredK.sort((a, b) => b.pct - a.pct);
+    return { tenK, hundredK };
+  }, [masteryLevels, masteryProgress, cropTimeMap]);
+
+  if (tenK.length === 0 && hundredK.length === 0) return null;
+
+  return (
+    <div className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--accent-green-border)' }}>
+      <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}>
+        <Sprout size={13} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+        <span className="text-sm font-semibold" style={{ color: 'var(--accent-green)' }}>Crop Grow Progress</span>
+        <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>{plotCount} plots</span>
+      </div>
+      <div style={{ background: 'var(--surface-card)' }}>
+        {hundredK.length > 0 && (
+          <CropGrowthSection label="100k milestone" pts={100} color="var(--accent-yellow)" items={hundredK} plotCount={plotCount} />
+        )}
+        {tenK.length > 0 && hundredK.length > 0 && (
+          <div style={{ borderTop: '2px solid var(--border-subtle)' }} />
+        )}
+        {tenK.length > 0 && (
+          <CropGrowthSection label="10k milestone" pts={10} color="var(--accent-green)" items={tenK} plotCount={plotCount} />
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function MasteriesPage() {
-  const { masteryLevels, masteryProgress, setMasteryLevel } = useStore();
+  const { masteryLevels, masteryProgress, cropTimes, plotCount, setMasteryLevel } = useStore();
   const [search, setSearch] = useState('');
   const [methodFilter, setMethodFilter] = useState<MethodFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
@@ -392,6 +517,16 @@ export function MasteriesPage() {
       {/* Ascension Points */}
       {!hasFilter && (
         <AscensionPointsPanel masteryLevels={masteryLevels} masteryProgress={masteryProgress} />
+      )}
+
+      {/* Crop Grow Progress */}
+      {!hasFilter && (
+        <CropGrowthPanel
+          masteryLevels={masteryLevels}
+          masteryProgress={masteryProgress}
+          cropTimes={cropTimes}
+          plotCount={plotCount}
+        />
       )}
 
       {/* Suggestions */}
