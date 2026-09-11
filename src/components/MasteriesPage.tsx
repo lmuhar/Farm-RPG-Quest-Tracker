@@ -332,9 +332,9 @@ function CropGrowthRow({
 }
 
 function CropGrowthSection({
-  label, pts, color, items, plotCount,
+  label, color, items, plotCount,
 }: {
-  label: string; pts: number; color: string; plotCount: number;
+  label: string; color: string; plotCount: number;
   items: { item: string; count: number; target: number; pts: number; pct: number; growMinutes?: number }[];
 }) {
   const [showAll, setShowAll] = useState(false);
@@ -405,13 +405,13 @@ function CropGrowthPanel({
       </div>
       <div style={{ background: 'var(--surface-card)' }}>
         {hundredK.length > 0 && (
-          <CropGrowthSection label="100k milestone" pts={100} color="var(--accent-yellow)" items={hundredK} plotCount={plotCount} />
+          <CropGrowthSection label="100k milestone" color="var(--accent-yellow)" items={hundredK} plotCount={plotCount} />
         )}
         {tenK.length > 0 && hundredK.length > 0 && (
           <div style={{ borderTop: '2px solid var(--border-subtle)' }} />
         )}
         {tenK.length > 0 && (
-          <CropGrowthSection label="10k milestone" pts={10} color="var(--accent-green)" items={tenK} plotCount={plotCount} />
+          <CropGrowthSection label="10k milestone" color="var(--accent-green)" items={tenK} plotCount={plotCount} />
         )}
       </div>
     </div>
