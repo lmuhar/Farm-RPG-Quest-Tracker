@@ -42,7 +42,7 @@ const fishingSpots: { spot: string; fish: string[] }[] = (() => {
 const PASSIVE_100K_NAMES = [
   'Awl', 'Board', 'Broom', 'Bucket', 'Butter Churn', 'Chum',
   'Fancy Pipe', 'Horseshoe', 'Iron Cup', 'Iron Ring',
-  'Ladder', 'Red Scarf', 'Rope',
+  'Ladder', 'Nailed Board', 'Red Scarf', 'Rope',
   'Sturdy Box', 'Sturdy Shield',
   'Treasure Chest', 'Twine',
   'Wagon Wheel', 'Wooden Barrel', 'Wooden Box', 'Wooden Button',
