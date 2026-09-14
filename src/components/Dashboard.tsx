@@ -213,6 +213,13 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       cookingLvRequired: 25,
       lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'],
     },
+    {
+      recipe: 'Shrimp-a-Plenty',
+      npc: 'Cecil',
+      npcLvRequired: 60,
+      cookingLvRequired: 60,
+      lovedItems: ['MIAB', 'Shiny Beetle', 'Old Boot', 'Yarn', 'Horned Beetle', 'Grasshopper', 'Leather', 'Gold Aquamarine Ring'],
+    },
   ];
 
   const cookingHints = useMemo(() => {
