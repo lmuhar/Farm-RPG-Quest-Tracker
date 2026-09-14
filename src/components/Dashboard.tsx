@@ -213,6 +213,13 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       cookingLvRequired: 25,
       lovedItems: ['Yellow Perch', 'Mushroom Paste', 'MIAB', 'Corn', 'Leather', 'Corn Husk Doll', 'Peach'],
     },
+    {
+      recipe: 'Shrimp-a-Plenty',
+      npc: 'Cecil',
+      npcLvRequired: 60,
+      cookingLvRequired: 0,
+      lovedItems: ['MIAB', 'Shiny Beetle', 'Old Boot', 'Yarn', 'Horned Beetle', 'Grasshopper', 'Leather', 'Gold Aquamarine Ring'],
+    },
   ];
 
   const cookingHints = useMemo(() => {
@@ -865,16 +872,18 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       >
                         {npc} lv {npcLv}/{npcLvRequired}
                       </span>
-                      <span
-                        className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
-                        style={{
-                          background: cookingMet ? 'var(--accent-green-bg)' : 'var(--accent-blue-bg)',
-                          color: cookingMet ? 'var(--accent-green)' : 'var(--accent-blue)',
-                          border: `1px solid ${cookingMet ? 'var(--accent-green-border)' : 'var(--accent-blue-border)'}`,
-                        }}
-                      >
-                        Cooking lv {cookingLv}/{cookingLvRequired}
-                      </span>
+                      {cookingLvRequired > 0 && (
+                        <span
+                          className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
+                          style={{
+                            background: cookingMet ? 'var(--accent-green-bg)' : 'var(--accent-blue-bg)',
+                            color: cookingMet ? 'var(--accent-green)' : 'var(--accent-blue)',
+                            border: `1px solid ${cookingMet ? 'var(--accent-green-border)' : 'var(--accent-blue-border)'}`,
+                          }}
+                        >
+                          Cooking lv {cookingLv}/{cookingLvRequired}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
