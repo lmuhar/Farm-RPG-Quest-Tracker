@@ -4404,5 +4404,47 @@
         "quantity": 1
       }
     ]
+  },
+  {
+    "id": "1513",
+    "name": "Shrimp-a-Plenty",
+    "ingredients": [
+      {
+        "item": "Coal",
+        "quantity": 240
+      },
+      {
+        "item": "Peas",
+        "quantity": 100
+      },
+      {
+        "item": "Small Prawn",
+        "quantity": 30
+      },
+      {
+        "item": "Shrimp",
+        "quantity": 20
+      },
+      {
+        "item": "Rice",
+        "quantity": 10
+      },
+      {
+        "item": "Snail",
+        "quantity": 5
+      },
+      {
+        "item": "Salt",
+        "quantity": 2
+      },
+      {
+        "item": "Bone Broth",
+        "quantity": 1
+      },
+      {
+        "item": "Cooking Pot",
+        "quantity": 1
+      }
+    ]
   }
 ]
