@@ -2774,6 +2774,10 @@
       {
         "item": "Yarn",
         "quantity": 2
+      },
+      {
+        "item": "Red Dye",
+        "quantity": 1
       }
     ]
   },
