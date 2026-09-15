@@ -11,7 +11,7 @@ import recipesData from '../data/recipes.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks';
 import { resolveRawIngredients } from '../utils';
 import { getLocationGroups } from './ItemLocationPanel';
-import { Fish, AlertTriangle, TrendingUp, Compass, Sprout, PawPrint, Gem, KeyRound } from 'lucide-react';
+import { Fish, AlertTriangle, TrendingUp, Compass } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
 
@@ -85,25 +85,6 @@ const craftDifficultyMap = new Map<string, number>(craftingMasteries.map((m) => 
 const CRAFTING_RAW_INPUTS = new Map<string, Map<string, number>>(
   CRAFTABLE_MASTERY_NAMES.map((name) => [name, resolveRawIngredients(name, 1, rawRecipeMap)])
 );
-
-function locationVisual(type: string) {
-  switch (type) {
-    case 'fishing':
-      return { Icon: Fish, color: 'var(--accent-blue)', bg: 'var(--accent-blue-bg)', border: 'var(--accent-blue-border)' };
-    case 'farming':
-      return { Icon: Sprout, color: 'var(--accent-yellow)', bg: 'var(--accent-yellow-bg)', border: 'var(--accent-yellow-border)' };
-    case 'pet':
-      return { Icon: PawPrint, color: 'var(--accent-orange)', bg: 'var(--accent-orange-bg)', border: 'var(--accent-orange-border)' };
-    case 'mining':
-    case 'dig':
-      return { Icon: Gem, color: 'var(--accent-red)', bg: 'var(--accent-red-bg)', border: 'var(--accent-red-border)' };
-    case 'locksmith':
-    case 'grab_bag':
-      return { Icon: KeyRound, color: 'var(--accent-purple)', bg: 'var(--accent-purple-bg)', border: 'var(--accent-purple-border)' };
-    default:
-      return { Icon: Compass, color: 'var(--accent-green)', bg: 'var(--accent-green-bg)', border: 'var(--accent-green-border)' };
-  }
-}
 
 type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'push10k' | 'passive1m' | 'ascension';
 
@@ -289,36 +270,44 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     return need;
   }, [push10kCandidates]);
 
-  // Group by explore location only — pet loot, locksmith/grab bags and mining
-  // aren't something you can just go do, so they're excluded here. Flags
-  // materials that need more than one trip given the current inventory cap
-  // so drops don't get wasted overflowing it
-  const push10kLocationData = useMemo(() => {
-    type MatCard = { material: string; need: number; have: number; items: string[] };
+  // Group craftable items by the explore location that supplies their raw materials —
+  // a mini Craftworks setup per location, so a farming trip there tells you exactly
+  // what to queue next toward 10k. Pet loot, locksmith/grab bags and mining aren't
+  // something you can just go do, so those location types are excluded.
+  const push10kLocationGroups = useMemo(() => {
     const materialNames = [...push10kMaterialNeed.keys()];
     const rawGroups = getLocationGroups(materialNames);
-    const byLocation = new Map<string, { type: string; materials: MatCard[] }>();
-    const knownMaterials = new Set<string>();
+    const byLocation = new Map<string, Set<string>>();
+    const locatedItems = new Set<string>();
     for (const [locName, { type, items: mats }] of rawGroups) {
+      if (type !== 'explore') continue;
       for (const mat of mats) {
-        knownMaterials.add(mat);
-        if (type !== 'explore') continue;
-        if (!byLocation.has(locName)) byLocation.set(locName, { type, materials: [] });
-        const need = push10kMaterialNeed.get(mat) ?? 0;
-        const have = inventory[mat] ?? 0;
-        const items = push10kCandidates.filter((c) => c.raw.has(mat)).map((c) => c.item);
-        byLocation.get(locName)!.materials.push({ material: mat, need, have, items });
+        for (const c of push10kCandidates) {
+          if (!c.raw.has(mat)) continue;
+          if (!byLocation.has(locName)) byLocation.set(locName, new Set());
+          byLocation.get(locName)!.add(c.item);
+          locatedItems.add(c.item);
+        }
       }
     }
-    const uncoveredMaterials = materialNames.filter((m) => !knownMaterials.has(m));
+    const candidateByName = new Map(push10kCandidates.map((c) => [c.item, c]));
     const groups = [...byLocation.entries()]
-      .map(([name, { type, materials }]) => ({ name, type, materials }))
-      .sort((a, b) =>
-        b.materials.length - a.materials.length ||
-        b.materials.reduce((s, m) => s + m.need, 0) - a.materials.reduce((s, m) => s + m.need, 0)
-      );
-    return { groups, uncoveredMaterials };
-  }, [push10kMaterialNeed, push10kCandidates, inventory]);
+      .map(([name, itemNames]) => {
+        const items = [...itemNames]
+          .map((item) => candidateByName.get(item)!)
+          .sort((a, b) => b.pct - a.pct || a.difficulty - b.difficulty || a.item.localeCompare(b.item));
+        const directItems: DirectItem[] = items.map(({ item, count, pct, difficulty }) => ({
+          item,
+          quantity: inventoryMax,
+          label: `10k · ${count.toLocaleString()}/10,000 (${Math.round(pct * 100)}% · diff ${difficulty})`,
+          priority: count > 0 ? 'active' : 'nextup',
+        }));
+        return { name, itemCount: items.length, directItems };
+      })
+      .sort((a, b) => b.itemCount - a.itemCount);
+    const unlocatedItems = push10kCandidates.filter((c) => !locatedItems.has(c.item)).map((c) => c.item);
+    return { groups, unlocatedItems };
+  }, [push10kMaterialNeed, push10kCandidates, inventoryMax]);
 
   // ── Tab 6: passive 1M (Mega Master) — items under 1M mastery, quest-independent ──
   // Past-1M items excluded as primary targets; they can still appear as
@@ -557,7 +546,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         )
       )}
 
-      {/* Tab — 10k push, grouped by closeness + farming location */}
+      {/* Tab — 10k push, grouped by closeness, then a mini Craftworks setup per farming location */}
       {tab === 'push10k' && (
         push10kCandidates.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
@@ -568,7 +557,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         ) : (
           <div className="space-y-4">
             <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
-              {push10kCandidates.length} craft{push10kCandidates.length !== 1 ? 's' : ''} under 10k · closest first · farming locations below so you don't overshoot the {inventoryMax.toLocaleString()} inventory cap
+              {push10kCandidates.length} craft{push10kCandidates.length !== 1 ? 's' : ''} under 10k · closest first
             </p>
 
             <CraftworksSuggestions
@@ -578,53 +567,31 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
               subtitle="10k push · closest to done first"
             />
 
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-xs font-semibold uppercase tracking-wider px-1" style={{ color: 'var(--text-muted)' }}>
-                Farming locations
+                By farming location — what to queue after a trip there
               </p>
-              {push10kLocationData.groups.map((loc) => {
-                const { Icon, color, bg, border } = locationVisual(loc.type);
-                return (
-                  <div key={loc.name} className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
-                    <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: bg, borderBottom: `1px solid ${border}` }}>
-                      <Icon size={13} style={{ color, flexShrink: 0 }} />
-                      <span className="text-sm font-semibold" style={{ color }}>{loc.name}</span>
-                      <span className="text-[10px]" style={{ color, opacity: 0.7 }}>
-                        {loc.type === 'grab_bag' ? 'grab bag' : loc.type}
-                      </span>
-                    </div>
-                    <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-                      {loc.materials.map((m) => {
-                        const free = Math.max(0, inventoryMax - m.have);
-                        const fitsInOneTrip = m.need <= free;
-                        return (
-                          <div key={m.material} className="px-4 py-2.5">
-                            <div className="flex items-center justify-between gap-3 flex-wrap">
-                              <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{m.material}</span>
-                              <span className="text-xs font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-                                need {m.need.toLocaleString()} · have {m.have.toLocaleString()} · cap {inventoryMax.toLocaleString()}
-                              </span>
-                            </div>
-                            <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
-                              for {m.items.join(', ')}
-                            </p>
-                            {!fitsInOneTrip && (
-                              <p className="text-[11px] mt-1 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
-                                <AlertTriangle size={10} style={{ flexShrink: 0 }} />
-                                won't all fit at the {inventoryMax.toLocaleString()} cap at once — craft some down between farming trips so drops aren't wasted
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
+              {push10kLocationGroups.groups.map((loc) => (
+                <div key={loc.name} className="space-y-1.5">
+                  <div className="flex items-center gap-2 px-1">
+                    <Compass size={13} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+                    <span className="text-sm font-semibold" style={{ color: 'var(--accent-green)' }}>{loc.name}</span>
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                      {loc.itemCount} item{loc.itemCount !== 1 ? 's' : ''}
+                    </span>
                   </div>
-                );
-              })}
-              {push10kLocationData.uncoveredMaterials.length > 0 && (
+                  <CraftworksSuggestions
+                    quests={[]}
+                    directItems={loc.directItems}
+                    noFiller
+                    subtitle={`${loc.name} · 10k push`}
+                  />
+                </div>
+              ))}
+              {push10kLocationGroups.unlocatedItems.length > 0 && (
                 <div className="rounded-xl px-4 py-3" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
                   <p className="text-[11px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                    No location data yet for: {push10kLocationData.uncoveredMaterials.join(', ')}
+                    No explore location for: {push10kLocationGroups.unlocatedItems.join(', ')}
                   </p>
                 </div>
               )}
