@@ -289,26 +289,28 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     return need;
   }, [push10kCandidates]);
 
-  // Group by farming location (explore spots, mining, pet loot, locksmith),
-  // flagging materials that need more than one trip given the current inventory cap
+  // Group by explore location only — pet loot, locksmith/grab bags and mining
+  // aren't something you can just go do, so they're excluded here. Flags
+  // materials that need more than one trip given the current inventory cap
   // so drops don't get wasted overflowing it
   const push10kLocationData = useMemo(() => {
     type MatCard = { material: string; need: number; have: number; items: string[] };
     const materialNames = [...push10kMaterialNeed.keys()];
     const rawGroups = getLocationGroups(materialNames);
     const byLocation = new Map<string, { type: string; materials: MatCard[] }>();
-    const assign = (locName: string, type: string, material: string) => {
-      if (!byLocation.has(locName)) byLocation.set(locName, { type, materials: [] });
-      const need = push10kMaterialNeed.get(material) ?? 0;
-      const have = inventory[material] ?? 0;
-      const items = push10kCandidates.filter((c) => c.raw.has(material)).map((c) => c.item);
-      byLocation.get(locName)!.materials.push({ material, need, have, items });
-    };
+    const knownMaterials = new Set<string>();
     for (const [locName, { type, items: mats }] of rawGroups) {
-      for (const mat of mats) assign(locName, type, mat);
+      for (const mat of mats) {
+        knownMaterials.add(mat);
+        if (type !== 'explore') continue;
+        if (!byLocation.has(locName)) byLocation.set(locName, { type, materials: [] });
+        const need = push10kMaterialNeed.get(mat) ?? 0;
+        const have = inventory[mat] ?? 0;
+        const items = push10kCandidates.filter((c) => c.raw.has(mat)).map((c) => c.item);
+        byLocation.get(locName)!.materials.push({ material: mat, need, have, items });
+      }
     }
-    const covered = new Set([...byLocation.values()].flatMap((g) => g.materials.map((m) => m.material)));
-    const uncoveredMaterials = materialNames.filter((m) => !covered.has(m));
+    const uncoveredMaterials = materialNames.filter((m) => !knownMaterials.has(m));
     const groups = [...byLocation.entries()]
       .map(([name, { type, materials }]) => ({ name, type, materials }))
       .sort((a, b) =>
