@@ -265,6 +265,16 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     return list.sort((a, b) => b.pct - a.pct || a.difficulty - b.difficulty || a.item.localeCompare(b.item));
   }, [masteryLevels, masteryProgress]);
 
+  // Feed straight into the Craftworks slot engine, same as the other mastery tabs
+  const push10kDirectItems = useMemo((): DirectItem[] => {
+    return push10kCandidates.map(({ item, count, pct, difficulty }) => ({
+      item,
+      quantity: inventoryMax,
+      label: `10k · ${count.toLocaleString()}/10,000 (${Math.round(pct * 100)}% · diff ${difficulty})`,
+      priority: count > 0 ? 'active' : 'nextup',
+    }));
+  }, [push10kCandidates, inventoryMax]);
+
   // Total raw material still needed across all near-10k items
   const push10kMaterialNeed = useMemo(() => {
     const need = new Map<string, number>();
@@ -559,25 +569,12 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
               {push10kCandidates.length} craft{push10kCandidates.length !== 1 ? 's' : ''} under 10k · closest first · farming locations below so you don't overshoot the {inventoryMax.toLocaleString()} inventory cap
             </p>
 
-            <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
-              {push10kCandidates.map((c, i) => (
-                <div
-                  key={c.item}
-                  className="px-4 py-2.5 flex items-center justify-between gap-3"
-                  style={{ borderBottom: i < push10kCandidates.length - 1 ? '1px solid var(--border-subtle)' : undefined }}
-                >
-                  <div className="min-w-0 flex-1">
-                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{c.item}</span>
-                    <div className="h-1 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--border-default)' }}>
-                      <div className="h-full rounded-full" style={{ width: `${Math.round(c.pct * 100)}%`, background: 'var(--accent-yellow)' }} />
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-yellow)' }}>
-                    {c.count.toLocaleString()}/10,000
-                  </span>
-                </div>
-              ))}
-            </div>
+            <CraftworksSuggestions
+              quests={[]}
+              directItems={push10kDirectItems}
+              noFiller
+              subtitle="10k push · closest to done first"
+            />
 
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wider px-1" style={{ color: 'var(--text-muted)' }}>
