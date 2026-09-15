@@ -70,8 +70,8 @@ interface RawRecipe { id: string; name: string; ingredients: { item: string; qua
 const allRawRecipes = recipesData as RawRecipe[];
 const rawRecipeMap = new Map<string, RawRecipe>(allRawRecipes.map((r) => [r.name.toLowerCase(), r]));
 
-// Worms/Grubs/Minnows are dug up with a shovel, not tied to a discrete explore location
-const DUG_BAIT_ITEMS = new Set(['Worms', 'Grubs', 'Minnows']);
+// Auto-regenerating materials — no dedicated farming trip needed for these
+const PASSIVE_BASE_MATERIALS = new Set(['Wood', 'Stone', 'Nails', 'Straw', 'Iron', 'Worms', 'Grubs', 'Minnows']);
 
 // Every crafting mastery with a known recipe — the resolvable set for material/location guidance
 const CRAFTABLE_MASTERY_NAMES = craftingMasteries
@@ -265,18 +265,31 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     return list.sort((a, b) => b.pct - a.pct || a.difficulty - b.difficulty || a.item.localeCompare(b.item));
   }, [masteryLevels, masteryProgress]);
 
-  // Total raw material still needed across all near-10k items
+  // Feed straight into the Craftworks slot engine, same as the other mastery tabs
+  const push10kDirectItems = useMemo((): DirectItem[] => {
+    return push10kCandidates.map(({ item, count, pct, difficulty }) => ({
+      item,
+      quantity: inventoryMax,
+      label: `10k · ${count.toLocaleString()}/10,000 (${Math.round(pct * 100)}% · diff ${difficulty})`,
+      priority: count > 0 ? 'active' : 'nextup',
+    }));
+  }, [push10kCandidates, inventoryMax]);
+
+  // Total raw material still needed across all near-10k items — excluding the
+  // passive base materials (Wood/Stone/Nails/Straw/Iron/Worms/Grubs/Minnows),
+  // which regenerate on their own and don't need a dedicated farming trip
   const push10kMaterialNeed = useMemo(() => {
     const need = new Map<string, number>();
     for (const c of push10kCandidates) {
       for (const [mat, qtyPerUnit] of c.raw) {
+        if (PASSIVE_BASE_MATERIALS.has(mat)) continue;
         need.set(mat, (need.get(mat) ?? 0) + qtyPerUnit * c.remaining);
       }
     }
     return need;
   }, [push10kCandidates]);
 
-  // Group by farming location (explore spots, mining, pet loot, locksmith, dug bait),
+  // Group by farming location (explore spots, mining, pet loot, locksmith),
   // flagging materials that need more than one trip given the current inventory cap
   // so drops don't get wasted overflowing it
   const push10kLocationData = useMemo(() => {
@@ -293,9 +306,6 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     };
     for (const [locName, { type, items: mats }] of rawGroups) {
       for (const mat of mats) assign(locName, type, mat);
-    }
-    for (const mat of materialNames) {
-      if (DUG_BAIT_ITEMS.has(mat)) assign('Dig for bait', 'dig', mat);
     }
     const covered = new Set([...byLocation.values()].flatMap((g) => g.materials.map((m) => m.material)));
     const uncoveredMaterials = materialNames.filter((m) => !covered.has(m));
@@ -559,25 +569,12 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
               {push10kCandidates.length} craft{push10kCandidates.length !== 1 ? 's' : ''} under 10k · closest first · farming locations below so you don't overshoot the {inventoryMax.toLocaleString()} inventory cap
             </p>
 
-            <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
-              {push10kCandidates.map((c, i) => (
-                <div
-                  key={c.item}
-                  className="px-4 py-2.5 flex items-center justify-between gap-3"
-                  style={{ borderBottom: i < push10kCandidates.length - 1 ? '1px solid var(--border-subtle)' : undefined }}
-                >
-                  <div className="min-w-0 flex-1">
-                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{c.item}</span>
-                    <div className="h-1 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--border-default)' }}>
-                      <div className="h-full rounded-full" style={{ width: `${Math.round(c.pct * 100)}%`, background: 'var(--accent-yellow)' }} />
-                    </div>
-                  </div>
-                  <span className="text-xs font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-yellow)' }}>
-                    {c.count.toLocaleString()}/10,000
-                  </span>
-                </div>
-              ))}
-            </div>
+            <CraftworksSuggestions
+              quests={[]}
+              directItems={push10kDirectItems}
+              noFiller
+              subtitle="10k push · closest to done first"
+            />
 
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-wider px-1" style={{ color: 'var(--text-muted)' }}>
