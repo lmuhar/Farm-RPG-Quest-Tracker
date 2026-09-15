@@ -105,7 +105,7 @@ function locationVisual(type: string) {
   }
 }
 
-type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'push10k' | 'passive100k' | 'ascension';
+type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'push10k' | 'passive1m' | 'ascension';
 
 interface Props {
   activeQuests: Quest[];
@@ -308,23 +308,23 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     return { groups, uncoveredMaterials };
   }, [push10kMaterialNeed, push10kCandidates, inventory]);
 
-  // ── Tab 6: passive 100k — items under 100k mastery, quest-independent ──
-  // Past-100k items excluded as primary targets; they can still appear as
+  // ── Tab 6: passive 1M (Mega Master) — items under 1M mastery, quest-independent ──
+  // Past-1M items excluded as primary targets; they can still appear as
   // intermediate ingredients inside CraftworksSuggestions if inventory needs them.
-  const passive100kItems = useMemo((): DirectItem[] => {
+  const passive1mItems = useMemo((): DirectItem[] => {
     type Candidate = { item: string; count: number; level: number; pct: number };
     const candidates: Candidate[] = [];
     for (const name of PASSIVE_100K_NAMES) {
       const level = masteryLevels[name] ?? 0;
       const count = masteryProgress[name] ?? 0;
-      if (level >= 2 || count >= 100_000) continue;
-      candidates.push({ item: name, count, level, pct: Math.min(1, count / 100_000) });
+      if (level >= 3 || count >= 1_000_000) continue;
+      candidates.push({ item: name, count, level, pct: Math.min(1, count / 1_000_000) });
     }
     candidates.sort((a, b) => (b.level - a.level) || (b.pct - a.pct));
     return candidates.map(({ item, count, level, pct }) => ({
       item,
       quantity: inventoryMax,
-      label: `100k · ${count.toLocaleString()}/100,000 (${Math.round(pct * 100)}% · ${(100_000 - count).toLocaleString()} left)`,
+      label: `1M · ${count.toLocaleString()}/1,000,000 (${Math.round(pct * 100)}% · ${(1_000_000 - count).toLocaleString()} left)`,
       priority: level > 0 ? 'active' : 'nextup',
     }));
   }, [masteryProgress, masteryLevels, inventoryMax]);
@@ -363,7 +363,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     { id: 'fishing',   label: 'Fishing' },
     { id: 'passive',    label: 'Passive' },
     { id: 'push10k',    label: '10k Push', dot: push10kCandidates.length > 0 },
-    { id: 'passive100k', label: 'Passive 100k', dot: passive100kItems.length > 0 },
+    { id: 'passive1m',  label: 'Passive 1M', dot: passive1mItems.length > 0 },
     { id: 'ascension',  label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
   ];
 
@@ -634,24 +634,24 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         )
       )}
 
-      {/* Tab 6 — passive 100k */}
-      {tab === 'passive100k' && (
-        passive100kItems.length === 0 ? (
+      {/* Tab 6 — passive 1M (Mega Master) */}
+      {tab === 'passive1m' && (
+        passive1mItems.length === 0 ? (
           <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-              All passive items have hit 100k crafted — 100 AK pts each claimed!
+              All passive items have hit 1M crafted — Mega Master!
             </p>
           </div>
         ) : (
           <div className="space-y-2">
             <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
-              +100 AK pts each — in-progress first, then closest to done. Past-100k items only appear if needed as a build step.
+              Mega Master milestone — in-progress first, then closest to done. Past-1M items only appear if needed as a build step.
             </p>
             <CraftworksSuggestions
               quests={[]}
-              directItems={passive100kItems}
+              directItems={passive1mItems}
               noFiller
-              subtitle="passive 100k · quest-independent"
+              subtitle="passive 1M · quest-independent"
             />
           </div>
         )
