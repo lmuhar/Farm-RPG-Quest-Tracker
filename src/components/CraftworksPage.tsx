@@ -70,8 +70,8 @@ interface RawRecipe { id: string; name: string; ingredients: { item: string; qua
 const allRawRecipes = recipesData as RawRecipe[];
 const rawRecipeMap = new Map<string, RawRecipe>(allRawRecipes.map((r) => [r.name.toLowerCase(), r]));
 
-// Worms/Grubs/Minnows are dug up with a shovel, not tied to a discrete explore location
-const DUG_BAIT_ITEMS = new Set(['Worms', 'Grubs', 'Minnows']);
+// Auto-regenerating materials — no dedicated farming trip needed for these
+const PASSIVE_BASE_MATERIALS = new Set(['Wood', 'Stone', 'Nails', 'Straw', 'Iron', 'Worms', 'Grubs', 'Minnows']);
 
 // Every crafting mastery with a known recipe — the resolvable set for material/location guidance
 const CRAFTABLE_MASTERY_NAMES = craftingMasteries
@@ -275,18 +275,21 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     }));
   }, [push10kCandidates, inventoryMax]);
 
-  // Total raw material still needed across all near-10k items
+  // Total raw material still needed across all near-10k items — excluding the
+  // passive base materials (Wood/Stone/Nails/Straw/Iron/Worms/Grubs/Minnows),
+  // which regenerate on their own and don't need a dedicated farming trip
   const push10kMaterialNeed = useMemo(() => {
     const need = new Map<string, number>();
     for (const c of push10kCandidates) {
       for (const [mat, qtyPerUnit] of c.raw) {
+        if (PASSIVE_BASE_MATERIALS.has(mat)) continue;
         need.set(mat, (need.get(mat) ?? 0) + qtyPerUnit * c.remaining);
       }
     }
     return need;
   }, [push10kCandidates]);
 
-  // Group by farming location (explore spots, mining, pet loot, locksmith, dug bait),
+  // Group by farming location (explore spots, mining, pet loot, locksmith),
   // flagging materials that need more than one trip given the current inventory cap
   // so drops don't get wasted overflowing it
   const push10kLocationData = useMemo(() => {
@@ -303,9 +306,6 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     };
     for (const [locName, { type, items: mats }] of rawGroups) {
       for (const mat of mats) assign(locName, type, mat);
-    }
-    for (const mat of materialNames) {
-      if (DUG_BAIT_ITEMS.has(mat)) assign('Dig for bait', 'dig', mat);
     }
     const covered = new Set([...byLocation.values()].flatMap((g) => g.materials.map((m) => m.material)));
     const uncoveredMaterials = materialNames.filter((m) => !covered.has(m));
