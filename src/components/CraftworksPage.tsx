@@ -7,8 +7,10 @@ import type { DirectItem } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
 import masteriesData from '../data/masteries.json';
 import itemLocationsData from '../data/item-locations.json';
+import recipesData from '../data/recipes.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks';
-import { Fish, AlertTriangle, TrendingUp } from 'lucide-react';
+import { resolveRawIngredients } from '../utils';
+import { Fish, AlertTriangle, TrendingUp, Compass } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
 
@@ -42,7 +44,7 @@ const fishingSpots: { spot: string; fish: string[] }[] = (() => {
 const PASSIVE_100K_NAMES = [
   'Awl', 'Board', 'Broom', 'Bucket', 'Butter Churn', 'Chum',
   'Fancy Pipe', 'Horseshoe', 'Iron Cup', 'Iron Ring',
-  'Ladder', 'Nailed Board', 'Red Scarf', 'Rope',
+  'Ladder', 'Nailed Board', 'Rope',
   'Sturdy Box', 'Sturdy Shield',
   'Treasure Chest', 'Twine',
   'Wagon Wheel', 'Wooden Barrel', 'Wooden Box', 'Wooden Button',
@@ -63,7 +65,20 @@ const PASSIVE_MASTERY_ITEMS: { name: string; difficulty: number }[] = [
   { name: 'Wooden Table', difficulty: 2 },
 ];
 
-type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'passive100k' | 'ascension';
+interface RawRecipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
+const allRawRecipes = recipesData as RawRecipe[];
+const rawRecipeMap = new Map<string, RawRecipe>(allRawRecipes.map((r) => [r.name.toLowerCase(), r]));
+
+// Worms/Grubs/Minnows are dug up with a shovel, not tied to a discrete explore location
+const DUG_BAIT_ITEMS = new Set(['Worms', 'Grubs', 'Minnows']);
+
+// Per-unit raw material breakdown for each passive item, reduced all the way down
+// to Wood/Stone/Nails/Straw/Iron/Worms/Grubs/Minnows
+const PASSIVE_RAW_INPUTS = new Map<string, Map<string, number>>(
+  PASSIVE_100K_NAMES.map((name) => [name, resolveRawIngredients(name, 1, rawRecipeMap)])
+);
+
+type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'passive10k' | 'passive100k' | 'ascension';
 
 interface Props {
   activeQuests: Quest[];
@@ -202,6 +217,58 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       });
   }, [masteryLevels, inventoryMax]);
 
+  // ── Tab: passive 10k — items under 10k mastery, grouped by closeness + farming location ──
+  const passive10kCandidates = useMemo(() => {
+    type Candidate = { item: string; count: number; pct: number; remaining: number; raw: Map<string, number> };
+    const list: Candidate[] = [];
+    for (const name of PASSIVE_100K_NAMES) {
+      const level = masteryLevels[name] ?? 0;
+      const count = masteryProgress[name] ?? 0;
+      if (level >= 1 || count >= 10_000) continue;
+      list.push({
+        item: name,
+        count,
+        pct: Math.min(1, count / 10_000),
+        remaining: 10_000 - count,
+        raw: PASSIVE_RAW_INPUTS.get(name) ?? new Map<string, number>(),
+      });
+    }
+    return list.sort((a, b) => b.pct - a.pct || a.item.localeCompare(b.item));
+  }, [masteryLevels, masteryProgress]);
+
+  // Total raw material still needed across all near-10k items
+  const passive10kMaterialNeed = useMemo(() => {
+    const need = new Map<string, number>();
+    for (const c of passive10kCandidates) {
+      for (const [mat, qtyPerUnit] of c.raw) {
+        need.set(mat, (need.get(mat) ?? 0) + qtyPerUnit * c.remaining);
+      }
+    }
+    return need;
+  }, [passive10kCandidates]);
+
+  // Group by farming location, flagging materials that need more than one trip
+  // given the current inventory cap so drops don't get wasted overflowing it
+  const passive10kLocationGroups = useMemo(() => {
+    type MatCard = { material: string; need: number; have: number; items: string[] };
+    const byLocation = new Map<string, { type: string; materials: MatCard[] }>();
+    for (const [material, need] of passive10kMaterialNeed) {
+      const have = inventory[material] ?? 0;
+      const items = passive10kCandidates.filter((c) => c.raw.has(material)).map((c) => c.item);
+      const locs = itemLocations[material] ?? (DUG_BAIT_ITEMS.has(material) ? [{ name: 'Dig for bait', type: 'dig' }] : []);
+      for (const loc of locs) {
+        if (!byLocation.has(loc.name)) byLocation.set(loc.name, { type: loc.type, materials: [] });
+        byLocation.get(loc.name)!.materials.push({ material, need, have, items });
+      }
+    }
+    return [...byLocation.entries()]
+      .map(([name, { type, materials }]) => ({ name, type, materials }))
+      .sort((a, b) =>
+        b.materials.length - a.materials.length ||
+        b.materials.reduce((s, m) => s + m.need, 0) - a.materials.reduce((s, m) => s + m.need, 0)
+      );
+  }, [passive10kMaterialNeed, inventory]);
+
   // ── Tab 6: passive 100k — items under 100k mastery, quest-independent ──
   // Past-100k items excluded as primary targets; they can still appear as
   // intermediate ingredients inside CraftworksSuggestions if inventory needs them.
@@ -256,6 +323,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     { id: 'mastery',   label: 'Mastery' },
     { id: 'fishing',   label: 'Fishing' },
     { id: 'passive',    label: 'Passive' },
+    { id: 'passive10k', label: 'Passive 10k', dot: passive10kCandidates.length > 0 },
     { id: 'passive100k', label: 'Passive 100k', dot: passive100kItems.length > 0 },
     { id: 'ascension',  label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
   ];
@@ -434,6 +502,82 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
                 </div>
               </div>
             ))}
+          </div>
+        )
+      )}
+
+      {/* Tab — passive 10k, grouped by closeness + farming location */}
+      {tab === 'passive10k' && (
+        passive10kCandidates.length === 0 ? (
+          <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              All passive items have hit 10k crafted — none left to push toward the first milestone.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
+              Closest to 10k first · farming locations below so you don't overshoot the {inventoryMax.toLocaleString()} inventory cap
+            </p>
+
+            <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+              {passive10kCandidates.map((c, i) => (
+                <div
+                  key={c.item}
+                  className="px-4 py-2.5 flex items-center justify-between gap-3"
+                  style={{ borderBottom: i < passive10kCandidates.length - 1 ? '1px solid var(--border-subtle)' : undefined }}
+                >
+                  <div className="min-w-0 flex-1">
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{c.item}</span>
+                    <div className="h-1 rounded-full overflow-hidden mt-1.5" style={{ background: 'var(--border-default)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${Math.round(c.pct * 100)}%`, background: 'var(--accent-yellow)' }} />
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-yellow)' }}>
+                    {c.count.toLocaleString()}/10,000
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider px-1" style={{ color: 'var(--text-muted)' }}>
+                Farming locations
+              </p>
+              {passive10kLocationGroups.map((loc) => (
+                <div key={loc.name} className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+                  <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-green-bg)', borderBottom: '1px solid var(--accent-green-border)' }}>
+                    <Compass size={13} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+                    <span className="text-sm font-semibold" style={{ color: 'var(--accent-green)' }}>{loc.name}</span>
+                  </div>
+                  <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+                    {loc.materials.map((m) => {
+                      const free = Math.max(0, inventoryMax - m.have);
+                      const fitsInOneTrip = m.need <= free;
+                      return (
+                        <div key={m.material} className="px-4 py-2.5">
+                          <div className="flex items-center justify-between gap-3 flex-wrap">
+                            <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{m.material}</span>
+                            <span className="text-xs font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+                              need {m.need.toLocaleString()} · have {m.have.toLocaleString()} · cap {inventoryMax.toLocaleString()}
+                            </span>
+                          </div>
+                          <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
+                            for {m.items.join(', ')}
+                          </p>
+                          {!fitsInOneTrip && (
+                            <p className="text-[11px] mt-1 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
+                              <AlertTriangle size={10} style={{ flexShrink: 0 }} />
+                              won't all fit at the {inventoryMax.toLocaleString()} cap at once — craft some down between farming trips so drops aren't wasted
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )
       )}
