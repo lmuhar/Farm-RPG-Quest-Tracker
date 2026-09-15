@@ -10,7 +10,6 @@ import itemLocationsData from '../data/item-locations.json';
 import recipesData from '../data/recipes.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks';
 import { resolveRawIngredients } from '../utils';
-import { getLocationGroups } from './ItemLocationPanel';
 import { Fish, AlertTriangle, TrendingUp, Compass } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
@@ -256,47 +255,54 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     }));
   }, [push10kCandidates, inventoryMax]);
 
-  // Total raw material still needed across all near-10k items — excluding the
-  // passive base materials (Wood/Stone/Nails/Straw/Iron/Worms/Grubs/Minnows),
-  // which regenerate on their own and don't need a dedicated farming trip
-  const push10kMaterialNeed = useMemo(() => {
-    const need = new Map<string, number>();
-    for (const c of push10kCandidates) {
-      for (const [mat, qtyPerUnit] of c.raw) {
-        if (PASSIVE_BASE_MATERIALS.has(mat)) continue;
-        need.set(mat, (need.get(mat) ?? 0) + qtyPerUnit * c.remaining);
-      }
-    }
-    return need;
-  }, [push10kCandidates]);
-
-  // Group craftable items by the explore location that supplies their raw materials —
-  // a mini Craftworks setup per location, so a farming trip there tells you exactly
-  // what to queue next toward 10k. Pet loot, locksmith/grab bags and mining aren't
-  // something you can just go do, so those location types are excluded.
+  // Assign each craftable item to exactly ONE explore location — its best match
+  // (the location covering the most of its non-passive raw materials), with ties
+  // broken toward whichever tied location has fewer items assigned so far. This
+  // spreads items evenly across locations instead of piling everything onto
+  // whichever handful of spots happen to stock a common material — otherwise
+  // most locations end up showing nearly the same craft list.
   const push10kLocationGroups = useMemo(() => {
-    const materialNames = [...push10kMaterialNeed.keys()];
-    const rawGroups = getLocationGroups(materialNames);
-    const byLocation = new Map<string, Set<string>>();
-    const locatedItems = new Set<string>();
-    for (const [locName, { type, items: mats }] of rawGroups) {
-      if (type !== 'explore') continue;
-      for (const mat of mats) {
-        for (const c of push10kCandidates) {
-          if (!c.raw.has(mat)) continue;
-          if (!byLocation.has(locName)) byLocation.set(locName, new Set());
-          byLocation.get(locName)!.add(c.item);
-          locatedItems.add(c.item);
-        }
+    type Candidate = (typeof push10kCandidates)[number];
+    const entries: { candidate: Candidate; bestLocs: string[] }[] = [];
+    const unlocatedItems: string[] = [];
+    for (const c of push10kCandidates) {
+      const mats = [...c.raw.keys()].filter((m) => !PASSIVE_BASE_MATERIALS.has(m));
+      if (mats.length === 0) continue; // fully passive item, no location needed
+      const matLocSets = mats.map(
+        (m) => new Set((itemLocations[m] ?? []).filter((l) => l.type === 'explore').map((l) => l.name))
+      );
+      const allLocs = new Set<string>();
+      for (const s of matLocSets) for (const l of s) allLocs.add(l);
+      if (allLocs.size === 0) { unlocatedItems.push(c.item); continue; }
+      let best = 0;
+      const coverage = new Map<string, number>();
+      for (const loc of allLocs) {
+        const cov = matLocSets.filter((s) => s.has(loc)).length;
+        coverage.set(loc, cov);
+        if (cov > best) best = cov;
       }
+      const bestLocs = [...coverage.entries()].filter(([, cov]) => cov === best).map(([l]) => l).sort();
+      entries.push({ candidate: c, bestLocs });
     }
-    const candidateByName = new Map(push10kCandidates.map((c) => [c.item, c]));
+    // Items with fewer good options get first pick of their location
+    entries.sort((a, b) => a.bestLocs.length - b.bestLocs.length);
+    const countPerLoc = new Map<string, number>();
+    const byLocation = new Map<string, Candidate[]>();
+    for (const { candidate, bestLocs } of entries) {
+      let chosen = bestLocs[0];
+      let chosenCount = countPerLoc.get(chosen) ?? 0;
+      for (const loc of bestLocs.slice(1)) {
+        const cnt = countPerLoc.get(loc) ?? 0;
+        if (cnt < chosenCount) { chosen = loc; chosenCount = cnt; }
+      }
+      countPerLoc.set(chosen, chosenCount + 1);
+      if (!byLocation.has(chosen)) byLocation.set(chosen, []);
+      byLocation.get(chosen)!.push(candidate);
+    }
     const groups = [...byLocation.entries()]
-      .map(([name, itemNames]) => {
-        const items = [...itemNames]
-          .map((item) => candidateByName.get(item)!)
-          .sort((a, b) => b.pct - a.pct || a.difficulty - b.difficulty || a.item.localeCompare(b.item));
-        const directItems: DirectItem[] = items.map(({ item, count, pct, difficulty }) => ({
+      .map(([name, items]) => {
+        const sorted = [...items].sort((a, b) => b.pct - a.pct || a.difficulty - b.difficulty || a.item.localeCompare(b.item));
+        const directItems: DirectItem[] = sorted.map(({ item, count, pct, difficulty }) => ({
           item,
           quantity: inventoryMax,
           label: `10k · ${count.toLocaleString()}/10,000 (${Math.round(pct * 100)}% · diff ${difficulty})`,
@@ -305,9 +311,8 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
         return { name, itemCount: items.length, directItems };
       })
       .sort((a, b) => b.itemCount - a.itemCount);
-    const unlocatedItems = push10kCandidates.filter((c) => !locatedItems.has(c.item)).map((c) => c.item);
     return { groups, unlocatedItems };
-  }, [push10kMaterialNeed, push10kCandidates, inventoryMax]);
+  }, [push10kCandidates, inventoryMax]);
 
   // ── Tab 6: passive 1M (Mega Master) — items under 1M mastery, quest-independent ──
   // Past-1M items excluded as primary targets; they can still appear as
