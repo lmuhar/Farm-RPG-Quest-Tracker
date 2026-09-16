@@ -4296,6 +4296,10 @@
     "name": "Hickory Omelette",
     "ingredients": [
       {
+        "item": "Cooking Pot",
+        "quantity": 1
+      },
+      {
         "item": "Bird Egg",
         "quantity": 550
       },
