@@ -106,6 +106,11 @@ export const RARE_ITEMS = new Map<string, string>([
   ['Pineapple',         'Unknown — no reliable source found'],
   ['Prune Juice',       'Unknown — no reliable source found'],
   ['Bell',              'Wishing Well / Exchange Centre (250 Hammer)'],
+  ['Clubs',             'Locksmith (Stack of Cards / Backpack)'],
+  ['Diamonds',          'Locksmith (Stack of Cards / Backpack)'],
+  ['Hearts',            'Locksmith (Stack of Cards / Backpack / Heart-shaped Box 01)'],
+  ['Spades',            'Locksmith (Stack of Cards / Backpack)'],
+  ['Joker',             'Locksmith (Stack of Cards) / Borgen Bag 01'],
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
