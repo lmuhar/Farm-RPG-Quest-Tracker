@@ -6,7 +6,6 @@ import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
 import npcsData from '../data/npcs.json';
-import masteriesData from '../data/masteries.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
 import type { BottleneckEntry } from './BottleneckPanel';
@@ -17,13 +16,10 @@ const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLower
 const allQuestsData = questsData as Quest[];
 const npcItemsMap = new Map((npcsData as { name: string; items: string[] }[]).map(n => [n.name, n.items]));
 
-// Cooking items are identified the same way CraftworksSuggestions does: either
-// masteries.json tags them method 'cooking', or their recipe needs a Cooking Pot
-const cookingItemNames = new Set(
-  (masteriesData as { name: string; method: string }[]).filter(m => m.method === 'cooking').map(m => m.name.toLowerCase())
-);
-function isCookingItem(item: string, recipe: Recipe | undefined): boolean {
-  if (cookingItemNames.has(item.toLowerCase())) return true;
+// A cooking item is anything whose recipe needs a Cooking Pot — some items are
+// tagged method 'cooking' in masteries.json without actually requiring one
+// (e.g. Peach Juice), so that tag alone isn't a reliable signal.
+function isCookingItem(recipe: Recipe | undefined): boolean {
   return recipe ? recipe.ingredients.some(ing => ing.item.toLowerCase() === 'cooking pot') : false;
 }
 
@@ -373,7 +369,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       if (deficit <= 0) continue;
       const recipe = recipeMap.get(item.toLowerCase());
       if (!recipe) continue;
-      if (isCookingItem(item, recipe)) continue; // shown in the dedicated Cook Now section instead
+      if (isCookingItem(recipe)) continue; // shown in the dedicated Cook Now section instead
       const ingredients = recipe.ingredients.map(({ item: ing, quantity: qty }) => {
         const needed = qty * deficit;
         const haveIng = inventory[ing] ?? 0;
@@ -421,7 +417,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       const deficit = totalNeeded - have;
       if (deficit <= 0) continue;
       const recipe = recipeMap.get(item.toLowerCase());
-      if (!recipe || !isCookingItem(item, recipe)) continue;
+      if (!recipe || !isCookingItem(recipe)) continue;
       const ingredients = recipe.ingredients.map(({ item: ing, quantity: qty }) => {
         const needed = qty * deficit;
         const haveIng = inventory[ing] ?? 0;
