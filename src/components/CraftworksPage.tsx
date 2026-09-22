@@ -10,7 +10,7 @@ import itemLocationsData from '../data/item-locations.json';
 import recipesData from '../data/recipes.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks';
 import { resolveRawIngredients } from '../utils';
-import { Fish, AlertTriangle, TrendingUp, Compass } from 'lucide-react';
+import { Fish, AlertTriangle, TrendingUp, Compass, Link2 } from 'lucide-react';
 
 const allQuestsData = questsData as Quest[];
 
@@ -85,7 +85,10 @@ const CRAFTING_RAW_INPUTS = new Map<string, Map<string, number>>(
   CRAFTABLE_MASTERY_NAMES.map((name) => [name, resolveRawIngredients(name, 1, rawRecipeMap)])
 );
 
-type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'push10k' | 'passive1m' | 'ascension';
+type CraftworksTab = 'active' | 'focus' | 'mastery' | 'fishing' | 'passive' | 'push10k' | 'chains' | 'passive1m' | 'ascension';
+
+const nextMilestone = (level: number) => (level === 0 ? 10_000 : level === 1 ? 100_000 : 1_000_000);
+const milestoneLabel = (level: number) => (level === 0 ? '10k' : level === 1 ? '100k' : '1M');
 
 interface Props {
   activeQuests: Quest[];
@@ -314,6 +317,56 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     return { groups, unlocatedItems };
   }, [push10kCandidates, inventoryMax]);
 
+  // ── Tab: crafting chains — masteries whose output is a direct ingredient in
+  // another still-in-progress mastery (e.g. Axe → Spoon, Axe → Block of Wood).
+  // Stocking up on the intermediate while grinding its own mastery also feeds
+  // the downstream one, instead of crafting each from scratch separately.
+  const craftChains = useMemo(() => {
+    type ChainNode = { item: string; level: number; count: number; pct: number };
+    type Chain = { intermediate: ChainNode; products: ChainNode[] };
+    const toNode = (item: string): ChainNode => {
+      const level = masteryLevels[item] ?? 0;
+      const count = masteryProgress[item] ?? 0;
+      return { item, level, count, pct: Math.min(1, count / nextMilestone(level)) };
+    };
+    const chains: Chain[] = [];
+    for (const name of CRAFTABLE_MASTERY_NAMES) {
+      const level = masteryLevels[name] ?? 0;
+      if (level >= 3) continue;
+      const products: ChainNode[] = [];
+      for (const other of CRAFTABLE_MASTERY_NAMES) {
+        if (other === name) continue;
+        if ((masteryLevels[other] ?? 0) >= 3) continue;
+        const recipe = rawRecipeMap.get(other.toLowerCase());
+        if (recipe?.ingredients.some((ing) => ing.item === name)) products.push(toNode(other));
+      }
+      if (products.length === 0) continue;
+      products.sort((a, b) => b.pct - a.pct || a.item.localeCompare(b.item));
+      chains.push({ intermediate: toNode(name), products });
+    }
+    return chains.sort((a, b) => b.products.length - a.products.length || b.intermediate.pct - a.intermediate.pct);
+  }, [masteryLevels, masteryProgress]);
+
+  // Feed every item that appears in a chain into the real slot engine — it
+  // already detects ingredient→product edges and groups them with a flow arrow.
+  const chainDirectItems = useMemo((): DirectItem[] => {
+    const seen = new Map<string, DirectItem>();
+    const add = (node: { item: string; level: number; count: number; pct: number }) => {
+      if (seen.has(node.item)) return;
+      seen.set(node.item, {
+        item: node.item,
+        quantity: inventoryMax,
+        label: `${milestoneLabel(node.level)} · ${node.count.toLocaleString()}/${nextMilestone(node.level).toLocaleString()} (${Math.round(node.pct * 100)}%)`,
+        priority: node.count > 0 ? 'active' : 'nextup',
+      });
+    };
+    for (const chain of craftChains) {
+      add(chain.intermediate);
+      for (const p of chain.products) add(p);
+    }
+    return [...seen.values()];
+  }, [craftChains, inventoryMax]);
+
   // ── Tab 6: passive 1M (Mega Master) — items under 1M mastery, quest-independent ──
   // Past-1M items excluded as primary targets; they can still appear as
   // intermediate ingredients inside CraftworksSuggestions if inventory needs them.
@@ -369,6 +422,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     { id: 'fishing',   label: 'Fishing' },
     { id: 'passive',    label: 'Passive' },
     { id: 'push10k',    label: '10k Push', dot: push10kCandidates.length > 0 },
+    { id: 'chains',     label: 'Chains', dot: craftChains.length > 0 },
     { id: 'passive1m',  label: 'Passive 1M', dot: passive1mItems.length > 0 },
     { id: 'ascension',  label: 'Ascension Pts', dot: ascensionDirectItems.length > 0 },
   ];
@@ -600,6 +654,60 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        )
+      )}
+
+      {/* Tab — crafting chains: intermediate masteries that feed another still-in-progress craft */}
+      {tab === 'chains' && (
+        craftChains.length === 0 ? (
+          <div className="rounded-xl px-5 py-8 text-center" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+              No stacking opportunities right now — no in-progress craft feeds directly into another.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <p className="text-xs px-1" style={{ color: 'var(--text-muted)' }}>
+              Craft the intermediate once — it feeds these still-in-progress masteries too, so stock up before moving on
+            </p>
+
+            <CraftworksSuggestions
+              quests={[]}
+              directItems={chainDirectItems}
+              noFiller
+              subtitle="stacked chains · ingredient before product"
+            />
+
+            <div className="space-y-2">
+              {craftChains.map((chain) => (
+                <div
+                  key={chain.intermediate.item}
+                  className="rounded-xl px-4 py-3"
+                  style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}
+                >
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Link2 size={13} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{chain.intermediate.item}</span>
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                      {milestoneLabel(chain.intermediate.level)} · {Math.round(chain.intermediate.pct * 100)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2 ml-[19px] flex-wrap">
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>feeds</span>
+                    {chain.products.map((p) => (
+                      <span
+                        key={p.item}
+                        className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                        style={{ background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }}
+                      >
+                        {p.item} · {milestoneLabel(p.level)} {Math.round(p.pct * 100)}%
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )
