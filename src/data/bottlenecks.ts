@@ -111,6 +111,9 @@ export const RARE_ITEMS = new Map<string, string>([
   ['Hearts',            'Locksmith (Stack of Cards / Backpack / Heart-shaped Box 01)'],
   ['Spades',            'Locksmith (Stack of Cards / Backpack)'],
   ['Joker',             'Locksmith (Stack of Cards) / Borgen Bag 01'],
+  ['Spooky Cookies',    'Locksmith (Treat Bag / Harvest Bundle / Borgen Bag 01)'],
+  ['Lovely Cookies',    'Locksmith (Heart-shaped Box / Box of Chocolate / Harvest Bundle / Borgen Bag 01)'],
+  ['Happy Cookies',     'Locksmith (Bag of Presents / Holiday Cheer Bundle / Tower Prep Pack / Borgen Bag 01)'],
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
