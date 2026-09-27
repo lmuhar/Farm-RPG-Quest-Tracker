@@ -451,7 +451,13 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         item: string;
         have: number;
         need: number;
-        ingredients: { item: string; have: number; needed: number; ready: boolean }[];
+        ingredients: {
+          item: string;
+          have: number;
+          needed: number;
+          ready: boolean;
+          subIngredients?: { item: string; have: number; needed: number; ready: boolean }[];
+        }[];
       }[];
       cropItems: { item: string; have: number; need: number; grows: number; growMinutes: number; totalMinutes: number }[];
       pctReady: number;
@@ -483,7 +489,22 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         const ingredients = recipe.ingredients.map(({ item: ing, quantity: ingQty }) => {
           const needed = ingQty * deficit;
           const haveIng = inventory[ing] ?? 0;
-          return { item: ing, have: haveIng, needed, ready: haveIng >= needed };
+          const ready = haveIng >= needed;
+          // One level of nested breakdown for ingredients that are themselves
+          // craftable — shows what's still needed to close the gap on those too.
+          let subIngredients: { item: string; have: number; needed: number; ready: boolean }[] | undefined;
+          if (!ready) {
+            const subRecipe = recipeMap.get(ing.toLowerCase());
+            if (subRecipe) {
+              const ingDeficit = needed - haveIng;
+              subIngredients = subRecipe.ingredients.map(({ item: subIng, quantity: subQty }) => {
+                const subNeeded = subQty * ingDeficit;
+                const subHave = inventory[subIng] ?? 0;
+                return { item: subIng, have: subHave, needed: subNeeded, ready: subHave >= subNeeded };
+              });
+            }
+          }
+          return { item: ing, have: haveIng, needed, ready, subIngredients };
         });
         craftItems.push({ item, have, need: quantity, ingredients });
         // Fully-resolved raw materials, used only to score overall readiness / bottleneck check below
@@ -600,20 +621,42 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                           {have}/{need}
                         </span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5 ml-4">
-                        {ingredients.map(({ item: ing, have: haveIng, needed, ready }) => (
-                          <div
-                            key={ing}
-                            className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                            style={{
-                              background: ready ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
-                              border: `1px solid ${ready ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
-                            }}
-                          >
-                            <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>{ing}</span>
-                            <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
-                              {haveIng}/{needed}
-                            </span>
+                      <div className="flex flex-col gap-1 ml-4">
+                        {ingredients.map(({ item: ing, have: haveIng, needed, ready, subIngredients }) => (
+                          <div key={ing} className="flex flex-col gap-1">
+                            <div className="flex flex-wrap gap-1.5">
+                              <div
+                                className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
+                                style={{
+                                  background: ready ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
+                                  border: `1px solid ${ready ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
+                                }}
+                              >
+                                <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>{ing}</span>
+                                <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+                                  {haveIng}/{needed}
+                                </span>
+                              </div>
+                            </div>
+                            {subIngredients && subIngredients.length > 0 && (
+                              <div className="flex flex-wrap gap-1 ml-4">
+                                {subIngredients.map(({ item: subIng, have: subHave, needed: subNeeded, ready: subReady }) => (
+                                  <div
+                                    key={subIng}
+                                    className="flex items-center gap-1 px-1.5 py-0.5 rounded-full"
+                                    style={{
+                                      background: subReady ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
+                                      border: `1px solid ${subReady ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
+                                    }}
+                                  >
+                                    <span className="text-[10px]" style={{ color: subReady ? 'var(--accent-green)' : 'var(--text-muted)' }}>{subIng}</span>
+                                    <span className="text-[10px] font-semibold" style={{ fontFamily: 'var(--font-mono)', color: subReady ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+                                      {subHave}/{subNeeded}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
