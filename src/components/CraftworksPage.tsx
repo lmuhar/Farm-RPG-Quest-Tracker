@@ -16,7 +16,9 @@ const allQuestsData = questsData as Quest[];
 
 interface Mastery { name: string; difficulty: number; method: string }
 const allMasteries = masteriesData as Mastery[];
-const craftingMasteries = allMasteries.filter((m) => m.method === 'crafting');
+// Steelworks (Steel, Steel Wire, Belt Drive, ...) uses the same 10k/100k/1M
+// mastery progression and has real recipes — track it alongside crafting.
+const craftingMasteries = allMasteries.filter((m) => m.method === 'crafting' || m.method === 'steelworks');
 
 const fishingMasteryNames = new Set(
   allMasteries.filter((m) => m.method === 'fishing').map((m) => m.name)
