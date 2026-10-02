@@ -456,7 +456,10 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           have: number;
           needed: number;
           ready: boolean;
-          subIngredients?: { item: string; have: number; needed: number; ready: boolean }[];
+          grows?: number;
+          growMinutes?: number;
+          totalMinutes?: number;
+          subIngredients?: { item: string; have: number; needed: number; ready: boolean; grows?: number; growMinutes?: number; totalMinutes?: number }[];
         }[];
       }[];
       cropItems: { item: string; have: number; need: number; grows: number; growMinutes: number; totalMinutes: number }[];
@@ -492,19 +495,36 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           const ready = haveIng >= needed;
           // One level of nested breakdown for ingredients that are themselves
           // craftable — shows what's still needed to close the gap on those too.
-          let subIngredients: { item: string; have: number; needed: number; ready: boolean }[] | undefined;
+          let subIngredients: { item: string; have: number; needed: number; ready: boolean; grows?: number; growMinutes?: number; totalMinutes?: number }[] | undefined;
+          let grows: number | undefined, growMinutes: number | undefined, totalMinutes: number | undefined;
           if (!ready) {
-            const subRecipe = recipeMap.get(ing.toLowerCase());
-            if (subRecipe) {
-              const ingDeficit = needed - haveIng;
-              subIngredients = subRecipe.ingredients.map(({ item: subIng, quantity: subQty }) => {
-                const subNeeded = subQty * ingDeficit;
-                const subHave = inventory[subIng] ?? 0;
-                return { item: subIng, have: subHave, needed: subNeeded, ready: subHave >= subNeeded };
-              });
+            const ingDeficit = needed - haveIng;
+            if (isCrop(ing)) {
+              const crop = cropTimes.find(c => c.item.toLowerCase() === ing.toLowerCase())!;
+              grows = calcGrowsNeeded(ingDeficit, plotCount);
+              growMinutes = crop.growMinutes;
+              totalMinutes = grows * growMinutes;
+            } else {
+              const subRecipe = recipeMap.get(ing.toLowerCase());
+              if (subRecipe) {
+                subIngredients = subRecipe.ingredients.map(({ item: subIng, quantity: subQty }) => {
+                  const subNeeded = subQty * ingDeficit;
+                  const subHave = inventory[subIng] ?? 0;
+                  const subReady = subHave >= subNeeded;
+                  let subGrows: number | undefined, subGrowMinutes: number | undefined, subTotalMinutes: number | undefined;
+                  if (!subReady && isCrop(subIng)) {
+                    const subCrop = cropTimes.find(c => c.item.toLowerCase() === subIng.toLowerCase())!;
+                    const subDeficit = subNeeded - subHave;
+                    subGrows = calcGrowsNeeded(subDeficit, plotCount);
+                    subGrowMinutes = subCrop.growMinutes;
+                    subTotalMinutes = subGrows * subGrowMinutes;
+                  }
+                  return { item: subIng, have: subHave, needed: subNeeded, ready: subReady, grows: subGrows, growMinutes: subGrowMinutes, totalMinutes: subTotalMinutes };
+                });
+              }
             }
           }
-          return { item: ing, have: haveIng, needed, ready, subIngredients };
+          return { item: ing, have: haveIng, needed, ready, grows, growMinutes, totalMinutes, subIngredients };
         });
         craftItems.push({ item, have, need: quantity, ingredients });
         // Fully-resolved raw materials, used only to score overall readiness / bottleneck check below
@@ -542,6 +562,13 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
 
     return results.sort((a, b) => b.pctReady - a.pctReady);
   }, [activeQuests, inventory, recipeMap, cropTimes, plotCount, inventoryMax]);
+
+  const growDoneLabel = (totalMinutes: number) => {
+    const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
+    const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const isToday = finishAt.toDateString() === new Date().toDateString();
+    return isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+  };
 
   return (
     <div className="space-y-4">
@@ -622,9 +649,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         </span>
                       </div>
                       <div className="flex flex-col gap-1 ml-4">
-                        {ingredients.map(({ item: ing, have: haveIng, needed, ready, subIngredients }) => (
+                        {ingredients.map(({ item: ing, have: haveIng, needed, ready, grows, totalMinutes, subIngredients }) => (
                           <div key={ing} className="flex flex-col gap-1">
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap items-center gap-1.5">
                               <div
                                 className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
                                 style={{
@@ -637,22 +664,33 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                                   {haveIng}/{needed}
                                 </span>
                               </div>
+                              {!ready && grows !== undefined && totalMinutes !== undefined && (
+                                <span className="text-[10px]" style={{ color: 'var(--accent-green)' }}>
+                                  {grows} grow{grows !== 1 ? 's' : ''} · {growDoneLabel(totalMinutes)}
+                                </span>
+                              )}
                             </div>
                             {subIngredients && subIngredients.length > 0 && (
-                              <div className="flex flex-wrap gap-1 ml-4">
-                                {subIngredients.map(({ item: subIng, have: subHave, needed: subNeeded, ready: subReady }) => (
-                                  <div
-                                    key={subIng}
-                                    className="flex items-center gap-1 px-1.5 py-0.5 rounded-full"
-                                    style={{
-                                      background: subReady ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
-                                      border: `1px solid ${subReady ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
-                                    }}
-                                  >
-                                    <span className="text-[10px]" style={{ color: subReady ? 'var(--accent-green)' : 'var(--text-muted)' }}>{subIng}</span>
-                                    <span className="text-[10px] font-semibold" style={{ fontFamily: 'var(--font-mono)', color: subReady ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
-                                      {subHave}/{subNeeded}
-                                    </span>
+                              <div className="flex flex-wrap items-center gap-1 ml-4">
+                                {subIngredients.map(({ item: subIng, have: subHave, needed: subNeeded, ready: subReady, grows: subGrows, totalMinutes: subTotalMinutes }) => (
+                                  <div key={subIng} className="flex items-center gap-1">
+                                    <div
+                                      className="flex items-center gap-1 px-1.5 py-0.5 rounded-full"
+                                      style={{
+                                        background: subReady ? 'var(--accent-green-bg)' : 'var(--surface-inset)',
+                                        border: `1px solid ${subReady ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
+                                      }}
+                                    >
+                                      <span className="text-[10px]" style={{ color: subReady ? 'var(--accent-green)' : 'var(--text-muted)' }}>{subIng}</span>
+                                      <span className="text-[10px] font-semibold" style={{ fontFamily: 'var(--font-mono)', color: subReady ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
+                                        {subHave}/{subNeeded}
+                                      </span>
+                                    </div>
+                                    {!subReady && subGrows !== undefined && subTotalMinutes !== undefined && (
+                                      <span className="text-[10px]" style={{ color: 'var(--accent-green)' }}>
+                                        {subGrows} grow{subGrows !== 1 ? 's' : ''} · {growDoneLabel(subTotalMinutes)}
+                                      </span>
+                                    )}
                                   </div>
                                 ))}
                               </div>
@@ -663,10 +701,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                     </div>
                   ))}
                   {cropItems.map(({ item, have, need, grows, totalMinutes }) => {
-                    const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
-                    const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-                    const isToday = finishAt.toDateString() === new Date().toDateString();
-                    const doneLabel = isToday ? `done by ${finishStr}` : `done in ${formatDuration(totalMinutes)}`;
+                    const doneLabel = growDoneLabel(totalMinutes);
                     const ready = have >= need;
                     return (
                       <div key={item} className="flex items-center justify-between gap-2 ml-4">
