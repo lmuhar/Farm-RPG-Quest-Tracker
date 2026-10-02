@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -567,6 +567,11 @@ function QuestSection({
   };
 
   const items = useMemo(() => parseItems(quest.itemsRequired), [quest.itemsRequired]);
+  const rewards = useMemo(() => parseItems(quest.rewardItems), [quest.rewardItems]);
+  const neededElsewhere = useMemo(
+    () => new Set(allNeededItems.filter(i => rewards.some(r => r.item === i))),
+    [allNeededItems, rewards]
+  );
 
   const { tiers, canComplete, stockedCount } = useMemo(() => {
     const all = items.map(({ item, quantity }) =>
@@ -728,6 +733,27 @@ function QuestSection({
                 </div>
               )}
             </>
+          )}
+
+          {/* Rewards */}
+          {rewards.length > 0 && (
+            <div className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1" style={{ color: 'var(--accent-purple)', opacity: 0.8 }}>
+                <Gift size={10} /> rewards
+              </p>
+              <div className="flex flex-wrap gap-x-3 gap-y-1">
+                {rewards.map(({ item, quantity }) => (
+                  <span key={item} className="text-xs inline-flex items-center gap-1" style={{ color: 'var(--accent-purple)', fontFamily: 'var(--font-mono)' }}>
+                    {quantity.toLocaleString()}x {item}
+                    {neededElsewhere.has(item) && (
+                      <span className="text-[9px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
+                        needed elsewhere
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </div>
+            </div>
           )}
 
           {(status === 'active' || status === 'available') && (
