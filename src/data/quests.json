@@ -42226,5 +42226,22 @@
     "exploringLv": 99,
     "miningLv": 0,
     "description": "Rosalie cast her spell, which she’s now nicknaming anzanam.  The machinery whirrs to life as the spell finishes, but immediately everything begins to screech and smoke.  The apple pie at the center of the contraption is somehow burned to a crisp and then pressed into an extremely tiny cube all at once.   The room now smells like an unpleasantly burned apple.  Rosalie admits this was a bit of a failure and suggests one more try, combining everything she’s learned, plus one controversial ingredient."
+  },
+  {
+    "id": "7563467",
+    "name": "Pie Inversion Experimentation V",
+    "npc": "Rosalie",
+    "requiredNpcLevel": 0,
+    "itemsRequired": "1000x Gold Feather",
+    "rewardItems": "1x Pie Machine; 10x Egg of Tree",
+    "questline": "Pie Inversion Experimentation",
+    "startDate": "",
+    "endDate": "",
+    "farmingLv": 99,
+    "fishingLv": 99,
+    "craftingLv": 99,
+    "exploringLv": 99,
+    "miningLv": 0,
+    "description": "Success!  Rosalie’s new machine, which she’s calling a Pie Induction Entropy Machine or Pie Machine for short - seems to work!  You can now put in one apple pie and receive something entirely different back in return!  Rosalie thanks you for helping advance magical research, and offers to install this in your farmhouse, free of charge, she just needs some gold feathers."
   }
 ]
