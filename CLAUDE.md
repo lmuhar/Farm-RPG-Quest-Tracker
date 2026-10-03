@@ -8,15 +8,15 @@ Always reset the feature branch to main immediately after a squash merge, withou
 
 ```bash
 git fetch origin main
-git checkout -B claude/mining-skill-quest-filter-t0fl6l origin/main
-git push --force-with-lease origin claude/mining-skill-quest-filter-t0fl6l
+git checkout -B claude/confident-einstein-pkxyxv origin/main
+git push --force-with-lease origin claude/confident-einstein-pkxyxv
 ```
 
 Do this as a single step right after `merge_pull_request` succeeds — never attempt `git push` without the force flag after a squash merge.
 
 ### Development branch
 
-Always develop on: `claude/mining-skill-quest-filter-t0fl6l`
+Always develop on: `claude/confident-einstein-pkxyxv`
 Always merge into: `main`
 Always use squash merge.
 
