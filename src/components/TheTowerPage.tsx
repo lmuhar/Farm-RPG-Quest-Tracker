@@ -3,7 +3,7 @@ import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle, Gem, ChevronRight
 import towerLevelsData from '../data/tower-levels.json';
 import towerArtifactsData from '../data/tower-artifacts.json';
 import masteriesData from '../data/masteries.json';
-import { useStore } from '../store';
+import { useStore, ENRICHED_SOIL_FLOOR } from '../store';
 
 interface TowerLevelData {
   level: number;
@@ -318,6 +318,23 @@ export function TheTowerPage() {
             <span className="text-lg font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
               {formatSilver(totalSilverAhead)}
             </span>
+          </div>
+
+          <div
+            className="flex flex-col px-3 py-2 rounded-lg"
+            style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
+            title="Crop grow times across the app assume every Farm Supply speed perk (-80% of base time), plus Enriched Soil (-10% more) once you reach its floor."
+          >
+            <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>Crop Grow Time</span>
+            {towerLevel >= ENRICHED_SOIL_FLOOR ? (
+              <span className="text-lg font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                -90% <span className="text-[11px] font-medium">Enriched Soil</span>
+              </span>
+            ) : (
+              <span className="text-lg font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-primary)' }}>
+                -80% <span className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>floor {ENRICHED_SOIL_FLOOR} halves it</span>
+              </span>
+            )}
           </div>
 
           {(

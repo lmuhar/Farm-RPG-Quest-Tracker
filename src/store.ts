@@ -55,35 +55,51 @@ interface Store extends AppState {
   replaceMasteryProgress: (data: Record<string, number>) => void;
 }
 
-const defaultCropTimes = [
-  { item: 'Peppers',      growMinutes: 0.0915 },  // ~5.5 secs
-  { item: 'Gold Peppers', growMinutes: 0.0915 },
-  { item: 'Carrot',       growMinutes: 0.1915 },  // ~11.5 secs
-  { item: 'Gold Carrot',  growMinutes: 0.1915 },
-  { item: 'Peas',         growMinutes: 0.2915 },  // ~17.5 secs
-  { item: 'Gold Peas',    growMinutes: 0.2915 },
-  { item: 'Cucumber',   growMinutes: 0.3915 },  // ~23.5 secs
-  { item: 'Eggplant',   growMinutes: 0.5 },     // 30 secs
-  { item: 'Radish',     growMinutes: 1 },
-  { item: 'Onion',      growMinutes: 1.5 },
-  { item: 'Hops',       growMinutes: 2 },
-  { item: 'Potato',     growMinutes: 2.5 },
-  { item: 'Tomato',     growMinutes: 3 },
-  { item: 'Leek',       growMinutes: 6 },
-  { item: 'Mushroom',   growMinutes: 9 },
-  { item: 'Watermelon', growMinutes: 12 },
-  { item: 'Corn',       growMinutes: 19.2 },    // 19m 12s
-  { item: 'Sugar Cane', growMinutes: 45 },
-  { item: 'Cabbage',    growMinutes: 48 },
-  { item: 'Pine Tree',  growMinutes: 48 },
-  { item: 'Pumpkin',    growMinutes: 72 },
-  { item: 'Wheat',      growMinutes: 144 },     // 2h 24m
-  { item: 'Broccoli',   growMinutes: 288 },     // 4h 48m
-  { item: 'Cotton',     growMinutes: 576 },     // 9h 36m
-  { item: 'Sunflower',  growMinutes: 864 },     // 14h 24m
-  { item: 'Beet',       growMinutes: 1296 },    // 21h 36m
-  { item: 'Rice',       growMinutes: 1440 },    // 1d
+// Crop grow times with every Farm Supply speed perk (80% off base time), in
+// minutes. Tower floor 10's Enriched Soil perk takes off another 10% of base
+// time, halving these — see cropTimesForTower.
+const farmSupplyCropTimes = [
+  { item: 'Peppers',      growMinutes: 0.183 },   // ~11 secs
+  { item: 'Gold Peppers', growMinutes: 0.183 },
+  { item: 'Carrot',       growMinutes: 0.383 },   // ~23 secs
+  { item: 'Gold Carrot',  growMinutes: 0.383 },
+  { item: 'Peas',         growMinutes: 0.583 },   // ~35 secs
+  { item: 'Gold Peas',    growMinutes: 0.583 },
+  { item: 'Cucumber',   growMinutes: 0.783 },   // ~47 secs
+  { item: 'Eggplant',   growMinutes: 1 },
+  { item: 'Radish',     growMinutes: 2 },
+  { item: 'Onion',      growMinutes: 3 },
+  { item: 'Hops',       growMinutes: 4 },
+  { item: 'Potato',     growMinutes: 5 },
+  { item: 'Tomato',     growMinutes: 6 },
+  { item: 'Leek',       growMinutes: 12 },
+  { item: 'Mushroom',   growMinutes: 18 },
+  { item: 'Watermelon', growMinutes: 24 },
+  { item: 'Corn',       growMinutes: 38.4 },    // 38m 24s
+  { item: 'Sugar Cane', growMinutes: 90 },
+  { item: 'Cabbage',    growMinutes: 96 },
+  { item: 'Pine Tree',  growMinutes: 96 },
+  { item: 'Pumpkin',    growMinutes: 144 },
+  { item: 'Wheat',      growMinutes: 288 },     // 4h 48m
+  { item: 'Broccoli',   growMinutes: 576 },     // 9h 36m
+  { item: 'Cotton',     growMinutes: 1152 },    // 19h 12m
+  { item: 'Sunflower',  growMinutes: 1728 },    // 1d 4h 48m
+  { item: 'Beet',       growMinutes: 2592 },    // 1d 19h 12m
+  { item: 'Rice',       growMinutes: 2880 },    // 2d
 ];
+const knownCrops = new Set(farmSupplyCropTimes.map((c) => c.item));
+
+export const ENRICHED_SOIL_FLOOR = 10;
+
+// Grow times for a tower level: once Enriched Soil (floor 10) is unlocked the
+// total reduction goes from 80% to 90% of base time, i.e. every crop grows in
+// half the time.
+export function cropTimesForTower(towerLevel: number): { item: string; growMinutes: number }[] {
+  const factor = towerLevel >= ENRICHED_SOIL_FLOOR ? 0.5 : 1;
+  return farmSupplyCropTimes.map((c) => ({ item: c.item, growMinutes: Math.round(c.growMinutes * factor * 10000) / 10000 }));
+}
+
+const defaultCropTimes = cropTimesForTower(0);
 
 const defaultPlayer: PlayerProfile = {
   farmingLv: 1,
@@ -95,32 +111,17 @@ const defaultPlayer: PlayerProfile = {
   npcLevels: {},
 };
 
-// Pre-halving defaults (commit 891ff8d). If a saved value matches one of these
-// exactly, it was never manually edited — migrate it to the current (halved) default.
-const preFastDefaultTimes: Record<string, number> = {
-  Peppers: 0.183, Carrot: 0.383, Peas: 0.583, Cucumber: 0.783, Eggplant: 1,
-  Radish: 2, Onion: 3, Hops: 4, Potato: 5, Tomato: 6, Leek: 12, Mushroom: 18,
-  Watermelon: 24, Corn: 38.4, 'Sugar Cane': 90, Cabbage: 96, 'Pine Tree': 96,
-  Pumpkin: 144, Wheat: 288, Broccoli: 576, Cotton: 1152, Sunflower: 1728,
-  Beet: 2592, Rice: 2880,
-};
-
-// Merge saved crop times with defaults: saved entries win, new defaults fill gaps
+// Known crops always take their time from the tower level (older saves stored
+// whichever default was current at the time); only custom crops are kept as saved.
 function mergeCropTimes(
-  saved: { item: string; growMinutes: number }[]
+  saved: { item: string; growMinutes: number }[],
+  towerLevel: number,
 ): { item: string; growMinutes: number }[] {
   // Migrate old "Beets" → "Beet" to match quest item names
-  const renamed = saved.map((c) => c.item === 'Beets' ? { ...c, item: 'Beet' } : c);
-  // Migrate pre-halving values to current defaults where value was never customised
-  const migrated = renamed.map((c) => {
-    if (preFastDefaultTimes[c.item] === c.growMinutes) {
-      const newDefault = defaultCropTimes.find((d) => d.item === c.item);
-      return newDefault ? { ...c, growMinutes: newDefault.growMinutes } : c;
-    }
-    return c;
-  });
-  const savedItems = new Set(migrated.map((c) => c.item));
-  return [...defaultCropTimes.filter((d) => !savedItems.has(d.item)), ...migrated];
+  const custom = saved
+    .map((c) => c.item === 'Beets' ? { ...c, item: 'Beet' } : c)
+    .filter((c) => !knownCrops.has(c.item));
+  return [...cropTimesForTower(towerLevel), ...custom];
 }
 
 export const useStore = create<Store>()((set) => ({
@@ -245,7 +246,7 @@ export const useStore = create<Store>()((set) => ({
             : s.questStatuses,
           inventory: data.inventory ?? s.inventory,
           player: data.player ?? s.player,
-          cropTimes: data.cropTimes ? mergeCropTimes(data.cropTimes) : s.cropTimes,
+          cropTimes: mergeCropTimes(data.cropTimes ?? s.cropTimes, data.towerLevel ?? s.towerLevel),
           plotCount: data.plotCount ?? s.plotCount,
           inventoryMax: data.inventoryMax ?? s.inventoryMax,
           craftingRecipes: data.craftingRecipes ?? s.craftingRecipes,
@@ -295,7 +296,8 @@ export const useStore = create<Store>()((set) => ({
           return { ownedPets: { ...s.ownedPets, [petId]: level } };
         }),
 
-      setTowerLevel: (towerLevel) => set({ towerLevel }),
+      setTowerLevel: (towerLevel) =>
+        set((s) => ({ towerLevel, cropTimes: mergeCropTimes(s.cropTimes, towerLevel) })),
 
       setTrackedQuestline: (trackedQuestline) => set({ trackedQuestline }),
 
