@@ -2,19 +2,22 @@
 // Sync quest and item-source data from buddy.farm.
 //
 //   npm run sync:buddyfarm             # quests + items
-//   npm run sync:buddyfarm -- quests   # only add missing quests
+//   npm run sync:buddyfarm -- quests   # only quests
 //   npm run sync:buddyfarm -- items    # only refresh item locations/sources
 //   npm run sync:buddyfarm -- --dry-run
 //
 // Quests: diffs buddy.farm's quest listing against src/data/quests.json by id and
-// appends any missing quests. Existing quests are never modified — some of our
-// questline groupings are deliberately different from buddy.farm's.
+// appends any missing quests. Existing quests keep their data — some of our
+// questline groupings are deliberately different from buddy.farm's — except for
+// two fields refreshed on every quest: `towerLv` (required Tower level) and
+// `prereqId` (id of the quest that unlocks it). Both are omitted when unset.
 //
 // Items: for every item a quest or recipe needs, fetches its buddy.farm page and
 //   - merges drop locations (explore / fishing / mining) into item-locations.json,
 //     adding a `rate` (average attempts per drop) to each location, and
 //   - regenerates item-sources.json with every other way to get the item
-//     (shop, crafting, NPC rewards, Wishing Well, Temple, passwords, ...).
+//     (shop, crafting, NPC rewards, Wishing Well, Temple, passwords, ...), and
+//   - regenerates wishing-well.json (item → what to throw in, with % chance).
 //
 // Behind a proxy (e.g. a cloud sandbox) run with NODE_USE_ENV_PROXY=1.
 
@@ -82,27 +85,42 @@ const centralDate = new Intl.DateTimeFormat('en-US', {
 const toDate = iso => (iso ? centralDate.format(new Date(iso)) : '');
 const itemList = list => list.map(i => `${i.quantity}x ${i.item.name}`).join('; ') || 'None';
 
+// Rebuild a quest with towerLv / prereqId placed before description (and
+// dropped when unset), so the JSON stays in a stable key order.
+function withChainFields(quest, towerLv, prereqId) {
+  const { towerLv: _t, prereqId: _p, description, ...rest } = quest;
+  return {
+    ...rest,
+    ...(towerLv > 0 ? { towerLv } : {}),
+    ...(prereqId ? { prereqId } : {}),
+    description,
+  };
+}
+
 async function syncQuests() {
   console.log('Quests: fetching buddy.farm listing…');
-  const listing = (await fetchPage('quests')).data.farmrpg.quests;
+  const listing = (await fetchPage('quests')).data.farmrpg.quests.filter(q => !q.isHidden);
   const quests = readJson('quests.json');
   // Match on name too: some quests were added by hand before buddy.farm had
   // them, under different ids.
-  const haveIds = new Set(quests.map(q => q.id));
-  const haveNames = new Set(quests.map(q => q.name.toLowerCase()));
-  const missing = listing.filter(q =>
-    !haveIds.has(String(q.id)) && !haveNames.has(q.name.toLowerCase()) && !q.isHidden);
+  const byId = new Map(quests.map(q => [q.id, q]));
+  const byName = new Map(quests.map(q => [q.name.toLowerCase(), q]));
+  const localFor = summary => byId.get(String(summary.id)) ?? byName.get(summary.name.toLowerCase());
+  const missing = listing.filter(q => !localFor(q));
   console.log(`  buddy.farm ${listing.length}, local ${quests.length}, missing ${missing.length}`);
-  if (missing.length === 0) return;
 
-  const added = await mapPool(missing, async summary => {
+  console.log(`  fetching ${listing.length} quest pages for tower levels / prerequisites…`);
+  const pages = await mapPool(listing, async summary => {
     const page = await fetchPage(`q/${slugify(summary.name)}`);
-    const q = page?.data.farmrpg.quests[0];
-    if (!q) {
-      console.warn(`  ! no page for "${summary.name}" (${summary.id}), skipped`);
-      return null;
-    }
-    return {
+    return page?.data.farmrpg.quests[0] ?? null;
+  });
+
+  const newQuests = [];
+  listing.forEach((summary, i) => {
+    const q = pages[i];
+    if (localFor(summary)) return;
+    if (!q) return console.warn(`  ! no page for "${summary.name}" (${summary.id}), skipped`);
+    newQuests.push({
       id: String(summary.id),
       name: q.name,
       npc: q.npc,
@@ -118,12 +136,39 @@ async function syncQuests() {
       exploringLv: q.requiredExploringLevel,
       miningLv: 0, // buddy.farm has no mining-level requirement field
       description: q.cleanDescription ?? '',
-    };
+    });
+  });
+  newQuests.sort((a, b) => Number(a.id) - Number(b.id));
+  for (const q of newQuests) {
+    console.log(`  + ${q.id} ${q.name}`);
+    byId.set(q.id, q);
+    byName.set(q.name.toLowerCase(), q);
+  }
+
+  // buddy.farm id → local id (they differ for hand-added quests)
+  const localId = new Map();
+  for (const summary of listing) {
+    const local = localFor(summary);
+    if (local) localId.set(summary.id, local.id);
+  }
+  const chain = new Map();
+  listing.forEach((summary, i) => {
+    const q = pages[i];
+    const local = localFor(summary);
+    if (!q || !local) return;
+    chain.set(local.id, { towerLv: q.requiredTowerLevel ?? 0, prereqId: q.pred ? localId.get(q.pred.id) : undefined });
   });
 
-  const newQuests = added.filter(Boolean).sort((a, b) => Number(a.id) - Number(b.id));
-  for (const q of newQuests) console.log(`  + ${q.id} ${q.name}`);
-  writeJson('quests.json', [...quests, ...newQuests]);
+  let changed = 0;
+  const updated = [...quests, ...newQuests].map(q => {
+    const c = chain.get(q.id);
+    if (!c) return q;
+    const next = withChainFields(q, c.towerLv, c.prereqId);
+    if (JSON.stringify(next) !== JSON.stringify(q)) changed++;
+    return next;
+  });
+  console.log(`  ${newQuests.length} added, ${changed} updated (tower level / prerequisite)`);
+  if (newQuests.length || changed) writeJson('quests.json', updated);
 }
 
 // ── Items ───────────────────────────────────────────────────────────────────
@@ -172,7 +217,7 @@ function otherSources(item, recipeNames, now) {
   }
   for (const p of item.manualProductions ?? []) add('production', `${p.lineOne}${p.value ? ` (${p.value.toLowerCase()})` : ''}`);
   for (const r of item.npcRewards) add('npc', `${r.npc.name} friendship Lv ${r.level} (×${r.quantity})`);
-  for (const w of item.wishingWellOutputItems) add('wishing-well', `Wishing Well: throw ${w.inputItem.name} (${Math.round(w.chance * 100) / 100}%)`);
+  for (const w of item.wishingWellOutputItems) add('wishing-well', `Wishing Well: throw ${w.inputItem.name} (${round1(w.chance * 100)}%)`);
   for (const t of item.templeRewardItems) {
     add('temple', `Temple: offer ${t.templeReward.inputQuantity.toLocaleString()} ${t.templeReward.inputItem.name} (×${t.quantity})`);
   }
@@ -212,6 +257,7 @@ async function syncItems() {
 
   const locations = readJson('item-locations.json');
   const sources = {};
+  const wishingWell = {};
   const now = new Date();
   let added = 0;
   list.forEach((name, i) => {
@@ -232,12 +278,20 @@ async function syncItems() {
 
     const other = otherSources(item, recipeNames, now);
     if (other.length) sources[name] = other;
+
+    // buddy.farm's chance is a fraction (0.25 = 25%)
+    if (item.wishingWellOutputItems.length) {
+      wishingWell[name] = item.wishingWellOutputItems
+        .map(w => ({ item: w.inputItem.name, chance: round1(w.chance * 100) }))
+        .sort((a, b) => b.chance - a.chance || a.item.localeCompare(b.item));
+    }
   });
 
   const sortKeys = obj => Object.fromEntries(Object.entries(obj).sort(([a], [b]) => a.localeCompare(b)));
   console.log(`  ${added} new drop locations, ${Object.keys(sources).length} items with other sources`);
   writeJson('item-locations.json', locations); // new items append, existing order kept
   writeJson('item-sources.json', sortKeys(sources));
+  writeJson('wishing-well.json', sortKeys(wishingWell));
 }
 
 if (runQuests) await syncQuests();

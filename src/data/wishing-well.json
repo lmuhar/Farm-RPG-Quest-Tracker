@@ -1,0 +1,1688 @@
+{
+  "4-leaf Clover": [
+    {
+      "item": "Old Boot",
+      "chance": 33.3
+    },
+    {
+      "item": "Shark Tooth",
+      "chance": 33.3
+    }
+  ],
+  "Amethyst": [
+    {
+      "item": "Aquamarine",
+      "chance": 25
+    },
+    {
+      "item": "Jade",
+      "chance": 25
+    }
+  ],
+  "Ancient Coin": [
+    {
+      "item": "Old Boot",
+      "chance": 33.3
+    },
+    {
+      "item": "Taffy",
+      "chance": 33.3
+    }
+  ],
+  "Antler": [
+    {
+      "item": "Pine Cone",
+      "chance": 33.3
+    }
+  ],
+  "Apple": [
+    {
+      "item": "Candy",
+      "chance": 25
+    }
+  ],
+  "Aquamarine": [
+    {
+      "item": "Jade",
+      "chance": 25
+    }
+  ],
+  "Arrowhead": [
+    {
+      "item": "Antler",
+      "chance": 33.3
+    }
+  ],
+  "Bacon": [
+    {
+      "item": "Gold Cucumber",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Feather",
+      "chance": 33.3
+    },
+    {
+      "item": "Shark Tooth",
+      "chance": 33.3
+    },
+    {
+      "item": "Dice",
+      "chance": 25
+    },
+    {
+      "item": "Gold Eggplant",
+      "chance": 25
+    }
+  ],
+  "Bell": [
+    {
+      "item": "Grasshopper",
+      "chance": 50
+    }
+  ],
+  "Bird Egg": [
+    {
+      "item": "Antler",
+      "chance": 33.3
+    }
+  ],
+  "Blue Purse": [
+    {
+      "item": "Red Dye",
+      "chance": 33.3
+    },
+    {
+      "item": "Steel Plate",
+      "chance": 33.3
+    }
+  ],
+  "Broccoli": [
+    {
+      "item": "Salt",
+      "chance": 50
+    }
+  ],
+  "Candy": [
+    {
+      "item": "Lollipop",
+      "chance": 33.3
+    },
+    {
+      "item": "Taffy",
+      "chance": 33.3
+    },
+    {
+      "item": "Chattering Teeth",
+      "chance": 25
+    }
+  ],
+  "Candy Corn": [
+    {
+      "item": "Gouda",
+      "chance": 33.3
+    },
+    {
+      "item": "Jack-o-lantern",
+      "chance": 33.3
+    },
+    {
+      "item": "R.O.A.S.",
+      "chance": 33.3
+    },
+    {
+      "item": "Treat Bag 03",
+      "chance": 33.3
+    }
+  ],
+  "Canoe": [
+    {
+      "item": "Spoon",
+      "chance": 33.3
+    }
+  ],
+  "Captains Log": [
+    {
+      "item": "Pirate Bandana",
+      "chance": 25
+    },
+    {
+      "item": "Small Flute",
+      "chance": 20
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Carved Bear": [
+    {
+      "item": "Pirate Bandana",
+      "chance": 25
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Camel": [
+    {
+      "item": "Carved Owl",
+      "chance": 33.3
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Dragon": [
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Fox": [
+    {
+      "item": "Carved Bear",
+      "chance": 25
+    },
+    {
+      "item": "Wooden Box",
+      "chance": 25
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Moose": [
+    {
+      "item": "Carved Bear",
+      "chance": 25
+    },
+    {
+      "item": "Carved Warthog",
+      "chance": 25
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Mouse": [
+    {
+      "item": "Carved Rabbit",
+      "chance": 25
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Owl": [
+    {
+      "item": "Wooden Mask",
+      "chance": 33.3
+    },
+    {
+      "item": "Carved Rabbit",
+      "chance": 25
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Rabbit": [
+    {
+      "item": "Carved Warthog",
+      "chance": 25
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Rhino": [
+    {
+      "item": "Carved Owl",
+      "chance": 33.3
+    },
+    {
+      "item": "Carved Bear",
+      "chance": 25
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Squirrel": [
+    {
+      "item": "Carved Warthog",
+      "chance": 25
+    },
+    {
+      "item": "Spectacles",
+      "chance": 20
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Squisquatch": [
+    {
+      "item": "Carved Warthog",
+      "chance": 25
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Carved Warthog": [
+    {
+      "item": "Carved Owl",
+      "chance": 33.3
+    },
+    {
+      "item": "Carved Rabbit",
+      "chance": 25
+    },
+    {
+      "item": "Small Flute",
+      "chance": 20
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    },
+    {
+      "item": "Block of Wood",
+      "chance": 6.3
+    }
+  ],
+  "Caterpillar": [
+    {
+      "item": "Fire Ant",
+      "chance": 25
+    },
+    {
+      "item": "Shiny Beetle",
+      "chance": 25
+    },
+    {
+      "item": "Snail",
+      "chance": 25
+    }
+  ],
+  "Chattering Teeth": [
+    {
+      "item": "Gouda",
+      "chance": 33.3
+    },
+    {
+      "item": "Witch Hat",
+      "chance": 33.3
+    }
+  ],
+  "Chum": [
+    {
+      "item": "Essence of Slime",
+      "chance": 50
+    }
+  ],
+  "Coal": [
+    {
+      "item": "Dragonfly",
+      "chance": 33.3
+    }
+  ],
+  "Cogwheel": [
+    {
+      "item": "Pocket Watch",
+      "chance": 33.3
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Corn": [
+    {
+      "item": "Herbs",
+      "chance": 16.7
+    }
+  ],
+  "Crab Claw": [
+    {
+      "item": "Frog",
+      "chance": 33.3
+    },
+    {
+      "item": "Orange Gecko",
+      "chance": 33.3
+    }
+  ],
+  "Dancer": [
+    {
+      "item": "Milk and Cookies",
+      "chance": 25
+    }
+  ],
+  "Dice": [
+    {
+      "item": "Strange Letter",
+      "chance": 25
+    },
+    {
+      "item": "Wooden Pipe",
+      "chance": 25
+    },
+    {
+      "item": "Small Flute",
+      "chance": 20
+    },
+    {
+      "item": "Spectacles",
+      "chance": 20
+    }
+  ],
+  "Egg 02": [
+    {
+      "item": "Dragonfly",
+      "chance": 33.3
+    }
+  ],
+  "Egyptian Necklace": [
+    {
+      "item": "Candy Corn",
+      "chance": 33.3
+    },
+    {
+      "item": "Treat Bag 02",
+      "chance": 33.3
+    }
+  ],
+  "Emberstone": [
+    {
+      "item": "Jade",
+      "chance": 25
+    }
+  ],
+  "Emerald": [
+    {
+      "item": "Aquamarine",
+      "chance": 25
+    }
+  ],
+  "Energy Coil": [
+    {
+      "item": "Belt Drive",
+      "chance": 33.3
+    }
+  ],
+  "Eye Patch": [
+    {
+      "item": "Captains Log",
+      "chance": 25
+    },
+    {
+      "item": "Pirate Bandana",
+      "chance": 25
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Fancy Box": [
+    {
+      "item": "Small Gear",
+      "chance": 33.3
+    }
+  ],
+  "Fancy Drum": [
+    {
+      "item": "Sea Dragon",
+      "chance": 33.3
+    },
+    {
+      "item": "Sturdy Bow",
+      "chance": 33.3
+    }
+  ],
+  "Fancy Guitar": [
+    {
+      "item": "Sturdy Bow",
+      "chance": 33.3
+    }
+  ],
+  "Fancy Pipe": [
+    {
+      "item": "Wooden Pipe",
+      "chance": 25
+    }
+  ],
+  "Fire Ant": [
+    {
+      "item": "Caterpillar",
+      "chance": 25
+    },
+    {
+      "item": "Horned Beetle",
+      "chance": 25
+    }
+  ],
+  "Flamejack": [
+    {
+      "item": "Herbs",
+      "chance": 16.7
+    }
+  ],
+  "Freaky Picture": [
+    {
+      "item": "Strange Letter",
+      "chance": 25
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Frog": [
+    {
+      "item": "Crab Claw",
+      "chance": 33.3
+    },
+    {
+      "item": "Orange Gecko",
+      "chance": 33.3
+    },
+    {
+      "item": "Sea Dragon",
+      "chance": 33.3
+    }
+  ],
+  "Giant Centipede": [
+    {
+      "item": "Caterpillar",
+      "chance": 25
+    },
+    {
+      "item": "Fire Ant",
+      "chance": 25
+    },
+    {
+      "item": "Horned Beetle",
+      "chance": 25
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Glass Bottle": [
+    {
+      "item": "Old Boot",
+      "chance": 33.3
+    }
+  ],
+  "Gold Carrot": [
+    {
+      "item": "Gold Cucumber",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Eggplant",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peppers",
+      "chance": 20
+    }
+  ],
+  "Gold Catfish": [
+    {
+      "item": "Gold Drum",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Flier",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldfin",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldgill",
+      "chance": 33.3
+    }
+  ],
+  "Gold Coral": [
+    {
+      "item": "Gold Sea Bass",
+      "chance": 33.3
+    }
+  ],
+  "Gold Cucumber": [
+    {
+      "item": "Gold Carrot",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peas",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peppers",
+      "chance": 20
+    }
+  ],
+  "Gold Drum": [
+    {
+      "item": "Goldray",
+      "chance": 33.3
+    }
+  ],
+  "Gold Eggplant": [
+    {
+      "item": "Gold Cucumber",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Carrot",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peas",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peppers",
+      "chance": 20
+    }
+  ],
+  "Gold Feather": [
+    {
+      "item": "Bacon",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Leaf",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 04",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 08",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 09",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Peas",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 06",
+      "chance": 25
+    }
+  ],
+  "Gold Flier": [
+    {
+      "item": "Gold Sea Bass",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Trout",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldray",
+      "chance": 33.3
+    }
+  ],
+  "Gold Leaf": [
+    {
+      "item": "Bacon",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Feather",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 04",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 07",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Eggplant",
+      "chance": 25
+    },
+    {
+      "item": "Magicite",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 06",
+      "chance": 25
+    }
+  ],
+  "Gold Peas": [
+    {
+      "item": "Gold Carrot",
+      "chance": 25
+    },
+    {
+      "item": "Gold Eggplant",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peppers",
+      "chance": 20
+    }
+  ],
+  "Gold Peppers": [
+    {
+      "item": "Gold Peas",
+      "chance": 25
+    }
+  ],
+  "Gold Sea Bass": [
+    {
+      "item": "Gold Flier",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldjack",
+      "chance": 33.3
+    },
+    {
+      "item": "Herbs",
+      "chance": 16.7
+    }
+  ],
+  "Gold Trout": [
+    {
+      "item": "Gold Drum",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldfin",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldray",
+      "chance": 33.3
+    }
+  ],
+  "Goldfin": [
+    {
+      "item": "Gold Coral",
+      "chance": 50
+    },
+    {
+      "item": "Gold Sea Bass",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldgill",
+      "chance": 33.3
+    }
+  ],
+  "Goldfish": [
+    {
+      "item": "Jack-o-lantern",
+      "chance": 33.3
+    }
+  ],
+  "Goldgill": [
+    {
+      "item": "Gold Catfish",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Flier",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Trout",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldjack",
+      "chance": 33.3
+    }
+  ],
+  "Goldjack": [
+    {
+      "item": "Gold Catfish",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldfin",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldgill",
+      "chance": 33.3
+    }
+  ],
+  "Goldray": [
+    {
+      "item": "Gold Trout",
+      "chance": 33.3
+    },
+    {
+      "item": "Goldjack",
+      "chance": 33.3
+    }
+  ],
+  "Gouda": [
+    {
+      "item": "Small Gear",
+      "chance": 33.3
+    },
+    {
+      "item": "Wax Candle",
+      "chance": 33.3
+    }
+  ],
+  "Grab Bag 07": [
+    {
+      "item": "Milk and Cookies",
+      "chance": 25
+    }
+  ],
+  "Green Jellyfish": [
+    {
+      "item": "Herbs",
+      "chance": 16.7
+    }
+  ],
+  "Holiday Wreath": [
+    {
+      "item": "Milk and Cookies",
+      "chance": 25
+    }
+  ],
+  "Honey": [
+    {
+      "item": "Herbs",
+      "chance": 16.7
+    }
+  ],
+  "Horn": [
+    {
+      "item": "Pine Cone",
+      "chance": 33.3
+    }
+  ],
+  "Horned Beetle": [
+    {
+      "item": "Fire Ant",
+      "chance": 25
+    },
+    {
+      "item": "Giant Centipede",
+      "chance": 25
+    },
+    {
+      "item": "Shiny Beetle",
+      "chance": 25
+    },
+    {
+      "item": "Snail",
+      "chance": 25
+    }
+  ],
+  "Iced Tea": [
+    {
+      "item": "Apple Cider",
+      "chance": 33.3
+    }
+  ],
+  "Jack-o-lantern": [
+    {
+      "item": "Treat Bag 03",
+      "chance": 33.3
+    }
+  ],
+  "Lemon Quartz": [
+    {
+      "item": "Aquamarine",
+      "chance": 25
+    }
+  ],
+  "Lemonade": [
+    {
+      "item": "Apple Cider",
+      "chance": 33.3
+    }
+  ],
+  "Lollipop": [
+    {
+      "item": "Taffy",
+      "chance": 33.3
+    },
+    {
+      "item": "Candy",
+      "chance": 25
+    },
+    {
+      "item": "Chattering Teeth",
+      "chance": 25
+    }
+  ],
+  "Machine Press": [
+    {
+      "item": "Sturdy Bow",
+      "chance": 33.3
+    }
+  ],
+  "Magicite": [
+    {
+      "item": "Bacon",
+      "chance": 33.3
+    },
+    {
+      "item": "Gold Leaf",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 02",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 05",
+      "chance": 25
+    }
+  ],
+  "Magna Core": [
+    {
+      "item": "Compass",
+      "chance": 100
+    }
+  ],
+  "Magna Quartz": [
+    {
+      "item": "Runestone 02",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 05",
+      "chance": 25
+    }
+  ],
+  "Metal Spool": [
+    {
+      "item": "Belt Drive",
+      "chance": 33.3
+    }
+  ],
+  "MIAB": [
+    {
+      "item": "4-leaf Clover",
+      "chance": 33.3
+    }
+  ],
+  "Monster Skull": [
+    {
+      "item": "Steel Plate",
+      "chance": 33.3
+    }
+  ],
+  "Moonstone": [
+    {
+      "item": "Runestone 01",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 03",
+      "chance": 33.3
+    },
+    {
+      "item": "Shark Tooth",
+      "chance": 33.3
+    },
+    {
+      "item": "Treat Bag 03",
+      "chance": 33.3
+    },
+    {
+      "item": "Captains Log",
+      "chance": 25
+    },
+    {
+      "item": "Eye Patch",
+      "chance": 25
+    }
+  ],
+  "Mug of Beer": [
+    {
+      "item": "Cutlass",
+      "chance": 33.3
+    }
+  ],
+  "Mushroom Paste": [
+    {
+      "item": "Water Lily",
+      "chance": 33.3
+    }
+  ],
+  "Octopus": [
+    {
+      "item": "Herbs",
+      "chance": 16.7
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Onyx Scorpion": [
+    {
+      "item": "Spoon",
+      "chance": 33.3
+    }
+  ],
+  "Orange Gecko": [
+    {
+      "item": "Crab Claw",
+      "chance": 33.3
+    },
+    {
+      "item": "Frog",
+      "chance": 33.3
+    },
+    {
+      "item": "Sea Dragon",
+      "chance": 33.3
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Orange Juice": [
+    {
+      "item": "Apple Cider",
+      "chance": 33.3
+    }
+  ],
+  "Pine Cone": [
+    {
+      "item": "Antler",
+      "chance": 33.3
+    }
+  ],
+  "Pirate Bandana": [
+    {
+      "item": "Pocket Watch",
+      "chance": 33.3
+    },
+    {
+      "item": "Spectacles",
+      "chance": 20
+    }
+  ],
+  "Pirate Flag": [
+    {
+      "item": "Captains Log",
+      "chance": 25
+    },
+    {
+      "item": "Freaky Picture",
+      "chance": 25
+    },
+    {
+      "item": "Pirate Bandana",
+      "chance": 25
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    }
+  ],
+  "Pocket Watch": [
+    {
+      "item": "Cogwheel",
+      "chance": 25
+    }
+  ],
+  "Popcorn": [
+    {
+      "item": "Water Lily",
+      "chance": 33.3
+    }
+  ],
+  "Prism Shard": [
+    {
+      "item": "Pine Cone",
+      "chance": 33.3
+    }
+  ],
+  "Purple Bag": [
+    {
+      "item": "Red Dye",
+      "chance": 33.3
+    }
+  ],
+  "R.O.A.S.": [
+    {
+      "item": "Candy Corn",
+      "chance": 33.3
+    },
+    {
+      "item": "Wax Candle",
+      "chance": 33.3
+    }
+  ],
+  "Red Shield": [
+    {
+      "item": "Red Dye",
+      "chance": 33.3
+    }
+  ],
+  "Rubber Duckie": [
+    {
+      "item": "Cutlass",
+      "chance": 33.3
+    }
+  ],
+  "Ruby": [
+    {
+      "item": "Aquamarine",
+      "chance": 25
+    },
+    {
+      "item": "Jade",
+      "chance": 25
+    }
+  ],
+  "Runestone 01": [
+    {
+      "item": "Eye Patch",
+      "chance": 25
+    },
+    {
+      "item": "Magicite",
+      "chance": 25
+    },
+    {
+      "item": "Moonstone",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 02",
+      "chance": 25
+    },
+    {
+      "item": "Gold Peppers",
+      "chance": 20
+    }
+  ],
+  "Runestone 02": [
+    {
+      "item": "Runestone 01",
+      "chance": 33.3
+    },
+    {
+      "item": "Eye Patch",
+      "chance": 25
+    },
+    {
+      "item": "Magicite",
+      "chance": 25
+    },
+    {
+      "item": "Moonstone",
+      "chance": 25
+    },
+    {
+      "item": "Teapot",
+      "chance": 14.3
+    }
+  ],
+  "Runestone 03": [
+    {
+      "item": "Runestone 04",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 02",
+      "chance": 25
+    }
+  ],
+  "Runestone 04": [
+    {
+      "item": "Runestone 03",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 05",
+      "chance": 25
+    }
+  ],
+  "Runestone 05": [
+    {
+      "item": "Gold Feather",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 03",
+      "chance": 33.3
+    },
+    {
+      "item": "Shiny Beetle",
+      "chance": 25
+    }
+  ],
+  "Runestone 06": [
+    {
+      "item": "Runestone 10",
+      "chance": 33.3
+    },
+    {
+      "item": "Horned Beetle",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 05",
+      "chance": 25
+    }
+  ],
+  "Runestone 07": [
+    {
+      "item": "Gold Leaf",
+      "chance": 33.3
+    },
+    {
+      "item": "Giant Centipede",
+      "chance": 25
+    },
+    {
+      "item": "Moonstone",
+      "chance": 25
+    },
+    {
+      "item": "Runestone 06",
+      "chance": 25
+    }
+  ],
+  "Runestone 08": [
+    {
+      "item": "Runestone 07",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 09",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 10",
+      "chance": 33.3
+    },
+    {
+      "item": "Fire Ant",
+      "chance": 25
+    }
+  ],
+  "Runestone 09": [
+    {
+      "item": "Runestone 08",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 10",
+      "chance": 33.3
+    },
+    {
+      "item": "Caterpillar",
+      "chance": 25
+    }
+  ],
+  "Runestone 10": [
+    {
+      "item": "Runestone 07",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 08",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 09",
+      "chance": 33.3
+    },
+    {
+      "item": "Runestone 06",
+      "chance": 25
+    },
+    {
+      "item": "Snail",
+      "chance": 25
+    }
+  ],
+  "Sea Dragon": [
+    {
+      "item": "Crab Claw",
+      "chance": 33.3
+    },
+    {
+      "item": "Frog",
+      "chance": 33.3
+    },
+    {
+      "item": "Orange Gecko",
+      "chance": 33.3
+    }
+  ],
+  "Sealed Letter": [
+    {
+      "item": "Pirate Flag",
+      "chance": 25
+    }
+  ],
+  "Shark Tooth": [
+    {
+      "item": "Cutlass",
+      "chance": 33.3
+    }
+  ],
+  "Shiny Beetle": [
+    {
+      "item": "Caterpillar",
+      "chance": 25
+    },
+    {
+      "item": "Giant Centipede",
+      "chance": 25
+    },
+    {
+      "item": "Horned Beetle",
+      "chance": 25
+    },
+    {
+      "item": "Snail",
+      "chance": 25
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Small Flute": [
+    {
+      "item": "4-leaf Clover",
+      "chance": 33.3
+    },
+    {
+      "item": "Wooden Mask",
+      "chance": 33.3
+    },
+    {
+      "item": "Cogwheel",
+      "chance": 25
+    },
+    {
+      "item": "Dice",
+      "chance": 25
+    },
+    {
+      "item": "Pirate Flag",
+      "chance": 25
+    },
+    {
+      "item": "Wooden Pipe",
+      "chance": 25
+    }
+  ],
+  "Small Gear": [
+    {
+      "item": "Freaky Picture",
+      "chance": 25
+    },
+    {
+      "item": "Pirate Flag",
+      "chance": 25
+    },
+    {
+      "item": "Wooden Pipe",
+      "chance": 25
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Small Key": [
+    {
+      "item": "Large Chest 01",
+      "chance": 33.3
+    },
+    {
+      "item": "Large Chest 02",
+      "chance": 33.3
+    }
+  ],
+  "Small Screw": [
+    {
+      "item": "Cogwheel",
+      "chance": 25
+    },
+    {
+      "item": "Small Spring",
+      "chance": 25
+    },
+    {
+      "item": "Strange Letter",
+      "chance": 25
+    },
+    {
+      "item": "Small Flute",
+      "chance": 20
+    },
+    {
+      "item": "Spectacles",
+      "chance": 20
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Small Spring": [
+    {
+      "item": "Freaky Picture",
+      "chance": 25
+    }
+  ],
+  "Snail": [
+    {
+      "item": "Giant Centipede",
+      "chance": 25
+    },
+    {
+      "item": "Shiny Beetle",
+      "chance": 25
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Spectacles": [
+    {
+      "item": "Wooden Mask",
+      "chance": 33.3
+    },
+    {
+      "item": "Dice",
+      "chance": 25
+    },
+    {
+      "item": "Eye Patch",
+      "chance": 25
+    },
+    {
+      "item": "Pirate Flag",
+      "chance": 25
+    },
+    {
+      "item": "Small Spring",
+      "chance": 25
+    },
+    {
+      "item": "Strange Letter",
+      "chance": 25
+    }
+  ],
+  "Spider": [
+    {
+      "item": "Grasshopper",
+      "chance": 50
+    },
+    {
+      "item": "Jack-o-lantern",
+      "chance": 33.3
+    },
+    {
+      "item": "Lollipop",
+      "chance": 33.3
+    },
+    {
+      "item": "Candy",
+      "chance": 25
+    }
+  ],
+  "Spiked Shell": [
+    {
+      "item": "Salt",
+      "chance": 50
+    }
+  ],
+  "Spool of Copper": [
+    {
+      "item": "Belt Drive",
+      "chance": 33.3
+    }
+  ],
+  "Square Key": [
+    {
+      "item": "Large Chest 01",
+      "chance": 33.3
+    },
+    {
+      "item": "Large Chest 02",
+      "chance": 33.3
+    },
+    {
+      "item": "R.O.A.S.",
+      "chance": 33.3
+    },
+    {
+      "item": "Treat Bag 02",
+      "chance": 33.3
+    }
+  ],
+  "Stone": [
+    {
+      "item": "Dragonfly",
+      "chance": 33.3
+    }
+  ],
+  "Strange Letter": [
+    {
+      "item": "Runestone 01",
+      "chance": 33.3
+    },
+    {
+      "item": "Captains Log",
+      "chance": 25
+    },
+    {
+      "item": "Gold Carrot",
+      "chance": 25
+    },
+    {
+      "item": "Magicite",
+      "chance": 25
+    },
+    {
+      "item": "Moonstone",
+      "chance": 25
+    },
+    {
+      "item": "Small Spring",
+      "chance": 25
+    },
+    {
+      "item": "Small Flute",
+      "chance": 20
+    }
+  ],
+  "Sturdy Bow": [
+    {
+      "item": "Gold Coral",
+      "chance": 50
+    },
+    {
+      "item": "Gold Drum",
+      "chance": 33.3
+    }
+  ],
+  "Taffy": [
+    {
+      "item": "Candy Corn",
+      "chance": 33.3
+    },
+    {
+      "item": "Lollipop",
+      "chance": 33.3
+    },
+    {
+      "item": "R.O.A.S.",
+      "chance": 33.3
+    },
+    {
+      "item": "Treat Bag 02",
+      "chance": 33.3
+    },
+    {
+      "item": "Candy",
+      "chance": 25
+    }
+  ],
+  "Teapot": [
+    {
+      "item": "Dice",
+      "chance": 25
+    },
+    {
+      "item": "Freaky Picture",
+      "chance": 25
+    }
+  ],
+  "Treasure Chest": [
+    {
+      "item": "Wooden Box",
+      "chance": 25
+    }
+  ],
+  "Treasure Key": [
+    {
+      "item": "Large Chest 01",
+      "chance": 33.3
+    },
+    {
+      "item": "Large Chest 02",
+      "chance": 33.3
+    }
+  ],
+  "Vixen": [
+    {
+      "item": "Milk and Cookies",
+      "chance": 25
+    }
+  ],
+  "Wax Candle": [
+    {
+      "item": "Gouda",
+      "chance": 33.3
+    },
+    {
+      "item": "Small Gear",
+      "chance": 33.3
+    },
+    {
+      "item": "Witch Hat",
+      "chance": 33.3
+    },
+    {
+      "item": "Ancient Coin",
+      "chance": 8.3
+    }
+  ],
+  "Witch Hat": [
+    {
+      "item": "Wax Candle",
+      "chance": 33.3
+    },
+    {
+      "item": "Chattering Teeth",
+      "chance": 25
+    }
+  ],
+  "Wizard Hat": [
+    {
+      "item": "Witch Hat",
+      "chance": 33.3
+    }
+  ],
+  "Wooden Bow": [
+    {
+      "item": "Essence of Slime",
+      "chance": 50
+    },
+    {
+      "item": "Gold Catfish",
+      "chance": 33.3
+    }
+  ],
+  "Wooden Mask": [
+    {
+      "item": "4-leaf Clover",
+      "chance": 33.3
+    },
+    {
+      "item": "Pocket Watch",
+      "chance": 33.3
+    },
+    {
+      "item": "Cogwheel",
+      "chance": 25
+    },
+    {
+      "item": "Wooden Box",
+      "chance": 25
+    }
+  ],
+  "Wrench": [
+    {
+      "item": "Spoon",
+      "chance": 33.3
+    },
+    {
+      "item": "Steel Plate",
+      "chance": 33.3
+    }
+  ]
+}

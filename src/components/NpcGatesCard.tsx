@@ -23,7 +23,7 @@ interface Props {
 }
 
 export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
-  const { player, questStatuses, inventory } = useStore();
+  const { player, questStatuses, towerLevel, inventory } = useStore();
   const [expandedNpc, setExpandedNpc] = useState<string | null>(null);
 
   const gates = useMemo((): GateEntry[] => {
@@ -39,7 +39,7 @@ export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
 
       for (let i = lastActiveIdx + 1; i < sorted.length; i++) {
         const q = sorted[i];
-        const status = getQuestStatus(q, player, questStatuses);
+        const status = getQuestStatus(q, player, questStatuses, towerLevel);
         if (status === 'completed') continue;
         const currentNpcLevel = player.npcLevels[q.npc] ?? 0;
         if (q.requiredNpcLevel > currentNpcLevel) {
@@ -60,7 +60,7 @@ export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
     }
 
     for (const quest of allQuests) {
-      const status = getQuestStatus(quest, player, questStatuses);
+      const status = getQuestStatus(quest, player, questStatuses, towerLevel);
       if (status !== 'available' && status !== 'locked') continue;
       if (questStatuses[quest.id]) continue;
       const currentNpcLevel = player.npcLevels[quest.npc] ?? 0;
@@ -83,7 +83,7 @@ export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
     }
 
     return result.sort((a, b) => a.levelsAway - b.levelsAway);
-  }, [activeQuests, questlineGroups, player, questStatuses]);
+  }, [activeQuests, questlineGroups, player, questStatuses, towerLevel]);
 
   // Items with a deficit in active quests: item → quest names
   const activeNeeds = useMemo(() => {

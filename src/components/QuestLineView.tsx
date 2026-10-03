@@ -18,11 +18,11 @@ const statusDot: Record<QuestStatus, string> = {
 };
 
 export function QuestLineView({ questline, quests }: Props) {
-  const { player, questStatuses, inventory, cropTimes, plotCount } = useStore();
+  const { player, questStatuses, towerLevel, inventory, cropTimes, plotCount } = useStore();
   const [expanded, setExpanded] = useState(false);
   const [showFuture, setShowFuture] = useState(false);
 
-  const statuses = quests.map((q) => getQuestStatus(q, player, questStatuses));
+  const statuses = quests.map((q) => getQuestStatus(q, player, questStatuses, towerLevel));
   const completedCount = statuses.filter((s) => s === 'completed').length;
   const progress = Math.round((completedCount / quests.length) * 100);
 

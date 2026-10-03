@@ -16,11 +16,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Old Boot (0.33%)"
+      "label": "Wishing Well: throw Old Boot (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shark Tooth (0.33%)"
+      "label": "Wishing Well: throw Shark Tooth (33.3%)"
     },
     {
       "type": "password",
@@ -96,11 +96,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Aquamarine (0.25%)"
+      "label": "Wishing Well: throw Aquamarine (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jade (0.25%)"
+      "label": "Wishing Well: throw Jade (25%)"
     },
     {
       "type": "temple",
@@ -136,11 +136,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Old Boot (0.33%)"
+      "label": "Wishing Well: throw Old Boot (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Taffy (0.33%)"
+      "label": "Wishing Well: throw Taffy (33.3%)"
     },
     {
       "type": "temple",
@@ -192,7 +192,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pine Cone (0.33%)"
+      "label": "Wishing Well: throw Pine Cone (33.3%)"
     },
     {
       "type": "temple",
@@ -242,7 +242,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy (0.25%)"
+      "label": "Wishing Well: throw Candy (25%)"
     },
     {
       "type": "temple",
@@ -460,7 +460,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jade (0.25%)"
+      "label": "Wishing Well: throw Jade (25%)"
     },
     {
       "type": "quest",
@@ -586,7 +586,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Antler (0.33%)"
+      "label": "Wishing Well: throw Antler (33.3%)"
     },
     {
       "type": "password",
@@ -650,23 +650,23 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dice (0.25%)"
+      "label": "Wishing Well: throw Dice (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Cucumber (0.33%)"
+      "label": "Wishing Well: throw Gold Cucumber (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Eggplant (0.25%)"
+      "label": "Wishing Well: throw Gold Eggplant (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Feather (0.33%)"
+      "label": "Wishing Well: throw Gold Feather (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shark Tooth (0.33%)"
+      "label": "Wishing Well: throw Shark Tooth (33.3%)"
     },
     {
       "type": "password",
@@ -724,7 +724,7 @@
   "Bell": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Grasshopper (0.5%)"
+      "label": "Wishing Well: throw Grasshopper (50%)"
     },
     {
       "type": "exchange",
@@ -748,7 +748,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Antler (0.33%)"
+      "label": "Wishing Well: throw Antler (33.3%)"
     },
     {
       "type": "temple",
@@ -866,11 +866,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Red Dye (0.33%)"
+      "label": "Wishing Well: throw Red Dye (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Steel Plate (0.33%)"
+      "label": "Wishing Well: throw Steel Plate (33.3%)"
     },
     {
       "type": "quest",
@@ -1088,7 +1088,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Salt (0.5%)"
+      "label": "Wishing Well: throw Salt (50%)"
     },
     {
       "type": "password",
@@ -1266,15 +1266,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Chattering Teeth (0.25%)"
+      "label": "Wishing Well: throw Chattering Teeth (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Lollipop (0.33%)"
+      "label": "Wishing Well: throw Lollipop (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Taffy (0.33%)"
+      "label": "Wishing Well: throw Taffy (33.3%)"
     }
   ],
   "Candy Cane": [
@@ -1294,19 +1294,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jack-o-lantern (0.33%)"
+      "label": "Wishing Well: throw Jack-o-lantern (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (0.33%)"
+      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 03 (0.33%)"
+      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw R.O.A.S. (0.33%)"
+      "label": "Wishing Well: throw R.O.A.S. (33.3%)"
     },
     {
       "type": "password",
@@ -1330,7 +1330,7 @@
   "Canoe": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spoon (0.33%)"
+      "label": "Wishing Well: throw Spoon (33.3%)"
     },
     {
       "type": "quest",
@@ -1340,19 +1340,19 @@
   "Captains Log": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Bandana (0.25%)"
+      "label": "Wishing Well: throw Pirate Bandana (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (0.2%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "quest",
@@ -1412,11 +1412,11 @@
   "Carved Bear": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Bandana (0.25%)"
+      "label": "Wishing Well: throw Pirate Bandana (25%)"
     },
     {
       "type": "quest",
@@ -1434,11 +1434,11 @@
   "Carved Camel": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Owl (0.33%)"
+      "label": "Wishing Well: throw Carved Owl (33.3%)"
     },
     {
       "type": "quest",
@@ -1448,21 +1448,21 @@
   "Carved Dragon": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     }
   ],
   "Carved Fox": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Bear (0.25%)"
+      "label": "Wishing Well: throw Carved Bear (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Box (0.25%)"
+      "label": "Wishing Well: throw Wooden Box (25%)"
     },
     {
       "type": "password",
@@ -1472,15 +1472,15 @@
   "Carved Moose": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Warthog (0.25%)"
+      "label": "Wishing Well: throw Carved Warthog (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Bear (0.25%)"
+      "label": "Wishing Well: throw Carved Bear (25%)"
     },
     {
       "type": "quest",
@@ -1490,29 +1490,29 @@
   "Carved Mouse": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Rabbit (0.25%)"
+      "label": "Wishing Well: throw Carved Rabbit (25%)"
     }
   ],
   "Carved Owl": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Rabbit (0.25%)"
+      "label": "Wishing Well: throw Carved Rabbit (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Mask (0.33%)"
+      "label": "Wishing Well: throw Wooden Mask (33.3%)"
     },
     {
       "type": "password",
@@ -1530,11 +1530,11 @@
   "Carved Rabbit": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Warthog (0.25%)"
+      "label": "Wishing Well: throw Carved Warthog (25%)"
     },
     {
       "type": "quest",
@@ -1544,19 +1544,19 @@
   "Carved Rhino": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Bear (0.25%)"
+      "label": "Wishing Well: throw Carved Bear (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Owl (0.33%)"
+      "label": "Wishing Well: throw Carved Owl (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "quest",
@@ -1566,15 +1566,15 @@
   "Carved Squirrel": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Warthog (0.25%)"
+      "label": "Wishing Well: throw Carved Warthog (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spectacles (0.2%)"
+      "label": "Wishing Well: throw Spectacles (20%)"
     },
     {
       "type": "quest",
@@ -1584,33 +1584,33 @@
   "Carved Squisquatch": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Warthog (0.25%)"
+      "label": "Wishing Well: throw Carved Warthog (25%)"
     }
   ],
   "Carved Warthog": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Block of Wood (0.06%)"
+      "label": "Wishing Well: throw Block of Wood (6.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Owl (0.33%)"
+      "label": "Wishing Well: throw Carved Owl (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Carved Rabbit (0.25%)"
+      "label": "Wishing Well: throw Carved Rabbit (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (0.2%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "quest",
@@ -1642,15 +1642,15 @@
   "Caterpillar": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (0.25%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Snail (0.25%)"
+      "label": "Wishing Well: throw Snail (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shiny Beetle (0.25%)"
+      "label": "Wishing Well: throw Shiny Beetle (25%)"
     },
     {
       "type": "quest",
@@ -1788,11 +1788,11 @@
   "Chattering Teeth": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (0.33%)"
+      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Witch Hat (0.33%)"
+      "label": "Wishing Well: throw Witch Hat (33.3%)"
     },
     {
       "type": "password",
@@ -1864,7 +1864,7 @@
   "Chum": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Essence of Slime (0.5%)"
+      "label": "Wishing Well: throw Essence of Slime (50%)"
     },
     {
       "type": "temple",
@@ -1932,7 +1932,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dragonfly (0.33%)"
+      "label": "Wishing Well: throw Dragonfly (33.3%)"
     },
     {
       "type": "skill",
@@ -1964,11 +1964,11 @@
   "Cogwheel": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pocket Watch (0.33%)"
+      "label": "Wishing Well: throw Pocket Watch (33.3%)"
     },
     {
       "type": "password",
@@ -2076,7 +2076,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Herbs (0.17%)"
+      "label": "Wishing Well: throw Herbs (16.7%)"
     },
     {
       "type": "temple",
@@ -2196,11 +2196,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Frog (0.33%)"
+      "label": "Wishing Well: throw Frog (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Orange Gecko (0.33%)"
+      "label": "Wishing Well: throw Orange Gecko (33.3%)"
     },
     {
       "type": "password",
@@ -2316,7 +2316,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Milk and Cookies (0.25%)"
+      "label": "Wishing Well: throw Milk and Cookies (25%)"
     }
   ],
   "Diamond": [
@@ -2362,19 +2362,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spectacles (0.2%)"
+      "label": "Wishing Well: throw Spectacles (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Strange Letter (0.25%)"
+      "label": "Wishing Well: throw Strange Letter (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (0.2%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Pipe (0.25%)"
+      "label": "Wishing Well: throw Wooden Pipe (25%)"
     },
     {
       "type": "password",
@@ -2410,7 +2410,7 @@
   "Egg 02": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dragonfly (0.33%)"
+      "label": "Wishing Well: throw Dragonfly (33.3%)"
     }
   ],
   "Egg 04": [
@@ -2500,11 +2500,11 @@
   "Egyptian Necklace": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy Corn (0.33%)"
+      "label": "Wishing Well: throw Candy Corn (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 02 (0.33%)"
+      "label": "Wishing Well: throw Treat Bag 02 (33.3%)"
     },
     {
       "type": "password",
@@ -2526,7 +2526,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jade (0.25%)"
+      "label": "Wishing Well: throw Jade (25%)"
     },
     {
       "type": "password",
@@ -2548,7 +2548,7 @@
   "Emerald": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Aquamarine (0.25%)"
+      "label": "Wishing Well: throw Aquamarine (25%)"
     },
     {
       "type": "quest",
@@ -2558,7 +2558,7 @@
   "Energy Coil": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Belt Drive (0.33%)"
+      "label": "Wishing Well: throw Belt Drive (33.3%)"
     }
   ],
   "Energy Core": [
@@ -2630,15 +2630,15 @@
   "Eye Patch": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Captains Log (0.25%)"
+      "label": "Wishing Well: throw Captains Log (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Bandana (0.25%)"
+      "label": "Wishing Well: throw Pirate Bandana (25%)"
     },
     {
       "type": "quest",
@@ -2662,7 +2662,7 @@
   "Fancy Box": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Gear (0.33%)"
+      "label": "Wishing Well: throw Small Gear (33.3%)"
     },
     {
       "type": "password",
@@ -2686,11 +2686,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Sturdy Bow (0.33%)"
+      "label": "Wishing Well: throw Sturdy Bow (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Sea Dragon (0.33%)"
+      "label": "Wishing Well: throw Sea Dragon (33.3%)"
     },
     {
       "type": "password",
@@ -2708,7 +2708,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Sturdy Bow (0.33%)"
+      "label": "Wishing Well: throw Sturdy Bow (33.3%)"
     },
     {
       "type": "password",
@@ -2728,7 +2728,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Pipe (0.25%)"
+      "label": "Wishing Well: throw Wooden Pipe (25%)"
     },
     {
       "type": "quest",
@@ -2786,11 +2786,11 @@
   "Fire Ant": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Caterpillar (0.25%)"
+      "label": "Wishing Well: throw Caterpillar (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Horned Beetle (0.25%)"
+      "label": "Wishing Well: throw Horned Beetle (25%)"
     },
     {
       "type": "temple",
@@ -2910,7 +2910,7 @@
   "Flamejack": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Herbs (0.17%)"
+      "label": "Wishing Well: throw Herbs (16.7%)"
     }
   ],
   "Flarite": [
@@ -2954,15 +2954,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Strange Letter (0.25%)"
+      "label": "Wishing Well: throw Strange Letter (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     }
   ],
   "Frog": [
@@ -2972,15 +2972,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Crab Claw (0.33%)"
+      "label": "Wishing Well: throw Crab Claw (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Sea Dragon (0.33%)"
+      "label": "Wishing Well: throw Sea Dragon (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Orange Gecko (0.33%)"
+      "label": "Wishing Well: throw Orange Gecko (33.3%)"
     },
     {
       "type": "password",
@@ -3092,19 +3092,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (0.25%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Caterpillar (0.25%)"
+      "label": "Wishing Well: throw Caterpillar (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Horned Beetle (0.25%)"
+      "label": "Wishing Well: throw Horned Beetle (25%)"
     }
   ],
   "Giant Squid": [
@@ -3136,7 +3136,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Old Boot (0.33%)"
+      "label": "Wishing Well: throw Old Boot (33.3%)"
     },
     {
       "type": "skill",
@@ -3226,15 +3226,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peppers (0.2%)"
+      "label": "Wishing Well: throw Gold Peppers (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Cucumber (0.33%)"
+      "label": "Wishing Well: throw Gold Cucumber (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Eggplant (0.25%)"
+      "label": "Wishing Well: throw Gold Eggplant (25%)"
     },
     {
       "type": "temple",
@@ -3256,19 +3256,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Drum (0.33%)"
+      "label": "Wishing Well: throw Gold Drum (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Flier (0.33%)"
+      "label": "Wishing Well: throw Gold Flier (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldfin (0.33%)"
+      "label": "Wishing Well: throw Goldfin (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldgill (0.33%)"
+      "label": "Wishing Well: throw Goldgill (33.3%)"
     },
     {
       "type": "temple",
@@ -3290,7 +3290,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Sea Bass (0.33%)"
+      "label": "Wishing Well: throw Gold Sea Bass (33.3%)"
     },
     {
       "type": "temple",
@@ -3326,15 +3326,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peas (0.25%)"
+      "label": "Wishing Well: throw Gold Peas (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peppers (0.2%)"
+      "label": "Wishing Well: throw Gold Peppers (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Carrot (0.25%)"
+      "label": "Wishing Well: throw Gold Carrot (25%)"
     },
     {
       "type": "password",
@@ -3344,7 +3344,7 @@
   "Gold Drum": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldray (0.33%)"
+      "label": "Wishing Well: throw Goldray (33.3%)"
     },
     {
       "type": "temple",
@@ -3362,19 +3362,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Carrot (0.25%)"
+      "label": "Wishing Well: throw Gold Carrot (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Cucumber (0.33%)"
+      "label": "Wishing Well: throw Gold Cucumber (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peppers (0.2%)"
+      "label": "Wishing Well: throw Gold Peppers (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peas (0.25%)"
+      "label": "Wishing Well: throw Gold Peas (25%)"
     }
   ],
   "Gold Feather": [
@@ -3404,31 +3404,31 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Bacon (0.33%)"
+      "label": "Wishing Well: throw Bacon (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (0.33%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peas (0.25%)"
+      "label": "Wishing Well: throw Gold Peas (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 04 (0.33%)"
+      "label": "Wishing Well: throw Runestone 04 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 06 (0.25%)"
+      "label": "Wishing Well: throw Runestone 06 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 08 (0.33%)"
+      "label": "Wishing Well: throw Runestone 08 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 09 (0.33%)"
+      "label": "Wishing Well: throw Runestone 09 (33.3%)"
     },
     {
       "type": "exchange",
@@ -3466,15 +3466,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Sea Bass (0.33%)"
+      "label": "Wishing Well: throw Gold Sea Bass (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Trout (0.33%)"
+      "label": "Wishing Well: throw Gold Trout (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldray (0.33%)"
+      "label": "Wishing Well: throw Goldray (33.3%)"
     },
     {
       "type": "temple",
@@ -3510,31 +3510,31 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Bacon (0.33%)"
+      "label": "Wishing Well: throw Bacon (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Feather (0.33%)"
+      "label": "Wishing Well: throw Gold Feather (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 04 (0.33%)"
+      "label": "Wishing Well: throw Runestone 04 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 06 (0.25%)"
+      "label": "Wishing Well: throw Runestone 06 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 07 (0.33%)"
+      "label": "Wishing Well: throw Runestone 07 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Magicite (0.25%)"
+      "label": "Wishing Well: throw Magicite (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Eggplant (0.25%)"
+      "label": "Wishing Well: throw Gold Eggplant (25%)"
     },
     {
       "type": "temple",
@@ -3572,15 +3572,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Carrot (0.25%)"
+      "label": "Wishing Well: throw Gold Carrot (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Eggplant (0.25%)"
+      "label": "Wishing Well: throw Gold Eggplant (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peppers (0.2%)"
+      "label": "Wishing Well: throw Gold Peppers (20%)"
     },
     {
       "type": "skill",
@@ -3594,7 +3594,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peas (0.25%)"
+      "label": "Wishing Well: throw Gold Peas (25%)"
     },
     {
       "type": "password",
@@ -3618,15 +3618,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Flier (0.33%)"
+      "label": "Wishing Well: throw Gold Flier (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldjack (0.33%)"
+      "label": "Wishing Well: throw Goldjack (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Herbs (0.17%)"
+      "label": "Wishing Well: throw Herbs (16.7%)"
     },
     {
       "type": "temple",
@@ -3662,15 +3662,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldfin (0.33%)"
+      "label": "Wishing Well: throw Goldfin (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Drum (0.33%)"
+      "label": "Wishing Well: throw Gold Drum (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldray (0.33%)"
+      "label": "Wishing Well: throw Goldray (33.3%)"
     },
     {
       "type": "temple",
@@ -3684,15 +3684,15 @@
   "Goldfin": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Coral (0.5%)"
+      "label": "Wishing Well: throw Gold Coral (50%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Sea Bass (0.33%)"
+      "label": "Wishing Well: throw Gold Sea Bass (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldgill (0.33%)"
+      "label": "Wishing Well: throw Goldgill (33.3%)"
     },
     {
       "type": "temple",
@@ -3706,25 +3706,25 @@
   "Goldfish": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jack-o-lantern (0.33%)"
+      "label": "Wishing Well: throw Jack-o-lantern (33.3%)"
     }
   ],
   "Goldgill": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Catfish (0.33%)"
+      "label": "Wishing Well: throw Gold Catfish (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Flier (0.33%)"
+      "label": "Wishing Well: throw Gold Flier (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Trout (0.33%)"
+      "label": "Wishing Well: throw Gold Trout (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldjack (0.33%)"
+      "label": "Wishing Well: throw Goldjack (33.3%)"
     },
     {
       "type": "temple",
@@ -3734,15 +3734,15 @@
   "Goldjack": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Catfish (0.33%)"
+      "label": "Wishing Well: throw Gold Catfish (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldfin (0.33%)"
+      "label": "Wishing Well: throw Goldfin (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldgill (0.33%)"
+      "label": "Wishing Well: throw Goldgill (33.3%)"
     },
     {
       "type": "temple",
@@ -3752,11 +3752,11 @@
   "Goldray": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Trout (0.33%)"
+      "label": "Wishing Well: throw Gold Trout (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldjack (0.33%)"
+      "label": "Wishing Well: throw Goldjack (33.3%)"
     },
     {
       "type": "temple",
@@ -3786,11 +3786,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wax Candle (0.33%)"
+      "label": "Wishing Well: throw Wax Candle (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Gear (0.33%)"
+      "label": "Wishing Well: throw Small Gear (33.3%)"
     },
     {
       "type": "exchange",
@@ -3828,7 +3828,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Milk and Cookies (0.25%)"
+      "label": "Wishing Well: throw Milk and Cookies (25%)"
     },
     {
       "type": "temple",
@@ -4002,7 +4002,7 @@
   "Green Jellyfish": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Herbs (0.17%)"
+      "label": "Wishing Well: throw Herbs (16.7%)"
     },
     {
       "type": "password",
@@ -4290,7 +4290,7 @@
   "Holiday Wreath": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Milk and Cookies (0.25%)"
+      "label": "Wishing Well: throw Milk and Cookies (25%)"
     }
   ],
   "Honey": [
@@ -4308,7 +4308,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Herbs (0.17%)"
+      "label": "Wishing Well: throw Herbs (16.7%)"
     },
     {
       "type": "temple",
@@ -4378,7 +4378,7 @@
   "Horn": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pine Cone (0.33%)"
+      "label": "Wishing Well: throw Pine Cone (33.3%)"
     },
     {
       "type": "quest",
@@ -4402,19 +4402,19 @@
   "Horned Beetle": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (0.25%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Giant Centipede (0.25%)"
+      "label": "Wishing Well: throw Giant Centipede (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Snail (0.25%)"
+      "label": "Wishing Well: throw Snail (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shiny Beetle (0.25%)"
+      "label": "Wishing Well: throw Shiny Beetle (25%)"
     },
     {
       "type": "quest",
@@ -4474,7 +4474,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Apple Cider (0.33%)"
+      "label": "Wishing Well: throw Apple Cider (33.3%)"
     },
     {
       "type": "skill",
@@ -4588,7 +4588,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 03 (0.33%)"
+      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
     },
     {
       "type": "password",
@@ -4986,7 +4986,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Aquamarine (0.25%)"
+      "label": "Wishing Well: throw Aquamarine (25%)"
     },
     {
       "type": "password",
@@ -5014,7 +5014,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Apple Cider (0.33%)"
+      "label": "Wishing Well: throw Apple Cider (33.3%)"
     },
     {
       "type": "temple",
@@ -5078,15 +5078,15 @@
   "Lollipop": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Chattering Teeth (0.25%)"
+      "label": "Wishing Well: throw Chattering Teeth (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Taffy (0.33%)"
+      "label": "Wishing Well: throw Taffy (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy (0.25%)"
+      "label": "Wishing Well: throw Candy (25%)"
     }
   ],
   "Looking Glass": [
@@ -5168,7 +5168,7 @@
   "Machine Press": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Sturdy Bow (0.33%)"
+      "label": "Wishing Well: throw Sturdy Bow (33.3%)"
     },
     {
       "type": "quest",
@@ -5188,19 +5188,19 @@
   "Magicite": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Bacon (0.33%)"
+      "label": "Wishing Well: throw Bacon (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 02 (0.25%)"
+      "label": "Wishing Well: throw Runestone 02 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (0.33%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (0.25%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "password",
@@ -5218,7 +5218,7 @@
   "Magna Core": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Compass (1%)"
+      "label": "Wishing Well: throw Compass (100%)"
     },
     {
       "type": "quest",
@@ -5244,11 +5244,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (0.25%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 02 (0.25%)"
+      "label": "Wishing Well: throw Runestone 02 (25%)"
     },
     {
       "type": "skill",
@@ -5360,7 +5360,7 @@
   "Metal Spool": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Belt Drive (0.33%)"
+      "label": "Wishing Well: throw Belt Drive (33.3%)"
     },
     {
       "type": "temple",
@@ -5370,7 +5370,7 @@
   "MIAB": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw 4-leaf Clover (0.33%)"
+      "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
     },
     {
       "type": "quest",
@@ -5450,7 +5450,7 @@
   "Monster Skull": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Steel Plate (0.33%)"
+      "label": "Wishing Well: throw Steel Plate (33.3%)"
     }
   ],
   "Moonstone": [
@@ -5460,27 +5460,27 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Captains Log (0.25%)"
+      "label": "Wishing Well: throw Captains Log (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Eye Patch (0.25%)"
+      "label": "Wishing Well: throw Eye Patch (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 01 (0.33%)"
+      "label": "Wishing Well: throw Runestone 01 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 03 (0.33%)"
+      "label": "Wishing Well: throw Runestone 03 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 03 (0.33%)"
+      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shark Tooth (0.33%)"
+      "label": "Wishing Well: throw Shark Tooth (33.3%)"
     },
     {
       "type": "temple",
@@ -5524,7 +5524,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cutlass (0.33%)"
+      "label": "Wishing Well: throw Cutlass (33.3%)"
     },
     {
       "type": "exchange",
@@ -5592,7 +5592,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Water Lily (0.33%)"
+      "label": "Wishing Well: throw Water Lily (33.3%)"
     },
     {
       "type": "temple",
@@ -5740,11 +5740,11 @@
   "Octopus": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Herbs (0.17%)"
+      "label": "Wishing Well: throw Herbs (16.7%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     }
   ],
   "Official Share": [
@@ -5844,7 +5844,7 @@
   "Onyx Scorpion": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spoon (0.33%)"
+      "label": "Wishing Well: throw Spoon (33.3%)"
     }
   ],
   "Opposition Hourglass": [
@@ -5902,19 +5902,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Crab Claw (0.33%)"
+      "label": "Wishing Well: throw Crab Claw (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Frog (0.33%)"
+      "label": "Wishing Well: throw Frog (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Sea Dragon (0.33%)"
+      "label": "Wishing Well: throw Sea Dragon (33.3%)"
     },
     {
       "type": "temple",
@@ -5956,7 +5956,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Apple Cider (0.33%)"
+      "label": "Wishing Well: throw Apple Cider (33.3%)"
     },
     {
       "type": "temple",
@@ -6312,7 +6312,7 @@
   "Pine Cone": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Antler (0.33%)"
+      "label": "Wishing Well: throw Antler (33.3%)"
     }
   ],
   "Pine Tree": [
@@ -6336,11 +6336,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pocket Watch (0.33%)"
+      "label": "Wishing Well: throw Pocket Watch (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spectacles (0.2%)"
+      "label": "Wishing Well: throw Spectacles (20%)"
     },
     {
       "type": "password",
@@ -6366,19 +6366,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Freaky Picture (0.25%)"
+      "label": "Wishing Well: throw Freaky Picture (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Bandana (0.25%)"
+      "label": "Wishing Well: throw Pirate Bandana (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Captains Log (0.25%)"
+      "label": "Wishing Well: throw Captains Log (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "password",
@@ -6410,7 +6410,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cogwheel (0.25%)"
+      "label": "Wishing Well: throw Cogwheel (25%)"
     },
     {
       "type": "quiz",
@@ -6436,7 +6436,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Water Lily (0.33%)"
+      "label": "Wishing Well: throw Water Lily (33.3%)"
     },
     {
       "type": "password",
@@ -6572,7 +6572,7 @@
   "Prism Shard": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pine Cone (0.33%)"
+      "label": "Wishing Well: throw Pine Cone (33.3%)"
     }
   ],
   "Protein Bar": [
@@ -6648,7 +6648,7 @@
   "Purple Bag": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Red Dye (0.33%)"
+      "label": "Wishing Well: throw Red Dye (33.3%)"
     },
     {
       "type": "quest",
@@ -6706,11 +6706,11 @@
   "R.O.A.S.": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy Corn (0.33%)"
+      "label": "Wishing Well: throw Candy Corn (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wax Candle (0.33%)"
+      "label": "Wishing Well: throw Wax Candle (33.3%)"
     },
     {
       "type": "exchange",
@@ -6836,7 +6836,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Red Dye (0.33%)"
+      "label": "Wishing Well: throw Red Dye (33.3%)"
     }
   ],
   "Red Twine": [
@@ -6898,7 +6898,7 @@
   "Rubber Duckie": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cutlass (0.33%)"
+      "label": "Wishing Well: throw Cutlass (33.3%)"
     },
     {
       "type": "exchange",
@@ -6924,11 +6924,11 @@
   "Ruby": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Aquamarine (0.25%)"
+      "label": "Wishing Well: throw Aquamarine (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jade (0.25%)"
+      "label": "Wishing Well: throw Jade (25%)"
     },
     {
       "type": "quest",
@@ -6952,65 +6952,65 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Magicite (0.25%)"
+      "label": "Wishing Well: throw Magicite (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Moonstone (0.25%)"
+      "label": "Wishing Well: throw Moonstone (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 02 (0.25%)"
+      "label": "Wishing Well: throw Runestone 02 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Peppers (0.2%)"
+      "label": "Wishing Well: throw Gold Peppers (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Eye Patch (0.25%)"
+      "label": "Wishing Well: throw Eye Patch (25%)"
     }
   ],
   "Runestone 02": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Eye Patch (0.25%)"
+      "label": "Wishing Well: throw Eye Patch (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Magicite (0.25%)"
+      "label": "Wishing Well: throw Magicite (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Moonstone (0.25%)"
+      "label": "Wishing Well: throw Moonstone (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 01 (0.33%)"
+      "label": "Wishing Well: throw Runestone 01 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (0.14%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     }
   ],
   "Runestone 03": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 02 (0.25%)"
+      "label": "Wishing Well: throw Runestone 02 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 04 (0.33%)"
+      "label": "Wishing Well: throw Runestone 04 (33.3%)"
     }
   ],
   "Runestone 04": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 03 (0.33%)"
+      "label": "Wishing Well: throw Runestone 03 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (0.25%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "temple",
@@ -7024,15 +7024,15 @@
   "Runestone 05": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Feather (0.33%)"
+      "label": "Wishing Well: throw Gold Feather (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 03 (0.33%)"
+      "label": "Wishing Well: throw Runestone 03 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shiny Beetle (0.25%)"
+      "label": "Wishing Well: throw Shiny Beetle (25%)"
     }
   ],
   "Runestone 06": [
@@ -7042,15 +7042,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Horned Beetle (0.25%)"
+      "label": "Wishing Well: throw Horned Beetle (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (0.25%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 10 (0.33%)"
+      "label": "Wishing Well: throw Runestone 10 (33.3%)"
     }
   ],
   "Runestone 07": [
@@ -7060,51 +7060,51 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Giant Centipede (0.25%)"
+      "label": "Wishing Well: throw Giant Centipede (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (0.33%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Moonstone (0.25%)"
+      "label": "Wishing Well: throw Moonstone (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 06 (0.25%)"
+      "label": "Wishing Well: throw Runestone 06 (25%)"
     }
   ],
   "Runestone 08": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (0.25%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 07 (0.33%)"
+      "label": "Wishing Well: throw Runestone 07 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 09 (0.33%)"
+      "label": "Wishing Well: throw Runestone 09 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 10 (0.33%)"
+      "label": "Wishing Well: throw Runestone 10 (33.3%)"
     }
   ],
   "Runestone 09": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Caterpillar (0.25%)"
+      "label": "Wishing Well: throw Caterpillar (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 08 (0.33%)"
+      "label": "Wishing Well: throw Runestone 08 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 10 (0.33%)"
+      "label": "Wishing Well: throw Runestone 10 (33.3%)"
     },
     {
       "type": "quest",
@@ -7118,23 +7118,23 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Snail (0.25%)"
+      "label": "Wishing Well: throw Snail (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 06 (0.25%)"
+      "label": "Wishing Well: throw Runestone 06 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 07 (0.33%)"
+      "label": "Wishing Well: throw Runestone 07 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 08 (0.33%)"
+      "label": "Wishing Well: throw Runestone 08 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 09 (0.33%)"
+      "label": "Wishing Well: throw Runestone 09 (33.3%)"
     }
   ],
   "Runestone 11": [
@@ -7304,15 +7304,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Crab Claw (0.33%)"
+      "label": "Wishing Well: throw Crab Claw (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Frog (0.33%)"
+      "label": "Wishing Well: throw Frog (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Orange Gecko (0.33%)"
+      "label": "Wishing Well: throw Orange Gecko (33.3%)"
     },
     {
       "type": "temple",
@@ -7356,7 +7356,7 @@
   "Sealed Letter": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Flag (0.25%)"
+      "label": "Wishing Well: throw Pirate Flag (25%)"
     },
     {
       "type": "quest",
@@ -7404,7 +7404,7 @@
   "Shark Tooth": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cutlass (0.33%)"
+      "label": "Wishing Well: throw Cutlass (33.3%)"
     },
     {
       "type": "exchange",
@@ -7456,23 +7456,23 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Giant Centipede (0.25%)"
+      "label": "Wishing Well: throw Giant Centipede (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Caterpillar (0.25%)"
+      "label": "Wishing Well: throw Caterpillar (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Horned Beetle (0.25%)"
+      "label": "Wishing Well: throw Horned Beetle (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Snail (0.25%)"
+      "label": "Wishing Well: throw Snail (25%)"
     },
     {
       "type": "quest",
@@ -7598,27 +7598,27 @@
   "Small Flute": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw 4-leaf Clover (0.33%)"
+      "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dice (0.25%)"
+      "label": "Wishing Well: throw Dice (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cogwheel (0.25%)"
+      "label": "Wishing Well: throw Cogwheel (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Flag (0.25%)"
+      "label": "Wishing Well: throw Pirate Flag (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Pipe (0.25%)"
+      "label": "Wishing Well: throw Wooden Pipe (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Mask (0.33%)"
+      "label": "Wishing Well: throw Wooden Mask (33.3%)"
     },
     {
       "type": "quest",
@@ -7636,19 +7636,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Freaky Picture (0.25%)"
+      "label": "Wishing Well: throw Freaky Picture (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Flag (0.25%)"
+      "label": "Wishing Well: throw Pirate Flag (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Pipe (0.25%)"
+      "label": "Wishing Well: throw Wooden Pipe (25%)"
     }
   ],
   "Small Key": [
@@ -7658,11 +7658,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Large Chest 01 (0.33%)"
+      "label": "Wishing Well: throw Large Chest 01 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Large Chest 02 (0.33%)"
+      "label": "Wishing Well: throw Large Chest 02 (33.3%)"
     },
     {
       "type": "quest",
@@ -7694,27 +7694,27 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cogwheel (0.25%)"
+      "label": "Wishing Well: throw Cogwheel (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Spring (0.25%)"
+      "label": "Wishing Well: throw Small Spring (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spectacles (0.2%)"
+      "label": "Wishing Well: throw Spectacles (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Strange Letter (0.25%)"
+      "label": "Wishing Well: throw Strange Letter (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (0.2%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "temple",
@@ -7744,7 +7744,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Freaky Picture (0.25%)"
+      "label": "Wishing Well: throw Freaky Picture (25%)"
     },
     {
       "type": "password",
@@ -7770,15 +7770,15 @@
   "Snail": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Giant Centipede (0.25%)"
+      "label": "Wishing Well: throw Giant Centipede (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Shiny Beetle (0.25%)"
+      "label": "Wishing Well: throw Shiny Beetle (25%)"
     },
     {
       "type": "quest",
@@ -7850,27 +7850,27 @@
   "Spectacles": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dice (0.25%)"
+      "label": "Wishing Well: throw Dice (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Eye Patch (0.25%)"
+      "label": "Wishing Well: throw Eye Patch (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pirate Flag (0.25%)"
+      "label": "Wishing Well: throw Pirate Flag (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Spring (0.25%)"
+      "label": "Wishing Well: throw Small Spring (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Strange Letter (0.25%)"
+      "label": "Wishing Well: throw Strange Letter (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Mask (0.33%)"
+      "label": "Wishing Well: throw Wooden Mask (33.3%)"
     },
     {
       "type": "quest",
@@ -7880,19 +7880,19 @@
   "Spider": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Jack-o-lantern (0.33%)"
+      "label": "Wishing Well: throw Jack-o-lantern (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Lollipop (0.33%)"
+      "label": "Wishing Well: throw Lollipop (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Grasshopper (0.5%)"
+      "label": "Wishing Well: throw Grasshopper (50%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy (0.25%)"
+      "label": "Wishing Well: throw Candy (25%)"
     },
     {
       "type": "password",
@@ -7934,7 +7934,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Salt (0.5%)"
+      "label": "Wishing Well: throw Salt (50%)"
     },
     {
       "type": "exchange",
@@ -8028,7 +8028,7 @@
   "Spool of Copper": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Belt Drive (0.33%)"
+      "label": "Wishing Well: throw Belt Drive (33.3%)"
     }
   ],
   "Square Key": [
@@ -8038,19 +8038,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Large Chest 01 (0.33%)"
+      "label": "Wishing Well: throw Large Chest 01 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Large Chest 02 (0.33%)"
+      "label": "Wishing Well: throw Large Chest 02 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw R.O.A.S. (0.33%)"
+      "label": "Wishing Well: throw R.O.A.S. (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 02 (0.33%)"
+      "label": "Wishing Well: throw Treat Bag 02 (33.3%)"
     },
     {
       "type": "quest",
@@ -8166,7 +8166,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dragonfly (0.33%)"
+      "label": "Wishing Well: throw Dragonfly (33.3%)"
     },
     {
       "type": "password",
@@ -8192,31 +8192,31 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Carrot (0.25%)"
+      "label": "Wishing Well: throw Gold Carrot (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Captains Log (0.25%)"
+      "label": "Wishing Well: throw Captains Log (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Magicite (0.25%)"
+      "label": "Wishing Well: throw Magicite (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Moonstone (0.25%)"
+      "label": "Wishing Well: throw Moonstone (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 01 (0.33%)"
+      "label": "Wishing Well: throw Runestone 01 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Spring (0.25%)"
+      "label": "Wishing Well: throw Small Spring (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (0.2%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "quest",
@@ -8250,11 +8250,11 @@
   "Sturdy Bow": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Coral (0.5%)"
+      "label": "Wishing Well: throw Gold Coral (50%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Drum (0.33%)"
+      "label": "Wishing Well: throw Gold Drum (33.3%)"
     }
   ],
   "Sturdy Box": [
@@ -8352,23 +8352,23 @@
   "Taffy": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy (0.25%)"
+      "label": "Wishing Well: throw Candy (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Candy Corn (0.33%)"
+      "label": "Wishing Well: throw Candy Corn (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Lollipop (0.33%)"
+      "label": "Wishing Well: throw Lollipop (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw R.O.A.S. (0.33%)"
+      "label": "Wishing Well: throw R.O.A.S. (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 02 (0.33%)"
+      "label": "Wishing Well: throw Treat Bag 02 (33.3%)"
     },
     {
       "type": "password",
@@ -8392,11 +8392,11 @@
   "Teapot": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Freaky Picture (0.25%)"
+      "label": "Wishing Well: throw Freaky Picture (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Dice (0.25%)"
+      "label": "Wishing Well: throw Dice (25%)"
     },
     {
       "type": "quest",
@@ -8464,7 +8464,7 @@
   "Treasure Chest": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Box (0.25%)"
+      "label": "Wishing Well: throw Wooden Box (25%)"
     },
     {
       "type": "quest",
@@ -8490,11 +8490,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Large Chest 01 (0.33%)"
+      "label": "Wishing Well: throw Large Chest 01 (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Large Chest 02 (0.33%)"
+      "label": "Wishing Well: throw Large Chest 02 (33.3%)"
     },
     {
       "type": "temple",
@@ -8642,7 +8642,7 @@
   "Vixen": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Milk and Cookies (0.25%)"
+      "label": "Wishing Well: throw Milk and Cookies (25%)"
     }
   ],
   "Wagon Wheel": [
@@ -8674,19 +8674,19 @@
   "Wax Candle": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (0.08%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (0.33%)"
+      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Gear (0.33%)"
+      "label": "Wishing Well: throw Small Gear (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Witch Hat (0.33%)"
+      "label": "Wishing Well: throw Witch Hat (33.3%)"
     },
     {
       "type": "temple",
@@ -8802,11 +8802,11 @@
   "Witch Hat": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wax Candle (0.33%)"
+      "label": "Wishing Well: throw Wax Candle (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Chattering Teeth (0.25%)"
+      "label": "Wishing Well: throw Chattering Teeth (25%)"
     },
     {
       "type": "password",
@@ -8816,7 +8816,7 @@
   "Wizard Hat": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Witch Hat (0.33%)"
+      "label": "Wishing Well: throw Witch Hat (33.3%)"
     },
     {
       "type": "quest",
@@ -8862,11 +8862,11 @@
   "Wooden Bow": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Catfish (0.33%)"
+      "label": "Wishing Well: throw Gold Catfish (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Essence of Slime (0.5%)"
+      "label": "Wishing Well: throw Essence of Slime (50%)"
     }
   ],
   "Wooden Box": [
@@ -8888,19 +8888,19 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Cogwheel (0.25%)"
+      "label": "Wishing Well: throw Cogwheel (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw 4-leaf Clover (0.33%)"
+      "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Pocket Watch (0.33%)"
+      "label": "Wishing Well: throw Pocket Watch (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Box (0.25%)"
+      "label": "Wishing Well: throw Wooden Box (25%)"
     },
     {
       "type": "password",
@@ -8994,11 +8994,11 @@
   "Wrench": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spoon (0.33%)"
+      "label": "Wishing Well: throw Spoon (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Steel Plate (0.33%)"
+      "label": "Wishing Well: throw Steel Plate (33.3%)"
     }
   ],
   "Y73841 Blueprint": [

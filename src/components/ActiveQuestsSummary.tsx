@@ -24,7 +24,7 @@ interface Props {
 }
 
 export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline, player, questStatuses } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, pinnedQuestline, player, questStatuses, towerLevel } = useStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [locationItem, setLocationItem] = useState<string | null>(null);
   const [showStocked, setShowStocked] = useState(false);
@@ -43,7 +43,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
     const towerQuests = (questsData as Quest[])
       .filter(q => q.questline === 'A Towering Investment')
       .sort((a, b) => compareQuests(a.name, b.name));
-    const towerStatuses = towerQuests.map(q => getQuestStatus(q, player, questStatuses));
+    const towerStatuses = towerQuests.map(q => getQuestStatus(q, player, questStatuses, towerLevel));
     const items = new Set<string>();
     // Active tower quests
     towerQuests.forEach((q, i) => {
@@ -62,7 +62,7 @@ export function ActiveQuestsSummary({ quests, nextUpQuests = [] }: Props) {
       }
     }
     return items;
-  }, [player, questStatuses]);
+  }, [player, questStatuses, towerLevel]);
 
   // Per-item quest breakdown map (active quests only)
   const itemQuestMap = useMemo(() => {

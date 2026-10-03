@@ -12,11 +12,11 @@ interface Props {
 }
 
 export function StatsTab({ questlineGroups }: Props) {
-  const { player, questStatuses } = useStore();
+  const { player, questStatuses, towerLevel } = useStore();
 
   const questsWithStatus = useMemo(
-    () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
-    [player, questStatuses]
+    () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses, towerLevel) })),
+    [player, questStatuses, towerLevel]
   );
 
   const overall = useMemo(() => {
@@ -45,14 +45,14 @@ export function StatsTab({ questlineGroups }: Props) {
   const questlineStats = useMemo(() => {
     let fullyCompleted = 0, inProgress = 0, notStarted = 0;
     for (const { quests } of questlineGroups) {
-      const statuses = quests.map((q) => getQuestStatus(q, player, questStatuses));
+      const statuses = quests.map((q) => getQuestStatus(q, player, questStatuses, towerLevel));
       const completedCount = statuses.filter((s) => s === 'completed').length;
       if (completedCount === quests.length) fullyCompleted++;
       else if (completedCount > 0 || statuses.some((s) => s === 'active')) inProgress++;
       else notStarted++;
     }
     return { fullyCompleted, inProgress, notStarted, total: questlineGroups.length };
-  }, [questlineGroups, player, questStatuses]);
+  }, [questlineGroups, player, questStatuses, towerLevel]);
 
   const progressPct = Math.round((overall.completed / overall.total) * 100);
 

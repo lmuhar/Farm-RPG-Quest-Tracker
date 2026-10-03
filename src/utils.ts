@@ -57,7 +57,8 @@ export function parseItems(raw: string): ParsedItem[] {
 export function getQuestStatus(
   quest: Quest,
   player: PlayerProfile,
-  statuses: Record<string, QuestStatus>
+  statuses: Record<string, QuestStatus>,
+  towerLevel: number,
 ): QuestStatus {
   const saved = statuses[quest.id];
   if (saved === 'completed' || saved === 'active') return saved;
@@ -70,8 +71,9 @@ export function getQuestStatus(
     player.exploringLv >= quest.exploringLv &&
     (player.miningLv ?? 0) >= quest.miningLv;
   const meetsNpc = npcLevel >= quest.requiredNpcLevel;
+  const meetsTower = towerLevel >= (quest.towerLv ?? 0);
 
-  if (meetsSkills && meetsNpc) return 'available';
+  if (meetsSkills && meetsNpc && meetsTower) return 'available';
   return 'locked';
 }
 

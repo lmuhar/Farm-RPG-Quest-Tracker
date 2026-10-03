@@ -46,21 +46,6 @@ export function isFarmableItem(item: string, cropTimes: { item: string }[]): boo
   return _farmingItemNames.has(item.toLowerCase()) || cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
 }
 
-// Raw materials dug up in the Mining minigame. buddy.farm now reports mining
-// locations for these (synced into item-locations.json), so this is only a
-// fallback "Mine it" hint for when an item has no mining location entry.
-export const MINING_ITEMS = new Set<string>([
-  'Esperium',
-  'Briomine',
-  'Calcifite',
-  'Green Halite',
-  'Unpolished Aquacite',
-  'Bone Fragments',
-  'Cave Mushroom',
-  'Fossilized Print',
-  'Bird Skull 01',
-]);
-
 export const RARE_ITEMS = new Map<string, string>([
   ['Gold Feather',    'Forest / Misty Forest / Mt. Banon'],
   ['Gold Leaf',       'Forest'],

@@ -13,6 +13,8 @@ export interface Quest {
   craftingLv: number;
   exploringLv: number;
   miningLv: number;
+  towerLv?: number;     // required Tower level (from buddy.farm)
+  prereqId?: string;    // id of the quest that unlocks this one (from buddy.farm)
   description: string;
 }
 
