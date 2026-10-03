@@ -1,13 +1,11 @@
-import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem } from 'lucide-react';
-import locationData from '../data/item-locations.json';
+import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem, Sparkles } from 'lucide-react';
+import { itemLocations as locations, itemSources, formatRate } from '../data/itemSources';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
 import { MINING_ITEMS } from '../data/bottlenecks';
 import { useStore } from '../store';
 
-type LocationEntry = { name: string; type: string };
 type LocksmithEntry = { name: string; type: string; key?: string };
-const locations = locationData as Record<string, LocationEntry[]>;
 const locksmithSources = locksmithData as Record<string, LocksmithEntry[]>;
 
 interface PetEntry { petId: number; petName: string; minLevel: 1 | 3 | 6 }
@@ -42,7 +40,7 @@ export function getLocationGroups(neededItems: string[]): Map<string, { type: st
       if (!groups.has(loc.name)) groups.set(loc.name, { type: loc.type, items: [] });
       if (!groups.get(loc.name)!.items.includes(item)) groups.get(loc.name)!.items.push(item);
     }
-    if (MINING_ITEMS.has(item)) {
+    if (MINING_ITEMS.has(item) && !locs.some(l => l.type === 'mining')) {
       if (!groups.has('Mine it')) groups.set('Mine it', { type: 'mining', items: [] });
       if (!groups.get('Mine it')!.items.includes(item)) groups.get('Mine it')!.items.push(item);
     }
@@ -61,9 +59,10 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
   const itemLocs = locations[item] ?? [];
   const itemPets = petLootMap[item] ?? [];
   const itemChests = locksmithSources[item] ?? [];
-  const isMined = MINING_ITEMS.has(item);
+  const isMined = MINING_ITEMS.has(item) && !itemLocs.some(l => l.type === 'mining');
+  const otherSources = itemSources[item] ?? [];
 
-  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && !isMined) {
+  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && !isMined && otherSources.length === 0) {
     return (
       <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
         No location data available for this item
@@ -77,10 +76,11 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
         const coLocated = allNeededItems.filter(
           (other) => other !== item && (locations[other] ?? []).some((l) => l.name === loc.name)
         );
-        const Icon = loc.type === 'fishing' ? Fish : loc.type === 'farming' ? Sprout : Compass;
-        const color = loc.type === 'fishing' ? 'var(--accent-blue)' : loc.type === 'farming' ? 'var(--accent-yellow)' : 'var(--accent-green)';
-        const bg = loc.type === 'fishing' ? 'var(--accent-blue-bg)' : loc.type === 'farming' ? 'var(--accent-yellow-bg)' : 'var(--accent-green-bg)';
-        const border = loc.type === 'fishing' ? 'var(--accent-blue-border)' : loc.type === 'farming' ? 'var(--accent-yellow-border)' : 'var(--accent-green-border)';
+        const accent = loc.type === 'fishing' ? 'blue' : loc.type === 'farming' ? 'yellow' : loc.type === 'mining' ? 'red' : 'green';
+        const Icon = loc.type === 'fishing' ? Fish : loc.type === 'farming' ? Sprout : loc.type === 'mining' ? Gem : Compass;
+        const color = `var(--accent-${accent})`;
+        const bg = `var(--accent-${accent}-bg)`;
+        const border = `var(--accent-${accent}-border)`;
 
         return (
           <div key={loc.name} className="rounded-lg px-3 py-2" style={{ background: bg, border: `1px solid ${border}` }}>
@@ -88,6 +88,11 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
               <Icon size={11} style={{ color, flexShrink: 0 }} />
               <span className="text-xs font-semibold" style={{ color }}>{loc.name}</span>
               <span className="text-[10px] ml-0.5" style={{ color, opacity: 0.7 }}>{loc.type}</span>
+              {loc.rate && (
+                <span className="text-[10px] ml-auto" style={{ color, opacity: 0.85 }} title="Average attempts per drop (buddy.farm)">
+                  {formatRate(loc.rate)}
+                </span>
+              )}
             </div>
             {coLocated.length > 0 && (
               <p className="text-[11px] mt-1" style={{ color }}>
@@ -193,6 +198,22 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
               );
             })}
           </div>
+        </div>
+      )}
+      {otherSources.length > 0 && (
+        <div
+          className="rounded-lg px-3 py-2"
+          style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
+        >
+          <div className="flex items-center gap-1.5 mb-1">
+            <Sparkles size={11} style={{ color: 'var(--text-secondary)', flexShrink: 0 }} />
+            <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>Other ways to get it</span>
+          </div>
+          <ul className="space-y-0.5">
+            {otherSources.map(({ label }) => (
+              <li key={label} className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{label}</li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

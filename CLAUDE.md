@@ -29,3 +29,9 @@ Note: this branch name comes from whatever session/task Claude Code was assigned
 The CI build runs `tsc -b` and will fail on any TypeScript error, including unused variables (`TS6133`). Always run `npx tsc --noEmit` locally before committing and fix any errors.
 
 Common mistake: replacing a constant's usage in JSX (e.g. swapping `allQuestlineNames` for `activeQuestlineNames`) without also removing the old declaration at the top of the file. The compiler flags it as declared but never read — the build fails even though the app works.
+
+## Game data
+
+### Syncing from buddy.farm
+
+`npm run sync:buddyfarm` adds any quests missing from `src/data/quests.json` (matched by id and name; existing quests are never modified) and refreshes `item-locations.json` (drop locations + rates) and `item-sources.json` (shop, crafting, NPC rewards, Wishing Well, etc.). Run `-- quests` or `-- items` to do one half. In a cloud sandbox, `buddy.farm` must be allowed by the network policy and the script needs `NODE_USE_ENV_PROXY=1`.

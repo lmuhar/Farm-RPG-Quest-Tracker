@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Fish, Compass, MapPin, Sparkles } from 'lucide-react';
+import { Fish, Compass, Gem, MapPin, Sparkles } from 'lucide-react';
 import type { Quest } from '../types';
 import { parseItems } from '../utils';
 import { useStore } from '../store';
@@ -117,7 +117,7 @@ interface Props {
   nextUpQuests: Quest[];
 }
 
-type TypeFilter = 'all' | 'fishing' | 'explore';
+type TypeFilter = 'all' | 'fishing' | 'explore' | 'mining';
 
 export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
   const { inventory } = useStore();
@@ -178,11 +178,11 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
   }
 
   const renderCard = ([locName, { type, items: locItems }]: [string, { type: string; items: string[] }]) => {
-    const isFishing = type === 'fishing';
-    const Icon = isFishing ? Fish : Compass;
-    const color = isFishing ? 'var(--accent-blue)' : 'var(--accent-green)';
-    const bg = isFishing ? 'var(--accent-blue-bg)' : 'var(--accent-green-bg)';
-    const border = isFishing ? 'var(--accent-blue-border)' : 'var(--accent-green-border)';
+    const accent = type === 'fishing' ? 'blue' : type === 'mining' ? 'red' : 'green';
+    const Icon = type === 'fishing' ? Fish : type === 'mining' ? Gem : Compass;
+    const color = `var(--accent-${accent})`;
+    const bg = `var(--accent-${accent}-bg)`;
+    const border = `var(--accent-${accent}-border)`;
 
     return (
       <div
@@ -305,7 +305,7 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
       >
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs font-semibold" style={{ color: 'var(--text-muted)' }}>Type:</span>
-          {(['all', 'fishing', 'explore'] as const).map((t) => (
+          {(['all', 'fishing', 'explore', 'mining'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTypeFilter(t)}
@@ -316,7 +316,7 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
                   : { background: 'var(--surface-inset)', color: 'var(--text-muted)', border: '1px solid var(--border-default)' }
               }
             >
-              {t === 'all' ? 'All' : t === 'fishing' ? 'Fishing' : 'Explore'}
+              {t === 'all' ? 'All' : t === 'fishing' ? 'Fishing' : t === 'explore' ? 'Explore' : 'Mining'}
             </button>
           ))}
         </div>

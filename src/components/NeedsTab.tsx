@@ -1,12 +1,11 @@
 import { useMemo } from 'react';
-import { ShoppingCart, Fish, Compass, Leaf, Hammer, PawPrint, CheckCircle2 } from 'lucide-react';
+import { ShoppingCart, Fish, Compass, Leaf, Hammer, PawPrint, CheckCircle2, Gem, Sparkles } from 'lucide-react';
 import type { Quest, Pet } from '../types';
 import { useStore } from '../store';
 import { parseItems } from '../utils';
-import itemLocationsData from '../data/item-locations.json';
+import { itemLocations, itemSources } from '../data/itemSources';
 import petsData from '../data/pets.json';
 
-const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 const allPets = petsData as Pet[];
 
 const SOURCE_ICON: Record<string, React.ReactNode> = {
@@ -15,6 +14,8 @@ const SOURCE_ICON: Record<string, React.ReactNode> = {
   farming: <Leaf size={10} />,
   crafting: <Hammer size={10} />,
   pet: <PawPrint size={10} />,
+  mining: <Gem size={10} />,
+  other: <Sparkles size={10} />,
 };
 
 const SOURCE_COLOR: Record<string, { bg: string; color: string; border: string }> = {
@@ -23,6 +24,8 @@ const SOURCE_COLOR: Record<string, { bg: string; color: string; border: string }
   farming: { bg: 'var(--accent-green-bg)', color: 'var(--accent-green)', border: 'var(--accent-green-border)' },
   crafting: { bg: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: 'var(--accent-purple-border)' },
   pet: { bg: 'var(--accent-yellow-bg)', color: 'var(--accent-yellow)', border: 'var(--accent-yellow-border)' },
+  mining: { bg: 'var(--accent-red-bg)', color: 'var(--accent-red)', border: 'var(--accent-red-border)' },
+  other: { bg: 'var(--surface-inset)', color: 'var(--text-secondary)', border: 'var(--border-default)' },
 };
 
 interface ItemRow {
@@ -92,6 +95,10 @@ export function NeedsTab({ activeQuests }: Props) {
       const petNames = petItemMap.get(item);
       if (petNames) {
         sources.push({ type: 'pet', label: petNames.join(', ') });
+      }
+      // No drop location, crop or pet: fall back to buddy.farm's other sources
+      if (sources.length === 0) {
+        for (const src of (itemSources[item] ?? []).slice(0, 2)) sources.push({ type: 'other', label: src.label });
       }
 
       return { item, need, have, deficit, quests, sources };

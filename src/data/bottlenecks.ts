@@ -46,9 +46,9 @@ export function isFarmableItem(item: string, cropTimes: { item: string }[]): boo
   return _farmingItemNames.has(item.toLowerCase()) || cropTimes.some(c => c.item.toLowerCase() === item.toLowerCase());
 }
 
-// Raw materials dug up in the Mining minigame — not tied to a discrete
-// location the way fishing/exploring drops are, per the game's own API
-// (dropRatesItems comes back empty for these).
+// Raw materials dug up in the Mining minigame. buddy.farm now reports mining
+// locations for these (synced into item-locations.json), so this is only a
+// fallback "Mine it" hint for when an item has no mining location entry.
 export const MINING_ITEMS = new Set<string>([
   'Esperium',
   'Briomine',
