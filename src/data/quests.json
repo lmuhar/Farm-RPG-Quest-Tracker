@@ -42158,5 +42158,22 @@
     "exploringLv": 99,
     "miningLv": 0,
     "description": "After devouring every banana, the raccoon carefully sets down two banana peels as thanks. It gives you one last happy glance before disappearing into the dark. You have a feeling your paths will cross again."
+  },
+  {
+    "id": "7563464",
+    "name": "Pie Inversion Experimentation II",
+    "npc": "Rosalie",
+    "requiredNpcLevel": 0,
+    "itemsRequired": "1000x Machine Press; 1000x Magicite; 1000x Acid Extract; 1000x Essence of Slime; 1000x Sparkle Dust; 1000x Magus Hat; 1000x Mystic Ring; 1000x Horn Powder",
+    "rewardItems": "1000x Steel; 1000x Steel Wire; 1x Buddy Doll Bag 01; 5x Borgen Bag 01",
+    "questline": "Pie Inversion Experimentation",
+    "startDate": "",
+    "endDate": "",
+    "farmingLv": 99,
+    "fishingLv": 99,
+    "craftingLv": 99,
+    "exploringLv": 99,
+    "miningLv": 0,
+    "description": "The splattered mess of apple pie on the floor suggests this attempt was not as successful as she hoped.  Rosalie thinks the solution may require a bit more magic than machinery.   She also asks if you’d help her clean up the mess from the first experiment."
   }
 ]
