@@ -3,6 +3,7 @@ import itemLocationsData from './item-locations.json';
 import recipesData from './recipes.json';
 import towerLevelsData from './tower-levels.json';
 import masteriesData from './masteries.json';
+import wishingWellData from './wishing-well.json';
 
 interface TowerLevelRow { level: number; items: { item: string; quantity: number }[] }
 const _allTowerLevels = towerLevelsData as TowerLevelRow[];
@@ -104,21 +105,8 @@ export const RARE_ITEMS = new Map<string, string>([
 ]);
 
 // Wishing Well: items to throw in to get each carved item (highest → lowest drop %)
-export const WISHING_WELL_SOURCES = new Map<string, { item: string; pct: number }[]>([
-  ['Carved Bear',       [{ item: 'Pirate Bandana', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Camel',      [{ item: 'Carved Owl', pct: 33.3 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Dragon',     [{ item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Fox',        [{ item: 'Carved Bear', pct: 25 }, { item: 'Wooden Box', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Moose',      [{ item: 'Carved Warthog', pct: 25 }, { item: 'Carved Bear', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Mouse',      [{ item: 'Carved Rabbit', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Owl',        [{ item: 'Wooden Mask', pct: 33.3 }, { item: 'Carved Rabbit', pct: 25 }, { item: 'Teapot', pct: 14.3 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Rabbit',     [{ item: 'Carved Warthog', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Rhino',      [{ item: 'Carved Owl', pct: 33.3 }, { item: 'Carved Bear', pct: 25 }, { item: 'Teapot', pct: 14.3 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Squirrel',   [{ item: 'Carved Warthog', pct: 25 }, { item: 'Spectacles', pct: 20 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Squisquatch',[{ item: 'Carved Warthog', pct: 25 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Carved Warthog',    [{ item: 'Carved Owl', pct: 33.3 }, { item: 'Carved Rabbit', pct: 25 }, { item: 'Small Flute', pct: 20 }, { item: 'Teapot', pct: 14.3 }, { item: 'Block of Wood', pct: 6.3 }]],
-  ['Freaky Picture',    [{ item: 'Strange Letter', pct: 25 }, { item: 'Teapot', pct: 14.3 }, { item: 'Ancient Coin', pct: 8.3 }]],
-  ['Captain\'s Log',    [{ item: 'Pirate Bandana', pct: 25 }, { item: 'Small Flute', pct: 20 }, { item: 'Teapot', pct: 14.3 }, { item: 'Ancient Coin', pct: 8.3 }]],
-  ['Popcorn',           [{ item: 'Water Lily', pct: 33.3 }]],
-  ['Bell',              [{ item: 'Grasshopper', pct: 50 }]],
-]);
+// Synced from buddy.farm (wishing-well.json): item → what to throw in, % chance
+export const WISHING_WELL_SOURCES = new Map<string, { item: string; pct: number }[]>(
+  Object.entries(wishingWellData as Record<string, { item: string; chance: number }[]>)
+    .map(([item, inputs]) => [item, inputs.map(({ item: input, chance }) => ({ item: input, pct: chance }))])
+);

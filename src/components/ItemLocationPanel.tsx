@@ -1,8 +1,9 @@
-import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem, Sparkles } from 'lucide-react';
+import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem, Sparkles, Store } from 'lucide-react';
 import { itemLocations as locations, itemSources, formatRate } from '../data/itemSources';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
 import { useStore } from '../store';
+import { RARE_ITEMS } from '../data/bottlenecks';
 
 type LocksmithEntry = { name: string; type: string; key?: string };
 const locksmithSources = locksmithData as Record<string, LocksmithEntry[]>;
@@ -55,8 +56,13 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
   const itemPets = petLootMap[item] ?? [];
   const itemChests = locksmithSources[item] ?? [];
   const otherSources = itemSources[item] ?? [];
+  // Hand-kept source note (e.g. "Borgen Shop"), skipped when it only repeats
+  // locations already listed above
+  const rareHint = RARE_ITEMS.get(item);
+  const knownLocs = new Set(itemLocs.map((l) => l.name.toLowerCase()));
+  const showHint = !!rareHint && !rareHint.split(' / ').every((part) => knownLocs.has(part.toLowerCase()));
 
-  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && otherSources.length === 0) {
+  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && otherSources.length === 0 && !showHint) {
     return (
       <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
         No location data available for this item
@@ -66,6 +72,16 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
 
   return (
     <div className="mt-1.5 space-y-2">
+      {showHint && (
+        <div
+          className="rounded-lg px-3 py-2 flex items-center gap-1.5"
+          style={{ background: 'var(--accent-yellow-bg)', border: '1px solid var(--accent-yellow-border)' }}
+        >
+          <Store size={11} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+          <span className="text-xs font-semibold" style={{ color: 'var(--accent-yellow)' }}>{rareHint}</span>
+        </div>
+      )}
+
       {itemLocs.map((loc) => {
         const coLocated = allNeededItems.filter(
           (other) => other !== item && (locations[other] ?? []).some((l) => l.name === loc.name)
