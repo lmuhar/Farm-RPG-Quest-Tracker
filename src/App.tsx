@@ -68,7 +68,7 @@ interface HashSyncPayload {
 }
 
 export default function App() {
-  const { player, questStatuses, importState } = useStore();
+  const { player, questStatuses, towerLevel, importState } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -138,8 +138,8 @@ export default function App() {
   }, [sync.initialLoadDone, importState]);
 
   const questsWithStatus = useMemo(
-    () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
-    [player, questStatuses]
+    () => allQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses, towerLevel) })),
+    [player, questStatuses, towerLevel]
   );
 
   const activeQuests = useMemo(
@@ -180,7 +180,7 @@ export default function App() {
       .filter(({ quests }) => quests.some((q) => activeQuestIds.has(q.id)))
       .flatMap(({ quests }) => {
         const sorted = [...quests].sort((a, b) => compareQuests(a.name, b.name));
-        const statuses = sorted.map((q) => getQuestStatus(q, player, questStatuses));
+        const statuses = sorted.map((q) => getQuestStatus(q, player, questStatuses, towerLevel));
         const lastActiveIdx = statuses.reduce((max, s, i) => (s === 'active' ? i : max), -1);
         if (lastActiveIdx < 0) return [];
         const remaining = sorted.slice(lastActiveIdx + 1);
@@ -191,7 +191,7 @@ export default function App() {
         if (nextIdx < 0) return [];
         return [remaining[nextIdx]];
       });
-  }, [questlineGroups, activeQuestIds, player, questStatuses]);
+  }, [questlineGroups, activeQuestIds, player, questStatuses, towerLevel]);
 
   // Shared nav button style helper
   const navStyle = (isActive: boolean) =>

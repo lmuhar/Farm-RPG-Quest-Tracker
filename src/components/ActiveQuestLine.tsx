@@ -238,7 +238,7 @@ interface Props {
 }
 
 export function ActiveQuestLine({ questline, quests }: Props) {
-  const { player, questStatuses, inventory, setQuestStatus, pinnedQuestline, setPinnedQuestline } = useStore();
+  const { player, questStatuses, towerLevel, inventory, setQuestStatus, pinnedQuestline, setPinnedQuestline } = useStore();
   const isPinned = pinnedQuestline === questline;
   const [showUpcoming, setShowUpcoming] = useState(false);
 
@@ -247,7 +247,7 @@ export function ActiveQuestLine({ questline, quests }: Props) {
     [quests]
   );
 
-  const statuses = sortedQuests.map((q) => getQuestStatus(q, player, questStatuses));
+  const statuses = sortedQuests.map((q) => getQuestStatus(q, player, questStatuses, towerLevel));
   const completedCount = statuses.filter((s) => s === 'completed').length;
   const progress = sortedQuests.length > 0 ? Math.round((completedCount / sortedQuests.length) * 100) : 0;
 

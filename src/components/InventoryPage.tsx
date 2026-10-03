@@ -26,7 +26,7 @@ function Badge({ tone, children }: { tone: 'deficit' | 'success' | 'locked' | 'f
 }
 
 export function InventoryPage() {
-  const { player, questStatuses, inventory, setInventoryItem } = useStore();
+  const { player, questStatuses, towerLevel, inventory, setInventoryItem } = useStore();
   const [search, setSearch] = useState('');
   const [newItem, setNewItem] = useState('');
   const [newQty, setNewQty] = useState('');
@@ -37,7 +37,7 @@ export function InventoryPage() {
   const activeNeeds = useMemo(() => {
     const map = new Map<string, { needed: number; quests: string[] }>();
     for (const quest of allQuests) {
-      const status = getQuestStatus(quest, player, questStatuses);
+      const status = getQuestStatus(quest, player, questStatuses, towerLevel);
       if (status !== 'active') continue;
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
         const entry = map.get(item) ?? { needed: 0, quests: [] };
@@ -50,7 +50,7 @@ export function InventoryPage() {
       const have = inventory[item] ?? 0;
       return [item, { needed, have, deficit: Math.max(0, needed - have), quests }];
     }));
-  }, [player, questStatuses, inventory]);
+  }, [player, questStatuses, towerLevel, inventory]);
 
   // Items needed in the next 5 quests of each active questline
   const futureNeeds = useMemo(() => {
@@ -97,11 +97,11 @@ export function InventoryPage() {
       .flatMap((q) => {
         const match = parseItems(q.itemsRequired).find((i) => i.item === lookupItem);
         if (!match) return [];
-        const status = getQuestStatus(q, player, questStatuses);
+        const status = getQuestStatus(q, player, questStatuses, towerLevel);
         return [{ quest: q, quantity: match.quantity, status }];
       })
       .sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
-  }, [lookupItem, player, questStatuses]);
+  }, [lookupItem, player, questStatuses, towerLevel]);
 
   // Full inventory list
   const inventoryItems = useMemo(() => {

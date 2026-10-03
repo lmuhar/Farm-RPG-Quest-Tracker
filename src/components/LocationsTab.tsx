@@ -4,113 +4,13 @@ import type { Quest } from '../types';
 import { parseItems } from '../utils';
 import { useStore } from '../store';
 import locationData from '../data/item-locations.json';
+import wishingWellData from '../data/wishing-well.json';
 
 const locations = locationData as Record<string, { name: string; type: string }[]>;
 
-const WISHING_WELL_OUTPUTS: { item: string; inputs: { item: string; chance: number }[] | null }[] = [
-  {
-    item: 'Wax Candle',
-    inputs: [
-      { item: 'Gouda',        chance: 33.3 },
-      { item: 'Small Gear',   chance: 33.3 },
-      { item: 'Witch Hat',    chance: 33.3 },
-      { item: 'Ancient Coin', chance: 8.3  },
-    ],
-  },
-  {
-    item: 'Carved Bear',
-    inputs: [
-      { item: 'Pirate Bandana', chance: 25   },
-      { item: 'Block of Wood',  chance: 6.3  },
-    ],
-  },
-  {
-    item: 'Carved Camel',
-    inputs: [
-      { item: 'Carved Owl',    chance: 33.3 },
-      { item: 'Block of Wood', chance: 6.3  },
-    ],
-  },
-  {
-    item: 'Carved Dragon',
-    inputs: [
-      { item: 'Block of Wood', chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Fox',
-    inputs: [
-      { item: 'Carved Bear',   chance: 25  },
-      { item: 'Wooden Box',    chance: 25  },
-      { item: 'Block of Wood', chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Moose',
-    inputs: [
-      { item: 'Carved Warthog', chance: 25  },
-      { item: 'Carved Bear',    chance: 25  },
-      { item: 'Block of Wood',  chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Mouse',
-    inputs: [
-      { item: 'Carved Rabbit', chance: 25  },
-      { item: 'Block of Wood', chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Owl',
-    inputs: [
-      { item: 'Wooden Mask',   chance: 33.3 },
-      { item: 'Carved Rabbit', chance: 25   },
-      { item: 'Teapot',        chance: 14.3 },
-      { item: 'Block of Wood', chance: 6.3  },
-    ],
-  },
-  {
-    item: 'Carved Rabbit',
-    inputs: [
-      { item: 'Carved Warthog', chance: 25  },
-      { item: 'Block of Wood',  chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Rhino',
-    inputs: [
-      { item: 'Carved Owl',    chance: 33.3 },
-      { item: 'Carved Bear',   chance: 25   },
-      { item: 'Teapot',        chance: 14.3 },
-      { item: 'Block of Wood', chance: 6.3  },
-    ],
-  },
-  {
-    item: 'Carved Squirrel',
-    inputs: [
-      { item: 'Carved Warthog', chance: 25  },
-      { item: 'Spectacles',     chance: 20  },
-      { item: 'Block of Wood',  chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Squisquatch',
-    inputs: [
-      { item: 'Carved Warthog', chance: 25  },
-      { item: 'Block of Wood',  chance: 6.3 },
-    ],
-  },
-  {
-    item: 'Carved Warthog',
-    inputs: [
-      { item: 'Carved Owl',    chance: 33.3 },
-      { item: 'Carved Rabbit', chance: 25   },
-      { item: 'Small Flute',   chance: 20   },
-      { item: 'Teapot',        chance: 14.3 },
-      { item: 'Block of Wood', chance: 6.3  },
-    ],
-  },
-];
+// Generated from buddy.farm by `npm run sync:buddyfarm`: item → what to throw in (% chance)
+const WISHING_WELL_OUTPUTS = Object.entries(wishingWellData as Record<string, { item: string; chance: number }[]>)
+  .map(([item, inputs]) => ({ item, inputs }));
 
 interface Props {
   activeQuests: Quest[];
@@ -269,28 +169,20 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
                   </span>
                 </div>
                 {/* Per-item inputs */}
-                {inputs === null ? (
-                  <div className="px-4 py-2 flex items-center gap-1.5">
-                    <span className="text-xs italic" style={{ color: 'var(--accent-orange)', opacity: 0.8 }}>
-                      inputs unknown — please update
-                    </span>
-                  </div>
-                ) : (
-                  <div className="px-4 py-2 flex flex-wrap gap-x-4 gap-y-1">
-                    {inputs.map(({ item: inputItem, chance }) => {
-                      const inputHave = inventory[inputItem] ?? 0;
-                      return (
-                        <div key={inputItem} className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{inputItem}</span>
-                          <span className="text-[10px] font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{chance}%</span>
-                          <span className="text-[10px]" style={{ fontFamily: 'var(--font-mono)', color: inputHave > 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
-                            ({inputHave} in stock)
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                <div className="px-4 py-2 flex flex-wrap gap-x-4 gap-y-1">
+                  {inputs.map(({ item: inputItem, chance }) => {
+                    const inputHave = inventory[inputItem] ?? 0;
+                    return (
+                      <div key={inputItem} className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>{inputItem}</span>
+                        <span className="text-[10px] font-semibold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>{chance}%</span>
+                        <span className="text-[10px]" style={{ fontFamily: 'var(--font-mono)', color: inputHave > 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+                          ({inputHave} in stock)
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}

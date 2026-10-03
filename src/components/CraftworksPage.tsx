@@ -99,7 +99,7 @@ interface Props {
 
 export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
   const [tab, setTab] = useState<CraftworksTab>('active');
-  const { trackedQuestline, player, questStatuses, masteryLevels, masteryProgress, inventoryMax, inventory, cropTimes } = useStore();
+  const { trackedQuestline, player, questStatuses, towerLevel, masteryLevels, masteryProgress, inventoryMax, inventory, cropTimes } = useStore();
 
   // ── Tab 1: all active quests excluding the focused questline ──────────────
   const activeExFocus = useMemo(
@@ -120,8 +120,8 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     [trackedQuestline]
   );
   const focusQuestsWithStatus = useMemo(
-    () => focusQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
-    [focusQuests, player, questStatuses]
+    () => focusQuests.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses, towerLevel) })),
+    [focusQuests, player, questStatuses, towerLevel]
   );
   const focusActive = useMemo(
     () => focusQuestsWithStatus.filter(({ status }) => status === 'active').map(({ quest }) => quest),
@@ -140,7 +140,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     const itemMap = new Map<string, number>();
     const itemQuestCount = new Map<string, number>();
     for (const quest of focusQuests) {
-      if (getQuestStatus(quest, player, questStatuses) === 'completed') continue;
+      if (getQuestStatus(quest, player, questStatuses, towerLevel) === 'completed') continue;
       for (const { item, quantity } of parseItems(quest.itemsRequired)) {
         itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
         itemQuestCount.set(item, (itemQuestCount.get(item) ?? 0) + 1);
@@ -158,7 +158,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
       entries.push({ item, have, need: totalNeeded, location, questCount: itemQuestCount.get(item) ?? 1 });
     }
     return entries.sort((a, b) => b.questCount - a.questCount).slice(0, 10);
-  }, [focusQuests, player, questStatuses, inventory, cropTimes]);
+  }, [focusQuests, player, questStatuses, towerLevel, inventory, cropTimes]);
 
   // ── Tab 3: mastery crafting suggestions ───────────────────────────────────
   const masteryDirectItems = useMemo((): DirectItem[] => {

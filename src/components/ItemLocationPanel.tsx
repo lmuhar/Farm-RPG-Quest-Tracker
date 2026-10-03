@@ -2,7 +2,6 @@ import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem, Sparkles } from 'lucide
 import { itemLocations as locations, itemSources, formatRate } from '../data/itemSources';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
-import { MINING_ITEMS } from '../data/bottlenecks';
 import { useStore } from '../store';
 
 type LocksmithEntry = { name: string; type: string; key?: string };
@@ -40,10 +39,6 @@ export function getLocationGroups(neededItems: string[]): Map<string, { type: st
       if (!groups.has(loc.name)) groups.set(loc.name, { type: loc.type, items: [] });
       if (!groups.get(loc.name)!.items.includes(item)) groups.get(loc.name)!.items.push(item);
     }
-    if (MINING_ITEMS.has(item) && !locs.some(l => l.type === 'mining')) {
-      if (!groups.has('Mine it')) groups.set('Mine it', { type: 'mining', items: [] });
-      if (!groups.get('Mine it')!.items.includes(item)) groups.get('Mine it')!.items.push(item);
-    }
   }
   return groups;
 }
@@ -59,10 +54,9 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
   const itemLocs = locations[item] ?? [];
   const itemPets = petLootMap[item] ?? [];
   const itemChests = locksmithSources[item] ?? [];
-  const isMined = MINING_ITEMS.has(item) && !itemLocs.some(l => l.type === 'mining');
   const otherSources = itemSources[item] ?? [];
 
-  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && !isMined && otherSources.length === 0) {
+  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && otherSources.length === 0) {
     return (
       <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
         No location data available for this item
@@ -102,21 +96,6 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
           </div>
         );
       })}
-
-      {isMined && (
-        <div
-          className="rounded-lg px-3 py-2"
-          style={{ background: 'var(--accent-red-bg)', border: '1px solid var(--accent-red-border)' }}
-        >
-          <div className="flex items-center gap-1.5">
-            <Gem size={11} style={{ color: 'var(--accent-red)', flexShrink: 0 }} />
-            <span className="text-xs font-semibold" style={{ color: 'var(--accent-red)' }}>Mine it</span>
-          </div>
-          <p className="text-[11px] mt-1" style={{ color: 'var(--accent-red)' }}>
-            Dug up in the mining minigame, not tied to a specific location.
-          </p>
-        </div>
-      )}
 
       {itemPets.length > 0 && (
         <div

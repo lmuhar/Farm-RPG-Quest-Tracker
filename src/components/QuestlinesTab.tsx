@@ -18,7 +18,7 @@ interface Props {
 }
 
 export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }: Props) {
-  const { player, questStatuses } = useStore();
+  const { player, questStatuses, towerLevel } = useStore();
   const [localSearch, setLocalSearch] = useState('');
   const [showCompleted, setShowCompleted] = useState(true);
   const [activeOnly, setActiveOnly] = useState(false);
@@ -65,13 +65,13 @@ export function QuestlinesTab({ questlineGroups, globalSearch, setGlobalSearch }
           q.npc.toLowerCase().includes(s)
       );
     }
-    const withStatus = result.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses) }));
+    const withStatus = result.map((q) => ({ quest: q, status: getQuestStatus(q, player, questStatuses, towerLevel) }));
     return withStatus.filter(({ status }) => {
       if (!showCompleted && status === 'completed') return false;
       if (activeOnly && status !== 'active') return false;
       return true;
     });
-  }, [search, showCompleted, activeOnly, player, questStatuses]);
+  }, [search, showCompleted, activeOnly, player, questStatuses, towerLevel]);
 
   return (
     <div className="space-y-3">

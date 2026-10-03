@@ -10,6 +10,7 @@ import {
 } from '../utils';
 import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
+import { getPrereq, getUnlocks, chainLabel } from '../questChains';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
@@ -632,6 +633,14 @@ function QuestSection({
 }) {
   const [open, setOpen] = useState(status === 'active');
   const [openLocations, setOpenLocations] = useState<Set<string>>(new Set());
+  const { player, questStatuses, towerLevel } = useStore();
+
+  // Chain links to other questlines (links within this questline are just its order)
+  const prereq = getPrereq(quest);
+  const crossPrereq = prereq && prereq.questline !== quest.questline && status !== 'completed' &&
+    getQuestStatus(prereq, player, questStatuses, towerLevel) !== 'completed' ? prereq : undefined;
+  const crossUnlocks = getUnlocks(quest).filter((q) => q.questline !== quest.questline);
+  const needsTower = (quest.towerLv ?? 0) > towerLevel ? quest.towerLv : undefined;
 
   const toggleLocation = (item: string) => {
     setOpenLocations(prev => {
@@ -702,6 +711,15 @@ function QuestSection({
                 {(status === 'locked' || status === 'available') && stockedCount > 0 && !canComplete && (
                   <span style={{ color: 'var(--accent-blue)' }}> · {stockedCount} pre-stocked</span>
                 )}
+              </p>
+            )}
+            {(needsTower || crossPrereq || crossUnlocks.length > 0) && (
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                {[
+                  needsTower && `🗼 Needs Tower ${needsTower} (you're at ${towerLevel})`,
+                  crossPrereq && `⛓️ Unlocks after ${chainLabel(crossPrereq, quest.questline)}`,
+                  crossUnlocks.length > 0 && `⛓️ Leads to ${crossUnlocks.map((q) => chainLabel(q, quest.questline)).join(', ')}`,
+                ].filter(Boolean).join(' · ')}
               </p>
             )}
           </div>
@@ -868,7 +886,7 @@ export function QuestFocusPage() {
   const activeQuestlineNames = useMemo(() => {
     const active = new Set<string>();
     for (const q of allQuestsData) {
-      if (q.questline && getQuestStatus(q, player, questStatuses) === 'active') {
+      if (q.questline && getQuestStatus(q, player, questStatuses, towerLevel) === 'active') {
         active.add(q.questline);
       }
     }
@@ -886,7 +904,7 @@ export function QuestFocusPage() {
       const lineQuests = allQuestsData
         .filter((q) => q.questline === name)
         .sort((a, b) => compareQuests(a.name, b.name));
-      const startIdx = lineQuests.findIndex((q) => getQuestStatus(q, player, questStatuses) !== 'completed');
+      const startIdx = lineQuests.findIndex((q) => getQuestStatus(q, player, questStatuses, towerLevel) !== 'completed');
       // Blocked by inventory: the very next quest needs more of an item than the
       // player's inventory can ever hold at once — no amount of collecting fixes this.
       const blockedByInventory = startIdx >= 0 &&
@@ -914,14 +932,14 @@ export function QuestFocusPage() {
       }
       return a.name.localeCompare(b.name);
     });
-  }, [player, questStatuses, trackedQuestline, inventory, cropTimes, inventoryMax]);
+  }, [player, questStatuses, towerLevel, trackedQuestline, inventory, cropTimes, inventoryMax]);
 
   // Rewards from the not-yet-completed quests of every other questline that has
   // an active quest, keyed by item. Active quests come first.
   const otherLineRewards = useMemo(() => {
     const activeLines = new Set<string>();
     for (const q of allQuestsData) {
-      if (q.questline && q.questline !== trackedQuestline && getQuestStatus(q, player, questStatuses) === 'active') {
+      if (q.questline && q.questline !== trackedQuestline && getQuestStatus(q, player, questStatuses, towerLevel) === 'active') {
         activeLines.add(q.questline);
       }
     }
@@ -930,7 +948,7 @@ export function QuestFocusPage() {
       .filter((q) => activeLines.has(q.questline))
       .sort((a, b) => compareQuests(a.name, b.name));
     for (const q of lineQuests) {
-      const status = getQuestStatus(q, player, questStatuses);
+      const status = getQuestStatus(q, player, questStatuses, towerLevel);
       if (status === 'completed') continue;
       for (const { item, quantity } of parseItems(q.rewardItems)) {
         const list = map.get(item) ?? [];
@@ -940,7 +958,7 @@ export function QuestFocusPage() {
     }
     for (const list of map.values()) list.sort((a, b) => Number(b.isActive) - Number(a.isActive));
     return map;
-  }, [trackedQuestline, player, questStatuses]);
+  }, [trackedQuestline, player, questStatuses, towerLevel]);
 
   const quests = useMemo(
     () =>
@@ -951,9 +969,18 @@ export function QuestFocusPage() {
   );
 
   const questsWithStatus = useMemo(
-    () => quests.map(q => ({ quest: q, status: getQuestStatus(q, player, questStatuses) })),
-    [quests, player, questStatuses]
+    () => quests.map(q => ({ quest: q, status: getQuestStatus(q, player, questStatuses, towerLevel) })),
+    [quests, player, questStatuses, towerLevel]
   );
+
+  // Where this questline sits in the wider unlock chain
+  const { startsAfter, leadsTo } = useMemo(() => {
+    const inLine = new Set(quests.map((q) => q.id));
+    const before = quests.map(getPrereq).find((p) => p && !inLine.has(p.id));
+    const after = new Set<string>();
+    for (const q of quests) for (const u of getUnlocks(q)) if (!inLine.has(u.id)) after.add(u.questline || u.name);
+    return { startsAfter: before, leadsTo: [...after] };
+  }, [quests]);
 
   const completedCount = questsWithStatus.filter(({ status }) => status === 'completed').length;
   const activeCount    = questsWithStatus.filter(({ status }) => status === 'active').length;
@@ -1065,6 +1092,13 @@ export function QuestFocusPage() {
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               {completedCount} of {quests.length} quests completed
             </p>
+            {(startsAfter || leadsTo.length > 0) && (
+              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                {startsAfter && <>⛓️ Starts after {chainLabel(startsAfter, trackedQuestline)}</>}
+                {startsAfter && leadsTo.length > 0 && ' · '}
+                {leadsTo.length > 0 && <>Leads to <span style={{ color: 'var(--accent-purple)' }}>{leadsTo.join(', ')}</span></>}
+              </p>
+            )}
           </div>
           <span className="text-2xl font-bold flex-shrink-0"
             style={{ fontFamily: 'var(--font-mono)', color: progress === 100 ? 'var(--accent-green)' : 'var(--accent-yellow)' }}>

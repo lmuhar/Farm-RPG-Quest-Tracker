@@ -1,7 +1,8 @@
 import { CheckCircle, Circle, Clock, Lock, Play, ChevronDown, ChevronUp, Hammer, AlertTriangle } from 'lucide-react';
 import { useState } from 'react';
 import type { Quest, QuestStatus } from '../types';
-import { parseItems, npcColor, statusColor, formatDuration, calcGrowsNeeded } from '../utils';
+import { parseItems, npcColor, statusColor, formatDuration, calcGrowsNeeded, getQuestStatus } from '../utils';
+import { getPrereq, getUnlocks, chainLabel } from '../questChains';
 import { useStore, getPendingExpandId } from '../store';
 import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
 
@@ -18,7 +19,7 @@ const statusIcon = {
 };
 
 export function QuestCard({ quest, status }: Props) {
-  const { setQuestStatus, inventory, cropTimes, plotCount, craftingRecipes, player, questNotes, setQuestNote } = useStore();
+  const { setQuestStatus, inventory, cropTimes, plotCount, craftingRecipes, player, questNotes, setQuestNote, questStatuses, towerLevel } = useStore();
   const [expanded, setExpanded] = useState(() => getPendingExpandId() === quest.id);
   const [expandedRecipes, setExpandedRecipes] = useState<Set<string>>(new Set());
 
@@ -62,7 +63,16 @@ export function QuestCard({ quest, status }: Props) {
       lockedReasons.push(`⛏️ Need Mining ${quest.miningLv} (you have ${player.miningLv ?? 0})`);
     if (quest.requiredNpcLevel > 0 && (player.npcLevels[quest.npc] ?? 0) < quest.requiredNpcLevel)
       lockedReasons.push(`💬 Need ${quest.npc} lv ${quest.requiredNpcLevel} (you have ${player.npcLevels[quest.npc] ?? 0})`);
+    if ((quest.towerLv ?? 0) > towerLevel)
+      lockedReasons.push(`🗼 Need Tower ${quest.towerLv} (you're at ${towerLevel})`);
   }
+
+  // Unlock chain: the quest that has to be done first (if it isn't yet), and
+  // what this quest leads to
+  const prereq = getPrereq(quest);
+  const prereqPending = !!prereq && status !== 'completed' &&
+    getQuestStatus(prereq, player, questStatuses, towerLevel) !== 'completed';
+  const unlocks = getUnlocks(quest);
 
   const note = questNotes[quest.id] ?? '';
 
@@ -111,6 +121,9 @@ export function QuestCard({ quest, status }: Props) {
               {lockedReasons.join(' · ')}
             </p>
           )}
+          {prereqPending && (
+            <p className="text-xs text-slate-500 mt-1">⛓️ Unlocks after {chainLabel(prereq!, quest.questline)}</p>
+          )}
         </div>
 
         {expanded ? <ChevronUp size={14} className="text-slate-500 flex-shrink-0 mt-1" /> : <ChevronDown size={14} className="text-slate-500 flex-shrink-0 mt-1" />}
@@ -120,6 +133,12 @@ export function QuestCard({ quest, status }: Props) {
         <div className="border-t border-slate-700/50 p-3 space-y-3">
           <p className="text-xs text-slate-400 leading-relaxed"
             dangerouslySetInnerHTML={{ __html: quest.description }} />
+
+          {unlocks.length > 0 && (
+            <p className="text-xs text-slate-400">
+              <span className="text-slate-500">⛓️ Leads to:</span> {unlocks.map((q) => chainLabel(q, quest.questline)).join(', ')}
+            </p>
+          )}
 
           {required.length > 0 && (
             <div>

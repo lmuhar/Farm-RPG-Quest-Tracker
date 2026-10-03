@@ -34,4 +34,4 @@ Common mistake: replacing a constant's usage in JSX (e.g. swapping `allQuestline
 
 ### Syncing from buddy.farm
 
-`npm run sync:buddyfarm` adds any quests missing from `src/data/quests.json` (matched by id and name; existing quests are never modified) and refreshes `item-locations.json` (drop locations + rates) and `item-sources.json` (shop, crafting, NPC rewards, Wishing Well, etc.). Run `-- quests` or `-- items` to do one half. In a cloud sandbox, `buddy.farm` must be allowed by the network policy and the script needs `NODE_USE_ENV_PROXY=1`.
+`npm run sync:buddyfarm` adds any quests missing from `src/data/quests.json` (matched by id and name), refreshes each quest's `towerLv` and `prereqId` (other existing quest fields are never modified), and regenerates `item-locations.json` (drop locations + rates), `item-sources.json` (shop, crafting, NPC rewards, etc.) and `wishing-well.json`. Run `-- quests` or `-- items` to do one half. In a cloud sandbox, `buddy.farm` must be allowed by the network policy and the script needs `NODE_USE_ENV_PROXY=1`.
