@@ -1,8 +1,10 @@
-import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem, Sparkles } from 'lucide-react';
+import { Fish, Compass, PawPrint, KeyRound, Sprout, Gem, Sparkles, Store } from 'lucide-react';
 import { itemLocations as locations, itemSources, formatRate } from '../data/itemSources';
 import petsData from '../data/pets.json';
 import locksmithData from '../data/locksmith-items.json';
 import { useStore } from '../store';
+import { RARE_ITEMS } from '../data/bottlenecks';
+import { borgenOffers, shortDate } from '../borgenShop';
 
 type LocksmithEntry = { name: string; type: string; key?: string };
 const locksmithSources = locksmithData as Record<string, LocksmithEntry[]>;
@@ -51,12 +53,25 @@ interface Props {
 export function ItemLocationPanel({ item, allNeededItems }: Props) {
   const inventory = useStore(s => s.inventory);
   const ownedPets = useStore(s => s.ownedPets);
+  const borgenShops = useStore(s => s.borgenShops);
   const itemLocs = locations[item] ?? [];
   const itemPets = petLootMap[item] ?? [];
   const itemChests = locksmithSources[item] ?? [];
   const otherSources = itemSources[item] ?? [];
+  // Hand-kept source note (e.g. "Borgen Shop"), skipped when it only repeats
+  // locations already listed above
+  const rareHint = RARE_ITEMS.get(item);
+  const knownLocs = new Set(itemLocs.map((l) => l.name.toLowerCase()));
+  // Once Borgen's shops have been synced, live stock replaces the "Borgen Shop" note
+  const offers = borgenOffers(item, borgenShops);
+  const borgenSynced = !!(borgenShops.mercantile || borgenShops.camp);
+  const hintIsBorgen = rareHint === 'Borgen Shop';
+  const borgenNotInStock = hintIsBorgen && borgenSynced && offers.length === 0;
+  const showHint = !!rareHint && offers.length === 0 && !(hintIsBorgen && borgenSynced) &&
+    !rareHint.split(' / ').every((part) => knownLocs.has(part.toLowerCase()));
 
-  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && otherSources.length === 0) {
+  if (itemLocs.length === 0 && itemPets.length === 0 && itemChests.length === 0 && otherSources.length === 0 &&
+    !showHint && offers.length === 0 && !borgenNotInStock) {
     return (
       <p className="text-xs mt-1" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
         No location data available for this item
@@ -66,6 +81,40 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
 
   return (
     <div className="mt-1.5 space-y-2">
+      {showHint && (
+        <div
+          className="rounded-lg px-3 py-2 flex items-center gap-1.5"
+          style={{ background: 'var(--accent-yellow-bg)', border: '1px solid var(--accent-yellow-border)' }}
+        >
+          <Store size={11} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+          <span className="text-xs font-semibold" style={{ color: 'var(--accent-yellow)' }}>{rareHint}</span>
+        </div>
+      )}
+
+      {offers.map((o) => (
+        <div
+          key={o.shop}
+          className="rounded-lg px-3 py-2"
+          style={{ background: 'var(--accent-yellow-bg)', border: '1px solid var(--accent-yellow-border)' }}
+        >
+          <div className="flex items-center gap-1.5">
+            <Store size={11} style={{ color: 'var(--accent-yellow)', flexShrink: 0 }} />
+            <span className="text-xs font-semibold" style={{ color: 'var(--accent-yellow)' }}>{o.shop}</span>
+            <span className="text-[11px]" style={{ color: 'var(--accent-yellow)' }}>· {o.price.toLocaleString()} {o.currency}</span>
+            <span className="text-[10px] ml-auto" style={{ color: o.outdated ? 'var(--accent-orange)' : 'var(--accent-yellow)', opacity: 0.8 }}>
+              {o.outdated ? `checked ${shortDate(o.capturedAt)} · restocked since` : `checked ${shortDate(o.capturedAt)}`}
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {borgenNotInStock && (
+        <div className="rounded-lg px-3 py-2 flex items-center gap-1.5" style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}>
+          <Store size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Borgen: not in stock when last checked</span>
+        </div>
+      )}
+
       {itemLocs.map((loc) => {
         const coLocated = allNeededItems.filter(
           (other) => other !== item && (locations[other] ?? []).some((l) => l.name === loc.name)

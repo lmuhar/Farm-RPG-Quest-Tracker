@@ -82,4 +82,17 @@ export interface AppState {
   dailyResetTime: string;
   masteryLevels: Record<string, number>;
   masteryProgress: Record<string, number>;
+  borgenShops: BorgenShops;
+}
+
+// What Borgen's shops were selling when last captured with the bookmarklet
+export interface BorgenShopStock {
+  items: { item: string; price: number }[];
+  currency: string;     // 'Borgen Bucks' | 'Ancient Coins'
+  capturedAt: string;   // ISO time of capture
+  balance?: number;     // Borgen Bucks you had at capture
+}
+export interface BorgenShops {
+  mercantile?: BorgenShopStock;
+  camp?: BorgenShopStock;
 }

@@ -14,6 +14,9 @@ import { SkillsPanel } from './components/SkillsPanel';
 import { SyncSection } from './components/SyncSection';
 import { ImportExport } from './components/ImportExport';
 import { SetupWizard } from './components/SetupWizard';
+import { BorgenSyncSection } from './components/BorgenSyncSection';
+import { toStock } from './borgenShop';
+import type { BorgenShopCapture } from './borgenShop';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
@@ -62,6 +65,7 @@ const META_ITEMS: NavItem[] = [
 ];
 
 interface HashSyncPayload {
+  borgen?: BorgenShopCapture | null;
   inventory: Record<string, number> | null;
   masteryLevels: Record<string, number> | null;
   masteryProgress: Record<string, number> | null;
@@ -84,6 +88,7 @@ export default function App() {
     let hashInv: Record<string, number> | null = null;
     let hashMasteries: Record<string, number> | null = null;
     let hashMasteryProgress: Record<string, number> | null = null;
+    let hashBorgen: BorgenShopCapture | null = null;
 
     if (hash.startsWith('#sync-inv=')) {
       try {
@@ -110,9 +115,18 @@ export default function App() {
       } catch { /* ignore malformed hash */ }
       history.replaceState(null, '', window.location.pathname + window.location.search);
       setTab('masteries');
+    } else if (hash.startsWith('#sync-borgen=')) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(hash.slice('#sync-borgen='.length)));
+        if (parsed && (parsed.shop === 'mercantile' || parsed.shop === 'camp') && Array.isArray(parsed.items)) {
+          hashBorgen = parsed as BorgenShopCapture;
+        }
+      } catch { /* ignore malformed hash */ }
+      history.replaceState(null, '', window.location.pathname + window.location.search);
+      setTab('settings');
     }
 
-    hashDataRef.current = { inventory: hashInv, masteryLevels: hashMasteries, masteryProgress: hashMasteryProgress };
+    hashDataRef.current = { inventory: hashInv, masteryLevels: hashMasteries, masteryProgress: hashMasteryProgress, borgen: hashBorgen };
   }, []);
 
   // Apply the bookmarklet payload only after the initial cloud load finishes —
@@ -135,6 +149,8 @@ export default function App() {
       const current = useStore.getState().masteryProgress;
       importState({ masteryProgress: { ...current, ...hashData.masteryProgress } });
     }
+    // Borgen shop: replace that shop's captured stock
+    if (hashData.borgen) importState({ borgenShops: { [hashData.borgen.shop]: toStock(hashData.borgen) } });
   }, [sync.initialLoadDone, importState]);
 
   const questsWithStatus = useMemo(
@@ -399,6 +415,7 @@ export default function App() {
                   <SkillsPanel />
                   <BookmarkletSection />
                   <MasterySyncSection />
+                  <BorgenSyncSection />
                 </div>
                 <div className="space-y-4">
                   <InventoryGrowthCard />

@@ -31,6 +31,7 @@ function snapshotState(): AppState {
     dailyResetTime: s.dailyResetTime,
     masteryLevels: s.masteryLevels,
     masteryProgress: s.masteryProgress,
+    borgenShops: s.borgenShops,
   };
 }
 

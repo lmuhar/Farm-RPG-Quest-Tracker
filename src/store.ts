@@ -145,6 +145,7 @@ export const useStore = create<Store>()((set) => ({
       dailyResetTime: '00:00',
       masteryLevels: {},
       masteryProgress: {},
+      borgenShops: {},
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -225,6 +226,7 @@ export const useStore = create<Store>()((set) => ({
           dailyResetTime: '00:00',
           masteryLevels: {},
           masteryProgress: {},
+      borgenShops: {},
         }),
 
       importState: (data) =>
@@ -256,6 +258,7 @@ export const useStore = create<Store>()((set) => ({
           masteryProgress: data.masteryProgress
             ? { ...s.masteryProgress, ...data.masteryProgress }
             : s.masteryProgress,
+          borgenShops: data.borgenShops ? { ...s.borgenShops, ...data.borgenShops } : s.borgenShops,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
