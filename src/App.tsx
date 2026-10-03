@@ -14,6 +14,7 @@ import { SkillsPanel } from './components/SkillsPanel';
 import { SyncSection } from './components/SyncSection';
 import { ImportExport } from './components/ImportExport';
 import { SetupWizard } from './components/SetupWizard';
+import { GameDataCard } from './components/GameDataCard';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
 import { RecipesPage } from './components/RecipesPage';
@@ -401,6 +402,7 @@ export default function App() {
                   <MasterySyncSection />
                 </div>
                 <div className="space-y-4">
+                  <GameDataCard />
                   <InventoryGrowthCard />
                   <ImportExport />
                 </div>

@@ -1,0 +1,63 @@
+name: Sync from buddy.farm
+
+# Weekly (and on demand from the Actions tab): pull new quests and item data
+# from buddy.farm and open a PR if anything changed.
+on:
+  schedule:
+    - cron: '17 20 * * 0' # Sundays 20:17 UTC (Monday morning AEST)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: sync-buddyfarm
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Sync from buddy.farm
+        id: sync
+        run: node scripts/sync-buddyfarm.mjs
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Game data is already up to date."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat
+          fi
+
+      # PRs opened with GITHUB_TOKEN don't trigger the CI workflow, so build here
+      - name: Build
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          npm ci
+          npm run build
+          npm run build:server
+
+      - name: Open pull request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: sync/buddyfarm
+          delete-branch: true
+          commit-message: Sync game data from buddy.farm
+          title: ${{ steps.sync.outputs.new_quests && format('Sync {0} new quests from buddy.farm', steps.sync.outputs.new_quests) || 'Sync game data from buddy.farm' }}
+          body: |
+            Automated weekly sync (`npm run sync:buddyfarm`) of quests, item locations,
+            item sources and Wishing Well data from buddy.farm.
+
+            The app and server build passed in the workflow run before this PR was opened.
+            Review the diff, then squash-merge to deploy.
+          add-paths: src/data/*.json
