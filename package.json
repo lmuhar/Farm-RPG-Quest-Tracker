@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build && cp src/data/quests.json dist/quests.json",
     "build:server": "tsc -p tsconfig.server.json",
     "lint": "oxlint",
+    "sync:buddyfarm": "node scripts/sync-buddyfarm.mjs",
     "preview": "vite preview",
     "start": "node dist-server/index.js"
   },

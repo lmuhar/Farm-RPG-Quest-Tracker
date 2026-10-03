@@ -2,217 +2,261 @@
   "Drum": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2.1
     },
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.2
     },
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3.4
     },
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.8
     }
   ],
   "Iron": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16.9
     },
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 13.7
     },
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Nails": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 9
     },
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Yellow Perch": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2.1
     },
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.1
     },
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3.4
     },
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.8
     }
   ],
   "Feathers": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 11.5
     },
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21
     }
   ],
   "Yellow Ornament": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Largemouth Bass": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.2
     },
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3.4
     },
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.8
     }
   ],
   "Crappie": [
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.8
     }
   ],
   "Apple": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 84.7
     },
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 76.9
     },
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 45
     },
     {
       "name": "Apple Bobbing",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 1.4
     }
   ],
   "Stone": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 9
     },
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 11.5
     },
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21
     },
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16.9
     },
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 13.8
     },
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 4.4
     }
   ],
   "Spectacles": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 1091.5
     }
   ],
   "Fish Bones": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 30.1
     },
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 51
     },
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 43.1
     },
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 57.2
     }
   ],
   "Board": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Pearl": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 34.8
     }
   ],
   "Fern Leaf": [
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21
     },
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 18.9
     }
   ],
   "Bone": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 67.1
     }
   ],
   "Glass Bottle": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 77
     }
   ],
   "Conch Shell": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3.4
     }
   ],
   "Amethyst": [
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 96.6
     }
   ],
   "Glass Orb": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 20.8
     }
   ],
   "Sea Turtle": [
@@ -224,247 +268,291 @@
   "Clownfish": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 17
     }
   ],
   "Blue Ornament": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "MIAB": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 150.7
     },
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 177.6
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 131.9
     }
   ],
   "Giant Squid": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 131.9
     }
   ],
   "Runestone 09": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 5853.9
     }
   ],
   "Hide": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 39
     }
   ],
   "Puffer": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 43.7
     }
   ],
   "Straw": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 18.1
     },
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 41.2
     }
   ],
   "Skipjack": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2.2
     }
   ],
   "Bird Egg": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 80.7
     }
   ],
   "Bluegill": [
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 12.3
     }
   ],
   "Stingray": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 43.7
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 32.4
     }
   ],
   "Runestone 04": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 2761.9
     }
   ],
   "Runestone 05": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 6618.1
     }
   ],
   "Model Ship": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 57103.7
     }
   ],
   "Flier": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 50.9
     },
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 57.2
     }
   ],
   "Strange Letter": [
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 1881.3
     }
   ],
   "Scrap Wire": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 32.9
     }
   ],
   "Seahorse": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 43.7
     }
   ],
   "Orange": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 397.4
     }
   ],
   "Gold Feather": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7318
     },
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 15405.2
     },
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 11789.2
     }
   ],
   "Magicite": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 1928
     }
   ],
   "3-leaf Clover": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 41.2
     }
   ],
   "4-leaf Clover": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 217.4
     }
   ],
   "Bacon": [
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16871.9
     }
   ],
   "Lemon": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 398.2
     }
   ],
   "Moonstone": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 771.3
     }
   ],
   "Sandstone": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7.7
     }
   ],
   "Red Starfish": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 16.9
     }
   ],
   "Blue Feathers": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 18.9
     }
   ],
   "Mackerel": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 6.6
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 5.7
     }
   ],
   "Fluorifish": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 32.3
     }
   ],
   "Marlin": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 88.4
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 65.6
     }
   ],
   "Runestone 17": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7920.4
     }
   ],
   "Snail": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 506.7
     }
   ],
   "Grab Bag 02": [
@@ -476,19 +564,22 @@
   "Shiny Beetle": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 766.4
     }
   ],
   "Torch Fish": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 1.5
     }
   ],
   "Flamejack": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.4
     }
   ],
   "Grab Bag 01": [
@@ -500,69 +591,81 @@
   "Lima Bean": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 101185.3
     }
   ],
   "Seaweed": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 283.3
     }
   ],
   "Antler": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 49.4
     },
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 137
     }
   ],
   "Red Berries": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 130.2
     }
   ],
   "Small Chest 01": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7345.6
     }
   ],
   "Thorns": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 130.3
     }
   ],
   "Spider": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 768.7
     },
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 273.9
     }
   ],
   "Herbs": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 3341.6
     }
   ],
   "Jack-o-lantern": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 785.9
     }
   ],
   "Green Ornament": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Piece 30": [
@@ -574,87 +677,102 @@
   "Candy": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 4.8
     }
   ],
   "Candy Corn": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 76.6
     }
   ],
   "Taffy": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21.3
     }
   ],
   "Ruby Scorpion": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 809
     }
   ],
   "Trout": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 9.5
     },
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 10.7
     },
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 6.9
     }
   ],
   "Gold Drum": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 18.7
     }
   ],
   "Goldjack": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 22
     }
   ],
   "Sand": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7.7
     }
   ],
   "Gold Sea Bass": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 47.4
     }
   ],
   "Gold Catfish": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 24.2
     }
   ],
   "Star": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 109.1
     }
   ],
   "Goldray": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 66.9
     }
   ],
   "Flarefin": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 25.5
     }
   ],
   "Raptor Egg": [
@@ -666,13 +784,15 @@
   "Candy Roll": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 53.4
     }
   ],
   "Arrowhead": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 59.8
     }
   ],
   "Treat Bag 03": [
@@ -684,13 +804,15 @@
   "Medium Chest 02": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 22005.4
     }
   ],
   "Goldfin": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 37.7
     }
   ],
   "Mystical Chest 02": [
@@ -702,75 +824,94 @@
   "Milk and Cookies": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 136932.7
     }
   ],
   "Square Key": [
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3311.9
     }
   ],
   "Water Lily": [
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 328.4
+    },
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 203.1
     }
   ],
   "Mushroom": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 20.8
     },
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 18.1
     },
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 26.4
     },
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 37.8
     },
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 41.2
     },
     {
       "name": "Gary's Crushroom",
-      "type": "explore"
+      "type": "explore",
+      "rate": 2.5
     }
   ],
   "Rudolph": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 69923.1
     }
   ],
   "Broken Pipe": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 177.4
     }
   ],
   "Chattering Teeth": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 587.7
     }
   ],
   "Red Ornament": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Small Bolt": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 201.6
     }
   ],
   "Large Chest 03": [
@@ -782,197 +923,232 @@
   "Gold Flier": [
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 82.5
     }
   ],
   "Emberstone": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 28.6
     }
   ],
   "Prickly Pear": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 117.2
     }
   ],
   "Bullfish": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 7
     }
   ],
   "Glassback": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 8.6
     }
   ],
   "Shimmer Quartz": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 84.1
     }
   ],
   "Mussel": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 37
     }
   ],
   "Gold Sea Crest": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 39.6
     }
   ],
   "Monster Skull": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 779.2
     }
   ],
   "Crowfish": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 5.3
     }
   ],
   "Ice Shark": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 13.4
     }
   ],
   "Large Chest 02": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16397.9
     }
   ],
   "Fire Ant": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 360.7
     }
   ],
   "Horn": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 51.6
     }
   ],
   "Runestone 14": [
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21175.2
     }
   ],
   "Wood": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 9
     },
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 6.9
     },
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 11.5
     },
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21
     },
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16.9
     },
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 18.9
     }
   ],
   "Gold Leaf": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7220.4
     }
   ],
   "Oak": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 9
     }
   ],
   "Gold Boot": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3297.6
     }
   ],
   "Spiral Shell": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 9.2
     }
   ],
   "Octopus": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 98.8
     }
   ],
   "Skull Coin": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 71770.3
     }
   ],
   "Amber": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 110742
     }
   ],
   "Stone Jelly": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 13.4
     }
   ],
   "Pine Cone": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 173.6
     }
   ],
   "Sweet Root": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 41.2
     }
   ],
   "Ruby Fish": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 88.2
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 65.5
     }
   ],
   "Blue Sea Bass": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 29.4
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 25.7
     }
   ],
   "Treat Bag 01": [
@@ -984,13 +1160,15 @@
   "Hockey Mask": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 39541.3
     }
   ],
   "Runestone 18": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3532.7
     }
   ],
   "Small Chest 02": [
@@ -1002,101 +1180,118 @@
   "Magna Quartz": [
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 4193
     }
   ],
   "Starfish": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 8
     }
   ],
   "Green Jellyfish": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 15.7
     }
   ],
   "Coal": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 7.7
     },
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 13.7
     }
   ],
   "Orange Ornament": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Frosteye": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.5
     }
   ],
   "Spiked Shell": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3537.6
     }
   ],
   "Old Boot": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 76.9
     }
   ],
   "Tea Leaves": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 119.9
     }
   ],
   "Runestone 08": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 1486.1
     }
   ],
   "Clam Shell": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3.4
     }
   ],
   "Diamond": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 38950.9
     }
   ],
   "Horned Beetle": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 714.4
     }
   ],
   "Sunfish": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2.8
     }
   ],
   "Gold Trout": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 31.6
     }
   ],
   "Ruby Coral": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 11.8
     }
   ],
   "Heart Necklace Left Piece": [
@@ -1108,7 +1303,8 @@
   "Dragon Skull": [
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 85009.9
     }
   ],
   "Skeleton Key": [
@@ -1120,77 +1316,90 @@
   "Runestone 13": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 8395.4
     }
   ],
   "Yarn": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 109.2
     }
   ],
   "Onyx Scorpion": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 898.9
     }
   ],
   "Runestone 15": [
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 5248
     }
   ],
   "Sour Root": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 130.3
     }
   ],
   "Tribal Staff": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 9651.6
     }
   ],
   "Gold Jelly": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 37.2
     }
   ],
   "Redgill": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 12.4
     }
   ],
   "Frost Snapper Shell": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 19607.8
     }
   ],
   "Globber": [
     {
       "name": "Lake Tempest",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 28.1
     },
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 18.6
     }
   ],
   "Strange Ring": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 13326.2
     }
   ],
   "Giant Centipede": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 375.9
     }
   ],
   "Medium Chest 01": [
@@ -1202,67 +1411,78 @@
   "Runestone 12": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2780.3
     }
   ],
   "Gold Coral": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 31.8
     }
   ],
   "Purple Flower": [
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 21
     }
   ],
   "Green Chromis": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 6.6
     }
   ],
   "Bone Fish": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2.8
     }
   ],
   "Catfish": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 40.6
     }
   ],
   "Runestone 19": [
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 19207.4
     }
   ],
   "Unpolished Garnet": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 50.1
     }
   ],
   "Sea Crest": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 10.2
     }
   ],
   "Witch Hat": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 586.7
     }
   ],
   "Cogwheel": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 231.1
     }
   ],
   "Grab Bag 08": [
@@ -1274,25 +1494,29 @@
   "Diving Helmet": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 16644.5
     }
   ],
   "Copper Wire": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 297.8
     }
   ],
   "Transistor": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 81.2
     }
   ],
   "Small Key": [
     {
       "name": "Small Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 1538.1
     }
   ],
   "Treat Bag 02": [
@@ -1304,385 +1528,451 @@
   "Jellyfish": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 37
     },
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 32.3
     }
   ],
   "Small Prawn": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2.6
     }
   ],
   "Crab Claw": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 3573
     }
   ],
   "Goldgill": [
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 27.5
     }
   ],
   "Orange Gecko": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 8744.1
     }
   ],
   "Orcafish": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 11
     }
   ],
   "Unpolished Emerald": [
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 47.7
     }
   ],
   "Purple Ornament": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 25.5
     }
   ],
   "Serpent Eel": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 10.5
     }
   ],
   "Blue Gel": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 63.5
     }
   ],
   "Shrimp": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 9.1
     }
   ],
   "Runestone 03": [
     {
       "name": "Forest Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 786.1
     }
   ],
   "Blue Catfish": [
     {
       "name": "Crystal River",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 14.7
     }
   ],
   "Unpolished Ruby": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 85.2
     }
   ],
   "Barracuda": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 5.4
     }
   ],
   "Sea Catfish": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 6.7
     }
   ],
   "Carbon Sphere": [
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 47.7
     },
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 81.3
     }
   ],
   "Blue Shell": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 14.3
     }
   ],
   "Salt Rock": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 29.9
     },
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 36.8
     }
   ],
   "Large Chest 01": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 11616.7
     }
   ],
   "Carp": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 9.4
     }
   ],
   "Swordfish": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4
     }
   ],
   "Treasure Key": [
     {
       "name": "Lake Minerva",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2651
     }
   ],
   "Ancient Coin": [
     {
       "name": "Black Rock Canyon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 268
     },
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 190.9
     }
   ],
   "Langstaff Crest": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 241157.6
     }
   ],
   "Runestone 02": [
     {
       "name": "Farm Pond",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 621.3
     }
   ],
   "Lollipop": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 13.4
     }
   ],
   "Prism Shard": [
     {
       "name": "Ember Lagoon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 59.5
     }
   ],
   "Crab": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.9
     }
   ],
   "Aquamarine": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 55.7
     }
   ],
   "Slimestone": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 23.3
     }
   ],
   "Plumbfish": [
     {
       "name": "Large Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 8
     }
   ],
   "Caterpillar": [
     {
       "name": "Highland Hills",
-      "type": "explore"
+      "type": "explore",
+      "rate": 874.4
     }
   ],
   "Unpolished Shimmer Stone": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16.9
     },
     {
       "name": "Mount Banon",
-      "type": "explore"
+      "type": "explore",
+      "rate": 13.8
     }
   ],
   "Machine Part": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 57
     }
   ],
   "Seeker": [
     {
       "name": "Glacier Lake",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 11.8
     }
   ],
   "Lemon Quartz": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 78.9
     }
   ],
   "Striped Feather": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 130.3
     }
   ],
   "Blue Crab": [
     {
       "name": "Small Island",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 6.6
     }
   ],
   "Acorn": [
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 18.9
     }
   ],
   "Scrap Metal": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 20.7
     }
   ],
   "Blue Tiger Fish": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 25.9
     }
   ],
   "Pirate Hook": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 18646.3
     }
   ],
   "Frog": [
     {
       "name": "Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 8302.7
     },
     {
       "name": "Misty Forest",
-      "type": "explore"
+      "type": "explore",
+      "rate": 17882.7
     }
   ],
   "Raptor Claw": [
     {
       "name": "Whispering Creek",
-      "type": "explore"
+      "type": "explore",
+      "rate": 200534.8
     }
   ],
   "Candy Cane": [
     {
       "name": "Santa's Workshop",
-      "type": "explore"
+      "type": "explore",
+      "rate": 53.5
     }
   ],
   "Sea Dragon": [
     {
       "name": "Vast Ocean",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 2649.8
     }
   ],
   "Bat Wing": [
     {
       "name": "Haunted House",
-      "type": "explore"
+      "type": "explore",
+      "rate": 587.4
     }
   ],
   "Gary's Diary Page 36": [
     {
       "name": "Gary's Crushroom",
-      "type": "explore"
+      "type": "explore",
+      "rate": 17857142.9
     }
   ],
   "Gary's Diary Page 77": [
     {
       "name": "Gary's Crushroom",
-      "type": "explore"
+      "type": "explore",
+      "rate": 16666666.7
     }
   ],
   "Pocket Watch": [
     {
       "name": "Cane Pole Ridge",
-      "type": "explore"
+      "type": "explore",
+      "rate": 1531.7
     }
   ],
   "Magic Conch Shell": [
     {
       "name": "Emerald Beach",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 22246.9
     }
   ],
   "Dice": [
     {
       "name": "Small Spring",
-      "type": "explore"
+      "type": "explore",
+      "rate": 1090.5
     }
   ],
   "Wooden Mask": [
     {
       "name": "Small Cave",
-      "type": "explore"
+      "type": "explore",
+      "rate": 864.9
     }
   ],
   "Jumbo Fish": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 9.5
     }
   ],
   "Pulley": [
     {
       "name": "Jundland Desert",
-      "type": "explore"
+      "type": "explore",
+      "rate": 297.7
     }
   ],
   "Green Barracuda": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 6.5
     }
   ],
   "Mulberry Snapper": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 8
     }
   ],
   "Purple Butterfly Fish": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 4.1
     }
   ],
   "Speckled Grouper": [
     {
       "name": "Pirate's Cove",
-      "type": "fishing"
+      "type": "fishing",
+      "rate": 12.5
     }
   ],
   "Gold Peas": [
@@ -1707,6 +1997,443 @@
     {
       "name": "Farm",
       "type": "farming"
+    }
+  ],
+  "Apple Core": [
+    {
+      "name": "Apple Bobbing",
+      "type": "fishing",
+      "rate": 1042.3
+    }
+  ],
+  "Bird Skull 01": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 27
+    }
+  ],
+  "Blood Crystal": [
+    {
+      "name": "Fenrir's Den",
+      "type": "mining",
+      "rate": 14.3
+    }
+  ],
+  "Bone 02": [
+    {
+      "name": "Highland Hollow",
+      "type": "mining",
+      "rate": 11.3
+    }
+  ],
+  "Bone Fragments": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 18.9
+    }
+  ],
+  "Briomine": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 5.2
+    }
+  ],
+  "Calcifite": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 11.3
+    }
+  ],
+  "Cave Mushroom": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 22.2
+    }
+  ],
+  "Embershard": [
+    {
+      "name": "Ember Caverns",
+      "type": "mining",
+      "rate": 1.9
+    }
+  ],
+  "Esperium": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 1.9
+    }
+  ],
+  "Fairy Crystal": [
+    {
+      "name": "Highland Hollow",
+      "type": "mining",
+      "rate": 1.9
+    }
+  ],
+  "Fossilized Print": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 30.5
+    }
+  ],
+  "Frozen Angelfish": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing",
+      "rate": 2.2
+    }
+  ],
+  "Frozen Biter": [
+    {
+      "name": "Small Island",
+      "type": "fishing",
+      "rate": 2
+    },
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing",
+      "rate": 2.2
+    }
+  ],
+  "Frozen Bones": [
+    {
+      "name": "Small Island",
+      "type": "fishing",
+      "rate": 2.2
+    },
+    {
+      "name": "Crystal River",
+      "type": "fishing",
+      "rate": 3
+    },
+    {
+      "name": "Small Pond",
+      "type": "fishing",
+      "rate": 3.1
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing",
+      "rate": 3.1
+    },
+    {
+      "name": "Lake Minerva",
+      "type": "fishing",
+      "rate": 3.6
+    },
+    {
+      "name": "Farm Pond",
+      "type": "fishing",
+      "rate": 4.2
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing",
+      "rate": 4.2
+    }
+  ],
+  "Frozen Book": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing",
+      "rate": 56.7
+    }
+  ],
+  "Frozen Boot": [
+    {
+      "name": "Crystal River",
+      "type": "fishing",
+      "rate": 1.6
+    }
+  ],
+  "Frozen Catfish": [
+    {
+      "name": "Small Pond",
+      "type": "fishing",
+      "rate": 2.2
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing",
+      "rate": 2.2
+    }
+  ],
+  "Frozen Coin": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing",
+      "rate": 33.9
+    }
+  ],
+  "Frozen Crab Claw": [
+    {
+      "name": "Large Island",
+      "type": "fishing",
+      "rate": 46.6
+    }
+  ],
+  "Frozen Dagger": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing",
+      "rate": 21.1
+    }
+  ],
+  "Frozen Feather": [
+    {
+      "name": "Crystal River",
+      "type": "fishing",
+      "rate": 28.8
+    }
+  ],
+  "Frozen Jelly": [
+    {
+      "name": "Glacier Lake",
+      "type": "fishing",
+      "rate": 2
+    }
+  ],
+  "Frozen Lobster": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing",
+      "rate": 2
+    },
+    {
+      "name": "Emerald Beach",
+      "type": "fishing",
+      "rate": 2.4
+    }
+  ],
+  "Frozen Manta Ray": [
+    {
+      "name": "Large Island",
+      "type": "fishing",
+      "rate": 2.9
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing",
+      "rate": 3.6
+    }
+  ],
+  "Frozen Sheepshead": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing",
+      "rate": 2.6
+    }
+  ],
+  "Frozen Shell": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing",
+      "rate": 1.8
+    }
+  ],
+  "Frozen Skull": [
+    {
+      "name": "Small Island",
+      "type": "fishing",
+      "rate": 23.5
+    }
+  ],
+  "Frozen Spyfish": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing",
+      "rate": 1.4
+    },
+    {
+      "name": "Farm Pond",
+      "type": "fishing",
+      "rate": 1.7
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing",
+      "rate": 1.7
+    },
+    {
+      "name": "Vast Ocean",
+      "type": "fishing",
+      "rate": 3.1
+    }
+  ],
+  "Frozen Squid": [
+    {
+      "name": "Large Island",
+      "type": "fishing",
+      "rate": 1.6
+    }
+  ],
+  "Frozen Starfish": [
+    {
+      "name": "Emerald Beach",
+      "type": "fishing",
+      "rate": 27.8
+    }
+  ],
+  "Frozen Wheel": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing",
+      "rate": 24.9
+    }
+  ],
+  "Gravicite": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 2
+    }
+  ],
+  "Green Halite": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 8.3
+    }
+  ],
+  "Jadeite": [
+    {
+      "name": "Fenrir's Den",
+      "type": "mining",
+      "rate": 5.2
+    }
+  ],
+  "King Apple": [
+    {
+      "name": "Apple Bobbing",
+      "type": "fishing",
+      "rate": 3.3
+    }
+  ],
+  "Lapis Lazuli": [
+    {
+      "name": "Highland Hollow",
+      "type": "mining",
+      "rate": 8.3
+    }
+  ],
+  "Mossroom": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 11.8
+    }
+  ],
+  "Mossy Stone": [
+    {
+      "name": "Fenrir's Den",
+      "type": "mining",
+      "rate": 1.9
+    }
+  ],
+  "Nightshade Cap": [
+    {
+      "name": "Fenrir's Den",
+      "type": "mining",
+      "rate": 21.9
+    }
+  ],
+  "Orange Calcite": [
+    {
+      "name": "Sol Grotto",
+      "type": "mining",
+      "rate": 13.6
+    }
+  ],
+  "Pink Jelly": [
+    {
+      "name": "Vast Ocean",
+      "type": "fishing",
+      "rate": 8291.9
+    }
+  ],
+  "Pitviper Tail": [
+    {
+      "name": "Ember Caverns",
+      "type": "mining",
+      "rate": 14.3
+    }
+  ],
+  "Plum Ore": [
+    {
+      "name": "Highland Hollow",
+      "type": "mining",
+      "rate": 5.2
+    }
+  ],
+  "Pyredrop": [
+    {
+      "name": "Sol Grotto",
+      "type": "mining",
+      "rate": 1.8
+    }
+  ],
+  "Snowball": [
+    {
+      "name": "Small Pond",
+      "type": "fishing",
+      "rate": 4.2
+    },
+    {
+      "name": "Forest Pond",
+      "type": "fishing",
+      "rate": 4.2
+    },
+    {
+      "name": "Farm Pond",
+      "type": "fishing",
+      "rate": 5.5
+    },
+    {
+      "name": "Lake Tempest",
+      "type": "fishing",
+      "rate": 5.5
+    }
+  ],
+  "Stone Shell": [
+    {
+      "name": "Sol Grotto",
+      "type": "mining",
+      "rate": 9
+    }
+  ],
+  "Unpolished Aquacite": [
+    {
+      "name": "Spring Cave",
+      "type": "mining",
+      "rate": 14.4
+    }
+  ],
+  "Unpolished Flarite": [
+    {
+      "name": "Ember Caverns",
+      "type": "mining",
+      "rate": 8.3
+    }
+  ],
+  "Unpolished Peridot": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 5.4
+    }
+  ],
+  "Unpolished Pyrite": [
+    {
+      "name": "Fenrir's Den",
+      "type": "mining",
+      "rate": 8.3
     }
   ]
 }

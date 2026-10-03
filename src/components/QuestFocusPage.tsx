@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift, Gem,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -15,11 +15,9 @@ import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
 import { CraftworksSuggestions } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
-import itemLocationsData from '../data/item-locations.json';
+import { itemLocations, bestDrop, formatRate } from '../data/itemSources';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
-
-const itemLocations = itemLocationsData as Record<string, { name: string; type: string }[]>;
 
 const allQuestsData = questsData as Quest[];
 
@@ -70,17 +68,41 @@ function getItemTierData(
   const fishingSources = allLocs.filter(l => l.type === 'fishing').map(l => l.name);
   const exploreSources = allLocs.filter(l => l.type === 'explore').map(l => l.name);
   const farmingSources = allLocs.filter(l => l.type === 'farming').map(l => l.name);
+  const miningSources = allLocs.filter(l => l.type === 'mining').map(l => l.name);
   return {
     item, quantity, have, deficit, pct, done,
     recipe, directIngredients, rawMaterials,
     isDirectCraftNow, isRawCraftNow, isCraftNow,
     cropTime, grows, totalTime, seedsHave, seedsToBuy,
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave,
-    fishingSources, exploreSources, farmingSources,
+    fishingSources, exploreSources, farmingSources, miningSources,
   };
 }
 
 type ItemData = ReturnType<typeof getItemTierData>;
+type Tier = 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore' | 'mining' | 'farming';
+
+function collectingTier(d: ItemData): Tier {
+  if (d.isHoney || d.isCutlass) return 'temple';
+  if (d.fishingSources.length > 0) return 'fishing';
+  if (d.exploreSources.length > 0) return 'explore';
+  if (d.miningSources.length > 0) return 'mining';
+  if (d.farmingSources.length > 0) return 'farming';
+  return 'collecting';
+}
+
+const ATTEMPT_NOUN: Record<string, string> = { fishing: 'catches', explore: 'explores', mining: 'digs' };
+
+// "~1,240 explores at Forest" for the remaining deficit, from buddy.farm drop rates
+function DropEstimate({ item, type, deficit }: { item: string; type: string; deficit: number }) {
+  const best = deficit > 0 ? bestDrop(item, type, deficit) : null;
+  if (!best) return null;
+  return (
+    <span style={{ opacity: 0.75 }} title="Estimated from buddy.farm average drop rates">
+      {' '}· ~{best.attempts.toLocaleString()} {ATTEMPT_NOUN[type]} at {best.location}
+    </span>
+  );
+}
 
 // ── Tier header ───────────────────────────────────────────────────────────────
 
@@ -104,7 +126,7 @@ function TierItemRow({
 }: {
   data: ItemData;
   inventory: Record<string, number>;
-  tier: 'directCraft' | 'rawCraft' | 'craftingQueue' | 'crop' | 'collecting' | 'temple' | 'fishing' | 'explore' | 'farming';
+  tier: Tier;
   openLoc: boolean;
   onToggleLoc: () => void;
   allNeededItems: string[];
@@ -123,6 +145,7 @@ function TierItemRow({
     tier === 'farming' ? 'var(--accent-green)' :
     tier === 'fishing' ? 'var(--accent-blue)' :
     tier === 'explore' ? 'var(--accent-purple)' :
+    tier === 'mining' ? 'var(--accent-red)' :
     'var(--accent-orange)';
 
   const valueColor =
@@ -261,7 +284,10 @@ function TierItemRow({
           {tier === 'fishing' && data.fishingSources.length > 0 && (
             <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-blue)' }}>
               <Fish size={10} />
-              {data.fishingSources.join(' · ')}
+              <span>
+                {data.fishingSources.join(' · ')}
+                <DropEstimate item={item} type="fishing" deficit={deficit} />
+              </span>
             </p>
           )}
 
@@ -269,7 +295,21 @@ function TierItemRow({
           {tier === 'explore' && data.exploreSources.length > 0 && (
             <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-purple)' }}>
               <Compass size={10} />
-              {data.exploreSources.join(' · ')}
+              <span>
+                {data.exploreSources.join(' · ')}
+                <DropEstimate item={item} type="explore" deficit={deficit} />
+              </span>
+            </p>
+          )}
+
+          {/* Mining locations */}
+          {tier === 'mining' && data.miningSources.length > 0 && (
+            <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--accent-red)' }}>
+              <Gem size={10} />
+              <span>
+                {data.miningSources.join(' · ')}
+                <DropEstimate item={item} type="mining" deficit={deficit} />
+              </span>
             </p>
           )}
 
@@ -421,7 +461,7 @@ function SummaryPanel({
           <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
           {tiers.collecting.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory}
-              tier={d.isHoney || d.isCutlass ? 'temple' : d.fishingSources.length > 0 ? 'fishing' : d.exploreSources.length > 0 ? 'explore' : d.farmingSources.length > 0 ? 'farming' : 'collecting'}
+              tier={collectingTier(d)}
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
               allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
           ))}
@@ -471,13 +511,13 @@ function GatheringPanel({
         });
       });
 
-    const locMap = new Map<string, { type: string; items: { item: string; quantity: number; have: number }[] }>();
+    const locMap = new Map<string, { type: string; items: { item: string; quantity: number; have: number; rate?: number }[] }>();
     for (const [item, quantity] of itemMap) {
       const have = inventory[item] ?? 0;
       if (have >= quantity) continue;
       for (const loc of itemLocations[item] ?? []) {
         if (!locMap.has(loc.name)) locMap.set(loc.name, { type: loc.type, items: [] });
-        locMap.get(loc.name)!.items.push({ item, quantity, have });
+        locMap.get(loc.name)!.items.push({ item, quantity, have, rate: loc.rate });
       }
     }
 
@@ -498,20 +538,25 @@ function GatheringPanel({
   return (
     <div className="space-y-3">
       {locationGroups.map(({ name, type, items }) => {
-        const accent = type === 'fishing' ? 'blue' : 'purple';
+        const accent = type === 'fishing' ? 'blue' : type === 'mining' ? 'red' : 'purple';
         return (
           <div key={name} className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
             <TierHeader
               label={name}
               hint={`— ${items.length} item${items.length !== 1 ? 's' : ''}`}
               accent={accent}
-              icon={type === 'fishing' ? <Fish size={11} /> : <Compass size={11} />}
+              icon={type === 'fishing' ? <Fish size={11} /> : type === 'mining' ? <Gem size={11} /> : <Compass size={11} />}
             />
-            {items.map(({ item, quantity, have }) => (
+            {items.map(({ item, quantity, have, rate }) => (
               <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                 <div className="flex items-center justify-between gap-3 mb-1.5">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    {rate && (
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }} title="buddy.farm average drop rate here">
+                        {formatRate(rate)} · ~{Math.ceil((quantity - have) * rate).toLocaleString()} {ATTEMPT_NOUN[type] ?? 'attempts'}
+                      </span>
+                    )}
                     <button onClick={() => toggleLoc(item)} className="p-0.5 rounded"
                       style={{ color: openLocations.has(item) ? 'var(--accent-purple)' : 'var(--text-muted)' }}
                       aria-label="Show all locations">
@@ -711,7 +756,7 @@ function QuestSection({
                   <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
                   {tiers.collecting.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory}
-                      tier={d.isHoney || d.isCutlass ? 'temple' : d.fishingSources.length > 0 ? 'fishing' : d.exploreSources.length > 0 ? 'explore' : d.farmingSources.length > 0 ? 'farming' : 'collecting'}
+                      tier={collectingTier(d)}
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
                       allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
                   ))}
