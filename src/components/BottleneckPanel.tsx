@@ -1,5 +1,7 @@
 import { AlertTriangle } from 'lucide-react';
 import { WISHING_WELL_SOURCES } from '../data/bottlenecks';
+import { useStore } from '../store';
+import { borgenOffers } from '../borgenShop';
 
 export interface BottleneckEntry {
   item: string;
@@ -21,7 +23,17 @@ interface Props {
 }
 
 export function BottleneckPanel({ entries, hint = '— no easy source' }: Props) {
+  const borgenShops = useStore((s) => s.borgenShops);
   if (entries.length === 0) return null;
+  const borgenSynced = !!(borgenShops.mercantile || borgenShops.camp);
+
+  // Synced Borgen stock replaces the hand-kept "Borgen Shop" label
+  const sourceLabel = (item: string, location: string) => {
+    const offer = borgenOffers(item, borgenShops)[0];
+    if (offer) return `${offer.shop} · ${offer.price.toLocaleString()} ${offer.currency}${offer.outdated ? ' (restocked since)' : ''}`;
+    if (location === 'Borgen Shop' && borgenSynced) return 'Borgen (not in stock when last checked)';
+    return location;
+  };
 
   return (
     <div
@@ -48,7 +60,7 @@ export function BottleneckPanel({ entries, hint = '— no easy source' }: Props)
                 <div className="min-w-0">
                   <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
                   <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                    <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{sourceLabel(item, location)}</span>
                     {towerLv && (
                       <span
                         className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold"
