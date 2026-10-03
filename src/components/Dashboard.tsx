@@ -434,32 +434,6 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     });
   }, [activeQuests, nextUpQuests, inventory, inventoryMax, recipeMap]);
 
-  // Reward items from active/next-up quests that are also still needed by
-  // OTHER active/next-up quests — a heads up not to sell/use them elsewhere.
-  const usefulRewards = useMemo(() => {
-    const allQ = [...activeQuests, ...nextUpQuests];
-    const neededBy = new Map<string, { quest: Quest; need: number; have: number }[]>();
-    for (const q of allQ) {
-      for (const { item, quantity } of parseItems(q.itemsRequired)) {
-        const have = inventory[item] ?? 0;
-        if (have >= quantity) continue;
-        const list = neededBy.get(item) ?? [];
-        list.push({ quest: q, need: quantity, have });
-        neededBy.set(item, list);
-      }
-    }
-
-    const results: { sourceQuest: Quest; item: string; quantity: number; neededBy: { quest: Quest; need: number; have: number }[] }[] = [];
-    for (const q of allQ) {
-      for (const { item, quantity } of parseItems(q.rewardItems)) {
-        const needers = (neededBy.get(item) ?? []).filter(n => n.quest.id !== q.id);
-        if (needers.length === 0) continue;
-        results.push({ sourceQuest: q, item, quantity, neededBy: needers });
-      }
-    }
-    return results;
-  }, [activeQuests, nextUpQuests, inventory]);
-
   // Active quests that are only held up by items with a known crafting recipe
   // and/or items that can simply be grown — excluded only when a real
   // rare/pet-only bottleneck sits somewhere in the chain.
@@ -628,46 +602,6 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                 </div>
               );
             })}
-          </div>
-        </div>
-      )}
-
-      {/* Rewards worth keeping */}
-      {usefulRewards.length > 0 && (
-        <div
-          className="rounded-xl overflow-hidden"
-          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
-        >
-          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
-            <Gift size={13} style={{ color: 'var(--accent-purple)' }} />
-            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-purple)' }}>Rewards worth keeping</span>
-            <span className="text-xs ml-1" style={{ color: 'var(--accent-purple)', opacity: 0.7 }}>— needed for another quest too</span>
-          </div>
-          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {usefulRewards.map(({ sourceQuest, item, quantity, neededBy }) => (
-              <div key={`${sourceQuest.id}-${item}`} className="px-4 py-2.5">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Gift size={11} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
-                  <span className="text-sm" style={{ color: 'var(--text-primary)' }}>
-                    {quantity}x {item}
-                  </span>
-                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                    from {sourceQuest.name}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 mt-1.5 ml-[19px]">
-                  {neededBy.map(({ quest, need, have }) => (
-                    <span
-                      key={quest.id}
-                      className="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
-                      style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}
-                    >
-                      needed for {quest.name} ({have}/{need})
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}

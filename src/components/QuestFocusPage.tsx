@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, createContext, useContext } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
   Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift, Gem,
@@ -105,6 +105,33 @@ function DropEstimate({ item, type, deficit }: { item: string; type: string; def
 }
 
 // ── Tier header ───────────────────────────────────────────────────────────────
+
+// Items the tracked questline needs that a quest in another active questline
+// gives as a reward — so you know it'll turn up there rather than farming it.
+interface RewardSource { questName: string; questline: string; quantity: number; isActive: boolean }
+const OtherLineRewardsContext = createContext<Map<string, RewardSource[]>>(new Map());
+
+function OtherLineRewardHint({ item, className = 'mt-0.5' }: { item: string; className?: string }) {
+  const sources = useContext(OtherLineRewardsContext).get(item);
+  if (!sources?.length) return null;
+  const [first, ...rest] = sources;
+  return (
+    <p className={`text-xs flex items-center gap-1 ${className}`} style={{ color: 'var(--accent-purple)' }}>
+      <Gift size={10} style={{ flexShrink: 0 }} />
+      <span>
+        {first.quantity.toLocaleString()}x reward from {first.questName}
+        <span style={{ opacity: 0.75 }}>
+          {' '}({first.questline}{first.isActive ? ', active now' : ''})
+          {rest.length > 0 && (
+            <span title={rest.map((r) => `${r.quantity.toLocaleString()}x from ${r.questName}`).join('\n')}>
+              {' '}· +{rest.length} more quest{rest.length !== 1 ? 's' : ''}
+            </span>
+          )}
+        </span>
+      </span>
+    </p>
+  );
+}
 
 function TierHeader({ label, hint, accent, icon }: { label: string; hint?: string; accent: string; icon: React.ReactNode }) {
   return (
@@ -338,6 +365,8 @@ function TierItemRow({
               {' '}· {cutlass.runs} day{cutlass.runs !== 1 ? 's' : ''}
             </p>
           )}
+
+          {deficit > 0 && <OtherLineRewardHint item={item} />}
         </div>
 
         <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: valueColor }}>
@@ -568,6 +597,7 @@ function GatheringPanel({
                     {have.toLocaleString()}/{quantity.toLocaleString()}
                   </span>
                 </div>
+                <OtherLineRewardHint item={item} className="-mt-1 mb-1.5" />
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
                   <div className="h-full rounded-full"
                     style={{ width: `${Math.round(Math.min(1, have / quantity) * 100)}%`, background: `var(--accent-${accent})` }} />
@@ -886,6 +916,32 @@ export function QuestFocusPage() {
     });
   }, [player, questStatuses, trackedQuestline, inventory, cropTimes, inventoryMax]);
 
+  // Rewards from the not-yet-completed quests of every other questline that has
+  // an active quest, keyed by item. Active quests come first.
+  const otherLineRewards = useMemo(() => {
+    const activeLines = new Set<string>();
+    for (const q of allQuestsData) {
+      if (q.questline && q.questline !== trackedQuestline && getQuestStatus(q, player, questStatuses) === 'active') {
+        activeLines.add(q.questline);
+      }
+    }
+    const map = new Map<string, RewardSource[]>();
+    const lineQuests = allQuestsData
+      .filter((q) => activeLines.has(q.questline))
+      .sort((a, b) => compareQuests(a.name, b.name));
+    for (const q of lineQuests) {
+      const status = getQuestStatus(q, player, questStatuses);
+      if (status === 'completed') continue;
+      for (const { item, quantity } of parseItems(q.rewardItems)) {
+        const list = map.get(item) ?? [];
+        list.push({ questName: q.name, questline: q.questline, quantity, isActive: status === 'active' });
+        map.set(item, list);
+      }
+    }
+    for (const list of map.values()) list.sort((a, b) => Number(b.isActive) - Number(a.isActive));
+    return map;
+  }, [trackedQuestline, player, questStatuses]);
+
   const quests = useMemo(
     () =>
       allQuestsData
@@ -973,6 +1029,7 @@ export function QuestFocusPage() {
   }, [filtered, inventory, filter]);
 
   return (
+    <OtherLineRewardsContext.Provider value={otherLineRewards}>
     <div className="space-y-4">
       {/* Header card */}
       <div className="rounded-xl p-5" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
@@ -1125,5 +1182,6 @@ export function QuestFocusPage() {
         </>
       )}
     </div>
+    </OtherLineRewardsContext.Provider>
   );
 }
