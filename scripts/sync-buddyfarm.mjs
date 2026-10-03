@@ -309,12 +309,4 @@ async function syncItems() {
 if (runQuests) await syncQuests();
 if (runItems) await syncItems();
 
-// sync-meta.json records when the game data last changed (shown in Settings)
-if (changedFiles.length) {
-  writeJson('sync-meta.json', {
-    lastUpdated: new Date().toISOString(),
-    quests: readJson('quests.json').length,
-  });
-} else {
-  console.log('No changes — game data is up to date.');
-}
+if (!changedFiles.length) console.log('No changes — game data is up to date.');
