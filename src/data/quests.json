@@ -42175,5 +42175,39 @@
     "exploringLv": 99,
     "miningLv": 0,
     "description": "The splattered mess of apple pie on the floor suggests this attempt was not as successful as she hoped.  Rosalie thinks the solution may require a bit more magic than machinery.   She also asks if you’d help her clean up the mess from the first experiment."
+  },
+  {
+    "id": "7563465",
+    "name": "Pie Inversion Experimentation III",
+    "npc": "Rosalie",
+    "requiredNpcLevel": 0,
+    "itemsRequired": "1000x Machine Press; 1000x Belt Drive; 1000x Engine; 1000x Energy Coil; 1000x Steel Vise; 1000x Acid Extract; 1000x Magicite; 1000x Linked Lantern; 1000x Pestle and Mortar; 1000x Corn Oil; 1000x Control Box; 1000x Kill Switch; 1000x Ruby Scorpion",
+    "rewardItems": "1x Baba Cola; 1000x Steel; 1000x Steel Wire; 1000x Small Bolt; 1000x Large Chest 02; 1000x Red Twine",
+    "questline": "Pie Inversion Experimentation",
+    "startDate": "",
+    "endDate": "",
+    "farmingLv": 99,
+    "fishingLv": 99,
+    "craftingLv": 99,
+    "exploringLv": 99,
+    "miningLv": 0,
+    "description": "Rosalie cast the spell, and looked at you triumphantly right up until the apple pie exploded in a gooey mess of apples and sugar.  Despite the pleasant sounding ingredients, the smell was reminiscent of rotting garbage mixed with burning oil.  She hastily suggests you both clean up and try again, this time with more machinery than magic."
+  },
+  {
+    "id": "7563463",
+    "name": "Pie Inversion Experimentation I",
+    "npc": "Rosalie",
+    "requiredNpcLevel": 0,
+    "itemsRequired": "1000x Machine Press; 1000x Magicite; 1000x Energy Coil; 1000x Essence of Slime; 1000x Onyx Scorpion",
+    "rewardItems": "1000x Steel; 1000x Small Bolt; 1000x Arnold Palmer",
+    "questline": "Pie Inversion Experimentation",
+    "startDate": "",
+    "endDate": "",
+    "farmingLv": 99,
+    "fishingLv": 99,
+    "craftingLv": 99,
+    "exploringLv": 99,
+    "miningLv": 0,
+    "description": "Rosalie has been continuing her research into combining magic and machinery for improving life around Redbrook.  She wants to distill the essence of what makes apple pies so useful to you into something less intangible using her continuing research.  Utilizing a combination of magic and machinery, Rosalie asks for your help in gathering these materials to try and make this something useful."
   }
 ]
