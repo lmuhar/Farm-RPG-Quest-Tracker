@@ -21,7 +21,7 @@
 //
 // Behind a proxy (e.g. a cloud sandbox) run with NODE_USE_ENV_PROXY=1.
 
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -36,10 +36,18 @@ const runQuests = modes.length === 0 || modes.includes('quests');
 const runItems = modes.length === 0 || modes.includes('items');
 
 const readJson = file => JSON.parse(readFileSync(join(DATA, file), 'utf8'));
+
+// Only files whose content actually changes are written, so an unchanged run
+// leaves the repo clean (the scheduled GitHub Action relies on that).
+const changedFiles = [];
 function writeJson(file, data) {
-  if (dryRun) return console.log(`  (dry run) would write ${file}`);
-  writeFileSync(join(DATA, file), JSON.stringify(data, null, 2) + '\n');
-  console.log(`  wrote ${file}`);
+  const path = join(DATA, file);
+  const content = JSON.stringify(data, null, 2) + '\n';
+  if (existsSync(path) && readFileSync(path, 'utf8') === content) return;
+  changedFiles.push(file);
+  if (dryRun) return console.log(`  (dry run) would update ${file}`);
+  writeFileSync(path, content);
+  console.log(`  updated ${file}`);
 }
 
 // buddy.farm page slugs: lowercase, every run of non-alphanumerics becomes "-"
@@ -168,6 +176,10 @@ async function syncQuests() {
     return next;
   });
   console.log(`  ${newQuests.length} added, ${changed} updated (tower level / prerequisite)`);
+  if (process.env.GITHUB_OUTPUT && newQuests.length) {
+    // Used by the scheduled workflow for the PR title
+    writeFileSync(process.env.GITHUB_OUTPUT, `new_quests=${newQuests.length}\n`, { flag: 'a' });
+  }
   if (newQuests.length || changed) writeJson('quests.json', updated);
 }
 
@@ -296,3 +308,5 @@ async function syncItems() {
 
 if (runQuests) await syncQuests();
 if (runItems) await syncItems();
+
+if (!changedFiles.length) console.log('No changes — game data is up to date.');
