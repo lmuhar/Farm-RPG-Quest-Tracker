@@ -2435,5 +2435,61 @@
       "type": "mining",
       "rate": 8.3
     }
+  ],
+  "Amber Mire Bloom": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 18.1
+    }
+  ],
+  "Bamboo": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 4.3
+    }
+  ],
+  "Glowshroom": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 20.8
+    }
+  ],
+  "Mist Lily": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 34.4
+    }
+  ],
+  "Mudcap": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 12.6
+    }
+  ],
+  "Re'taw": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 6848.4
+    }
+  ],
+  "Shadow Bloom": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 37.1
+    }
+  ],
+  "Swamp Thistle": [
+    {
+      "name": "Sinking Swamp Exploring",
+      "type": "explore",
+      "rate": 7.1
+    }
   ]
 }
