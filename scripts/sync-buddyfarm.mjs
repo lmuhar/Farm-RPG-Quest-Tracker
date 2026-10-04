@@ -4,6 +4,7 @@
 //   npm run sync:buddyfarm             # quests + items
 //   npm run sync:buddyfarm -- quests   # only quests
 //   npm run sync:buddyfarm -- items    # only refresh item locations/sources
+//   npm run sync:buddyfarm -- tower    # only refresh tower-levels.json
 //   npm run sync:buddyfarm -- --dry-run
 //
 // Quests: diffs buddy.farm's quest listing against src/data/quests.json by id and
@@ -18,6 +19,8 @@
 //   - regenerates item-sources.json with every other way to get the item
 //     (shop, crafting, NPC rewards, Wishing Well, Temple, passwords, ...), and
 //   - regenerates wishing-well.json (item → what to throw in, with % chance).
+//
+// Tower: regenerates tower-levels.json from buddy.farm's Tower rewards.
 //
 // Behind a proxy (e.g. a cloud sandbox) run with NODE_USE_ENV_PROXY=1.
 
@@ -34,6 +37,7 @@ const dryRun = args.includes('--dry-run');
 const modes = args.filter(a => !a.startsWith('--'));
 const runQuests = modes.length === 0 || modes.includes('quests');
 const runItems = modes.length === 0 || modes.includes('items');
+const runTower = modes.length === 0 || modes.includes('tower');
 
 const readJson = file => JSON.parse(readFileSync(join(DATA, file), 'utf8'));
 
@@ -306,7 +310,40 @@ async function syncItems() {
   writeJson('wishing-well.json', sortKeys(wishingWell));
 }
 
+// ── Tower ───────────────────────────────────────────────────────────────────
+
+// buddy.farm only lists each level's rewards. The climb cost follows fixed
+// rules, checked against every level 1–340 of the in-game data:
+//   silver: level × 50M × ⌈level / 100⌉   (50M/level to 100, then 100M, 150M, 200M…)
+//   Mega Masteries: ⌈(level − 100) / 4⌉ from level 101
+const towerSilverCost = level => level * 50_000_000 * Math.ceil(level / 100);
+const towerMegaMasteries = level => Math.max(0, Math.ceil((level - 100) / 4));
+
+async function syncTower() {
+  console.log('Tower: fetching buddy.farm tower rewards…');
+  const rewards = (await fetchPage('tower')).data.farmrpg.towerRewards;
+  const byLevel = new Map();
+  for (const r of [...rewards].sort((a, b) => a.level - b.level || a.order - b.order)) {
+    const reward = r.item ? { item: r.item.name, quantity: r.itemQuantity }
+      : r.silver ? { item: 'Silver', quantity: r.silver }
+      : r.gold ? { item: 'Gold', quantity: r.gold }
+      : null;
+    if (!reward) continue;
+    if (!byLevel.has(r.level)) byLevel.set(r.level, []);
+    byLevel.get(r.level).push(reward);
+  }
+  const levels = [...byLevel.keys()].sort((a, b) => a - b).map(level => ({
+    level,
+    silverCost: towerSilverCost(level),
+    megaMasteries: towerMegaMasteries(level),
+    items: byLevel.get(level),
+  }));
+  console.log(`  ${levels.length} levels`);
+  writeJson('tower-levels.json', levels);
+}
+
 if (runQuests) await syncQuests();
 if (runItems) await syncItems();
+if (runTower) await syncTower();
 
 if (!changedFiles.length) console.log('No changes — game data is up to date.');

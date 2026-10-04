@@ -6486,5 +6486,195 @@
         "quantity": 3400
       }
     ]
+  },
+  {
+    "level": 341,
+    "silverCost": 68200000000,
+    "megaMasteries": 61,
+    "items": [
+      {
+        "item": "Borgen Bag 01",
+        "quantity": 34
+      },
+      {
+        "item": "Horned Beetle",
+        "quantity": 3410
+      },
+      {
+        "item": "Soap",
+        "quantity": 3410
+      }
+    ]
+  },
+  {
+    "level": 342,
+    "silverCost": 68400000000,
+    "megaMasteries": 61,
+    "items": [
+      {
+        "item": "Amber",
+        "quantity": 3420
+      },
+      {
+        "item": "Temple Voucher",
+        "quantity": 3
+      },
+      {
+        "item": "Gold",
+        "quantity": 340
+      }
+    ]
+  },
+  {
+    "level": 343,
+    "silverCost": 68600000000,
+    "megaMasteries": 61,
+    "items": [
+      {
+        "item": "Runestone 02",
+        "quantity": 3430
+      },
+      {
+        "item": "Runestone 03",
+        "quantity": 3430
+      },
+      {
+        "item": "Runestone 04",
+        "quantity": 3430
+      }
+    ]
+  },
+  {
+    "level": 344,
+    "silverCost": 68800000000,
+    "megaMasteries": 61,
+    "items": [
+      {
+        "item": "Borgen Buck",
+        "quantity": 34
+      },
+      {
+        "item": "Coconut",
+        "quantity": 3
+      },
+      {
+        "item": "Supply Crate 01",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 345,
+    "silverCost": 69000000000,
+    "megaMasteries": 62,
+    "items": [
+      {
+        "item": "Spiked Shell",
+        "quantity": 3450
+      },
+      {
+        "item": "Arnold Palmer",
+        "quantity": 3450
+      },
+      {
+        "item": "Apple Cider",
+        "quantity": 3450
+      }
+    ]
+  },
+  {
+    "level": 346,
+    "silverCost": 69200000000,
+    "megaMasteries": 62,
+    "items": [
+      {
+        "item": "Piece of Heart",
+        "quantity": 34
+      },
+      {
+        "item": "Orange Gecko",
+        "quantity": 3460
+      },
+      {
+        "item": "Green Butterfly",
+        "quantity": 3460
+      }
+    ]
+  },
+  {
+    "level": 347,
+    "silverCost": 69400000000,
+    "megaMasteries": 62,
+    "items": [
+      {
+        "item": "Gold Feather",
+        "quantity": 3470
+      },
+      {
+        "item": "Moonstone",
+        "quantity": 3470
+      },
+      {
+        "item": "Spiked Shell",
+        "quantity": 3470
+      }
+    ]
+  },
+  {
+    "level": 348,
+    "silverCost": 69600000000,
+    "megaMasteries": 62,
+    "items": [
+      {
+        "item": "Machine Press",
+        "quantity": 3480
+      },
+      {
+        "item": "Mega Pine Seeds",
+        "quantity": 34
+      },
+      {
+        "item": "Peach",
+        "quantity": 348
+      }
+    ]
+  },
+  {
+    "level": 349,
+    "silverCost": 69800000000,
+    "megaMasteries": 63,
+    "items": [
+      {
+        "item": "Cranberry Juice",
+        "quantity": 3
+      },
+      {
+        "item": "Heart-shaped Gem",
+        "quantity": 3
+      },
+      {
+        "item": "Travel Voucher",
+        "quantity": 3
+      }
+    ]
+  },
+  {
+    "level": 350,
+    "silverCost": 70000000000,
+    "megaMasteries": 63,
+    "items": [
+      {
+        "item": "Egg of Tree",
+        "quantity": 1300
+      },
+      {
+        "item": "Time Egg",
+        "quantity": 20
+      },
+      {
+        "item": "Tree of Life Statue",
+        "quantity": 1
+      }
+    ]
   }
 ]

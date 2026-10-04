@@ -5,6 +5,7 @@ import { useStore } from '../store';
 import { parseItems } from '../utils';
 import { itemLocations, itemSources } from '../data/itemSources';
 import petsData from '../data/pets.json';
+import { RARE_ITEMS } from '../data/bottlenecks';
 
 const allPets = petsData as Pet[];
 
@@ -98,7 +99,9 @@ export function NeedsTab({ activeQuests }: Props) {
       }
       // No drop location, crop or pet: fall back to buddy.farm's other sources
       if (sources.length === 0) {
-        for (const src of (itemSources[item] ?? []).slice(0, 2)) sources.push({ type: 'other', label: src.label });
+        const hint = RARE_ITEMS.get(item);
+        if (hint) sources.push({ type: 'other', label: hint });
+        for (const src of (itemSources[item] ?? []).slice(0, hint ? 1 : 2)) sources.push({ type: 'other', label: src.label });
       }
 
       return { item, need, have, deficit, quests, sources };
