@@ -15,17 +15,18 @@ interface MasteryItem {
   name: string;
   difficulty: number;
   method: string;
+  estimated?: boolean;  // difficulty estimated from buddy.farm drop rates / craft levels
 }
 
 const masteries = masteriesData as MasteryItem[];
 
-type MethodFilter = 'all' | 'crafting' | 'fishing' | 'farming' | 'cooking' | 'exploring' | 'steelworks' | 'other';
+type MethodFilter = 'all' | 'crafting' | 'fishing' | 'farming' | 'cooking' | 'exploring' | 'mining' | 'steelworks' | 'other';
 type StatusFilter = 'all' | 'none' | 'mastered' | 'grand-mastered' | 'mega-mastered';
 type DiffFilter = 'all' | '1-3' | '4-6' | '7-8' | '9-10';
 
 const METHOD_LABELS: Record<string, string> = {
   crafting: 'Crafting', fishing: 'Fishing', farming: 'Farming',
-  cooking: 'Cooking', exploring: 'Exploring', steelworks: 'Steelworks',
+  cooking: 'Cooking', exploring: 'Exploring', mining: 'Mining', steelworks: 'Steelworks',
   locksmith: 'Locksmith', other: 'Other',
 };
 
@@ -35,6 +36,7 @@ const METHOD_STYLES: Record<string, { bg: string; color: string; border: string 
   farming:    { bg: 'var(--accent-green-bg)',   color: 'var(--accent-green)',   border: 'var(--accent-green-border)'   },
   cooking:    { bg: 'var(--accent-yellow-bg)',  color: 'var(--accent-yellow)',  border: 'var(--accent-yellow-border)'  },
   exploring:  { bg: 'var(--accent-purple-bg)',  color: 'var(--accent-purple)',  border: 'var(--accent-purple-border)'  },
+  mining:     { bg: 'var(--accent-red-bg)',     color: 'var(--accent-red)',     border: 'var(--accent-red-border)'     },
   steelworks: { bg: 'oklch(0.28 0.02 220/0.5)', color: 'oklch(0.70 0.06 220)', border: 'oklch(0.38 0.04 220)'         },
   locksmith:  { bg: 'oklch(0.28 0.03 30/0.5)',  color: 'oklch(0.75 0.10 30)',  border: 'oklch(0.40 0.06 30)'          },
   other:      { bg: 'var(--surface-inset)',     color: 'var(--text-muted)',     border: 'var(--border-default)'        },
@@ -82,7 +84,7 @@ const TIER_BORDER = [
   'rgba(255,215,0,0.4)',
 ] as const;
 
-const ALL_METHODS: MethodFilter[] = ['all', 'crafting', 'fishing', 'farming', 'cooking', 'exploring', 'steelworks', 'other'];
+const ALL_METHODS: MethodFilter[] = ['all', 'crafting', 'fishing', 'farming', 'cooking', 'exploring', 'mining', 'steelworks', 'other'];
 const ALL_DIFFS: DiffFilter[] = ['all', '1-3', '4-6', '7-8', '9-10'];
 
 function inDiffRange(d: number, range: DiffFilter) {
@@ -147,8 +149,9 @@ function ItemCard({ item, level, onLevelClick, showNextStep }: ItemCardProps) {
             <span
               className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
               style={{ background: diffBg(item.difficulty), color: diffColor(item.difficulty), border: `1px solid ${diffColor(item.difficulty)}40` }}
+              title={item.estimated ? 'Estimated from buddy.farm drop rates / craft level' : undefined}
             >
-              {item.difficulty} · {diffLabel(item.difficulty)}
+              {item.estimated ? '~' : ''}{item.difficulty} · {diffLabel(item.difficulty)}
             </span>
             <span
               className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"

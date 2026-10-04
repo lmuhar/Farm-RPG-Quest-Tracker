@@ -1,12 +1,11 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Trophy, RefreshCw, Copy, Check, ClipboardPaste, ChevronDown } from 'lucide-react';
 import { useStore } from '../store';
-import masteriesData from '../data/masteries.json';
 
-// Whitelist of known mastery item names — anything not in this set is page chrome
-// (item descriptions, category headers, stats text) and must be ignored.
-const MASTERY_NAMES = new Set((masteriesData as { name: string }[]).map((m) => m.name));
-const MASTERY_NAMES_JSON = JSON.stringify([...MASTERY_NAMES]);
+// An item is any line directly followed by its "N / M Progress" line — no
+// whitelist, so items added to the game after masteries.json was last updated
+// still sync. Page chrome (tier headers, stats text) is never followed by a
+// progress line, so it's dropped.
 
 function parseMasteryText(text: string): { levels: Record<string, number>; progress: Record<string, number> } {
   const levels: Record<string, number> = {};
@@ -28,7 +27,7 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
       pending = null;
       continue;
     }
-    if (MASTERY_NAMES.has(l)) { pending = l; } else { pending = null; }
+    pending = l;
   }
   return { levels, progress };
 }
@@ -50,7 +49,7 @@ export function MasterySyncSection() {
     // Derives tier from craft count (≥1k=lv1, ≥10k=lv2, ≥100k=lv3) — no tier-label parsing.
     // Reads all tracked items plus the "Mega Mastered" section at the bottom of mastery.php.
     const code = `(function(){`
-      + `var N=new Set(${MASTERY_NAMES_JSON}),T='${origin}',m={},p={},pending=null;`
+      + `var T='${origin}',m={},p={},pending=null;`
       + `var SKIP=new Set(['Track','Stop','Complete!','chevron_down','chevron_right','Mastery In-Progress','Stop Tracking All','Ready to Claim','Nothing ready yet']);`
       + `function proc(text){`
       + `pending=null;`
@@ -65,7 +64,7 @@ export function MasterySyncSection() {
       + `if(lv>=1)m[pending]=lv;`
       + `if(lv<=1)p[pending]=cnt;`
       + `pending=null;continue;}`
-      + `if(N.has(l)){pending=l;}else{pending=null;}`
+      + `pending=l;`
       + `}`
       + `}`
       + `proc(document.body.innerText);`
