@@ -254,22 +254,53 @@ function otherSources(item, recipeNames, now) {
   return out;
 }
 
+const isRecipe = d => (d.canCraft || d.canCook) && d.recipeItems.length > 0;
+const sortIng = list => [...list].sort((a, b) => a.item.localeCompare(b.item));
+
 async function syncItems() {
   const quests = readJson('quests.json');
   const recipes = readJson('recipes.json');
   const names = new Set();
   for (const q of quests) for (const n of parseItems(q.itemsRequired)) names.add(n);
   for (const r of recipes) for (const i of r.ingredients) names.add(i.item);
-  const recipeNames = new Set(recipes.map(r => r.name));
 
-  const list = [...names].sort();
-  console.log(`Items: fetching ${list.length} buddy.farm item pages…`);
-  const pages = await mapPool(list, async name => {
-    const page = await fetchPage(`i/${slugify(name)}`);
-    return page?.data.farmrpg.items[0] ?? null;
-  });
+  // Fetch every needed item, then the ingredients of anything craftable or
+  // cookable, until the recipe tree is complete.
+  const fetched = new Map();
+  let pending = [...names];
+  for (let round = 0; pending.length && round < 6; round++) {
+    console.log(`Items: fetching ${pending.length} buddy.farm item pages…`);
+    const got = await mapPool(pending, async name => {
+      const page = await fetchPage(`i/${slugify(name)}`);
+      return page?.data.farmrpg.items[0] ?? null;
+    });
+    pending.forEach((name, i) => fetched.set(name, got[i]));
+    pending = [...new Set(got.flatMap(d => (d && isRecipe(d) ? d.recipeItems.map(r => r.item.name) : [])))]
+      .filter(n => !fetched.has(n));
+  }
+  const list = [...fetched.keys()].sort();
+  const pages = list.map(n => fetched.get(n));
   const notFound = list.filter((_, i) => !pages[i]);
   if (notFound.length) console.log(`  not on buddy.farm (skipped): ${notFound.join(', ')}`);
+
+  // Recipes: buddy.farm's ingredients are the source of truth. Existing
+  // recipes keep their id and position; new ones use the buddy.farm item id.
+  const byName = new Map(recipes.map(r => [r.name, r]));
+  let recipesAdded = 0, recipesFixed = 0;
+  for (const d of pages) {
+    if (!d || !isRecipe(d)) continue;
+    const ingredients = d.recipeItems.map(r => ({ item: r.item.name, quantity: r.quantity }));
+    const existing = byName.get(d.name);
+    if (!existing) {
+      const r = { id: String(d.id), name: d.name, ingredients };
+      recipes.push(r); byName.set(d.name, r); recipesAdded++;
+    } else if (JSON.stringify(sortIng(existing.ingredients)) !== JSON.stringify(sortIng(ingredients))) {
+      existing.ingredients = ingredients; recipesFixed++;
+    }
+  }
+  console.log(`  recipes: ${recipesAdded} added, ${recipesFixed} corrected`);
+  writeJson('recipes.json', recipes);
+  const recipeNames = new Set(recipes.map(r => r.name));
 
   const locations = readJson('item-locations.json');
   const sources = {};

@@ -1,7 +1,7 @@
 import { useState, useMemo, createContext, useContext } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift, Gem,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift, Gem, Store,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -16,7 +16,8 @@ import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
 import { CraftworksSuggestions } from './CraftworksSuggestions';
 import questsData from '../data/quests.json';
-import { itemLocations, bestDrop, formatRate } from '../data/itemSources';
+import { itemLocations, bestDrop, formatRate, sourceHint } from '../data/itemSources';
+import { borgenOffers } from '../borgenShop';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
 
@@ -367,6 +368,7 @@ function TierItemRow({
             </p>
           )}
 
+          {tier === 'collecting' && deficit > 0 && <SourceHintLine item={item} />}
           {deficit > 0 && <OtherLineRewardHint item={item} />}
         </div>
 
@@ -387,6 +389,73 @@ function TierItemRow({
           <ItemLocationPanel item={item} allNeededItems={allNeededItems} />
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Still collecting ──────────────────────────────────────────────────────────
+
+// Where to get an item with no drop location: a captured Borgen price first,
+// then the best other source (pet loot, locksmith, shop, quest reward…).
+function SourceHintLine({ item }: { item: string }) {
+  const borgenShops = useStore((s) => s.borgenShops);
+  const offer = borgenOffers(item, borgenShops)[0];
+  const hint = offer
+    ? `${offer.shop} · ${offer.price.toLocaleString()} ${offer.currency}${offer.outdated ? ' (restocked since)' : ''}`
+    : sourceHint(item);
+  return (
+    <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: hint ? 'var(--accent-orange)' : 'var(--text-muted)' }}>
+      <Store size={10} style={{ flexShrink: 0 }} />
+      {hint ?? 'No known source yet'}
+    </p>
+  );
+}
+
+const COLLECTING_GROUPS: { tier: Tier; label: string; noun?: string }[] = [
+  { tier: 'fishing', label: 'Fishing', noun: 'fishing' },
+  { tier: 'explore', label: 'Exploring', noun: 'explore' },
+  { tier: 'mining', label: 'Mining', noun: 'mining' },
+  { tier: 'farming', label: 'Farming' },
+  { tier: 'temple', label: 'Temple' },
+  { tier: 'collecting', label: 'Other sources' },
+];
+
+// "Still collecting", grouped by how you get each item, easiest first
+// (fewest expected attempts for the remaining amount).
+function CollectingTier({ items, inventory, isOpen, onToggle, allNeededItems, inventoryMax }: {
+  items: ItemData[];
+  inventory: Record<string, number>;
+  isOpen: (item: string) => boolean;
+  onToggle: (item: string) => void;
+  allNeededItems: string[];
+  inventoryMax: number;
+}) {
+  if (items.length === 0) return null;
+  const groups = COLLECTING_GROUPS
+    .map(({ tier, label, noun }) => {
+      const effort = (d: ItemData) => (noun ? bestDrop(d.item, noun, d.deficit)?.attempts : undefined) ?? Infinity;
+      const list = items.filter((d) => collectingTier(d) === tier)
+        .sort((a, b) => effort(a) - effort(b) || a.item.localeCompare(b.item));
+      return { tier, label, list };
+    })
+    .filter((g) => g.list.length > 0);
+  return (
+    <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+      <TierHeader label="Still collecting" hint={`— ${items.length} item${items.length !== 1 ? 's' : ''}`} accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
+      {groups.map(({ tier, label, list }) => (
+        <div key={tier}>
+          {groups.length > 1 && (
+            <p className="px-5 pt-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+              {label} · {list.length}
+            </p>
+          )}
+          {list.map((d) => (
+            <TierItemRow key={d.item} data={d} inventory={inventory} tier={tier}
+              openLoc={isOpen(d.item)} onToggleLoc={() => onToggle(d.item)}
+              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
@@ -487,15 +556,9 @@ function SummaryPanel({
         </div>
       )}
       {tiers.collecting.length > 0 && (
-        <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
-          {tiers.collecting.map(d => (
-            <TierItemRow key={d.item} data={d} inventory={inventory}
-              tier={collectingTier(d)}
-              openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
-              allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
-          ))}
-        </div>
+        <CollectingTier items={tiers.collecting} inventory={inventory}
+          isOpen={(item) => openLocations.has(item)} onToggle={toggleLoc}
+          allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
       )}
       {tiers.done.length > 0 && (
         <div className="px-5 py-2.5 flex flex-wrap gap-x-4 gap-y-0.5"
@@ -800,15 +863,9 @@ function QuestSection({
 
               {/* Still collecting (orange — temple + other) */}
               {tiers.collecting.length > 0 && (
-                <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                  <TierHeader label="Still collecting" accent="orange" icon={<span style={{ fontSize: 11 }}>⚔</span>} />
-                  {tiers.collecting.map(d => (
-                    <TierItemRow key={d.item} data={d} inventory={inventory}
-                      tier={collectingTier(d)}
-                      openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
-                      allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
-                  ))}
-                </div>
+                <CollectingTier items={tiers.collecting} inventory={inventory}
+                  isOpen={(item) => openLocations.has(item)} onToggle={toggleLocation}
+                  allNeededItems={allNeededItems} inventoryMax={inventoryMax} />
               )}
 
               {/* Stocked items — compact strip */}

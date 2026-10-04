@@ -39,12 +39,6 @@
       "label": "Quest reward: His Mane Quest VII (×4)"
     }
   ],
-  "Acid Extract": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 82): 1× Pestle and Mortar, 1× Glass Bottle, 3× Horned Beetle"
-    }
-  ],
   "Acorn": [
     {
       "type": "password",
@@ -693,12 +687,6 @@
       "label": "Quest reward: The Collector - Gold Crab (×5)"
     }
   ],
-  "Bamboo Fence": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 10× Board, 10× Twine, 35× Bamboo"
-    }
-  ],
   "Barracuda": [
     {
       "type": "shop",
@@ -753,12 +741,6 @@
     {
       "type": "temple",
       "label": "Temple: offer 250 Water Lily (×10)"
-    }
-  ],
-  "Black Dye": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 3× Shadow Bloom, 1× Glass Bottle"
     }
   ],
   "Black Powder": [
@@ -1109,12 +1091,6 @@
     {
       "type": "password",
       "label": "Password \"witch\" (×1)"
-    }
-  ],
-  "Brown Dye": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 3× Mudcap, 1× Glass Bottle"
     }
   ],
   "Bucket": [
@@ -2913,12 +2889,6 @@
       "label": "Wishing Well: throw Herbs (16.7%)"
     }
   ],
-  "Flarite": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 38): 2× Unpolished Flarite"
-    }
-  ],
   "Flier": [
     {
       "type": "quest",
@@ -3197,12 +3167,6 @@
     {
       "type": "quest",
       "label": "Quest reward: Return Our Lost Friend IV (×1)"
-    }
-  ],
-  "Glowing Lantern": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 3× Iron, 2× Green Twine, 4× Glowshroom, 2× Iron Ring, 1× Glass Bottle"
     }
   ],
   "Gold Boot": [
@@ -4179,10 +4143,6 @@
   ],
   "Heart Container": [
     {
-      "type": "craft",
-      "label": "Craft (Lv 99): 4× Piece of Heart"
-    },
-    {
       "type": "quest",
       "label": "Quest reward: Breaking The Ice Even Icier IV (×2)"
     },
@@ -4391,12 +4351,6 @@
     {
       "type": "quest",
       "label": "Quest reward: The Smell of a Fun Guy I (×250)"
-    }
-  ],
-  "Horn Powder": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 57): 1× Twine, 1× White Parchment, 1× Leather, 3× Horn, 1× Pestle and Mortar"
     }
   ],
   "Horned Beetle": [
@@ -5883,12 +5837,6 @@
       "label": "Quest reward: The Neighs Have It (×6)"
     }
   ],
-  "Orange Dye": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 4× Amber Mire Bloom, 1× Glass Bottle"
-    }
-  ],
   "Orange Flowers": [
     {
       "type": "production",
@@ -6113,12 +6061,6 @@
       "label": "Quest reward: Monster Hunter IV (×10)"
     }
   ],
-  "Pair of Gold Boots": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 2× Gold Boot"
-    }
-  ],
   "Paper Receipt": [
     {
       "type": "quest",
@@ -6245,12 +6187,6 @@
     {
       "type": "quiz",
       "label": "Getting Started quiz (score 80, ×10)"
-    }
-  ],
-  "Pestle and Mortar": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 52): 5× Coal, 1× Hammer, 10× Stone, 1× Chisel"
     }
   ],
   "Pickaxe": [
@@ -6821,12 +6757,6 @@
     {
       "type": "production",
       "label": "Spring Seeds (randomly)"
-    }
-  ],
-  "Red Parchment": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 74): 3× Striped Feather"
     }
   ],
   "Red Shield": [
@@ -7487,12 +7417,6 @@
       "label": "Quest reward: His Mane Quest V (×5)"
     }
   ],
-  "Ship Mast": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 85): 4× Pulley, 1× Bucket, 12× Wooden Plank, 24× Board, 120× Nails, 1× Looking Glass, 1× Ladder, 12× Rope, 20× Oak, 4× Sail Cloth, 4× Red Scarf"
-    }
-  ],
   "Shovel": [
     {
       "type": "skill",
@@ -7839,12 +7763,6 @@
     {
       "type": "quest",
       "label": "Quest reward: Corn of Interest Part 29 (×1)"
-    }
-  ],
-  "Sparkle Dust": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 46): 1× Leather, 2× Fairy Crystal, 1× Twine, 1× Bucket, 1× Hammer"
     }
   ],
   "Spectacles": [
@@ -8311,12 +8229,6 @@
       "label": "Quest reward: A Way Forward VII (×2)"
     }
   ],
-  "Sugar Cube": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 1× Re'taw, 1× White Sugar, 1× Wooden Box"
-    }
-  ],
   "Sunflower": [
     {
       "type": "farming",
@@ -8739,12 +8651,6 @@
       "label": "Quest reward: Spirit of the Cards IV (×500)"
     }
   ],
-  "White Dye": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 1× Glass Bottle, 5× Mist Lily"
-    }
-  ],
   "White Flowers": [
     {
       "type": "production",
@@ -8873,12 +8779,6 @@
     {
       "type": "quest",
       "label": "Quest reward: Secretly A Society Summons You IX (×1)"
-    }
-  ],
-  "Wooden Footstool": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 85): 1× Wooden Plank, 4× Wood, 4× Nailed Board, 1× Wrench, 8× Small Bolt"
     }
   ],
   "Wooden Mask": [
@@ -9019,12 +8919,6 @@
     {
       "type": "quest",
       "label": "Quest reward: As The Horse Clops II (×300)"
-    }
-  ],
-  "Yellow Dye": [
-    {
-      "type": "craft",
-      "label": "Craft (Lv 99): 4× Swamp Thistle, 1× Glass Bottle"
     }
   ],
   "Yellow Flowers": [
