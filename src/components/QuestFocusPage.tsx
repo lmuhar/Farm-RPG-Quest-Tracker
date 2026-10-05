@@ -1,7 +1,7 @@
 import { useState, useMemo, createContext, useContext } from 'react';
 import {
   ChevronDown, CheckCircle2, Hammer, MapPin,
-  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift, Gem, Store,
+  Lock, Sprout, Building2, Clock, Landmark, Fish, Compass, Gift, Gem, Store, AlertTriangle,
 } from 'lucide-react';
 import type { Quest } from '../types';
 import {
@@ -135,6 +135,28 @@ function OtherLineRewardHint({ item, className = 'mt-0.5' }: { item: string; cla
   );
 }
 
+// Crafted items that are ingredients of other items being crafted, so they can be
+// made first and labelled "used for …". `perQuest` is true in a single quest's
+// list (Quests tab), where comparing an item's amount to the inventory cap makes sense.
+interface CraftContextValue { usedBy: Map<string, string[]>; perQuest: boolean }
+const CraftContext = createContext<CraftContextValue>({ usedBy: new Map(), perQuest: false });
+
+function craftUsage(items: ItemData[]): Map<string, string[]> {
+  const crafting = new Set(items.filter((d) => d.recipe).map((d) => d.item));
+  const usedBy = new Map<string, string[]>();
+  for (const d of items) {
+    for (const { item: ing } of d.recipe?.ingredients ?? []) {
+      if (ing !== d.item && crafting.has(ing)) usedBy.set(ing, [...(usedBy.get(ing) ?? []), d.item]);
+    }
+  }
+  return usedBy;
+}
+
+// Ingredients of other queued items first, then the original order
+function craftFirst(list: ItemData[], usedBy: Map<string, string[]>): ItemData[] {
+  return [...list].sort((a, b) => (usedBy.get(b.item)?.length ?? 0) - (usedBy.get(a.item)?.length ?? 0));
+}
+
 function TierHeader({ label, hint, accent, icon }: { label: string; hint?: string; accent: string; icon: React.ReactNode }) {
   return (
     <div
@@ -165,6 +187,8 @@ function TierItemRow({
     cropTime, grows, totalTime, seedsToBuy, seedsHave,
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave } = data;
   const pctDisplay = Math.round(pct * 100);
+  const { usedBy: usedByMap, perQuest } = useContext(CraftContext);
+  const usedBy = deficit > 0 ? usedByMap.get(item) : undefined;
 
   const progressColor =
     tier === 'directCraft' ? 'var(--accent-blue)' :
@@ -226,6 +250,13 @@ function TierItemRow({
               <span className="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
                 style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>
                 AT CAP
+              </span>
+            )}
+            {perQuest && quantity > inventoryMax && (
+              <span className="inline-flex items-center text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
+                title={`This quest needs ${quantity.toLocaleString()}, but you can only hold ${inventoryMax.toLocaleString()}`}
+                style={{ background: 'var(--accent-red-bg)', color: 'var(--accent-red)', border: '1px solid var(--accent-red-border)' }}>
+                OVER CAP
               </span>
             )}
 
@@ -370,6 +401,11 @@ function TierItemRow({
 
           {tier === 'collecting' && deficit > 0 && <SourceHintLine item={item} />}
           {deficit > 0 && <OtherLineRewardHint item={item} />}
+          {usedBy && (
+            <p className="text-xs mt-0.5" style={{ color: 'var(--accent-blue)' }}>
+              ↳ also an ingredient for {usedBy.join(', ')} — craft this first
+            </p>
+          )}
         </div>
 
         <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: valueColor }}>
@@ -491,11 +527,13 @@ function SummaryPanel({
     const all = [...itemMap.entries()].map(([item, quantity]) =>
       getItemTierData(item, quantity, inventory, cropTimes, plotCount)
     );
+    const usedBy = craftUsage(all.filter(i => !i.done));
     return {
+      usedBy,
       done:         all.filter(i => i.done),
-      directCraft:  all.filter(i => !i.done && i.isDirectCraftNow),
-      rawCraft:     all.filter(i => !i.done && i.isRawCraftNow),
-      craftingQueue:all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass),
+      directCraft:  craftFirst(all.filter(i => !i.done && i.isDirectCraftNow), usedBy),
+      rawCraft:     craftFirst(all.filter(i => !i.done && i.isRawCraftNow), usedBy),
+      craftingQueue:craftFirst(all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass), usedBy),
       crops:        all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass)
                        .sort((a, b) => (a.cropTime!.growMinutes) - (b.cropTime!.growMinutes)),
       collecting:   all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime),
@@ -514,6 +552,7 @@ function SummaryPanel({
   }
 
   return (
+    <CraftContext.Provider value={{ usedBy: tiers.usedBy, perQuest: false }}>
     <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
       {tiers.directCraft.length > 0 && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
@@ -575,6 +614,7 @@ function SummaryPanel({
         </div>
       )}
     </div>
+    </CraftContext.Provider>
   );
 }
 
@@ -720,19 +760,21 @@ function QuestSection({
     [allNeededItems, rewards]
   );
 
-  const { tiers, canComplete, stockedCount } = useMemo(() => {
+  const { tiers, canComplete, stockedCount, usedBy } = useMemo(() => {
     const all = items.map(({ item, quantity }) =>
       getItemTierData(item, quantity, inventory, cropTimes, plotCount)
     );
     const done = all.filter(i => i.done);
-    const directCraft = all.filter(i => !i.done && i.isDirectCraftNow);
-    const rawCraft = all.filter(i => !i.done && i.isRawCraftNow);
-    const craftingQueue = all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass);
+    const usedBy = craftUsage(all.filter(i => !i.done));
+    const directCraft = craftFirst(all.filter(i => !i.done && i.isDirectCraftNow), usedBy);
+    const rawCraft = craftFirst(all.filter(i => !i.done && i.isRawCraftNow), usedBy);
+    const craftingQueue = craftFirst(all.filter(i => !i.done && !i.isCraftNow && i.recipe && !i.isHoney && !i.isCutlass), usedBy);
     const crops = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && i.cropTime && !i.isHoney && !i.isCutlass)
                      .sort((a, b) => (a.cropTime!.growMinutes) - (b.cropTime!.growMinutes));
     const collecting = all.filter(i => !i.done && !i.isCraftNow && !i.recipe && !i.cropTime);
     return {
       tiers: { done, directCraft, rawCraft, craftingQueue, crops, collecting },
+      usedBy,
       canComplete: done.length === all.length && all.length > 0,
       stockedCount: done.length,
     };
@@ -747,6 +789,7 @@ function QuestSection({
   const { color: statusColor, label: statusLabel } = statusStyle[status] ?? { color: 'var(--accent-purple)', label: 'Upcoming' };
 
   return (
+    <CraftContext.Provider value={{ usedBy, perQuest: true }}>
     <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
       {/* Accordion header */}
       <button
@@ -924,6 +967,7 @@ function QuestSection({
         </div>
       )}
     </div>
+    </CraftContext.Provider>
   );
 }
 
@@ -1039,6 +1083,28 @@ export function QuestFocusPage() {
     return { startsAfter: before, leadsTo: [...after] };
   }, [quests]);
 
+  // Share of the remaining quests' items already gathered (each item counts
+  // equally, so one 3,000-stack doesn't drown out everything else)
+  const itemsGatheredPct = useMemo(() => {
+    const need = new Map<string, number>();
+    for (const { quest, status } of questsWithStatus) {
+      if (status === 'completed') continue;
+      for (const { item, quantity } of parseItems(quest.itemsRequired)) need.set(item, (need.get(item) ?? 0) + quantity);
+    }
+    if (need.size === 0) return null;
+    let sum = 0;
+    for (const [item, n] of need) sum += Math.min(1, (inventory[item] ?? 0) / n);
+    return Math.round((sum / need.size) * 100);
+  }, [questsWithStatus, inventory]);
+
+  // Items in the next unfinished quest that need more than the inventory can hold
+  const overCap = useMemo(() => {
+    const next = questsWithStatus.find(({ status }) => status !== 'completed');
+    if (!next) return null;
+    const items = parseItems(next.quest.itemsRequired).filter(({ quantity }) => quantity > inventoryMax);
+    return items.length ? { quest: next.quest.name, items } : null;
+  }, [questsWithStatus, inventoryMax]);
+
   const completedCount = questsWithStatus.filter(({ status }) => status === 'completed').length;
   const activeCount    = questsWithStatus.filter(({ status }) => status === 'active').length;
   const upcomingCount  = questsWithStatus.filter(({ status }) => status !== 'completed' && status !== 'active').length;
@@ -1148,7 +1214,20 @@ export function QuestFocusPage() {
             </div>
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               {completedCount} of {quests.length} quests completed
+              {itemsGatheredPct !== null && completedCount < quests.length && (
+                <> · <span style={{ color: 'var(--text-secondary)' }}>{itemsGatheredPct}% of items gathered</span></>
+              )}
             </p>
+            {overCap && (
+              <p className="text-xs mt-1 flex items-start gap-1" style={{ color: 'var(--accent-red)' }}>
+                <AlertTriangle size={12} style={{ flexShrink: 0, marginTop: 1 }} />
+                <span>
+                  {overCap.quest} needs more than your inventory cap ({inventoryMax.toLocaleString()}):{' '}
+                  {overCap.items.map(({ item, quantity }) => `${item} ${quantity.toLocaleString()}`).join(' · ')}
+                  <span style={{ color: 'var(--text-muted)' }}> — you'll need more inventory slots (update "Current slots" in Settings once you have them)</span>
+                </span>
+              </p>
+            )}
             {(startsAfter || leadsTo.length > 0) && (
               <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
                 {startsAfter && <>⛓️ Starts after {chainLabel(startsAfter, trackedQuestline)}</>}
