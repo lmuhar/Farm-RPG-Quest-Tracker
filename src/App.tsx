@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ListTodo, GitBranch, Search, X, Wand2, BarChart2, Package,
   Settings, Hammer, RefreshCw, Menu, MapPin, Building2, PawPrint, Users, Layers,
-  LayoutDashboard, Trophy,
+  LayoutDashboard, Trophy, Target,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import questsData from './data/quests.json';
@@ -30,6 +30,7 @@ import { CraftworksPage } from './components/CraftworksPage';
 import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
+import { MilestonePlanPage } from './components/MilestonePlanPage';
 import { ActiveTab } from './components/ActiveTab';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
@@ -40,7 +41,7 @@ const allQuests = questsData as Quest[];
 type Tab =
   | 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory'
   | 'pets' | 'npcs' | 'questlines' | 'craftworks' | 'recipes'
-  | 'masteries' | 'stats' | 'settings';
+  | 'masteries' | 'milestones' | 'stats' | 'settings';
 
 interface NavItem { id: Tab; label: string; Icon: LucideIcon }
 
@@ -57,6 +58,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
   { id: 'recipes',    label: 'Recipes',      Icon: Hammer },
   { id: 'masteries',  label: 'Masteries',    Icon: Trophy },
+  { id: 'milestones', label: 'Milestone Plan', Icon: Target },
 ];
 
 const META_ITEMS: NavItem[] = [
@@ -399,6 +401,7 @@ export default function App() {
             )}
             {tab === 'recipes' && <RecipesPage />}
             {tab === 'masteries' && <MasteriesPage />}
+            {tab === 'milestones' && <MilestonePlanPage />}
             {tab === 'stats' && <StatsTab questlineGroups={questlineGroups} />}
             {tab === 'settings' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
