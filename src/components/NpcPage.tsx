@@ -7,23 +7,24 @@ const allNpcs = npcsData as { name: string; items: string[] }[];
 const npcItemsMap = new Map(allNpcs.map((n) => [n.name, n.items]));
 
 const REWARD_MILESTONES: { npc: string; nextRewardLv: number }[] = [
-  { npc: 'Rosalie',       nextRewardLv: 40 },
+  { npc: 'Rosalie',       nextRewardLv: 50 },
   { npc: 'Thomas',        nextRewardLv: 40 },
   { npc: 'Cecil',         nextRewardLv: 30 },
   { npc: 'George',        nextRewardLv: 40 },
-  { npc: 'Jill',          nextRewardLv: 60 },
+  { npc: 'Jill',          nextRewardLv: 96 },
   { npc: 'Vincent',       nextRewardLv: 30 },
   { npc: 'Borgen',        nextRewardLv: 60 },
-  { npc: 'Ric Ryph',      nextRewardLv: 30 },
-  { npc: 'Mummy',         nextRewardLv: 30 },
+  { npc: 'Ric Ryph',      nextRewardLv: 40 },
+  { npc: 'Mummy',         nextRewardLv: 40 },
   { npc: 'Star Meerif',   nextRewardLv: 18 },
-  { npc: 'Captain Thomas',nextRewardLv: 20 },
+  { npc: 'Captain Thomas',nextRewardLv: 40 },
   { npc: 'frank',         nextRewardLv: 40 },
   { npc: 'Mariya',        nextRewardLv: 40 },
   { npc: 'Baba Gec',      nextRewardLv: 40 },
   { npc: 'Geist',         nextRewardLv: 20 },
   { npc: 'Cid',           nextRewardLv: 30 },
-  { npc: 'Goostav',       nextRewardLv: 20 },
+  { npc: 'Goostav',       nextRewardLv: 30 },
+  { npc: 'Lorn',          nextRewardLv: 90 },
 ];
 
 const HELP_MILESTONES: { npc: string; nextHelpLv: number }[] = [
