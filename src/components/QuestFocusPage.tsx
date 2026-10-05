@@ -188,6 +188,7 @@ function TierItemRow({
     isHoney, isCutlass, honey, honeyRadishHave, honeyGrows, cutlass, cutlassStaffHave } = data;
   const pctDisplay = Math.round(pct * 100);
   const { usedBy: usedByMap, perQuest } = useContext(CraftContext);
+  const [showRaw, setShowRaw] = useState(false);
   const usedBy = deficit > 0 ? usedByMap.get(item) : undefined;
 
   const progressColor =
@@ -314,8 +315,13 @@ function TierItemRow({
                 })}
               </div>
               {missingRaw.length > 0 && (
-                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider w-full" style={{ color: 'var(--text-muted)' }}>collect:</span>
+                <button onClick={() => setShowRaw((v) => !v)} className="text-[10px] font-semibold uppercase tracking-wider mt-1"
+                  style={{ color: 'var(--text-muted)' }}>
+                  base materials ({missingRaw.length}) {showRaw ? '▾' : '▸'}
+                </button>
+              )}
+              {showRaw && missingRaw.length > 0 && (
+                <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
                   {missingRaw.map(([ri, rq]) => {
                     const haveRaw = inventory[ri] ?? 0;
                     return <span key={ri} className="text-xs" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{ri} {haveRaw.toLocaleString()}/{rq.toLocaleString()}</span>;
@@ -424,6 +430,68 @@ function TierItemRow({
         <div className="mt-2">
           <ItemLocationPanel item={item} allNeededItems={allNeededItems} />
         </div>
+      )}
+    </div>
+  );
+}
+
+// ── Base materials for the crafting queue ─────────────────────────────────────
+
+const LOCATION_NOUN: Record<string, string> = { fishing: 'catches', explore: 'explores', mining: 'digs' };
+
+// Where to gather a base material: its best drop location with an estimate,
+// otherwise the general "where to get it" hint.
+function gatherHint(item: string, shortfall: number): string | null {
+  let best: { name: string; type: string; rate: number } | null = null;
+  for (const loc of itemLocations[item] ?? []) {
+    if (loc.rate && LOCATION_NOUN[loc.type] && (!best || loc.rate < best.rate)) best = { name: loc.name, type: loc.type, rate: loc.rate };
+  }
+  if (best) return `${best.name} · ~${Math.ceil(shortfall * best.rate).toLocaleString()} ${LOCATION_NOUN[best.type]}`;
+  const loc = (itemLocations[item] ?? [])[0];
+  return loc ? loc.name : sourceHint(item);
+}
+
+// One combined list of the base materials every queued craft still needs,
+// minus what's in inventory, biggest shortfall first.
+function ShoppingList({ items, inventory }: { items: ItemData[]; inventory: Record<string, number> }) {
+  const [showAll, setShowAll] = useState(false);
+  const { short, stocked } = useMemo(() => {
+    const need = new Map<string, number>();
+    for (const d of items) for (const [raw, qty] of d.rawMaterials ?? []) need.set(raw, (need.get(raw) ?? 0) + qty);
+    const rows = [...need.entries()].map(([item, total]) => {
+      const have = inventory[item] ?? 0;
+      return { item, total, have, shortfall: Math.max(0, total - have) };
+    });
+    return {
+      short: rows.filter((r) => r.shortfall > 0).sort((a, b) => b.shortfall - a.shortfall),
+      stocked: rows.filter((r) => r.shortfall === 0).length,
+    };
+  }, [items, inventory]);
+  if (short.length === 0) return null;
+  const shown = showAll ? short : short.slice(0, 10);
+  return (
+    <div className="px-5 py-3" style={{ background: 'var(--surface-inset)', borderBottom: '1px solid var(--border-subtle)' }}>
+      <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--accent-yellow)' }}>
+        Base materials to gather <span style={{ color: 'var(--text-muted)' }}>— for everything in the queue{stocked > 0 ? ` · ${stocked} already stocked` : ''}</span>
+      </p>
+      <div className="space-y-1">
+        {shown.map(({ item, total, have, shortfall }) => {
+          const hint = gatherHint(item, shortfall);
+          return (
+            <div key={item} className="flex items-baseline gap-2 text-xs">
+              <span className="font-medium" style={{ color: 'var(--text-primary)', minWidth: 0 }}>{item}</span>
+              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+                {have.toLocaleString()}/{total.toLocaleString()}
+              </span>
+              {hint && <span className="truncate" style={{ color: 'var(--text-muted)' }}>{hint}</span>}
+            </div>
+          );
+        })}
+      </div>
+      {short.length > 10 && (
+        <button onClick={() => setShowAll((v) => !v)} className="text-[11px] mt-1.5" style={{ color: 'var(--accent-yellow)' }}>
+          {showAll ? 'show fewer' : `show all ${short.length}`}
+        </button>
       )}
     </div>
   );
@@ -577,6 +645,7 @@ function SummaryPanel({
       {tiers.craftingQueue.length > 0 && (
         <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <TierHeader label="Crafting queue" hint="— collecting ingredients" accent="yellow" icon={<Hammer size={11} />} />
+          <ShoppingList items={tiers.craftingQueue} inventory={inventory} />
           {tiers.craftingQueue.map(d => (
             <TierItemRow key={d.item} data={d} inventory={inventory} tier="craftingQueue"
               openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLoc(d.item)}
@@ -884,6 +953,7 @@ function QuestSection({
               {tiers.craftingQueue.length > 0 && (
                 <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                   <TierHeader label="Crafting queue" hint="— collecting ingredients" accent="yellow" icon={<Hammer size={11} />} />
+                  <ShoppingList items={tiers.craftingQueue} inventory={inventory} />
                   {tiers.craftingQueue.map(d => (
                     <TierItemRow key={d.item} data={d} inventory={inventory} tier="craftingQueue"
                       openLoc={openLocations.has(d.item)} onToggleLoc={() => toggleLocation(d.item)}
