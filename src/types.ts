@@ -70,7 +70,6 @@ export interface AppState {
   growQueue: GrowQueueItem[];
   questNotes: Record<string, string>;
   pinnedQuestline: string | null;
-  ownedPets: Record<number, number>;
   towerLevel: number;
   trackedQuestline: string;
   mastered: number;

@@ -21,7 +21,6 @@ export function ImportExport() {
       growQueue: store.growQueue,
       questNotes: store.questNotes,
       pinnedQuestline: store.pinnedQuestline,
-      ownedPets: store.ownedPets,
       towerLevel: store.towerLevel,
       trackedQuestline: store.trackedQuestline,
       mastered: store.mastered,

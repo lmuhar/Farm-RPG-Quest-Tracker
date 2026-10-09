@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
-  ListTodo, GitBranch, Search, X, Wand2, BarChart2, Package,
-  Settings, Hammer, RefreshCw, Menu, MapPin, Building2, PawPrint, Users, Layers,
+  GitBranch, Search, X, Wand2, BarChart2, Package,
+  Settings, Hammer, RefreshCw, Menu, MapPin, Building2, Users, Layers,
   LayoutDashboard, Trophy, Target,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -19,19 +19,16 @@ import { toStock } from './borgenShop';
 import type { BorgenShopCapture } from './borgenShop';
 import { StatsTab } from './components/StatsTab';
 import { InventoryPage } from './components/InventoryPage';
-import { RecipesPage } from './components/RecipesPage';
 import { LocationsTab } from './components/LocationsTab';
 
 import { QuestFocusPage } from './components/QuestFocusPage';
 import { TheTowerPage } from './components/TheTowerPage';
-import { PetsPage } from './components/PetsPage';
 import { NpcPage } from './components/NpcPage';
 import { CraftworksPage } from './components/CraftworksPage';
 import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
 import { MilestonePlanPage } from './components/MilestonePlanPage';
-import { ActiveTab } from './components/ActiveTab';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
 import { MasterySyncSection } from './components/MasterySyncSection';
@@ -39,24 +36,21 @@ import { MasterySyncSection } from './components/MasterySyncSection';
 const allQuests = questsData as Quest[];
 
 type Tab =
-  | 'dashboard' | 'active' | 'locations' | 'tower' | 'the-tower' | 'inventory'
-  | 'pets' | 'npcs' | 'questlines' | 'craftworks' | 'recipes'
+  | 'dashboard' | 'locations' | 'tower' | 'the-tower' | 'inventory'
+  | 'npcs' | 'questlines' | 'craftworks'
   | 'masteries' | 'milestones' | 'stats' | 'settings';
 
 interface NavItem { id: Tab; label: string; Icon: LucideIcon }
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard',  label: 'Dashboard',   Icon: LayoutDashboard },
-  { id: 'active',     label: 'Active',       Icon: ListTodo },
   { id: 'locations',  label: 'Locations',    Icon: MapPin },
   { id: 'tower',      label: 'Quest Focus',  Icon: Building2 },
   { id: 'the-tower',  label: 'The Tower',    Icon: Layers },
   { id: 'inventory',  label: 'Inventory',    Icon: Package },
-  { id: 'pets',       label: 'Pets',         Icon: PawPrint },
   { id: 'npcs',       label: 'NPCs',         Icon: Users },
   { id: 'questlines', label: 'Quest Lines',  Icon: GitBranch },
   { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
-  { id: 'recipes',    label: 'Recipes',      Icon: Hammer },
   { id: 'masteries',  label: 'Masteries',    Icon: Trophy },
   { id: 'milestones', label: 'Milestone Plan', Icon: Target },
 ];
@@ -240,7 +234,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => { setTab('active'); setMenuOpen(false); }}
+            onClick={() => { setTab('tower'); setMenuOpen(false); }}
             className="flex items-center gap-2 flex-1 md:flex-none justify-center md:justify-start rounded-lg transition-opacity hover:opacity-80"
             aria-label="Home"
           >
@@ -382,16 +376,12 @@ export default function App() {
             {tab === 'dashboard' && (
               <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
-            {tab === 'active' && (
-              <ActiveTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} questlineGroups={questlineGroups} />
-            )}
             {tab === 'locations' && (
               <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
             {tab === 'tower' && <QuestFocusPage />}
             {tab === 'the-tower' && <TheTowerPage />}
             {tab === 'inventory' && <InventoryPage />}
-            {tab === 'pets' && <PetsPage activeQuests={activeQuests} />}
             {tab === 'npcs' && <NpcPage />}
             {tab === 'questlines' && (
               <QuestlinesTab questlineGroups={questlineGroups} globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
@@ -399,7 +389,6 @@ export default function App() {
             {tab === 'craftworks' && (
               <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
-            {tab === 'recipes' && <RecipesPage />}
             {tab === 'masteries' && <MasteriesPage />}
             {tab === 'milestones' && <MilestonePlanPage />}
             {tab === 'stats' && <StatsTab questlineGroups={questlineGroups} />}

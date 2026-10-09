@@ -32,8 +32,9 @@ export function bestDrop(item: string, type: string, quantity: number): { locati
 // other buddy.farm source (shop, NPC reward, Wishing Well, quest reward…).
 const petLoot = new Map<string, string[]>();
 for (const pet of petsData as { name: string; loot: Record<string, string[]> }[]) {
-  for (const [tier, items] of Object.entries(pet.loot)) {
-    for (const item of items) petLoot.set(item, [...(petLoot.get(item) ?? []), `${pet.name} lv${tier}+`]);
+  // All pets are level 6, so every loot tier counts
+  for (const item of new Set(Object.values(pet.loot).flat())) {
+    petLoot.set(item, [...(petLoot.get(item) ?? []), pet.name]);
   }
 }
 const locksmith = locksmithData as Record<string, { name: string }[]>;

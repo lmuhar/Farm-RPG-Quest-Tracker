@@ -19,7 +19,6 @@ function snapshotState(): AppState {
     growQueue: s.growQueue,
     questNotes: s.questNotes,
     pinnedQuestline: s.pinnedQuestline,
-    ownedPets: s.ownedPets,
     towerLevel: s.towerLevel,
     trackedQuestline: s.trackedQuestline,
     mastered: s.mastered,
