@@ -9,15 +9,12 @@ import { borgenOffers, shortDate } from '../borgenShop';
 type LocksmithEntry = { name: string; type: string; key?: string };
 const locksmithSources = locksmithData as Record<string, LocksmithEntry[]>;
 
-interface PetEntry { petId: number; petName: string; minLevel: 1 | 3 | 6 }
-const petLootMap: Record<string, PetEntry[]> = {};
-for (const pet of petsData as { id: number; name: string; loot: Record<string, string[]> }[]) {
-  for (const [tier, items] of Object.entries(pet.loot)) {
-    const minLevel = Number(tier) as 1 | 3 | 6;
-    for (const item of items) {
-      if (!petLootMap[item]) petLootMap[item] = [];
-      petLootMap[item].push({ petId: pet.id, petName: pet.name, minLevel });
-    }
+// All pets are level 6, so every loot tier counts
+const petLootMap: Record<string, { petName: string }[]> = {};
+for (const pet of petsData as { name: string; loot: Record<string, string[]> }[]) {
+  for (const item of new Set(Object.values(pet.loot).flat())) {
+    if (!petLootMap[item]) petLootMap[item] = [];
+    petLootMap[item].push({ petName: pet.name });
   }
 }
 
@@ -52,7 +49,6 @@ interface Props {
 
 export function ItemLocationPanel({ item, allNeededItems }: Props) {
   const inventory = useStore(s => s.inventory);
-  const ownedPets = useStore(s => s.ownedPets);
   const borgenShops = useStore(s => s.borgenShops);
   const itemLocs = locations[item] ?? [];
   const itemPets = petLootMap[item] ?? [];
@@ -156,19 +152,11 @@ export function ItemLocationPanel({ item, allNeededItems }: Props) {
             <span className="text-xs font-semibold" style={{ color: 'var(--accent-orange)' }}>Pet loot</span>
           </div>
           <div className="flex flex-wrap gap-x-3 gap-y-0.5">
-            {itemPets.map(({ petId, petName, minLevel }) => {
-              const currentLevel = ownedPets[petId] ?? 0;
-              return (
-                <span key={petName} className="text-[11px]" style={{ color: 'var(--accent-orange)' }}>
-                  {petName}
-                  {currentLevel < minLevel && (
-                    currentLevel > 0
-                      ? <span style={{ opacity: 0.7 }}> (upgrade to lv {minLevel})</span>
-                      : <span style={{ opacity: 0.7 }}> (lv {minLevel}+)</span>
-                  )}
-                </span>
-              );
-            })}
+            {itemPets.map(({ petName }) => (
+              <span key={petName} className="text-[11px]" style={{ color: 'var(--accent-orange)' }}>
+                {petName}
+              </span>
+            ))}
           </div>
         </div>
       )}

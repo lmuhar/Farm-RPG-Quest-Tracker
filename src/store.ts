@@ -37,7 +37,6 @@ interface Store extends AppState {
   setGrowQueue: (queue: GrowQueueItem[]) => void;
   setQuestNote: (id: string, note: string) => void;
   setPinnedQuestline: (name: string | null) => void;
-  setOwnedPetLevel: (petId: number, level: number) => void;
   setTowerLevel: (level: number) => void;
   setTrackedQuestline: (name: string) => void;
   setMastered: (count: number) => void;
@@ -133,7 +132,6 @@ export const useStore = create<Store>()((set) => ({
       growQueue: [],
       questNotes: {},
       pinnedQuestline: null,
-      ownedPets: {},
       towerLevel: 0,
       trackedQuestline: 'A Towering Investment',
       mastered: 0,
@@ -214,8 +212,7 @@ export const useStore = create<Store>()((set) => ({
           growQueue: [],
           questNotes: {},
           pinnedQuestline: null,
-          ownedPets: {},
-          towerLevel: 0,
+              towerLevel: 0,
           trackedQuestline: 'A Towering Investment',
           mastered: 0,
           grandMastered: 0,
@@ -244,7 +241,6 @@ export const useStore = create<Store>()((set) => ({
           growQueue: data.growQueue ?? s.growQueue,
           questNotes: data.questNotes ?? s.questNotes,
           pinnedQuestline: data.pinnedQuestline ?? s.pinnedQuestline,
-          ownedPets: data.ownedPets ?? s.ownedPets,
           towerLevel: data.towerLevel ?? s.towerLevel,
           trackedQuestline: data.trackedQuestline ?? s.trackedQuestline,
           mastered: data.mastered ?? s.mastered,
@@ -277,16 +273,6 @@ export const useStore = create<Store>()((set) => ({
         set((s) => ({ questNotes: { ...s.questNotes, [id]: note } })),
 
       setPinnedQuestline: (pinnedQuestline) => set({ pinnedQuestline }),
-
-      setOwnedPetLevel: (petId, level) =>
-        set((s) => {
-          if (level <= 0) {
-            const next = { ...s.ownedPets };
-            delete next[petId];
-            return { ownedPets: next };
-          }
-          return { ownedPets: { ...s.ownedPets, [petId]: level } };
-        }),
 
       setTowerLevel: (towerLevel) =>
         set((s) => ({ towerLevel, cropTimes: mergeCropTimes(s.cropTimes, towerLevel) })),
