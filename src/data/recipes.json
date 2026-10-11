@@ -4920,5 +4920,137 @@
         "quantity": 1
       }
     ]
+  },
+  {
+    "id": "1575",
+    "name": "Plum Iron",
+    "ingredients": [
+      {
+        "item": "Acid Extract",
+        "quantity": 1
+      },
+      {
+        "item": "Iron",
+        "quantity": 1
+      },
+      {
+        "item": "Refined Plum Ore",
+        "quantity": 1
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1590",
+    "name": "Potion of Clarity",
+    "ingredients": [
+      {
+        "item": "Blue Gel",
+        "quantity": 1
+      },
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      },
+      {
+        "item": "Brain Fungus",
+        "quantity": 1
+      },
+      {
+        "item": "Pestle and Mortar",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1313",
+    "name": "Pumpkin Spiced Milk",
+    "ingredients": [
+      {
+        "item": "Glass Bottle",
+        "quantity": 1
+      },
+      {
+        "item": "Pumpkin",
+        "quantity": 1
+      },
+      {
+        "item": "Milk",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1572",
+    "name": "Refined Plum Ore",
+    "ingredients": [
+      {
+        "item": "Plum Ore",
+        "quantity": 2
+      },
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1320",
+    "name": "Spooky Scarecrow",
+    "ingredients": [
+      {
+        "item": "Nails",
+        "quantity": 4
+      },
+      {
+        "item": "Red Twine",
+        "quantity": 2
+      },
+      {
+        "item": "Wizard Hat",
+        "quantity": 1
+      },
+      {
+        "item": "White Parchment",
+        "quantity": 8
+      },
+      {
+        "item": "Sewing Needle",
+        "quantity": 1
+      },
+      {
+        "item": "Board",
+        "quantity": 2
+      },
+      {
+        "item": "Straw",
+        "quantity": 10
+      },
+      {
+        "item": "Jack-o-lantern",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "663",
+    "name": "Witch's Broom",
+    "ingredients": [
+      {
+        "item": "Broom",
+        "quantity": 1
+      },
+      {
+        "item": "Magicite",
+        "quantity": 10
+      },
+      {
+        "item": "Magna Quartz",
+        "quantity": 2
+      }
+    ]
   }
 ]
