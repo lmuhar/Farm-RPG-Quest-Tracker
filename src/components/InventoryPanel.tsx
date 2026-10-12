@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { Package, Plus, Trash2, AlignLeft } from 'lucide-react';
 import { useStore } from '../store';
+import { ItemIcon } from './ItemIcon';
 
 function parseBulkLine(line: string): { item: string; quantity: number } | null {
   const s = line.trim();
@@ -123,7 +124,7 @@ export function InventoryPanel() {
         <div className="space-y-1 max-h-64 overflow-y-auto">
           {items.map(([item, qty]) => (
             <div key={item} className="flex items-center justify-between gap-2 text-sm">
-              <span className="text-slate-300 flex-1 truncate">{item}</span>
+              <span className="text-slate-300 flex-1 truncate"><ItemIcon item={item} />{item}</span>
               <input
                 type="number"
                 min={0}

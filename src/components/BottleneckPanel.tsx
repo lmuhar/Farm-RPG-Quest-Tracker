@@ -2,6 +2,7 @@ import { AlertTriangle } from 'lucide-react';
 import { WISHING_WELL_SOURCES } from '../data/bottlenecks';
 import { useStore } from '../store';
 import { borgenOffers } from '../borgenShop';
+import { ItemIcon } from './ItemIcon';
 
 export interface BottleneckEntry {
   item: string;
@@ -58,7 +59,7 @@ export function BottleneckPanel({ entries, hint = '— no easy source' }: Props)
             <div key={item} className="px-4 py-2.5">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                   <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                     <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{sourceLabel(item, location)}</span>
                     {towerLv && (

@@ -11,6 +11,7 @@ import recipesData from '../data/recipes.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks';
 import { resolveRawIngredients } from '../utils';
 import { Fish, AlertTriangle, TrendingUp, Compass, Link2 } from 'lucide-react';
+import { ItemIcon } from './ItemIcon';
 
 const allQuestsData = questsData as Quest[];
 
@@ -503,7 +504,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
                   {focusBottlenecks.map(({ item, have, need, location, questCount }) => (
                     <div key={item} className="px-4 py-2.5 flex items-center justify-between gap-3">
                       <div className="min-w-0">
-                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                         <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                           <span className="text-[10px]" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
                           {questCount > 1 && (

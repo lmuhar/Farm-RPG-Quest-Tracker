@@ -4,6 +4,7 @@ import { getQuestStatus, npcColor, parseItems, formatDuration, calcGrowsNeeded }
 import { useStore } from '../store';
 import { QuestCard } from './QuestCard';
 import { useState } from 'react';
+import { ItemIcon } from './ItemIcon';
 
 interface Props {
   questline: string;
@@ -122,7 +123,7 @@ export function QuestLineView({ questline, quests }: Props) {
                             <div key={item} className="flex items-center justify-between gap-2 text-xs">
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className={need === 0 ? 'text-green-400 line-through' : 'text-slate-300'}>
-                                  {quantity}x {item}
+                                  {quantity}x <ItemIcon item={item} />{item}
                                 </span>
                                 {cropTime && need > 0 && grows !== null && totalTime !== null && (
                                   <span className="text-green-300 flex items-center gap-0.5">

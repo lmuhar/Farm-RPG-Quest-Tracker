@@ -10,12 +10,25 @@ import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../d
 import { BottleneckPanel } from './BottleneckPanel';
 import { getUnlockSuggestions } from '../questUnlocks';
 import type { BottleneckEntry } from './BottleneckPanel';
+import { ItemIcon } from './ItemIcon';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
 const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLowerCase(), r]));
 const allQuestsData = questsData as Quest[];
 const npcItemsMap = new Map((npcsData as { name: string; items: string[] }[]).map(n => [n.name, n.items]));
+
+// "for Quest A, Quest B +3 more"
+function forQuests(names: string[], max = 3): string {
+  const unique = [...new Set(names)];
+  const more = unique.length - max;
+  return `for ${unique.slice(0, max).join(', ')}${more > 0 ? ` +${more} more` : ''}`;
+}
+
+function questsNeeding(item: string, quests: Quest[]): string[] {
+  const key = item.toLowerCase();
+  return quests.filter(q => parseItems(q.itemsRequired).some(p => p.item.toLowerCase() === key)).map(q => q.name);
+}
 
 // A cooking item is anything whose recipe needs a Cooking Pot — some items are
 // tagged method 'cooking' in masteries.json without actually requiring one
@@ -299,7 +312,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     );
 
     const priorityOrder = { active: 0, nextup: 1, other: 2 } as const;
-    const agg = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' | 'other' }>();
+    const agg = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' | 'other'; quests: { name: string; tier: number }[] }>();
 
     for (const quest of questlineQuests) {
       const tier: 'active' | 'nextup' | 'other' = activeQuestIds.has(quest.id) ? 'active'
@@ -314,19 +327,19 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           if (!cropTimes.some(c => c.item.toLowerCase() === ing.toLowerCase())) continue;
           const existing = agg.get(ing);
           const newPriority = !existing || priorityOrder[tier] < priorityOrder[existing.priority] ? tier : existing.priority;
-          agg.set(ing, { totalNeeded: (existing?.totalNeeded ?? 0) + ingQty * quantity, priority: newPriority });
+          agg.set(ing, { totalNeeded: (existing?.totalNeeded ?? 0) + ingQty * quantity, priority: newPriority, quests: [...(existing?.quests ?? []), { name: quest.name, tier: priorityOrder[tier] }] });
         }
       }
     }
 
     return [...agg.entries()]
-      .flatMap(([item, { totalNeeded, priority }]) => {
+      .flatMap(([item, { totalNeeded, priority, quests }]) => {
         const have = inventory[item] ?? 0;
         const deficit = totalNeeded - have;
         if (deficit <= 0) return [];
         const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase())!;
         const grows = calcGrowsNeeded(deficit, plotCount);
-        return [{ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes, priority }];
+        return [{ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes, priority, quests: [...quests].sort((a, b) => a.tier - b.tier).map(q => q.name) }];
       })
       .sort((a, b) => {
         if (priorityOrder[a.priority] !== priorityOrder[b.priority]) return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -338,17 +351,17 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     const EXCLUDED = new Set(['board', 'rope', 'twine']);
     const cropSet = new Set(cropTimes.map(c => c.item.toLowerCase()));
 
-    const allItemMap = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' }>();
+    const allItemMap = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup'; quests: string[] }>();
     for (const q of activeQuests) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
         const ex = allItemMap.get(item);
-        allItemMap.set(item, { totalNeeded: (ex?.totalNeeded ?? 0) + quantity, priority: 'active' });
+        allItemMap.set(item, { totalNeeded: (ex?.totalNeeded ?? 0) + quantity, priority: 'active', quests: [...(ex?.quests ?? []), q.name] });
       }
     }
     for (const q of nextUpQuests) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
         if (allItemMap.has(item)) continue;
-        allItemMap.set(item, { totalNeeded: quantity, priority: 'nextup' });
+        allItemMap.set(item, { totalNeeded: quantity, priority: 'nextup', quests: [q.name] });
       }
     }
 
@@ -357,11 +370,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
       deficit: number;
       totalNeeded: number;
       priority: 'active' | 'nextup';
+      quests: string[];
       readiness: 'now' | 'soon';
       ingredients: { item: string; needed: number; have: number; ready: boolean }[];
     }[] = [];
 
-    for (const [item, { totalNeeded, priority }] of allItemMap.entries()) {
+    for (const [item, { totalNeeded, priority, quests }] of allItemMap.entries()) {
       if (EXCLUDED.has(item.toLowerCase())) continue;
       if (cropSet.has(item.toLowerCase())) continue;
       if (totalNeeded > inventoryMax) continue;
@@ -377,7 +391,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
         return { item: ing, needed, have: haveIng, ready: haveIng >= needed };
       });
       const allReady = ingredients.every(i => i.ready);
-      result.push({ item, deficit, totalNeeded, priority, readiness: allReady ? 'now' : 'soon', ingredients });
+      result.push({ item, deficit, totalNeeded, priority, quests, readiness: allReady ? 'now' : 'soon', ingredients });
     }
 
     return result.sort((a, b) => {
@@ -640,7 +654,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               return (
                 <div key={item} className="px-4 py-2.5 flex items-center gap-2">
                   <Hammer size={12} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
-                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Craft: {item}</span>
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Craft: <ItemIcon item={item} />{item}</span>
                   <span className="text-xs ml-auto flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-blue)' }}>
                     ×{deficit} needed · {have}/{totalNeeded}
                   </span>
@@ -688,7 +702,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                     <div key={item}>
                       <div className="flex items-center gap-2 mb-1">
                         <Hammer size={10} style={{ color: 'var(--accent-blue)', flexShrink: 0 }} />
-                        <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                        <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                         <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           {have}/{need}
                         </span>
@@ -704,7 +718,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                                   border: `1px solid ${ready ? 'var(--accent-green-border)' : 'var(--border-subtle)'}`,
                                 }}
                               >
-                                <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>{ing}</span>
+                                <span style={{ color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}><ItemIcon item={ing} />{ing}</span>
                                 <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
                                   {haveIng}/{needed}
                                 </span>
@@ -752,7 +766,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       <div key={item} className="flex items-center justify-between gap-2 ml-4">
                         <div className="flex items-center gap-2 min-w-0">
                           <Sprout size={10} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
-                          <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                           <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : 'var(--text-muted)' }}>
                             {have}/{need}
                           </span>
@@ -801,7 +815,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                           {priority === 'nextup' && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                               next up
@@ -810,6 +824,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         </div>
                         <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           have {have} / need {totalNeeded}
+                        </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {forQuests(questsNeeding(item, priority === 'active' ? activeQuests : nextUpQuests))}
                         </div>
                       </div>
                     </div>
@@ -837,7 +854,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Crops for crafting</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {craftingCrops.map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority }) => {
+              {craftingCrops.map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority, quests }) => {
                 const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
                 const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
                 const isToday = finishAt.toDateString() === new Date().toDateString();
@@ -848,7 +865,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       <Clock size={11} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                          <span className="text-sm" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                           {priority === 'nextup' && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                               next up
@@ -862,6 +879,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         </div>
                         <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           have {have} / need {totalNeeded}
+                        </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {forQuests(quests)}
                         </div>
                       </div>
                     </div>
@@ -890,12 +910,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
             <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-orange)' }}>Things to craft</span>
           </div>
           <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-            {craftItems.map(({ item, deficit, totalNeeded, priority, readiness, ingredients }) => {
+            {craftItems.map(({ item, deficit, totalNeeded, priority, quests, readiness, ingredients }) => {
               const have = inventory[item] ?? 0;
               return (
                 <div key={item} className="px-4 py-3">
                   <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                     <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                       ×{deficit} to craft · {have}/{totalNeeded}
                     </span>
@@ -910,6 +930,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       </span>
                     )}
                   </div>
+                  <p className="text-xs -mt-1 mb-2" style={{ color: 'var(--text-muted)' }}>
+                    {forQuests(quests)}
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
                     {ingredients.map(({ item: ing, needed, have: haveIng, ready }) => (
                       <div
@@ -921,7 +944,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         }}
                       >
                         <span style={{ color: ready ? 'var(--accent-green)' : haveIng > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
-                          {ing}
+                          <ItemIcon item={ing} />{ing}
                         </span>
                         <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : haveIng > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
                           {haveIng}/{needed}
@@ -953,7 +976,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               return (
                 <div key={item} className="px-4 py-3">
                   <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                     <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                       ×{deficit} to cook · {have}/{totalNeeded}
                     </span>
@@ -979,7 +1002,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         }}
                       >
                         <span style={{ color: ready ? 'var(--accent-green)' : haveIng > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
-                          {ing}
+                          <ItemIcon item={ing} />{ing}
                         </span>
                         <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: ready ? 'var(--accent-green)' : haveIng > 0 ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>
                           {haveIng}/{needed}
@@ -1012,7 +1035,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               return (
                 <div key={item} className="px-4 py-2.5">
                   <div className="flex items-center justify-between gap-3 mb-1">
-                    <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
+                    <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <span className="text-xs" style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>{location}</span>
                       <span className="text-xs font-semibold" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--accent-yellow)' }}>
@@ -1070,7 +1093,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       }}
                     >
                       {(atMax || nearMax) && <Gift size={10} style={{ color: atMax ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />}
-                      <span className="font-medium" style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>{item}</span>
+                      <span className="font-medium" style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}><ItemIcon item={item} />{item}</span>
                       <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>{have}</span>
                     </div>
                   ))}
@@ -1135,7 +1158,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                       }}
                     >
                       {(atMax || nearMax) && <Gift size={10} style={{ color: atMax ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />}
-                      <span className="font-medium" style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}>{item}</span>
+                      <span className="font-medium" style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-secondary)' }}><ItemIcon item={item} />{item}</span>
                       <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>{have}</span>
                     </div>
                   ))}

@@ -334,7 +334,31 @@ async function syncItems() {
     }
   });
 
+  // Item icons: every item buddy.farm mentions on the fetched pages (the item
+  // itself plus drops, recipe parts, rewards…) carries its farmrpg.com image path.
+  const images = {};
+  const collectImages = node => {
+    if (Array.isArray(node)) return node.forEach(collectImages);
+    if (!node || typeof node !== 'object') return;
+    if (node.__typename === 'FarmRPG_Item' && node.name && node.image) images[node.name] = node.image;
+    Object.values(node).forEach(collectImages);
+  };
+  collectImages(pages);
+  // Icons for the rest of the items the app shows (masteries, drops, pet loot)
+  const extra = new Set([
+    ...readJson('masteries.json').map(m => m.name),
+    ...Object.keys(locations),
+    ...readJson('pets.json').flatMap(p => Object.values(p.loot).flat()),
+  ]);
+  const missing = [...extra].filter(n => !images[n] && !fetched.has(n));
+  if (missing.length) {
+    console.log(`  fetching ${missing.length} more item pages for icons…`);
+    collectImages(await mapPool(missing, async name => (await fetchPage(`i/${slugify(name)}`))?.data.farmrpg.items[0] ?? null));
+  }
+
   const sortKeys = obj => Object.fromEntries(Object.entries(obj).sort(([a], [b]) => a.localeCompare(b)));
+  console.log(`  ${Object.keys(images).length} item icons`);
+  writeJson('item-images.json', sortKeys(images));
   console.log(`  ${added} new drop locations, ${Object.keys(sources).length} items with other sources`);
   writeJson('item-locations.json', locations); // new items append, existing order kept
   writeJson('item-sources.json', sortKeys(sources));
