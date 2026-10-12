@@ -18,6 +18,18 @@ const recipeByName = new Map<string, Recipe>(allRecipes.map(r => [r.name.toLower
 const allQuestsData = questsData as Quest[];
 const npcItemsMap = new Map((npcsData as { name: string; items: string[] }[]).map(n => [n.name, n.items]));
 
+// "for Quest A, Quest B +3 more"
+function forQuests(names: string[], max = 3): string {
+  const unique = [...new Set(names)];
+  const more = unique.length - max;
+  return `for ${unique.slice(0, max).join(', ')}${more > 0 ? ` +${more} more` : ''}`;
+}
+
+function questsNeeding(item: string, quests: Quest[]): string[] {
+  const key = item.toLowerCase();
+  return quests.filter(q => parseItems(q.itemsRequired).some(p => p.item.toLowerCase() === key)).map(q => q.name);
+}
+
 // A cooking item is anything whose recipe needs a Cooking Pot — some items are
 // tagged method 'cooking' in masteries.json without actually requiring one
 // (e.g. Peach Juice), so that tag alone isn't a reliable signal.
@@ -300,7 +312,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     );
 
     const priorityOrder = { active: 0, nextup: 1, other: 2 } as const;
-    const agg = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' | 'other' }>();
+    const agg = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' | 'other'; quests: { name: string; tier: number }[] }>();
 
     for (const quest of questlineQuests) {
       const tier: 'active' | 'nextup' | 'other' = activeQuestIds.has(quest.id) ? 'active'
@@ -315,19 +327,19 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
           if (!cropTimes.some(c => c.item.toLowerCase() === ing.toLowerCase())) continue;
           const existing = agg.get(ing);
           const newPriority = !existing || priorityOrder[tier] < priorityOrder[existing.priority] ? tier : existing.priority;
-          agg.set(ing, { totalNeeded: (existing?.totalNeeded ?? 0) + ingQty * quantity, priority: newPriority });
+          agg.set(ing, { totalNeeded: (existing?.totalNeeded ?? 0) + ingQty * quantity, priority: newPriority, quests: [...(existing?.quests ?? []), { name: quest.name, tier: priorityOrder[tier] }] });
         }
       }
     }
 
     return [...agg.entries()]
-      .flatMap(([item, { totalNeeded, priority }]) => {
+      .flatMap(([item, { totalNeeded, priority, quests }]) => {
         const have = inventory[item] ?? 0;
         const deficit = totalNeeded - have;
         if (deficit <= 0) return [];
         const crop = cropTimes.find(c => c.item.toLowerCase() === item.toLowerCase())!;
         const grows = calcGrowsNeeded(deficit, plotCount);
-        return [{ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes, priority }];
+        return [{ item, have, totalNeeded, grows, growMinutes: crop.growMinutes, totalMinutes: grows * crop.growMinutes, priority, quests: [...quests].sort((a, b) => a.tier - b.tier).map(q => q.name) }];
       })
       .sort((a, b) => {
         if (priorityOrder[a.priority] !== priorityOrder[b.priority]) return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -813,6 +825,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           have {have} / need {totalNeeded}
                         </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {forQuests(questsNeeding(item, priority === 'active' ? activeQuests : nextUpQuests))}
+                        </div>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0">
@@ -839,7 +854,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
               <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-blue)' }}>Crops for crafting</span>
             </div>
             <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
-              {craftingCrops.map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority }) => {
+              {craftingCrops.map(({ item, have, totalNeeded, grows, growMinutes, totalMinutes, priority, quests }) => {
                 const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
                 const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
                 const isToday = finishAt.toDateString() === new Date().toDateString();
@@ -864,6 +879,9 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                         </div>
                         <div className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>
                           have {have} / need {totalNeeded}
+                        </div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                          {forQuests(quests)}
                         </div>
                       </div>
                     </div>
@@ -913,7 +931,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                     )}
                   </div>
                   <p className="text-xs -mt-1 mb-2" style={{ color: 'var(--text-muted)' }}>
-                    for {quests.join(', ')}
+                    {forQuests(quests)}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {ingredients.map(({ item: ing, needed, have: haveIng, ready }) => (
