@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle, Gem, ChevronRight, Coins } from 'lucide-react';
 import towerLevelsData from '../data/tower-levels.json';
+import { nextTowerUnlock } from '../questUnlocks';
 import towerArtifactsData from '../data/tower-artifacts.json';
 import masteriesData from '../data/masteries.json';
 import { useStore, ENRICHED_SOIL_FLOOR } from '../store';
@@ -203,7 +204,13 @@ function LevelCard({
 const SHOW_AHEAD = 10;
 
 export function TheTowerPage() {
-  const { towerLevel, setTowerLevel, masteryLevels } = useStore();
+  const { towerLevel, setTowerLevel, masteryLevels, player, questStatuses } = useStore();
+
+  // Nearest floor that opens quests you otherwise qualify for
+  const questUnlock = useMemo(
+    () => nextTowerUnlock({ player, questStatuses, towerLevel }),
+    [player, questStatuses, towerLevel]
+  );
   const [showAll, setShowAll] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [editing, setEditing] = useState(false);
@@ -309,6 +316,22 @@ export function TheTowerPage() {
               {upcomingLevels.length}
             </span>
           </div>
+
+          {questUnlock && (
+            <div
+              className="flex flex-col px-3 py-2 rounded-lg"
+              style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
+              title={`Opens: ${questUnlock.quests.map((q) => q.name).join(', ')}`}
+            >
+              <span className="text-[10px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>Next Quest Unlock</span>
+              <span className="text-lg font-bold" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>
+                Floor {questUnlock.level}
+                <span className="text-xs font-semibold ml-1.5">
+                  +{questUnlock.quests.length} quest{questUnlock.quests.length !== 1 ? 's' : ''}
+                </span>
+              </span>
+            </div>
+          )}
 
           <div
             className="flex flex-col px-3 py-2 rounded-lg"

@@ -11,6 +11,7 @@ import {
 import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
 import { getPrereq, getUnlocks, chainLabel } from '../questChains';
+import { getQuestBlockers, describeBlockers } from '../questUnlocks';
 import recipesData from '../data/recipes.json';
 import { resolveRawIngredients } from '../utils';
 import { ItemLocationPanel } from './ItemLocationPanel';
@@ -1153,6 +1154,17 @@ export function QuestFocusPage() {
     return { startsAfter: before, leadsTo: [...after] };
   }, [quests]);
 
+  // What's holding back the next quest in this line that isn't active yet
+  // (an active quest it waits on is skipped — finishing that is already the plan)
+  const nextBlocked = useMemo(() => {
+    const next = quests.find((q) => questStatuses[q.id] !== 'completed' && questStatuses[q.id] !== 'active');
+    if (!next) return undefined;
+    const blockers = getQuestBlockers(next, { player, questStatuses, towerLevel });
+    if (blockers.prereq && questStatuses[blockers.prereq.id] === 'active') blockers.prereq = undefined;
+    const steps = describeBlockers(blockers, towerLevel, trackedQuestline);
+    return steps.length > 0 ? { quest: next, steps } : undefined;
+  }, [quests, player, questStatuses, towerLevel, trackedQuestline]);
+
   // Share of the remaining quests' items already gathered (each item counts
   // equally, so one 3,000-stack doesn't drown out everything else)
   const itemsGatheredPct = useMemo(() => {
@@ -1303,6 +1315,11 @@ export function QuestFocusPage() {
                 {startsAfter && <>⛓️ Starts after {chainLabel(startsAfter, trackedQuestline)}</>}
                 {startsAfter && leadsTo.length > 0 && ' · '}
                 {leadsTo.length > 0 && <>Leads to <span style={{ color: 'var(--accent-purple)' }}>{leadsTo.join(', ')}</span></>}
+              </p>
+            )}
+            {nextBlocked && (
+              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                🔓 To open {nextBlocked.quest.name}: <span style={{ color: 'var(--accent-purple)' }}>{nextBlocked.steps.join(' · ')}</span>
               </p>
             )}
           </div>
