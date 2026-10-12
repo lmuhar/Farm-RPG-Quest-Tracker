@@ -1,6 +1,7 @@
 import masteriesData from './data/masteries.json';
 import recipesData from './data/recipes.json';
 import { itemLocations } from './data/itemSources';
+import { PASSIVE_INPUTS } from './data/passiveMaterials';
 import type { CropTime } from './types';
 
 // Plans the next 10k / 100k mastery milestones (10 and 100 Ascension Points),
@@ -21,7 +22,7 @@ const GATHER_TYPE: Record<string, string> = { fishing: 'fishing', exploring: 'ex
 const GATHER_VERB: Record<string, string> = { fishing: 'casts', explore: 'explores', mining: 'digs' };
 
 // Materials that refill on their own (farm buildings, daily resets)
-export const PASSIVE_MATERIALS = new Set(['Wood', 'Stone', 'Nails', 'Straw', 'Iron', 'Worms', 'Grubs', 'Minnows', 'Coal', 'Eggs', 'Milk', 'Feathers']);
+export const PASSIVE_MATERIALS = new Set([...PASSIVE_INPUTS, 'Coal', 'Eggs', 'Milk', 'Feathers']);
 
 export const MILESTONE_PTS = [10, 100] as const;
 

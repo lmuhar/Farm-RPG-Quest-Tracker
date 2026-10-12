@@ -12,6 +12,7 @@ import { RARE_ITEMS, PET_ONLY_ITEMS, isFarmableItem } from '../data/bottlenecks'
 import { resolveRawIngredients } from '../utils';
 import { Fish, AlertTriangle, TrendingUp, Compass, Link2 } from 'lucide-react';
 import { ItemIcon } from './ItemIcon';
+import { PASSIVE_INPUTS } from '../data/passiveMaterials';
 
 const allQuestsData = questsData as Quest[];
 
@@ -43,7 +44,7 @@ const fishingSpots: { spot: string; fish: string[] }[] = (() => {
     .sort((a, b) => b.fish.length - a.fish.length);
 })();
 
-// Crafting masteries using only passive inputs (Wood, Stone, Nails, Straw, Iron, Worms, Grubs, Minnows)
+// Crafting masteries using only passive inputs (see PASSIVE_INPUTS)
 const PASSIVE_100K_NAMES = [
   'Awl', 'Board', 'Broom', 'Bucket', 'Butter Churn', 'Chum',
   'Fancy Pipe', 'Horseshoe', 'Iron Cup', 'Iron Ring',
@@ -72,8 +73,6 @@ interface RawRecipe { id: string; name: string; ingredients: { item: string; qua
 const allRawRecipes = recipesData as RawRecipe[];
 const rawRecipeMap = new Map<string, RawRecipe>(allRawRecipes.map((r) => [r.name.toLowerCase(), r]));
 
-// Auto-regenerating materials — no dedicated farming trip needed for these
-const PASSIVE_BASE_MATERIALS = new Set(['Wood', 'Stone', 'Nails', 'Straw', 'Iron', 'Worms', 'Grubs', 'Minnows']);
 
 // Every crafting mastery with a known recipe — the resolvable set for material/location guidance
 const CRAFTABLE_MASTERY_NAMES = craftingMasteries
@@ -272,7 +271,7 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
     const entries: { candidate: Candidate; bestLocs: string[] }[] = [];
     const unlocatedItems: string[] = [];
     for (const c of push10kCandidates) {
-      const mats = [...c.raw.keys()].filter((m) => !PASSIVE_BASE_MATERIALS.has(m));
+      const mats = [...c.raw.keys()].filter((m) => !PASSIVE_INPUTS.has(m));
       if (mats.length === 0) continue; // fully passive item, no location needed
       const matLocSets = mats.map(
         (m) => new Set((itemLocations[m] ?? []).filter((l) => l.type === 'explore').map((l) => l.name))

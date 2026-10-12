@@ -6,6 +6,7 @@ import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import masteriesData from '../data/masteries.json';
 import { ItemIcon } from './ItemIcon';
+import { PASSIVE_INPUTS } from '../data/passiveMaterials';
 
 interface Recipe {
   id: string;
@@ -22,9 +23,6 @@ const cookingItemNames = new Set(
 const allRecipes = recipesData as Recipe[];
 const builtInRecipeMap = new Map<string, Recipe>(allRecipes.map((r) => [r.name.toLowerCase(), r]));
 
-// Items that regenerate automatically without player intervention.
-// Craftworks slots that use ONLY these as raw inputs will self-sustain indefinitely.
-const PASSIVE_INPUTS = new Set(['Wood', 'Stone', 'Nails', 'Straw', 'Worms', 'Grubs', 'Minnows', 'Iron']);
 
 interface Candidate {
   item: string;
@@ -727,7 +725,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <RefreshCw size={10} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
           <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-            Wood · Stone · Nails · Straw · Iron · Worms · Grubs · Minnows regenerate automatically — items using only these keep Craftworks running without intervention
+            {[...PASSIVE_INPUTS].join(' · ')} regenerate automatically — items using only these keep Craftworks running without intervention
           </span>
         </div>
         {suggestions.length > craftworksSlots && (
