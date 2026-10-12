@@ -68,8 +68,8 @@ export interface Progress { level: number; count: number; target: number }
 
 function masteryOf(item: string, levels: Record<string, number>, progress: Record<string, number>): Progress | null {
   const level = levels[item] ?? 0;
-  if (!masteryNames.has(item) || level >= 2) return null;
-  return { level, count: progress[item] ?? 0, target: level === 0 ? 10_000 : 100_000 };
+  if (!masteryNames.has(item) || level >= 3) return null;
+  return { level, count: progress[item] ?? 0, target: level === 0 ? 10_000 : level === 1 ? 100_000 : 1_000_000 };
 }
 
 export interface DropPlan {
@@ -85,6 +85,7 @@ export interface DropPlan {
 export interface SlotPlan {
   output: string;
   crafts: number;
+  reason: 'overflow' | 'mastery';
   uses: { item: string; qty: number; overflow: boolean }[];
   absorbed: number;      // overflow units this line uses up
   mastery: Progress | null;
@@ -136,50 +137,69 @@ export function planRun(input: RunInput): RunPlan {
   const spareLeft = new Map<string, number>();
   const takeable = (item: string) => spareLeft.get(item) ?? spare(item);
 
-  const candidates = input.recipes.filter((r) =>
-    !cookingNames.has(r.name)
-    && !r.ingredients.some((i) => i.item.toLowerCase() === 'cooking pot')
-    && r.ingredients.some((i) => overflow.has(i.item)));
+  const craftable = input.recipes.filter((r) =>
+    !cookingNames.has(r.name) && !r.ingredients.some((i) => i.item.toLowerCase() === 'cooking pot'));
+  const candidates = craftable.filter((r) => r.ingredients.some((i) => overflow.has(i.item)));
+
+  // Most crafts a recipe can run on spare stock without its output going over the cap
+  const maxCrafts = (r: Recipe) => Math.min(
+    Math.max(0, cap - (inventory[r.name] ?? 0)),
+    ...r.ingredients.map((i) => Math.floor(takeable(i.item) / i.quantity)),
+  );
 
   const slots: SlotPlan[] = [];
   const wastedBefore = [...overflow.values()].reduce((a, b) => a + b, 0);
-  for (let s = 0; s < input.slotCount; s++) {
-    let best: { slot: SlotPlan; score: number } | null = null;
-    for (const r of candidates) {
-      if (slots.some((x) => x.output === r.name)) continue;
-      // Crafts needed to use up the overflow, capped by helper ingredients and room for the output
-      let crafts = Math.min(...r.ingredients.map((i) => Math.floor(takeable(i.item) / i.quantity)));
-      crafts = Math.min(crafts, Math.max(0, cap - (inventory[r.name] ?? 0)));
-      const toClear = Math.max(0, ...r.ingredients
-        .filter((i) => (overflow.get(i.item) ?? 0) > 0)
-        .map((i) => Math.ceil(overflow.get(i.item)! / i.quantity)));
-      crafts = Math.min(crafts, toClear);
-      if (crafts <= 0) continue;
-      const absorbed = r.ingredients.reduce((sum, i) => sum + Math.min(overflow.get(i.item) ?? 0, i.quantity * crafts), 0);
-      const mastery = masteryOf(r.name, masteryLevels, masteryProgress);
-      // Prefer lines made mostly of overflow and self-refilling materials over ones that eat
-      // other stock, and count a line that moves a mastery toward its next milestone up to double
-      const total = r.ingredients.reduce((sum, i) => sum + i.quantity, 0);
-      const free = r.ingredients.reduce((sum, i) => sum + (overflow.has(i.item) || PASSIVE_MATERIALS.has(i.item) ? i.quantity : 0), 0);
-      const score = absorbed * (0.5 + 0.5 * free / total) * (mastery ? 1 + mastery.count / mastery.target : 1);
-      if (!best || score > best.score) {
-        best = {
-          score,
-          slot: {
-            output: r.name, crafts, absorbed, mastery,
-            hitsMilestone: !!mastery && mastery.count + crafts >= mastery.target,
-            uses: r.ingredients.map((i) => ({ item: i.item, qty: i.quantity * crafts, overflow: overflow.has(i.item) })),
-          },
-        };
+  const fill = (pool: Recipe[], evaluate: (r: Recipe) => { slot: SlotPlan; score: number } | null) => {
+    while (slots.length < input.slotCount) {
+      let best: { slot: SlotPlan; score: number } | null = null;
+      for (const r of pool) {
+        if (slots.some((x) => x.output === r.name)) continue;
+        const option = evaluate(r);
+        if (option && (!best || option.score > best.score)) best = option;
+      }
+      if (!best) return;
+      slots.push(best.slot);
+      for (const u of best.slot.uses) {
+        spareLeft.set(u.item, takeable(u.item) - u.qty);
+        if (overflow.has(u.item)) overflow.set(u.item, Math.max(0, overflow.get(u.item)! - u.qty));
       }
     }
-    if (!best) break;
-    slots.push(best.slot);
-    for (const u of best.slot.uses) {
-      spareLeft.set(u.item, takeable(u.item) - u.qty);
-      if (overflow.has(u.item)) overflow.set(u.item, Math.max(0, overflow.get(u.item)! - u.qty));
-    }
-  }
+  };
+  const slotFor = (r: Recipe, crafts: number, reason: SlotPlan['reason'], mastery: Progress | null): SlotPlan => ({
+    output: r.name, crafts, reason, mastery,
+    absorbed: r.ingredients.reduce((sum, i) => sum + Math.min(overflow.get(i.item) ?? 0, i.quantity * crafts), 0),
+    hitsMilestone: !!mastery && mastery.count + crafts >= mastery.target,
+    uses: r.ingredients.map((i) => ({ item: i.item, qty: i.quantity * crafts, overflow: (overflow.get(i.item) ?? 0) > 0 })),
+  });
+
+  // 1. Use up what the run would push over the cap
+  fill(candidates, (r) => {
+    const toClear = Math.max(0, ...r.ingredients
+      .filter((i) => (overflow.get(i.item) ?? 0) > 0)
+      .map((i) => Math.ceil(overflow.get(i.item)! / i.quantity)));
+    const crafts = Math.min(maxCrafts(r), toClear);
+    if (crafts <= 0) return null;
+    const mastery = masteryOf(r.name, masteryLevels, masteryProgress);
+    const slot = slotFor(r, crafts, 'overflow', mastery);
+    // Prefer lines made mostly of overflow and self-refilling materials over ones that eat
+    // other stock, and count a line that moves a mastery toward its next milestone up to double
+    const total = r.ingredients.reduce((sum, i) => sum + i.quantity, 0);
+    const free = r.ingredients.reduce((sum, i) => sum + (overflow.has(i.item) || PASSIVE_MATERIALS.has(i.item) ? i.quantity : 0), 0);
+    return { slot, score: slot.absorbed * (0.5 + 0.5 * free / total) * (mastery ? 1 + mastery.count / mastery.target : 1) };
+  });
+
+  // 2. Fill the remaining slots with mastery pushes from spare stock: lines that reach their
+  // next milestone first, then the closest to it, with a nudge for ones fed by this run's drops
+  // (10k/100k, which earn AP, ahead of 1M)
+  fill(craftable, (r) => {
+    const mastery = masteryOf(r.name, masteryLevels, masteryProgress);
+    if (!mastery) return null;
+    const crafts = Math.min(maxCrafts(r), mastery.target - mastery.count);
+    if (crafts <= 0) return null;
+    const slot = slotFor(r, crafts, 'mastery', mastery);
+    const fedByRun = r.ingredients.some((i) => (gainOf.get(i.item) ?? 0) >= 1);
+    return { slot, score: (slot.hitsMilestone ? 4 : 0) + 2 * mastery.count / mastery.target + (fedByRun ? 1 : 0) + (mastery.level < 2 ? 1 : 0) };
+  });
 
   const sinkable = new Set(candidates.flatMap((r) => r.ingredients.map((i) => i.item)));
   return {
