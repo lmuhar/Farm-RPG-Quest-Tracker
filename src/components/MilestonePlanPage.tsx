@@ -5,6 +5,7 @@ import { buildMilestonePlan } from '../milestonePlan';
 import type { CraftPlan, GatherPlan, Material } from '../milestonePlan';
 import { itemLocations, formatRate, sourceHint } from '../data/itemSources';
 import { formatDuration } from '../utils';
+import { runLocations } from '../farmingRun';
 
 type SortMode = 'easiest' | 'value';
 type TierFilter = 'all' | '10k' | '100k';
@@ -37,14 +38,33 @@ function sortCrafts(list: CraftPlan[], mode: SortMode): CraftPlan[] {
   });
 }
 
+const runLocationNames = new Set(runLocations.map((l) => l.name));
+
+type OpenLocation = (location: string) => void;
+
+// Location name that opens it on the Farming Run page
+function LocationLink({ name, onOpen }: { name: string; onOpen?: OpenLocation }) {
+  if (!onOpen || !runLocationNames.has(name)) return <>{name}</>;
+  return (
+    <button
+      onClick={() => onOpen(name)}
+      title="Plan a Farming Run here"
+      className="underline decoration-dotted underline-offset-2 hover:opacity-80"
+      style={{ color: 'var(--accent-blue)' }}
+    >
+      {name}
+    </button>
+  );
+}
+
 // Where to get a material, best source first
-function whereToGet(item: string): string | null {
+function WhereToGet({ item, onOpen }: { item: string; onOpen?: OpenLocation }) {
   let best: { name: string; type: string; rate: number } | null = null;
   for (const loc of itemLocations[item] ?? []) {
     if (loc.rate && (!best || loc.rate < best.rate)) best = { name: loc.name, type: loc.type, rate: loc.rate };
   }
-  if (best) return `${best.name} (${formatRate(best.rate)})`;
-  return sourceHint(item);
+  if (best) return <><LocationLink name={best.name} onOpen={onOpen} /> ({formatRate(best.rate)})</>;
+  return <>{sourceHint(item)}</>;
 }
 
 function formatLong(minutes: number) {
@@ -74,8 +94,8 @@ function Bar({ pct, color }: { pct: number; color: string }) {
   );
 }
 
-function MaterialRow({ m }: { m: Material }) {
-  const where = m.short > 0 ? (m.passive ? 'refills on its own' : whereToGet(m.item)) : null;
+function MaterialRow({ m, onOpen }: { m: Material; onOpen?: OpenLocation }) {
+  const where = m.short > 0 ? (m.passive ? 'refills on its own' : <WhereToGet item={m.item} onOpen={onOpen} />) : null;
   return (
     <div className="flex items-baseline gap-2 text-xs">
       <span className="min-w-0 flex-1 truncate" style={{ color: m.short > 0 ? 'var(--text-primary)' : 'var(--accent-green)' }}>
@@ -89,7 +109,7 @@ function MaterialRow({ m }: { m: Material }) {
   );
 }
 
-function CraftCard({ plan }: { plan: CraftPlan }) {
+function CraftCard({ plan, onOpen }: { plan: CraftPlan; onOpen?: OpenLocation }) {
   const [open, setOpen] = useState(false);
   const hits = plan.chain.filter((s) => s.pts > 0);
   const extra = plan.chain.filter((s) => s.pts === 0);
@@ -147,7 +167,7 @@ function CraftCard({ plan }: { plan: CraftPlan }) {
           <p className="text-[10px] uppercase tracking-wider font-semibold pt-1" style={{ color: 'var(--text-muted)' }}>
             {open ? 'All materials (have/need)' : 'Still need (have/need)'}
           </p>
-          {shownMats.map((m) => <MaterialRow key={m.item} m={m} />)}
+          {shownMats.map((m) => <MaterialRow key={m.item} m={m} onOpen={onOpen} />)}
         </div>
       )}
 
@@ -167,7 +187,7 @@ function CraftCard({ plan }: { plan: CraftPlan }) {
   );
 }
 
-function GatherRow({ plan }: { plan: GatherPlan }) {
+function GatherRow({ plan, onOpen }: { plan: GatherPlan; onOpen?: OpenLocation }) {
   const pct = Math.min(1, plan.progress.count / plan.target);
   return (
     <div className="px-4 py-2.5">
@@ -182,14 +202,14 @@ function GatherRow({ plan }: { plan: GatherPlan }) {
       </div>
       <Bar pct={pct} color={TIER_COLOR[plan.pts]} />
       <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
-        {METHOD_LABELS[plan.method]} · {plan.location} · ≈ {plan.effortLabel}
+        {METHOD_LABELS[plan.method]} · {plan.location && <LocationLink name={plan.location} onOpen={onOpen} />} · ≈ {plan.effortLabel}
         {plan.minutes != null && <> · {formatLong(plan.minutes)}</>}
       </p>
     </div>
   );
 }
 
-export function MilestonePlanPage() {
+export function MilestonePlanPage({ onOpenLocation }: { onOpenLocation?: OpenLocation }) {
   const { masteryLevels, masteryProgress, inventory, cropTimes, plotCount } = useStore();
   const [sort, setSort] = useState<SortMode>('easiest');
   const [tier, setTier] = useState<TierFilter>('all');
@@ -295,7 +315,7 @@ export function MilestonePlanPage() {
           <Link2 size={13} /> Crafting chains <span style={{ color: 'var(--text-muted)' }}>({crafts.length})</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2">
-          {crafts.slice(0, craftLimit).map((p) => <CraftCard key={p.item} plan={p} />)}
+          {crafts.slice(0, craftLimit).map((p) => <CraftCard key={p.item} plan={p} onOpen={onOpenLocation} />)}
         </div>
         {crafts.length > craftLimit && (
           <button onClick={() => setCraftLimit((n) => n + 24)} className="w-full text-xs py-2 rounded-lg" style={{ color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}>
@@ -311,7 +331,7 @@ export function MilestonePlanPage() {
           <span className="text-[11px] ml-auto" style={{ color: 'var(--text-muted)' }}>fewest actions first · crops on {plotCount} plots</span>
         </div>
         <div className="divide-y" style={{ background: 'var(--surface-card)', borderColor: 'var(--border-subtle)' }}>
-          {gathers.slice(0, gatherLimit).map((p) => <GatherRow key={p.item} plan={p} />)}
+          {gathers.slice(0, gatherLimit).map((p) => <GatherRow key={p.item} plan={p} onOpen={onOpenLocation} />)}
         </div>
         {gathers.length > gatherLimit && (
           <button onClick={() => setGatherLimit((n) => n + 20)} className="w-full text-xs py-2" style={{ color: 'var(--text-muted)', background: 'var(--surface-card)', borderTop: '1px solid var(--border-subtle)' }}>
