@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users, LockOpen, Building2, Link2 } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns, resolveRawIngredients } from '../utils';
 import type { Quest } from '../types';
@@ -8,6 +8,7 @@ import questsData from '../data/quests.json';
 import npcsData from '../data/npcs.json';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
+import { getUnlockSuggestions } from '../questUnlocks';
 import type { BottleneckEntry } from './BottleneckPanel';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
@@ -563,6 +564,11 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     return results.sort((a, b) => b.pctReady - a.pctReady);
   }, [activeQuests, inventory, recipeMap, cropTimes, plotCount, inventoryMax]);
 
+  const unlockSuggestions = useMemo(
+    () => getUnlockSuggestions({ player, questStatuses, towerLevel }),
+    [player, questStatuses, towerLevel],
+  );
+
   const growDoneLabel = (totalMinutes: number) => {
     const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
     const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -572,6 +578,45 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
 
   return (
     <div className="space-y-4">
+      {/* Unlock more quests */}
+      {unlockSuggestions.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-purple-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
+            <LockOpen size={13} style={{ color: 'var(--accent-purple)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-purple)' }}>Unlock more quests</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {unlockSuggestions.map((s) => {
+              const fromLine = s.kind === 'quest' ? s.quest.questline : '';
+              const shown = s.quests.slice(0, 3).map((q) => (q.questline && q.questline !== fromLine && s.kind === 'quest' ? `${q.name} (${q.questline})` : q.name));
+              const more = s.quests.length - shown.length;
+              return (
+                <div key={s.kind === 'tower' ? 'tower' : s.quest.id} className="px-4 py-2.5">
+                  <div className="flex items-center gap-2">
+                    {s.kind === 'tower'
+                      ? <Building2 size={12} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />
+                      : <Link2 size={12} style={{ color: 'var(--accent-purple)', flexShrink: 0 }} />}
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                      {s.kind === 'tower' ? `Climb to Tower ${s.level}` : `Finish ${s.quest.name}`}
+                    </span>
+                    <span className="text-xs ml-auto flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-purple)' }}>
+                      +{s.quests.length} quest{s.quests.length !== 1 ? 's' : ''}
+                      {s.kind === 'tower' && ` · ${s.floorsAway} floor${s.floorsAway !== 1 ? 's' : ''} away`}
+                    </span>
+                  </div>
+                  <p className="text-xs mt-0.5 ml-5" style={{ color: 'var(--text-muted)' }}>
+                    Opens {shown.join(', ')}{more > 0 && ` +${more} more`}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Do right now */}
       {hasDoNow && (
         <div
