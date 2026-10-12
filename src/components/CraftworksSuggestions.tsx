@@ -5,6 +5,7 @@ import { parseItems, resolveRawIngredients } from '../utils';
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import masteriesData from '../data/masteries.json';
+import { ItemIcon } from './ItemIcon';
 
 interface Recipe {
   id: string;
@@ -672,7 +673,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
                                 <div className="space-y-1">
                                   {candidate.recipe.ingredients.map(({ item: ing, quantity: ingQty }) => (
                                     <div key={ing} className="flex items-center justify-between gap-2 text-xs">
-                                      <span style={{ color: 'var(--text-secondary)' }}>{ing}</span>
+                                      <span style={{ color: 'var(--text-secondary)' }}><ItemIcon item={ing} />{ing}</span>
                                       <span className="tabular-nums font-medium" style={{ color: 'var(--accent-green)' }}>×{ingQty}</span>
                                     </div>
                                   ))}
@@ -690,7 +691,7 @@ export function CraftworksSuggestions({ quests, nextUpQuests = [], questlineOnly
                                       <div key={ing} className="flex items-center justify-between gap-2 text-xs">
                                         <span className="flex items-center gap-1 truncate" style={{ color: ok ? 'var(--text-secondary)' : 'var(--accent-orange)' }}>
                                           {isPassiveIng && <RefreshCw size={9} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />}
-                                          {ing}
+                                          <ItemIcon item={ing} />{ing}
                                         </span>
                                         <span className="tabular-nums flex-shrink-0 font-medium" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
                                           {haveNow.toLocaleString()} / {totalNeeded.toLocaleString()}

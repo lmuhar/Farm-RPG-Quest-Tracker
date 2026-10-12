@@ -21,6 +21,7 @@ import { itemLocations, bestDrop, formatRate, sourceHint } from '../data/itemSou
 import { borgenOffers } from '../borgenShop';
 import { RARE_ITEMS, PET_ONLY_ITEMS, findTowerLevel, isFarmableItem } from '../data/bottlenecks';
 import { BottleneckPanel } from './BottleneckPanel';
+import { ItemIcon } from './ItemIcon';
 
 const allQuestsData = questsData as Quest[];
 
@@ -221,7 +222,7 @@ function TierItemRow({
       <div className="flex items-start justify-between gap-3 mb-1.5">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+            <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
 
             {/* Craft tier badge */}
             {(tier === 'directCraft' || tier === 'rawCraft') && (
@@ -287,7 +288,7 @@ function TierItemRow({
                     const haveIng = inventory[ing] ?? 0;
                     const ok = haveIng >= qty;
                     return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
-                      {ok ? '✓' : '→'} {ing} {haveIng.toLocaleString()}/{qty.toLocaleString()}
+                      {ok ? '✓' : '→'} <ItemIcon item={ing} />{ing} {haveIng.toLocaleString()}/{qty.toLocaleString()}
                     </span>;
                   })}
                 </div>
@@ -311,7 +312,7 @@ function TierItemRow({
                   const haveIng = inventory[ing] ?? 0;
                   const ok = haveIng >= qty;
                   return <span key={ing} className="text-xs" style={{ color: ok ? 'var(--accent-green)' : 'var(--accent-orange)', fontFamily: 'var(--font-mono)' }}>
-                    {ok ? '✓' : '✗'} {ing} {haveIng.toLocaleString()}/{qty.toLocaleString()}
+                    {ok ? '✓' : '✗'} <ItemIcon item={ing} />{ing} {haveIng.toLocaleString()}/{qty.toLocaleString()}
                   </span>;
                 })}
               </div>
@@ -480,7 +481,7 @@ function ShoppingList({ items, inventory }: { items: ItemData[]; inventory: Reco
           const hint = gatherHint(item, shortfall);
           return (
             <div key={item} className="flex items-baseline gap-2 text-xs">
-              <span className="font-medium" style={{ color: 'var(--text-primary)', minWidth: 0 }}>{item}</span>
+              <span className="font-medium" style={{ color: 'var(--text-primary)', minWidth: 0 }}><ItemIcon item={item} />{item}</span>
               <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
                 {have.toLocaleString()}/{total.toLocaleString()}
               </span>
@@ -675,7 +676,7 @@ function SummaryPanel({
           <span className="text-[10px] font-semibold uppercase tracking-wider w-full" style={{ color: 'var(--accent-green)', opacity: 0.7 }}>stocked</span>
           {tiers.done.map(({ item, quantity, have }) => (
             <span key={item} className="text-xs inline-flex items-center gap-1" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
-              ✓ {item} ×{quantity.toLocaleString()}
+              ✓ <ItemIcon item={item} />{item} ×{quantity.toLocaleString()}
               {have >= inventoryMax && (
                 <span className="text-[9px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>AT CAP</span>
               )}
@@ -754,7 +755,7 @@ function GatheringPanel({
               <div key={item} className="px-5 py-2.5" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                 <div className="flex items-center justify-between gap-3 mb-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                    <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                     {rate && (
                       <span className="text-[11px]" style={{ color: 'var(--text-muted)' }} title="buddy.farm average drop rate here">
                         {formatRate(rate)} · ~{Math.ceil((quantity - have) * rate).toLocaleString()} {ATTEMPT_NOUN[type] ?? 'attempts'}
@@ -988,7 +989,7 @@ function QuestSection({
                   style={{ borderBottom: '1px solid var(--border-subtle)', background: 'var(--accent-green-bg)' }}>
                   {tiers.done.map(({ item, quantity, have }) => (
                     <span key={item} className="text-xs inline-flex items-center gap-1" style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>
-                      ✓ {item} ×{quantity.toLocaleString()}
+                      ✓ <ItemIcon item={item} />{item} ×{quantity.toLocaleString()}
                       {have >= inventoryMax && (
                         <span className="text-[9px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--accent-orange-bg)', color: 'var(--accent-orange)', border: '1px solid var(--accent-orange-border)' }}>AT CAP</span>
                       )}
@@ -1008,7 +1009,7 @@ function QuestSection({
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 {rewards.map(({ item, quantity }) => (
                   <span key={item} className="text-xs inline-flex items-center gap-1" style={{ color: 'var(--accent-purple)', fontFamily: 'var(--font-mono)' }}>
-                    {quantity.toLocaleString()}x {item}
+                    {quantity.toLocaleString()}x <ItemIcon item={item} />{item}
                     {neededElsewhere.has(item) && (
                       <span className="text-[9px] font-bold px-1 py-0.5 rounded" style={{ background: 'var(--accent-purple-bg)', color: 'var(--accent-purple)', border: '1px solid var(--accent-purple-border)' }}>
                         needed elsewhere

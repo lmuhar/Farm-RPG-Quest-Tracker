@@ -4,6 +4,7 @@ import questsData from '../data/quests.json';
 import type { Quest } from '../types';
 import { useStore } from '../store';
 import { parseItems, getQuestStatus, compareQuests } from '../utils';
+import { ItemIcon } from './ItemIcon';
 
 const allQuests = questsData as Quest[];
 
@@ -305,7 +306,7 @@ export function InventoryPage() {
                               color: isLookedUp ? 'var(--accent-purple)' : 'var(--text-primary)',
                             }}
                           >
-                            {item}
+                            <ItemIcon item={item} />{item}
                           </p>
                           {/* Inline quest context — visible without clicking */}
                           {isMissing && activeNeed && (

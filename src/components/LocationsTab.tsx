@@ -5,6 +5,7 @@ import { parseItems } from '../utils';
 import { useStore } from '../store';
 import locationData from '../data/item-locations.json';
 import wishingWellData from '../data/wishing-well.json';
+import { ItemIcon } from './ItemIcon';
 
 const locations = locationData as Record<string, { name: string; type: string }[]>;
 
@@ -119,7 +120,7 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
                   className="text-sm"
                   style={{ color: done ? 'var(--text-muted)' : 'var(--text-primary)', textDecoration: done ? 'line-through' : undefined }}
                 >
-                  {item}
+                  <ItemIcon item={item} />{item}
                 </span>
                 <span
                   className="text-xs font-semibold flex-shrink-0"
@@ -163,7 +164,7 @@ export function LocationsTab({ activeQuests, nextUpQuests }: Props) {
               <div key={item}>
                 {/* Output item header */}
                 <div className="px-4 py-2.5 flex items-center justify-between gap-3" style={{ background: 'var(--surface-inset)' }}>
-                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item}</span>
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
                   <span className="text-sm font-semibold flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: have >= needed.totalNeeded ? 'var(--accent-green)' : 'var(--accent-orange)' }}>
                     {have}/{needed.totalNeeded} needed
                   </span>

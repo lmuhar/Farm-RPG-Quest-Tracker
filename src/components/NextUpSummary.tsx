@@ -5,6 +5,7 @@ import { parseItems, formatDuration, calcGrowsNeeded, calcHoneyRuns, calcCutlass
 import { useStore } from '../store';
 import recipesData from '../data/recipes.json';
 import { ItemLocationPanel } from './ItemLocationPanel';
+import { ItemIcon } from './ItemIcon';
 
 interface Recipe {
   id: string;
@@ -118,7 +119,7 @@ export function NextUpSummary({ quests }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-body)' }}>
-                          {item}
+                          <ItemIcon item={item} />{item}
                         </span>
                         <button
                           onClick={(e) => toggleLocation(item, e)}

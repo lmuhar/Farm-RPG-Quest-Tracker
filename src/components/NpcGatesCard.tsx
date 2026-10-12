@@ -5,6 +5,7 @@ import { useStore } from '../store';
 import { getQuestStatus, compareQuests, parseItems } from '../utils';
 import questsData from '../data/quests.json';
 import npcsData from '../data/npcs.json';
+import { ItemIcon } from './ItemIcon';
 
 const allQuests = questsData as Quest[];
 const npcFavorites = npcsData as { name: string; items: string[] }[];
@@ -237,7 +238,7 @@ export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
                                   : { background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }
                               }
                             >
-                              {item}{have > 0 ? ` ×${have}` : ''}
+                              <ItemIcon item={item} />{item}{have > 0 ? ` ×${have}` : ''}
                             </span>
                             <span className="text-[10px]" style={{ color: labelColor }}>
                               {label}: {quests.slice(0, 2).join(', ')}{quests.length > 2 ? ` +${quests.length - 2} more` : ''}
@@ -269,7 +270,7 @@ export function NpcGatesCard({ activeQuests, questlineGroups }: Props) {
                                   : { background: 'var(--surface-card)', color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)' }
                               }
                             >
-                              {item}{have > 0 ? ` ×${have}` : ''}
+                              <ItemIcon item={item} />{item}{have > 0 ? ` ×${have}` : ''}
                             </span>
                           );
                         })}

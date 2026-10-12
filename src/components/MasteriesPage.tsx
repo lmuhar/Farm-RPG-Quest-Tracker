@@ -3,6 +3,7 @@ import { Search, X, Trophy, Star, Zap, TrendingUp, Sprout } from 'lucide-react';
 import masteriesData from '../data/masteries.json';
 import { useStore } from '../store';
 import { formatDuration } from '../utils';
+import { ItemIcon } from './ItemIcon';
 
 function formatLongDuration(minutes: number): string {
   if (minutes < 1440) return formatDuration(minutes);
@@ -202,7 +203,7 @@ function AscensionRow({ item, count, target, pts, pct }: { item: string; count: 
     <div className="px-4 py-2.5">
       <div className="flex items-center justify-between gap-3 mb-1">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
+          <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
           {masterItem && (
             <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{METHOD_LABELS[masterItem.method] ?? masterItem.method}</span>
           )}
@@ -316,7 +317,7 @@ function CropGrowthRow({
   return (
     <div className="px-4 py-2.5">
       <div className="flex items-center justify-between gap-3 mb-1">
-        <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}>{item}</span>
+        <span className="text-sm font-medium" style={{ color: done ? 'var(--accent-green)' : 'var(--text-primary)' }}><ItemIcon item={item} />{item}</span>
         <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: done ? 'var(--accent-green)' : 'var(--text-secondary)' }}>
           {count.toLocaleString()}/{target.toLocaleString()}
         </span>

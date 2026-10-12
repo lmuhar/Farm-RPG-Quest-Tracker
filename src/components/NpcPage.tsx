@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { CheckCircle, Gift, Star, Users } from 'lucide-react';
 import { useStore } from '../store';
 import npcsData from '../data/npcs.json';
+import { ItemIcon } from './ItemIcon';
 
 const allNpcs = npcsData as { name: string; items: string[] }[];
 const npcItemsMap = new Map(allNpcs.map((n) => [n.name, n.items]));
@@ -235,7 +236,7 @@ export function NpcPage() {
                         <Gift size={9} style={{ color: atMax ? 'var(--accent-green)' : 'var(--accent-yellow)', flexShrink: 0 }} />
                       )}
                       <span style={{ color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : hasAny ? 'var(--text-primary)' : 'var(--text-muted)' }}>
-                        {item}
+                        <ItemIcon item={item} />{item}
                       </span>
                       {hasAny && (
                         <span className="font-semibold" style={{ fontFamily: 'var(--font-mono)', color: atMax ? 'var(--accent-green)' : nearMax ? 'var(--accent-yellow)' : 'var(--text-muted)' }}>

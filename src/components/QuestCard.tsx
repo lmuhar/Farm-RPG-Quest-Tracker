@@ -5,6 +5,7 @@ import { parseItems, npcColor, statusColor, formatDuration, calcGrowsNeeded, get
 import { getPrereq, getUnlocks, chainLabel } from '../questChains';
 import { useStore, getPendingExpandId } from '../store';
 import { RARE_ITEMS, PET_ONLY_ITEMS } from '../data/bottlenecks';
+import { ItemIcon } from './ItemIcon';
 
 interface Props {
   quest: Quest;
@@ -158,7 +159,7 @@ export function QuestCard({ quest, status }: Props) {
                     <div key={item} className="text-xs">
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-slate-300 flex items-center gap-1">
-                          <span className="font-mono text-slate-100">{quantity}x</span> {item}
+                          <span className="font-mono text-slate-100">{quantity}x</span> <ItemIcon item={item} />{item}
                           {need > 0 && (RARE_ITEMS.has(item) || PET_ONLY_ITEMS.has(item)) && (
                             <AlertTriangle size={9} className="text-orange-400 flex-shrink-0" />
                           )}

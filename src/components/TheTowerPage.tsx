@@ -5,6 +5,7 @@ import { nextTowerUnlock } from '../questUnlocks';
 import towerArtifactsData from '../data/tower-artifacts.json';
 import masteriesData from '../data/masteries.json';
 import { useStore, ENRICHED_SOIL_FLOOR } from '../store';
+import { ItemIcon } from './ItemIcon';
 
 interface TowerLevelData {
   level: number;
@@ -49,7 +50,7 @@ function RewardChip({ item, quantity }: { item: string; quantity: number }) {
       className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-lg text-xs"
       style={{ background: 'var(--surface-inset)', border: '1px solid var(--border-subtle)' }}
     >
-      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{item}</span>
+      <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}><ItemIcon item={item} />{item}</span>
       <span className="font-mono text-[10px] whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>
         ×{formatQty(quantity)}
       </span>
