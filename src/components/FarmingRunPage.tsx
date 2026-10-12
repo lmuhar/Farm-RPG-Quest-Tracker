@@ -18,7 +18,8 @@ const TYPE_STYLE: Record<string, { Icon: typeof Fish; accent: string }> = {
   mining: { Icon: Gem, accent: 'red' },
 };
 
-const TIER_COLOR = { 0: '#cd7f32', 1: '#c0c0c0' } as Record<number, string>;
+const TIER_COLOR = { 0: '#cd7f32', 1: '#c0c0c0', 2: '#e6b422' } as Record<number, string>;
+const TIER_LABEL = ['10k', '100k', '1M'];
 
 function approx(n: number) {
   return n >= 10 ? Math.round(n).toLocaleString() : n.toFixed(1);
@@ -50,7 +51,7 @@ function MilestoneTag({ m, adds }: { m: NonNullable<DropPlan['mastery']>; adds: 
       className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full flex-shrink-0 whitespace-nowrap"
       style={{ color, border: `1px solid ${color}80`, background: `${color}22` }}
     >
-      {adds >= left ? `hits ${m.level === 0 ? '10k' : '100k'}` : `${m.level === 0 ? '10k' : '100k'} in ${left.toLocaleString()}`}
+      {adds >= left ? `hits ${TIER_LABEL[m.level]}` : `${TIER_LABEL[m.level]} in ${left.toLocaleString()}`}
     </span>
   );
 }
@@ -82,7 +83,7 @@ function DropRow({ d, cap, verb }: { d: DropPlan; cap: number; verb: string }) {
   );
 }
 
-function SlotRow({ s, i }: { s: SlotPlan; i: number }) {
+function SlotRow({ s, i, fedByRun }: { s: SlotPlan; i: number; fedByRun: boolean }) {
   return (
     <div className="px-4 py-2.5 space-y-1">
       <div className="flex items-center gap-2 flex-wrap">
@@ -91,7 +92,9 @@ function SlotRow({ s, i }: { s: SlotPlan; i: number }) {
         <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}><ItemIcon item={s.output} />{s.output}</span>
         <span className="text-xs" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>×{s.crafts.toLocaleString()}</span>
         {s.mastery && <MilestoneTag m={s.mastery} adds={s.crafts} />}
-        <span className="ml-auto text-[11px]" style={{ color: 'var(--accent-green)' }}>uses {s.absorbed.toLocaleString()} overflow</span>
+        <span className="ml-auto text-[11px]" style={{ color: s.absorbed > 0 ? 'var(--accent-green)' : 'var(--text-muted)' }}>
+          {s.absorbed > 0 ? `uses ${s.absorbed.toLocaleString()} overflow` : fedByRun ? "uses this run's drops" : 'mastery push from stock'}
+        </span>
       </div>
       <p className="text-[11px] pl-7" style={{ color: 'var(--text-muted)' }}>
         {s.uses.map((u, j) => (
@@ -139,6 +142,7 @@ export function FarmingRunPage({ activeQuests, nextUpQuests, initialLocation }: 
   }), [location, attempts, inventory, inventoryMax, needs, recipes, masteryLevels, masteryProgress, craftworksSlots]);
 
   const questDrops = plan.drops.filter((d) => d.quest);
+  const dropNames = new Set(plan.drops.map((d) => d.item));
   const milestoneHits = plan.drops.filter((d) => d.mastery && d.gain >= d.mastery.target - d.mastery.count).length
     + plan.slots.filter((s) => s.hitsMilestone).length;
   const withQuests = ranked.filter((r) => r.questItems.length > 0);
@@ -220,17 +224,16 @@ export function FarmingRunPage({ activeQuests, nextUpQuests, initialLocation }: 
         </div>
       </div>
 
-      {plan.wastedBefore > 0 && (
-        <section className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--accent-purple-border)' }}>
+      <section className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--accent-purple-border)' }}>
           <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-purple-bg)', borderBottom: '1px solid var(--accent-purple-border)' }}>
             <Hammer size={13} style={{ color: 'var(--accent-purple)' }} />
             <span className="text-sm font-semibold" style={{ color: 'var(--accent-purple)' }}>Before you go, set Craftworks to…</span>
-            <span className="text-[11px] ml-auto" style={{ color: 'var(--accent-purple)', opacity: 0.8 }}>{craftworksSlots} slots · keeps what quests need</span>
+            <span className="text-[11px] ml-auto" style={{ color: 'var(--accent-purple)', opacity: 0.8 }}>{craftworksSlots} slots · overflow first, then mastery pushes · keeps what quests need</span>
           </div>
           <div className="divide-y divide-[color:var(--border-subtle)]" style={{ background: 'var(--surface-card)' }}>
-            {plan.slots.map((s, i) => <SlotRow key={s.output} s={s} i={i} />)}
+            {plan.slots.map((s, i) => <SlotRow key={s.output} s={s} i={i} fedByRun={s.uses.some((u) => dropNames.has(u.item))} />)}
             {plan.slots.length === 0 && (
-              <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>No recipe can use the overflow from this run.</p>
+              <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>Nothing you can craft from spare stock right now. Sync your inventory and masteries from Settings.</p>
             )}
             {plan.noSink.length > 0 && (
               <p className="px-4 py-2.5 text-[11px] flex items-start gap-1.5" style={{ color: 'var(--text-muted)' }}>
@@ -240,7 +243,6 @@ export function FarmingRunPage({ activeQuests, nextUpQuests, initialLocation }: 
             )}
           </div>
         </section>
-      )}
 
       <section className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
         <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: `var(--accent-${accent}-bg)`, borderBottom: `1px solid var(--accent-${accent}-border)` }}>
