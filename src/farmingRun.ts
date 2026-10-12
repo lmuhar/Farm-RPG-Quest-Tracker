@@ -14,6 +14,9 @@ export interface Recipe { name: string; ingredients: { item: string; quantity: n
 const masteryNames = new Set((masteriesData as Mastery[]).map((m) => m.name));
 const cookingNames = new Set((masteriesData as Mastery[]).filter((m) => m.method === 'cooking').map((m) => m.name));
 
+// Made from rare drops (Amber, Runestones), so not worth a Craftworks slot
+const CRAFTWORKS_SKIP = new Set(['Amber Cane', 'Inferno Sphere', 'Lava Sphere']);
+
 // Locations you farm by spending attempts (crops come from the Farm instead)
 const RUN_TYPES = new Set(['explore', 'fishing', 'mining']);
 export const RUN_VERB: Record<string, string> = { explore: 'explores', fishing: 'casts', mining: 'digs' };
@@ -138,7 +141,7 @@ export function planRun(input: RunInput): RunPlan {
   const takeable = (item: string) => spareLeft.get(item) ?? spare(item);
 
   const craftable = input.recipes.filter((r) =>
-    !cookingNames.has(r.name) && !r.ingredients.some((i) => i.item.toLowerCase() === 'cooking pot'));
+    !cookingNames.has(r.name) && !CRAFTWORKS_SKIP.has(r.name) && !r.ingredients.some((i) => i.item.toLowerCase() === 'cooking pot'));
   const candidates = craftable.filter((r) => r.ingredients.some((i) => overflow.has(i.item)));
 
   // Most crafts a recipe can run on spare stock without its output going over the cap
