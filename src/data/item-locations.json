@@ -2498,5 +2498,33 @@
       "type": "mining",
       "rate": 21.9
     }
+  ],
+  "Ancient Rune": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 36
+    }
+  ],
+  "Green Gel": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 14.9
+    }
+  ],
+  "Mossy Cog": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 21.2
+    }
+  ],
+  "Veinshard": [
+    {
+      "name": "Mossrock Mine",
+      "type": "mining",
+      "rate": 8.6
+    }
   ]
 }
