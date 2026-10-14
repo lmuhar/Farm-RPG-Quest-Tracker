@@ -5052,5 +5052,15 @@
         "quantity": 2
       }
     ]
+  },
+  {
+    "id": "1553",
+    "name": "Condensed Gravicite",
+    "ingredients": [
+      {
+        "item": "Gravicite",
+        "quantity": 2
+      }
+    ]
   }
 ]

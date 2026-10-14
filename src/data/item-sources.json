@@ -442,11 +442,11 @@
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 20 (×250)"
+      "label": "Baba Gec friendship Lv 50 (×25)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 50 (×25)"
+      "label": "Goostav friendship Lv 20 (×250)"
     },
     {
       "type": "temple",
@@ -498,11 +498,11 @@
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 80, ×5)"
+      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
+      "label": "Farm RPG History quiz (score 80, ×5)"
     },
     {
       "type": "cards",
@@ -639,6 +639,14 @@
     {
       "type": "temple",
       "label": "Temple: offer 250 Jack-o-lantern (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: New Moon II (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp IV (×5)"
     }
   ],
   "Beary Squishies": [
@@ -658,10 +666,6 @@
     }
   ],
   "Bell": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 50 gold"
-    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Grasshopper (50%)"
@@ -854,14 +858,6 @@
   "Bomb": [
     {
       "type": "npc",
-      "label": "Cid friendship Lv 40 (×5)"
-    },
-    {
-      "type": "npc",
-      "label": "Cid friendship Lv 50 (×10)"
-    },
-    {
-      "type": "npc",
       "label": "Cid friendship Lv 10 (×5)"
     },
     {
@@ -871,6 +867,14 @@
     {
       "type": "npc",
       "label": "Cid friendship Lv 30 (×5)"
+    },
+    {
+      "type": "npc",
+      "label": "Cid friendship Lv 40 (×5)"
+    },
+    {
+      "type": "npc",
+      "label": "Cid friendship Lv 50 (×10)"
     },
     {
       "type": "temple",
@@ -894,6 +898,10 @@
     }
   ],
   "Bone": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
     {
       "type": "npc",
       "label": "Geist friendship Lv 10 (×10)"
@@ -992,11 +1000,11 @@
     },
     {
       "type": "npc",
-      "label": "Gary Bearson V friendship Lv 10 (×5)"
+      "label": "Lorn friendship Lv 60 (×1)"
     },
     {
       "type": "npc",
-      "label": "Lorn friendship Lv 60 (×1)"
+      "label": "Gary Bearson V friendship Lv 10 (×5)"
     },
     {
       "type": "quest",
@@ -1035,6 +1043,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Breaking The Ice IV (×500)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Tricks Not Treats II (×7)"
     }
   ],
   "Broken Memory Belt": [
@@ -1142,11 +1154,11 @@
     },
     {
       "type": "npc",
-      "label": "frank friendship Lv 10 (×5)"
+      "label": "Baba Gec friendship Lv 20 (×20)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 20 (×20)"
+      "label": "frank friendship Lv 10 (×5)"
     },
     {
       "type": "npc",
@@ -1163,6 +1175,10 @@
     {
       "type": "password",
       "label": "Password \"cabbages\" (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Tricks Not Treats III (×20)"
     }
   ],
   "Cabbage Stew": [
@@ -1211,6 +1227,18 @@
     {
       "type": "temple",
       "label": "Temple: offer 10 Jack-o-lantern (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Pyramid Scheme II (×12)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Frog Got Your Tongue I (×20)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp IV (×20)"
     }
   ],
   "Candy Cane": [
@@ -1251,6 +1279,18 @@
     {
       "type": "password",
       "label": "Password \"haunted house\" (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp I (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: New Moon I (×3)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Dread Stations I (×20)"
     }
   ],
   "Candy Roll": [
@@ -1615,6 +1655,10 @@
   ],
   "Catfish": [
     {
+      "type": "shop",
+      "label": "Flea Market: 2 gold"
+    },
+    {
       "type": "quest",
       "label": "Quest reward: There’s A Way V (×10)"
     },
@@ -1744,11 +1788,15 @@
     },
     {
       "type": "password",
-      "label": "Password \"joke\" (×1)"
+      "label": "Password \"haunted house\" (×10)"
     },
     {
       "type": "password",
-      "label": "Password \"haunted house\" (×10)"
+      "label": "Password \"joke\" (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp IV (×5)"
     }
   ],
   "Cheese": [
@@ -1910,6 +1958,10 @@
     }
   ],
   "Cogwheel": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
@@ -2228,11 +2280,11 @@
     },
     {
       "type": "exchange",
-      "label": "Exchange Center: 350 Spider → 3 (last seen Oct 2026)"
+      "label": "Exchange Center: 25 Cyclops Spider → 3 (last seen Oct 2026)"
     },
     {
       "type": "exchange",
-      "label": "Exchange Center: 25 Cyclops Spider → 3 (last seen Oct 2026)"
+      "label": "Exchange Center: 350 Spider → 3 (last seen Oct 2026)"
     },
     {
       "type": "exchange",
@@ -2860,7 +2912,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Find A Way VIII (×50)"
+      "label": "Quest reward: Let’s Do The Time Warp III (×25)"
     }
   ],
   "Flamejack": [
@@ -2916,10 +2968,6 @@
     }
   ],
   "Frog": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
     {
       "type": "npc",
       "label": "Vincent friendship Lv 20 (×10)"
@@ -3049,12 +3097,16 @@
   ],
   "Giant Centipede": [
     {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (8.3%)"
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Fire Ant (25%)"
+    },
+    {
+      "type": "wishing-well",
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
@@ -3159,11 +3211,19 @@
   ],
   "Gold Boot": [
     {
+      "type": "shop",
+      "label": "Flea Market: 50 gold"
+    },
+    {
       "type": "temple",
       "label": "Temple: offer 1,000 Pair of Boots (×1)"
     }
   ],
   "Gold Carrot": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 2 gold"
+    },
     {
       "type": "farming",
       "label": "Grow from Carrot Seeds (0h)"
@@ -3309,6 +3369,10 @@
   ],
   "Gold Eggplant": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "farming",
       "label": "Grow from Eggplant Seeds (0.1h)"
     },
@@ -3344,11 +3408,11 @@
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×10)"
+      "label": "Baba Gec friendship Lv 40 (×100)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 40 (×100)"
+      "label": "Star Meerif friendship Lv 40 (×10)"
     },
     {
       "type": "wishing-well",
@@ -3536,10 +3600,6 @@
     }
   ],
   "Gold Peppers": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
     {
       "type": "farming",
       "label": "Grow from Pepper Seeds (0h)"
@@ -3729,10 +3789,6 @@
   ],
   "Gouda": [
     {
-      "type": "shop",
-      "label": "Flea Market: 20 gold"
-    },
-    {
       "type": "npc",
       "label": "Jill friendship Lv 20 (×5)"
     },
@@ -3772,11 +3828,11 @@
   "Grab Bag 07": [
     {
       "type": "npc",
-      "label": "Geist friendship Lv 30 (×10)"
+      "label": "Vincent friendship Lv 40 (×5)"
     },
     {
       "type": "npc",
-      "label": "Vincent friendship Lv 40 (×5)"
+      "label": "Geist friendship Lv 30 (×10)"
     },
     {
       "type": "npc",
@@ -3927,6 +3983,10 @@
   ],
   "Green Dye": [
     {
+      "type": "shop",
+      "label": "Flea Market: 2 gold"
+    },
+    {
       "type": "skill",
       "label": "Crafting Lv 30 reward (×25)"
     },
@@ -3960,11 +4020,11 @@
   "Green Scarf": [
     {
       "type": "password",
-      "label": "Password \"green initiative\" (×3)"
+      "label": "Password \"cecil has roomba\" (×1)"
     },
     {
       "type": "password",
-      "label": "Password \"cecil has roomba\" (×1)"
+      "label": "Password \"green initiative\" (×3)"
     }
   ],
   "Green Shield": [
@@ -4232,15 +4292,15 @@
   "Honey": [
     {
       "type": "npc",
-      "label": "Gary Bearson V friendship Lv 30 (×10)"
-    },
-    {
-      "type": "npc",
       "label": "Vincent friendship Lv 60 (×100)"
     },
     {
       "type": "npc",
       "label": "Ric Ryph friendship Lv 20 (×10)"
+    },
+    {
+      "type": "npc",
+      "label": "Gary Bearson V friendship Lv 30 (×10)"
     },
     {
       "type": "wishing-well",
@@ -4326,6 +4386,10 @@
     }
   ],
   "Horned Beetle": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Fire Ant (25%)"
@@ -4527,6 +4591,18 @@
     {
       "type": "password",
       "label": "Password \"haunted house\" (×5)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Indecipherable Note I (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Pyramid Scheme III (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Indecipherable Note III (×50)"
     }
   ],
   "Jade": [
@@ -4640,15 +4716,15 @@
     },
     {
       "type": "npc",
+      "label": "Captain Thomas friendship Lv 30 (×10)"
+    },
+    {
+      "type": "npc",
       "label": "Goostav friendship Lv 30 (×250)"
     },
     {
       "type": "npc",
       "label": "Buddy friendship Lv 30 (×5)"
-    },
-    {
-      "type": "npc",
-      "label": "Captain Thomas friendship Lv 30 (×10)"
     },
     {
       "type": "temple",
@@ -4692,11 +4768,11 @@
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 100, ×15)"
+      "label": "T'rah Notary Public Exam quiz (score 80, ×5)"
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 80, ×5)"
+      "label": "Farm RPG History quiz (score 100, ×15)"
     },
     {
       "type": "cards",
@@ -4971,6 +5047,18 @@
     {
       "type": "temple",
       "label": "Temple: offer 50 Jack-o-lantern (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp II (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Dread Stations II (×20)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Pyramid Scheme I (×12)"
     }
   ],
   "Looking Glass": [
@@ -5121,10 +5209,6 @@
   ],
   "Magna Quartz": [
     {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
-    {
       "type": "production",
       "label": "Quarry (rarely)"
     },
@@ -5147,6 +5231,10 @@
     {
       "type": "quest",
       "label": "Quest reward: A Study of Color X (×3)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp I (×5)"
     }
   ],
   "Magnifying Glass": [
@@ -5625,6 +5713,10 @@
   ],
   "Octopus": [
     {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Herbs (16.7%)"
     },
@@ -5766,7 +5858,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: The Neighs Have It (×6)"
+      "label": "Quest reward: Tricks Not Treats II (×7)"
     }
   ],
   "Orange Flowers": [
@@ -5782,15 +5874,15 @@
     },
     {
       "type": "wishing-well",
+      "label": "Wishing Well: throw Crab Claw (33.3%)"
+    },
+    {
+      "type": "wishing-well",
       "label": "Wishing Well: throw Frog (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
-    },
-    {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Crab Claw (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -5828,11 +5920,11 @@
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×100)"
+      "label": "Goostav friendship Lv 10 (×250)"
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 10 (×250)"
+      "label": "Star Meerif friendship Lv 40 (×100)"
     },
     {
       "type": "wishing-well",
@@ -5896,7 +5988,23 @@
     },
     {
       "type": "quiz",
+      "label": "April Fools' Day quiz (score 100, ×100)"
+    },
+    {
+      "type": "quiz",
+      "label": "Locations 101 quiz (score 100, ×25)"
+    },
+    {
+      "type": "quiz",
       "label": "Runestones I quiz (score 90, ×100)"
+    },
+    {
+      "type": "quiz",
+      "label": "Back-to-School Movies quiz (score 80, ×10)"
+    },
+    {
+      "type": "quiz",
+      "label": "Townsfolk 101 quiz (score 90, ×2)"
     },
     {
       "type": "quiz",
@@ -5905,22 +6013,6 @@
     {
       "type": "quiz",
       "label": "Halloween for everyone quiz (score 90, ×100)"
-    },
-    {
-      "type": "quiz",
-      "label": "Townsfolk 101 quiz (score 90, ×2)"
-    },
-    {
-      "type": "quiz",
-      "label": "Locations 101 quiz (score 100, ×25)"
-    },
-    {
-      "type": "quiz",
-      "label": "April Fools' Day quiz (score 100, ×100)"
-    },
-    {
-      "type": "quiz",
-      "label": "Back-to-School Movies quiz (score 80, ×10)"
     },
     {
       "type": "password",
@@ -5932,19 +6024,19 @@
     },
     {
       "type": "password",
-      "label": "Password \"que sera\" (×10)"
-    },
-    {
-      "type": "password",
       "label": "Password \"joja\" (×10)"
     },
     {
       "type": "password",
-      "label": "Password \"carpe diem\" (×1)"
+      "label": "Password \"que sera\" (×10)"
     },
     {
       "type": "password",
       "label": "Password \"firestream\" (×1)"
+    },
+    {
+      "type": "password",
+      "label": "Password \"carpe diem\" (×1)"
     },
     {
       "type": "password",
@@ -6179,10 +6271,6 @@
   ],
   "Pine Cone": [
     {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Antler (33.3%)"
     }
@@ -6202,10 +6290,6 @@
     }
   ],
   "Pirate Bandana": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
     {
       "type": "npc",
       "label": "Buddy friendship Lv 10 (×1)"
@@ -6280,10 +6364,6 @@
     }
   ],
   "Pocket Watch": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Cogwheel (25%)"
@@ -6565,6 +6645,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Ghosts of Candies Past II (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: New Moon III (×3)"
     },
     {
       "type": "quest",
@@ -7206,11 +7290,11 @@
     },
     {
       "type": "npc",
-      "label": "Geist friendship Lv 20 (×5)"
+      "label": "Vincent friendship Lv 60 (×1)"
     },
     {
       "type": "npc",
-      "label": "Vincent friendship Lv 60 (×1)"
+      "label": "Geist friendship Lv 20 (×5)"
     },
     {
       "type": "temple",
@@ -7522,10 +7606,6 @@
     }
   ],
   "Small Key": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Large Chest 01 (33.3%)"
@@ -7880,7 +7960,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Corn of Interest Part 22 (×1)"
+      "label": "Quest reward: Let’s Do The Time Warp IV (×1)"
     }
   ],
   "Spooky Slime": [
@@ -8241,6 +8321,14 @@
     {
       "type": "password",
       "label": "Password \"all star\" (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp IV (×5)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp II (×10)"
     }
   ],
   "Tea Leaves": [
@@ -8348,10 +8436,6 @@
     }
   ],
   "Treasure Key": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 50 gold"
-    },
     {
       "type": "npc",
       "label": "Cecil friendship Lv 50 (×5)"
@@ -8540,15 +8624,15 @@
     },
     {
       "type": "wishing-well",
+      "label": "Wishing Well: throw Small Gear (33.3%)"
+    },
+    {
+      "type": "wishing-well",
       "label": "Wishing Well: throw Witch Hat (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Gouda (33.3%)"
-    },
-    {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Small Gear (33.3%)"
     },
     {
       "type": "temple",
@@ -8667,6 +8751,22 @@
     {
       "type": "password",
       "label": "Password \"haunted house\" (×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp III (×1)"
+    }
+  ],
+  "Witch's Brew": [
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp III (×1)"
+    }
+  ],
+  "Witch's Broom": [
+    {
+      "type": "quest",
+      "label": "Quest reward: Let’s Do The Time Warp III (×1)"
     }
   ],
   "Wizard Hat": [
@@ -8732,6 +8832,10 @@
     }
   ],
   "Wooden Mask": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
