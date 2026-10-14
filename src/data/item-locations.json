@@ -300,7 +300,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 131.9
+      "rate": 132.1
     }
   ],
   "Runestone 09": [
@@ -406,7 +406,7 @@
     {
       "name": "Highland Hills",
       "type": "explore",
-      "rate": 1881.3
+      "rate": 1872.2
     }
   ],
   "Scrap Wire": [
@@ -538,7 +538,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 65.6
+      "rate": 65.4
     }
   ],
   "Runestone 17": [
@@ -772,7 +772,7 @@
     {
       "name": "Lake Minerva",
       "type": "fishing",
-      "rate": 25.5
+      "rate": 25.6
     }
   ],
   "Raptor Egg": [
@@ -844,7 +844,7 @@
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 203.1
+      "rate": 506.8
     }
   ],
   "Mushroom": [
@@ -1022,7 +1022,7 @@
     {
       "name": "Highland Hills",
       "type": "explore",
-      "rate": 21175.2
+      "rate": 20869.2
     }
   ],
   "Wood": [
@@ -1089,7 +1089,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 98.8
+      "rate": 98.6
     }
   ],
   "Skull Coin": [
@@ -1136,7 +1136,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 65.5
+      "rate": 65.6
     }
   ],
   "Blue Sea Bass": [
@@ -1168,7 +1168,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 3532.7
+      "rate": 3567.4
     }
   ],
   "Small Chest 02": [
@@ -1195,7 +1195,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 15.7
+      "rate": 15.8
     }
   ],
   "Coal": [
@@ -1359,7 +1359,7 @@
     {
       "name": "Pirate's Cove",
       "type": "fishing",
-      "rate": 37.2
+      "rate": 37.1
     }
   ],
   "Redgill": [
@@ -1392,7 +1392,7 @@
     {
       "name": "Lake Minerva",
       "type": "fishing",
-      "rate": 13326.2
+      "rate": 13090.7
     }
   ],
   "Giant Centipede": [
@@ -1495,7 +1495,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 16644.5
+      "rate": 16488
     }
   ],
   "Copper Wire": [
@@ -1534,7 +1534,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 32.3
+      "rate": 32.4
     }
   ],
   "Small Prawn": [
@@ -1698,7 +1698,7 @@
     {
       "name": "Lake Minerva",
       "type": "fishing",
-      "rate": 2651
+      "rate": 2631
     }
   ],
   "Ancient Coin": [
@@ -1773,7 +1773,7 @@
     {
       "name": "Highland Hills",
       "type": "explore",
-      "rate": 874.4
+      "rate": 872.8
     }
   ],
   "Unpolished Shimmer Stone": [
@@ -1848,7 +1848,7 @@
     {
       "name": "Pirate's Cove",
       "type": "fishing",
-      "rate": 18646.3
+      "rate": 18122.5
     }
   ],
   "Frog": [
@@ -1881,7 +1881,7 @@
     {
       "name": "Vast Ocean",
       "type": "fishing",
-      "rate": 2649.8
+      "rate": 2647.9
     }
   ],
   "Bat Wing": [
@@ -2440,56 +2440,63 @@
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 18.1
+      "rate": 45.2
     }
   ],
   "Bamboo": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 4.3
+      "rate": 10.8
     }
   ],
   "Glowshroom": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 20.8
+      "rate": 52
     }
   ],
   "Mist Lily": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 34.4
+      "rate": 85.9
     }
   ],
   "Mudcap": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 12.6
+      "rate": 31.6
     }
   ],
   "Re'taw": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 6848.4
+      "rate": 17162.1
     }
   ],
   "Shadow Bloom": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 37.1
+      "rate": 92.8
     }
   ],
   "Swamp Thistle": [
     {
       "name": "Sinking Swamp Exploring",
       "type": "explore",
-      "rate": 7.1
+      "rate": 17.8
+    }
+  ],
+  "Brain Fungus": [
+    {
+      "name": "Ember Caverns",
+      "type": "mining",
+      "rate": 21.9
     }
   ]
 }
