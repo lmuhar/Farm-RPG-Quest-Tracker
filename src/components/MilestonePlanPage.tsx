@@ -1,17 +1,18 @@
 import { useMemo, useState } from 'react';
-import { Target, Link2, Compass, ChevronDown, ChevronUp } from 'lucide-react';
+import { Target, Link2, Compass, ChevronDown, ChevronUp, Factory, ArrowDown } from 'lucide-react';
 import { useStore } from '../store';
-import { buildMilestonePlan } from '../milestonePlan';
-import type { CraftPlan, GatherPlan, Material } from '../milestonePlan';
+import { buildMilestonePlan, buildLocationGuide, LONG_HAUL } from '../milestonePlan';
+import type { CraftPlan, GatherPlan, Material, GuideSlot } from '../milestonePlan';
 import { itemLocations, formatRate, sourceHint } from '../data/itemSources';
 import { formatDuration } from '../utils';
-import { runLocations } from '../farmingRun';
+import { runLocations, RUN_VERB } from '../farmingRun';
 
-type SortMode = 'easiest' | 'value';
+type SortMode = 'easiest' | 'ready' | 'value';
 type TierFilter = 'all' | '10k' | '100k';
 
 const SORTS: { id: SortMode; label: string; hint: string }[] = [
-  { id: 'easiest', label: 'Easiest now', hint: 'most covered by what you already have' },
+  { id: 'easiest', label: 'Easiest to master', hint: 'by your mastery ranking (hardest step in the chain), most AP first' },
+  { id: 'ready', label: 'Ready now', hint: 'most covered by what you already have' },
   { id: 'value', label: 'Best value', hint: 'most AP (chain milestones included) per material you still need to gather' },
 ];
 
@@ -33,7 +34,8 @@ function shortfall(plan: CraftPlan) {
 function sortCrafts(list: CraftPlan[], mode: SortMode): CraftPlan[] {
   const value = (p: CraftPlan) => p.totalPts / Math.max(1, shortfall(p));
   return [...list].sort((a, b) => {
-    if (mode === 'easiest') return b.coverage - a.coverage || a.remaining - b.remaining || b.totalPts - a.totalPts;
+    if (mode === 'easiest') return a.ease - b.ease || b.totalPts - a.totalPts || b.coverage - a.coverage;
+    if (mode === 'ready') return b.coverage - a.coverage || a.remaining - b.remaining || b.totalPts - a.totalPts;
     return value(b) - value(a) || b.coverage - a.coverage;
   });
 }
@@ -86,6 +88,26 @@ function TierBadge({ pts, level }: { pts: number; level: number }) {
   );
 }
 
+function diffColor(d: number) {
+  if (d <= 3) return 'var(--accent-green)';
+  if (d <= 6) return 'var(--accent-yellow)';
+  if (d <= 8) return 'var(--accent-orange)';
+  return '#f87171';
+}
+
+// Your mastery ranking (1 easy – 10 expert), as on the Masteries page
+function DiffBadge({ d }: { d: number }) {
+  return (
+    <span
+      className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+      title="Your mastery ranking (1 easy – 10 expert)"
+      style={{ color: diffColor(d), border: `1px solid ${diffColor(d)}60` }}
+    >
+      {d}
+    </span>
+  );
+}
+
 function Bar({ pct, color }: { pct: number; color: string }) {
   return (
     <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border-default)' }}>
@@ -123,10 +145,12 @@ function CraftCard({ plan, onOpen }: { plan: CraftPlan; onOpen?: OpenLocation })
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{plan.item}</span>
+            <DiffBadge d={plan.difficulty} />
             <TierBadge pts={plan.pts} level={plan.progress.level} />
           </div>
           <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
             {METHOD_LABELS[plan.method] ?? plan.method} · {plan.progress.count.toLocaleString()}/{plan.target.toLocaleString()} · {plan.remaining.toLocaleString()} to craft
+            {plan.ease > plan.difficulty && <> · chain ranks {plan.ease}</>}
           </p>
         </div>
         {plan.totalPts > plan.pts && (
@@ -154,7 +178,7 @@ function CraftCard({ plan, onOpen }: { plan: CraftPlan; onOpen?: OpenLocation })
                 {i > 0 && ', '}
                 <strong>{s.item}</strong>{' '}
                 <span style={{ color: 'var(--text-muted)' }}>
-                  ({s.how === 'gather' ? 'gather' : 'craft'} {s.added.toLocaleString()}, +{s.pts})
+                  ({s.how === 'gather' ? 'gather' : 'craft'} {s.added.toLocaleString()}, +{s.pts}, rank {s.difficulty})
                 </span>
               </span>
             ))}
@@ -194,6 +218,7 @@ function GatherRow({ plan, onOpen }: { plan: GatherPlan; onOpen?: OpenLocation }
       <div className="flex items-center justify-between gap-3 mb-1 flex-wrap">
         <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{plan.item}</span>
+          <DiffBadge d={plan.difficulty} />
           <TierBadge pts={plan.pts} level={plan.progress.level} />
         </div>
         <span className="text-xs flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
@@ -206,6 +231,118 @@ function GatherRow({ plan, onOpen }: { plan: GatherPlan; onOpen?: OpenLocation }
         {plan.minutes != null && <> · {formatLong(plan.minutes)}</>}
       </p>
     </div>
+  );
+}
+
+function GuideRow({ slot, n, verb }: { slot: GuideSlot; n: number; verb: string }) {
+  const pct = Math.min(1, slot.progress.count / slot.target);
+  return (
+    <div className="px-4 py-2.5 flex gap-3">
+      <span className="text-xs font-bold w-4 text-right flex-shrink-0 pt-0.5" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{n}</span>
+      <div className="min-w-0 flex-1 space-y-1">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{slot.item}</span>
+          <DiffBadge d={slot.difficulty} />
+          {slot.plan && <TierBadge pts={slot.plan.pts} level={slot.progress.level} />}
+          {slot.plan && slot.plan.totalPts > slot.plan.pts && (
+            <span className="text-[11px] font-bold" style={{ color: 'var(--accent-purple)', fontFamily: 'var(--font-mono)' }}>{slot.plan.totalPts} AP chain</span>
+          )}
+          <span className="text-xs ml-auto" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+            {slot.progress.count.toLocaleString()}/{slot.target.toLocaleString()}
+          </span>
+        </div>
+        <Bar pct={pct} color={TIER_COLOR[slot.progress.level === 0 ? 10 : 100]} />
+        <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+          {slot.feeds ? (
+            <span className="inline-flex items-center gap-1"><ArrowDown size={11} /> makes {slot.item} for the {slot.feeds} line, so both masteries move</span>
+          ) : slot.fromHere.length === 0 && slot.elsewhere.length === 0 ? (
+            'Stock and passive materials cover it'
+          ) : (
+            <>
+              {slot.fromHere.length > 0 && (
+                <>
+                  Farm {slot.fromHere.join(', ')} here · ≈ {slot.attempts.toLocaleString()} {verb} to finish
+                  {slot.attempts > LONG_HAUL && <span style={{ color: 'var(--accent-orange)' }}> (long haul: run it for progress)</span>}
+                </>
+              )}
+              {slot.elsewhere.length > 0 && (
+                <span style={{ color: 'var(--accent-yellow)' }}>{slot.fromHere.length > 0 && ' · '}also needs {slot.elsewhere.join(', ')} from elsewhere</span>
+              )}
+            </>
+          )}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function LocationGuide({ crafts, onOpen }: { crafts: CraftPlan[]; onOpen?: OpenLocation }) {
+  const { masteryLevels, masteryProgress, inventory, cropTimes, plotCount, craftworksSlots } = useStore();
+  const [locName, setLocName] = useState('');
+  const location = runLocations.find((l) => l.name === locName);
+  const guide = useMemo(
+    () => location && buildLocationGuide(location.name, { masteryLevels, masteryProgress, inventory, cropTimes, plotCount }, crafts, craftworksSlots),
+    [location, masteryLevels, masteryProgress, inventory, cropTimes, plotCount, crafts, craftworksSlots]
+  );
+  const verb = location ? RUN_VERB[location.type] ?? 'attempts' : '';
+
+  return (
+    <section className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border-subtle)' }}>
+      <div className="px-4 py-2.5 flex items-center gap-2 flex-wrap" style={{ background: 'var(--surface-inset)', borderBottom: '1px solid var(--border-subtle)' }}>
+        <Factory size={13} style={{ color: 'var(--accent-orange)' }} />
+        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Craftworks guide</span>
+        <select
+          value={locName}
+          onChange={(e) => setLocName(e.target.value)}
+          className="text-xs rounded-lg px-2 py-1 ml-auto min-w-0 max-w-full"
+          style={{ background: 'var(--surface-card)', color: 'var(--text-primary)', border: '1px solid var(--border-default)' }}
+        >
+          <option value="">Where are you farming?</option>
+          {(['explore', 'fishing', 'mining'] as const).map((type) => (
+            <optgroup key={type} label={type === 'explore' ? 'Exploring' : type === 'fishing' ? 'Fishing' : 'Mining'}>
+              {runLocations.filter((l) => l.type === type).map((l) => <option key={l.name} value={l.name}>{l.name}</option>)}
+            </optgroup>
+          ))}
+        </select>
+      </div>
+      <div style={{ background: 'var(--surface-card)' }}>
+        {!guide ? (
+          <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+            Pick a location to get {craftworksSlots} Craftworks lines that turn its drops into mastery progress: easiest by your
+            ranking first, with each chain's ingredient lines set up ahead of the line they feed.
+          </p>
+        ) : (
+          <>
+            <p className="px-4 py-2 text-[11px]" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
+              {craftworksSlots} slots · lines fed by {location!.name} drops plus your stock · lines this location can't fully supply go last
+            </p>
+            {guide.slots.length === 0 ? (
+              <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+                No crafting or steelworks mastery with an AP milestone left uses what drops here.
+              </p>
+            ) : (
+              <div className="divide-y divide-[color:var(--border-subtle)]">
+                {guide.slots.map((slot, i) => <GuideRow key={slot.item} slot={slot} n={i + 1} verb={verb} />)}
+              </div>
+            )}
+            {guide.gathers.length > 0 && (
+              <p className="px-4 py-2 text-[11px]" style={{ color: 'var(--text-muted)', borderTop: '1px solid var(--border-subtle)' }}>
+                Farming here also moves: {guide.gathers.slice(0, 6).map((g) => `${g.item} (rank ${g.difficulty}, ${g.progress.count.toLocaleString()}/${g.target.toLocaleString()})`).join(', ')}
+              </p>
+            )}
+            {onOpen && (
+              <button
+                onClick={() => onOpen(location!.name)}
+                className="w-full text-xs py-2"
+                style={{ color: 'var(--accent-blue)', borderTop: '1px solid var(--border-subtle)' }}
+              >
+                Plan a trip here on Farming Run (quest needs and overflow) →
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -254,6 +391,7 @@ export function MilestonePlanPage({ onOpenLocation }: { onOpenLocation?: OpenLoc
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
           Every 10k (+10 AP) and 100k (+100 AP) mastery milestone you can still hit, ranked against your current inventory.
           Crafts are planned as chains: ingredients that are masteries themselves get crafted fresh so they count too.
+          The number badge is your mastery ranking (1 easy – 10 expert).
         </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {[
@@ -276,6 +414,8 @@ export function MilestonePlanPage({ onOpenLocation }: { onOpenLocation?: OpenLoc
           </p>
         )}
       </div>
+
+      <LocationGuide crafts={plan.crafts} onOpen={onOpenLocation} />
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex gap-1 p-1 rounded-lg" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>

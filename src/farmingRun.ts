@@ -3,6 +3,7 @@ import { itemLocations } from './data/itemSources';
 import type { Quest } from './types';
 import { parseItems, resolveRawIngredients } from './utils';
 import { PASSIVE_MATERIALS } from './milestonePlan';
+import { CRAFTWORKS_SKIP } from './data/passiveMaterials';
 
 // Plans one trip to a farming location: what the run is expected to drop, what
 // that does for your quests and masteries, and which Craftworks lines would use
@@ -14,8 +15,6 @@ export interface Recipe { name: string; ingredients: { item: string; quantity: n
 const masteryNames = new Set((masteriesData as Mastery[]).map((m) => m.name));
 const cookingNames = new Set((masteriesData as Mastery[]).filter((m) => m.method === 'cooking').map((m) => m.name));
 
-// Made from rare drops (Amber, Runestones), so not worth a Craftworks slot
-const CRAFTWORKS_SKIP = new Set(['Amber Cane', 'Inferno Sphere', 'Lava Sphere']);
 
 // Locations you farm by spending attempts (crops come from the Farm instead)
 const RUN_TYPES = new Set(['explore', 'fishing', 'mining']);
