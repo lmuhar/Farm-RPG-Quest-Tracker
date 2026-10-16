@@ -235,26 +235,31 @@ function GatherRow({ plan, onOpen }: { plan: GatherPlan; onOpen?: OpenLocation }
 }
 
 function GuideRow({ slot, n, verb }: { slot: GuideSlot; n: number; verb: string }) {
-  const pct = Math.min(1, slot.progress.count / slot.target);
+  const { progress } = slot;
   return (
     <div className="px-4 py-2.5 flex gap-3">
       <span className="text-xs font-bold w-4 text-right flex-shrink-0 pt-0.5" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{n}</span>
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{slot.item}</span>
-          <DiffBadge d={slot.difficulty} />
-          {slot.plan && <TierBadge pts={slot.plan.pts} level={slot.progress.level} />}
+          {slot.difficulty != null && <DiffBadge d={slot.difficulty} />}
+          {slot.plan && <TierBadge pts={slot.plan.pts} level={slot.plan.progress.level} />}
           {slot.plan && slot.plan.totalPts > slot.plan.pts && (
             <span className="text-[11px] font-bold" style={{ color: 'var(--accent-purple)', fontFamily: 'var(--font-mono)' }}>{slot.plan.totalPts} AP chain</span>
           )}
-          <span className="text-xs ml-auto" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
-            {slot.progress.count.toLocaleString()}/{slot.target.toLocaleString()}
-          </span>
+          {progress && (
+            <span className="text-xs ml-auto" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+              {progress.count.toLocaleString()}/{slot.target.toLocaleString()}
+            </span>
+          )}
         </div>
-        <Bar pct={pct} color={TIER_COLOR[slot.progress.level === 0 ? 10 : 100]} />
+        {progress && <Bar pct={Math.min(1, progress.count / slot.target)} color={TIER_COLOR[progress.level === 0 ? 10 : 100]} />}
         <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
           {slot.feeds ? (
-            <span className="inline-flex items-center gap-1"><ArrowDown size={11} /> makes {slot.item} for the {slot.feeds} line, so both masteries move</span>
+            <span className="inline-flex items-center gap-1">
+              <ArrowDown size={11} /> makes {slot.item} for the {slot.feeds} line
+              {slot.fromDrops ? ' from what you farm here, so it doesn\'t eat your stock' : ', so both masteries move'}
+            </span>
           ) : slot.fromHere.length === 0 && slot.elsewhere.length === 0 ? (
             'Stock and passive materials cover it'
           ) : (
@@ -309,7 +314,8 @@ function LocationGuide({ crafts, onOpen }: { crafts: CraftPlan[]; onOpen?: OpenL
         {!guide ? (
           <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>
             Pick a location to get {craftworksSlots} Craftworks lines that turn its drops into mastery progress: easiest by your
-            ranking first, with each chain's ingredient lines set up ahead of the line they feed.
+            ranking first. Ingredients made from that location's drops get their own lines, set up ahead of the line they
+            feed, so nothing runs on stock that will run out.
           </p>
         ) : (
           <>

@@ -227,15 +227,18 @@ export function buildMilestonePlan(input: PlanInput) {
 // ── Craftworks guide for a location ─────────────────────────────────────────
 // Lines worth running while you farm one location: crafting/steelworks masteries
 // with an AP milestone ahead whose raw materials drop there, easiest (by your
-// ranking) first. A chain's crafted links get their own slot, set up first, since
-// each Craftworks line only makes one item.
+// ranking) first. Each Craftworks line only makes one item, so a root's crafted
+// ingredients get their own slots, set up ahead of the line they feed: chain links
+// that earn AP, plus any sub-component made from this location's drops, so the
+// root keeps running on what you farm instead of on stock that runs out.
 
 export interface GuideSlot {
   item: string;
-  difficulty: number;
-  progress: Progress;
+  difficulty: number | null; // null for items with no mastery
+  progress: Progress | null; // null once there's no AP milestone left
   target: number;
-  feeds?: string;            // chain link: this line's output goes into that line
+  feeds?: string;            // sub-line: this line's output goes into that line
+  fromDrops?: boolean;       // sub-line made from this location's drops
   plan?: CraftPlan;          // root lines only
   fromHere: string[];        // short materials that drop at this location
   elsewhere: string[];       // short materials you'll have to get somewhere else
@@ -252,6 +255,14 @@ const CRAFTWORKS_METHODS = new Set(['crafting', 'steelworks']);
 export const LONG_HAUL = 50_000;
 // A location counts as a source for a material when its drop rate is within this factor of the best one
 const GOOD_SOURCE = 2;
+
+// Craftworks can make it: a crafting/steelworks mastery, or a non-mastery recipe that isn't cooked
+function craftworksCan(item: string): boolean {
+  const m = masteryByName.get(item);
+  if (m) return CRAFTWORKS_METHODS.has(m.method);
+  const r = recipeByName.get(item.toLowerCase());
+  return !!r && !r.ingredients.some((i) => i.item.toLowerCase() === 'cooking pot');
+}
 
 export function buildLocationGuide(location: string, input: PlanInput, crafts: CraftPlan[], slotCount: number): LocationGuide {
   const rateHere = new Map<string, number>();
@@ -273,17 +284,69 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
   // Rare drops (Runestones…) would take millions of attempts, so leave them out
   const nearGathers = gathers.filter((g) => g.attempts <= 1_000_000);
 
+  const isHereDrop = (item: string) => rateHere.has(item) && !PASSIVE_MATERIALS.has(item);
+  // Whether an item's recipe tree uses anything farmed here
+  const touches = new Map<string, boolean>();
+  const touchesHere = (item: string, seen = new Set<string>()): boolean => {
+    if (touches.has(item)) return touches.get(item)!;
+    const recipe = recipeByName.get(item.toLowerCase());
+    if (!recipe || seen.has(item)) return false;
+    const next = new Set(seen).add(item);
+    const result = recipe.ingredients.some((i) => isHereDrop(i.item) || touchesHere(i.item, next));
+    touches.set(item, result);
+    return result;
+  };
+
+  // Expand a root into its Craftworks sub-lines and the raw materials they all draw on
+  const expandRoot = (p: CraftPlan) => {
+    const subLines = new Map<string, { depth: number; feeds: string; fromDrops: boolean }>();
+    const raw = new Map<string, number>();
+    const invLeft = new Map<string, number>();
+    const takeInv = (item: string, want: number) => {
+      const left = invLeft.get(item) ?? (input.inventory[item] ?? 0);
+      const took = Math.min(left, want);
+      invLeft.set(item, left - took);
+      return took;
+    };
+    const expand = (item: string, units: number, seen: Set<string>) => {
+      const recipe = recipeByName.get(item.toLowerCase());
+      if (!recipe) return;
+      const next = new Set(seen).add(item);
+      for (const { item: ing, quantity } of recipe.ingredients) {
+        const need = quantity * units;
+        const ingRecipe = recipeByName.get(ing.toLowerCase());
+        const fromDrops = !!ingRecipe && craftworksCan(ing) && touchesHere(ing);
+        const chainLink = !!ingRecipe && earnsAp(ing, input) && craftworksCan(ing);
+        if (ingRecipe && !next.has(ing) && (fromDrops || chainLink)) {
+          // Its own line, made fresh: from this run's drops, or so its mastery moves too
+          const prev = subLines.get(ing);
+          subLines.set(ing, { depth: Math.max(prev?.depth ?? 0, next.size), feeds: prev?.feeds ?? item, fromDrops });
+          expand(ing, need, next);
+        } else if (ingRecipe && !next.has(ing)) {
+          const fromInv = takeInv(ing, need);
+          if (need > fromInv) expand(ing, need - fromInv, next);
+        } else {
+          raw.set(ing, (raw.get(ing) ?? 0) + need);
+        }
+      }
+    };
+    expand(p.item, p.remaining, new Set());
+    const short = [...raw].filter(([item, need]) => !PASSIVE_MATERIALS.has(item) && need > takeInv(item, need));
+    const fromHere = short.filter(([item]) => rateHere.has(item));
+    return {
+      p,
+      subLines,
+      usesHere: [...raw.keys()].some(isHereDrop),
+      fromHere: fromHere.map(([item]) => item),
+      elsewhere: short.filter(([item]) => !rateHere.has(item)).map(([item]) => item),
+      attempts: Math.ceil(Math.max(0, ...fromHere.map(([item, need]) => (need - (input.inventory[item] ?? 0)) * rateHere.get(item)!))),
+    };
+  };
+
   const group = (c: { elsewhere: string[]; attempts: number }) => (c.elsewhere.length > 0 ? 2 : c.attempts > LONG_HAUL ? 1 : 0);
   const candidates = crafts
     .filter((p) => CRAFTWORKS_METHODS.has(p.method) && !CRAFTWORKS_SKIP.has(p.item) && p.remaining > 0)
-    .map((p) => {
-      const usesHere = p.materials.some((mat) => !mat.passive && rateHere.has(mat.item));
-      const short = p.materials.filter((mat) => mat.short > 0 && !mat.passive);
-      const fromHere = short.filter((mat) => rateHere.has(mat.item));
-      const elsewhere = short.filter((mat) => !rateHere.has(mat.item)).map((mat) => mat.item);
-      const attempts = Math.ceil(Math.max(0, ...fromHere.map((mat) => mat.short * rateHere.get(mat.item)!)));
-      return { p, usesHere, fromHere: fromHere.map((mat) => mat.item), elsewhere, attempts };
-    })
+    .map(expandRoot)
     .filter((c) => c.usesHere)
     // Lines this location (plus your stock and passive materials) can fully feed in a sensible
     // number of attempts come first, then easiest by your ranking, then the most AP the chain earns
@@ -293,18 +356,24 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
       || b.p.totalPts - a.p.totalPts
       || a.attempts - b.attempts);
 
+  const slotFor = (item: string): Pick<GuideSlot, 'difficulty' | 'progress' | 'target'> => {
+    const m = masteryByName.get(item);
+    const progress = m && earnsAp(item, input) ? progressOf(item, input) : null;
+    return { difficulty: m?.difficulty ?? null, progress, target: progress ? targetFor(progress.level) : 0 };
+  };
+
   const slots: GuideSlot[] = [];
   const taken = new Set<string>();
   for (const c of candidates) {
-    const links = c.p.chain.filter((s) => s.how === 'craft' && !taken.has(s.item) && CRAFTWORKS_METHODS.has(s.method));
+    const links = [...c.subLines].filter(([item]) => !taken.has(item));
     if (taken.has(c.p.item) || slots.length + 1 + links.length > slotCount) continue;
-    // Deepest links first so each line's input is already being made
-    for (const s of [...links].sort((a, b) => b.depth - a.depth)) {
-      taken.add(s.item);
-      slots.push({ item: s.item, difficulty: s.difficulty, progress: s.progress, target: targetFor(s.progress.level), feeds: c.p.item, fromHere: [], elsewhere: [], attempts: 0 });
+    // Deepest lines first so each line's input is already being made
+    for (const [item, { feeds, fromDrops }] of links.sort((a, b) => b[1].depth - a[1].depth)) {
+      taken.add(item);
+      slots.push({ item, ...slotFor(item), feeds, fromDrops, fromHere: [], elsewhere: [], attempts: 0 });
     }
     taken.add(c.p.item);
-    slots.push({ item: c.p.item, difficulty: masteryByName.get(c.p.item)!.difficulty, progress: c.p.progress, target: c.p.target, plan: c.p, fromHere: c.fromHere, elsewhere: c.elsewhere, attempts: c.attempts });
+    slots.push({ item: c.p.item, ...slotFor(c.p.item), plan: c.p, fromHere: c.fromHere, elsewhere: c.elsewhere, attempts: c.attempts });
     if (slots.length >= slotCount) break;
   }
   return { slots, gathers: nearGathers };
