@@ -227,10 +227,10 @@ export function buildMilestonePlan(input: PlanInput) {
 // ── Craftworks guide for a location ─────────────────────────────────────────
 // Lines worth running while you farm one location: crafting/steelworks masteries
 // with an AP milestone ahead whose raw materials drop there, easiest (by your
-// ranking) first. Each Craftworks line only makes one item, so a root's crafted
-// ingredients get their own slots, set up ahead of the line they feed: chain links
-// that earn AP, plus any sub-component made from this location's drops, so the
-// root keeps running on what you farm instead of on stock that runs out.
+// ranking) first. Each Craftworks line only makes one item, so every ingredient
+// Craftworks can make gets its own slot, set up ahead of the line it feeds: the
+// whole chain then runs on passive materials and what you farm here, instead of
+// on stock that runs out.
 
 export interface GuideSlot {
   item: string;
@@ -238,11 +238,11 @@ export interface GuideSlot {
   progress: Progress | null; // null once there's no AP milestone left
   target: number;
   feeds?: string;            // sub-line: this line's output goes into that line
-  fromDrops?: boolean;       // sub-line made from this location's drops
+  source?: 'drops' | 'mastery' | 'passive'; // sub-line: made from drops here, earns AP itself, or runs on passive materials
   plan?: CraftPlan;          // root lines only
-  fromHere: string[];        // short materials that drop at this location
+  fromHere: string[];        // materials the chain draws from this location's drops
   elsewhere: string[];       // short materials you'll have to get somewhere else
-  attempts: number;          // attempts here to cover the short materials that drop here
+  perThousand: number;       // root crafts each 1,000 attempts here keep fed (Infinity: drops not needed)
 }
 
 export interface LocationGuide {
@@ -251,8 +251,6 @@ export interface LocationGuide {
 }
 
 const CRAFTWORKS_METHODS = new Set(['crafting', 'steelworks']);
-// Attempts past which a line is a long-term project rather than something to run on this trip
-export const LONG_HAUL = 50_000;
 // A location counts as a source for a material when its drop rate is within this factor of the best one
 const GOOD_SOURCE = 2;
 
@@ -299,7 +297,7 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
 
   // Expand a root into its Craftworks sub-lines and the raw materials they all draw on
   const expandRoot = (p: CraftPlan) => {
-    const subLines = new Map<string, { depth: number; feeds: string; fromDrops: boolean }>();
+    const subLines = new Map<string, { depth: number; feeds: string; source: NonNullable<GuideSlot['source']> }>();
     const raw = new Map<string, number>();
     const invLeft = new Map<string, number>();
     const takeInv = (item: string, want: number) => {
@@ -315,12 +313,11 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
       for (const { item: ing, quantity } of recipe.ingredients) {
         const need = quantity * units;
         const ingRecipe = recipeByName.get(ing.toLowerCase());
-        const fromDrops = !!ingRecipe && craftworksCan(ing) && touchesHere(ing);
-        const chainLink = !!ingRecipe && earnsAp(ing, input) && craftworksCan(ing);
-        if (ingRecipe && !next.has(ing) && (fromDrops || chainLink)) {
-          // Its own line, made fresh: from this run's drops, or so its mastery moves too
+        if (ingRecipe && !next.has(ing) && craftworksCan(ing)) {
+          // Its own line, made fresh so the chain never waits on stock
           const prev = subLines.get(ing);
-          subLines.set(ing, { depth: Math.max(prev?.depth ?? 0, next.size), feeds: prev?.feeds ?? item, fromDrops });
+          const source = touchesHere(ing) ? 'drops' : earnsAp(ing, input) ? 'mastery' : 'passive';
+          subLines.set(ing, { depth: Math.max(prev?.depth ?? 0, next.size), feeds: prev?.feeds ?? item, source });
           expand(ing, need, next);
         } else if (ingRecipe && !next.has(ing)) {
           const fromInv = takeInv(ing, need);
@@ -331,30 +328,32 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
       }
     };
     expand(p.item, p.remaining, new Set());
-    const short = [...raw].filter(([item, need]) => !PASSIVE_MATERIALS.has(item) && need > takeInv(item, need));
-    const fromHere = short.filter(([item]) => rateHere.has(item));
+    const here = [...raw].filter(([item]) => isHereDrop(item));
+    // Every drop comes from the same attempts, so the slowest one sets the pace
+    const perCraft = Math.max(0, ...here.map(([item, need]) => (need / p.remaining) * rateHere.get(item)!));
     return {
       p,
       subLines,
-      usesHere: [...raw.keys()].some(isHereDrop),
-      fromHere: fromHere.map(([item]) => item),
-      elsewhere: short.filter(([item]) => !rateHere.has(item)).map(([item]) => item),
-      attempts: Math.ceil(Math.max(0, ...fromHere.map(([item, need]) => (need - (input.inventory[item] ?? 0)) * rateHere.get(item)!))),
+      usesHere: here.length > 0,
+      fromHere: here.map(([item]) => item),
+      elsewhere: [...raw]
+        .filter(([item, need]) => !PASSIVE_MATERIALS.has(item) && !rateHere.has(item) && need > takeInv(item, need))
+        .map(([item]) => item),
+      perThousand: perCraft > 0 ? 1000 / perCraft : Infinity,
     };
   };
 
-  const group = (c: { elsewhere: string[]; attempts: number }) => (c.elsewhere.length > 0 ? 2 : c.attempts > LONG_HAUL ? 1 : 0);
   const candidates = crafts
     .filter((p) => CRAFTWORKS_METHODS.has(p.method) && !CRAFTWORKS_SKIP.has(p.item) && p.remaining > 0)
     .map(expandRoot)
     .filter((c) => c.usesHere)
-    // Lines this location (plus your stock and passive materials) can fully feed in a sensible
-    // number of attempts come first, then easiest by your ranking, then the most AP the chain earns
+    // Chains this location and passive materials can fully feed come first, then easiest by
+    // your ranking, then the most AP the chain earns, then the most crafts per attempt
     .sort((a, b) =>
-      group(a) - group(b)
+      Number(a.elsewhere.length > 0) - Number(b.elsewhere.length > 0)
       || a.p.ease - b.p.ease
       || b.p.totalPts - a.p.totalPts
-      || a.attempts - b.attempts);
+      || b.perThousand - a.perThousand);
 
   const slotFor = (item: string): Pick<GuideSlot, 'difficulty' | 'progress' | 'target'> => {
     const m = masteryByName.get(item);
@@ -368,12 +367,12 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
     const links = [...c.subLines].filter(([item]) => !taken.has(item));
     if (taken.has(c.p.item) || slots.length + 1 + links.length > slotCount) continue;
     // Deepest lines first so each line's input is already being made
-    for (const [item, { feeds, fromDrops }] of links.sort((a, b) => b[1].depth - a[1].depth)) {
+    for (const [item, { feeds, source }] of links.sort((a, b) => b[1].depth - a[1].depth)) {
       taken.add(item);
-      slots.push({ item, ...slotFor(item), feeds, fromDrops, fromHere: [], elsewhere: [], attempts: 0 });
+      slots.push({ item, ...slotFor(item), feeds, source, fromHere: [], elsewhere: [], perThousand: Infinity });
     }
     taken.add(c.p.item);
-    slots.push({ item: c.p.item, ...slotFor(c.p.item), plan: c.p, fromHere: c.fromHere, elsewhere: c.elsewhere, attempts: c.attempts });
+    slots.push({ item: c.p.item, ...slotFor(c.p.item), plan: c.p, fromHere: c.fromHere, elsewhere: c.elsewhere, perThousand: c.perThousand });
     if (slots.length >= slotCount) break;
   }
   return { slots, gathers: nearGathers };

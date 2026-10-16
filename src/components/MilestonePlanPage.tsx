@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Target, Link2, Compass, ChevronDown, ChevronUp, Factory, ArrowDown } from 'lucide-react';
 import { useStore } from '../store';
-import { buildMilestonePlan, buildLocationGuide, LONG_HAUL } from '../milestonePlan';
+import { buildMilestonePlan, buildLocationGuide } from '../milestonePlan';
 import type { CraftPlan, GatherPlan, Material, GuideSlot } from '../milestonePlan';
 import { itemLocations, formatRate, sourceHint } from '../data/itemSources';
 import { formatDuration } from '../utils';
@@ -234,6 +234,12 @@ function GatherRow({ plan, onOpen }: { plan: GatherPlan; onOpen?: OpenLocation }
   );
 }
 
+// How many crafts the drops keep fed, e.g. "≈ 75 crafts per 1,000 explores"
+function pace(perThousand: number, verb: string) {
+  if (perThousand >= 1) return `≈ ${Math.floor(perThousand).toLocaleString()} crafts per 1,000 ${verb}`;
+  return `≈ 1 craft per ${Math.round(1000 / perThousand).toLocaleString()} ${verb}`;
+}
+
 function GuideRow({ slot, n, verb }: { slot: GuideSlot; n: number; verb: string }) {
   const { progress } = slot;
   return (
@@ -258,16 +264,15 @@ function GuideRow({ slot, n, verb }: { slot: GuideSlot; n: number; verb: string 
           {slot.feeds ? (
             <span className="inline-flex items-center gap-1">
               <ArrowDown size={11} /> makes {slot.item} for the {slot.feeds} line
-              {slot.fromDrops ? ' from what you farm here, so it doesn\'t eat your stock' : ', so both masteries move'}
+              {slot.source === 'drops' ? ' from what you farm here' : slot.source === 'mastery' ? ', so both masteries move' : ' from passive materials'}
             </span>
           ) : slot.fromHere.length === 0 && slot.elsewhere.length === 0 ? (
-            'Stock and passive materials cover it'
+            'Runs on passive materials'
           ) : (
             <>
               {slot.fromHere.length > 0 && (
                 <>
-                  Farm {slot.fromHere.join(', ')} here · ≈ {slot.attempts.toLocaleString()} {verb} to finish
-                  {slot.attempts > LONG_HAUL && <span style={{ color: 'var(--accent-orange)' }}> (long haul: run it for progress)</span>}
+                  Farm {slot.fromHere.join(', ')} here · {pace(slot.perThousand, verb)}
                 </>
               )}
               {slot.elsewhere.length > 0 && (
@@ -314,13 +319,13 @@ function LocationGuide({ crafts, onOpen }: { crafts: CraftPlan[]; onOpen?: OpenL
         {!guide ? (
           <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>
             Pick a location to get {craftworksSlots} Craftworks lines that turn its drops into mastery progress: easiest by your
-            ranking first. Ingredients made from that location's drops get their own lines, set up ahead of the line they
-            feed, so nothing runs on stock that will run out.
+            ranking first. Every ingredient Craftworks can make gets its own line, set up ahead of the line it
+            feed, so the whole chain runs on passive materials and what you farm instead of stock that runs out.
           </p>
         ) : (
           <>
             <p className="px-4 py-2 text-[11px]" style={{ color: 'var(--text-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
-              {craftworksSlots} slots · lines fed by {location!.name} drops plus your stock · lines this location can't fully supply go last
+              {craftworksSlots} slots · every ingredient on its own line, fed by {location!.name} drops and passive materials · chains needing things from elsewhere go last
             </p>
             {guide.slots.length === 0 ? (
               <p className="px-4 py-3 text-xs" style={{ color: 'var(--text-muted)' }}>
