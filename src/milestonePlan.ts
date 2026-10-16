@@ -1,7 +1,7 @@
 import masteriesData from './data/masteries.json';
 import recipesData from './data/recipes.json';
 import { itemLocations } from './data/itemSources';
-import { PASSIVE_INPUTS } from './data/passiveMaterials';
+import { PASSIVE_INPUTS, CRAFTWORKS_SKIP } from './data/passiveMaterials';
 import type { CropTime } from './types';
 
 // Plans the next 10k / 100k mastery milestones (10 and 100 Ascension Points),
@@ -44,6 +44,8 @@ export interface ChainStep {
   method: string;
   how: 'craft' | 'gather';
   added: number;        // units crafted/gathered for this plan
+  difficulty: number;   // your mastery ranking (1 easy – 10 expert)
+  depth: number;        // crafted links: steps below the root (1 = direct ingredient)
   progress: Progress;
   pts: number;          // AP this step crosses
 }
@@ -61,6 +63,7 @@ export interface CraftPlan {
   pts: number;
   chain: ChainStep[];       // other masteries that progress along the way
   totalPts: number;         // root + chain milestones
+  ease: number;             // hardest ranking among the masteries you craft (root + crafted links)
   materials: Material[];    // raw materials, most short first
   coverage: number;         // 0–1: share of the plan current inventory covers
   readyNow: number;         // root crafts possible right now
@@ -111,6 +114,7 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
     return took;
   };
   const crafted = new Map<string, number>();
+  const depth = new Map<string, number>();
   const raw = new Map<string, number>();
 
   const expand = (item: string, units: number, seen: Set<string>) => {
@@ -123,6 +127,7 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
       if (ingRecipe && !nextSeen.has(ing) && earnsAp(ing, input)) {
         // Chain link: craft it fresh so its own mastery moves too
         crafted.set(ing, (crafted.get(ing) ?? 0) + need);
+        depth.set(ing, Math.max(depth.get(ing) ?? 0, nextSeen.size));
         expand(ing, need, nextSeen);
       } else if (ingRecipe && !nextSeen.has(ing)) {
         const fromInv = takeInv(ing, need);
@@ -147,13 +152,15 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
   const chain: ChainStep[] = [];
   for (const [item, added] of crafted) {
     const p = progressOf(item, input);
-    chain.push({ item, method: masteryByName.get(item)!.method, how: 'craft', added, progress: p, pts: pointsCrossed(p, added) });
+    const im = masteryByName.get(item)!;
+    chain.push({ item, method: im.method, how: 'craft', added, difficulty: im.difficulty, depth: depth.get(item)!, progress: p, pts: pointsCrossed(p, added) });
   }
   // Raw materials you still have to gather that are masteries themselves (fish, crops, ores…)
   for (const mat of materials) {
     if (mat.short > 0 && earnsAp(mat.item, input)) {
       const p = progressOf(mat.item, input);
-      chain.push({ item: mat.item, method: masteryByName.get(mat.item)!.method, how: 'gather', added: mat.short, progress: p, pts: pointsCrossed(p, mat.short) });
+      const im = masteryByName.get(mat.item)!;
+      chain.push({ item: mat.item, method: im.method, how: 'gather', added: mat.short, difficulty: im.difficulty, depth: 0, progress: p, pts: pointsCrossed(p, mat.short) });
     }
   }
   chain.sort((a, b) => b.pts - a.pts || b.added - a.added);
@@ -170,6 +177,7 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
     pts,
     chain,
     totalPts: pts + chain.reduce((sum, s) => sum + s.pts, 0),
+    ease: Math.max(m.difficulty, ...chain.filter((s) => s.how === 'craft').map((s) => s.difficulty)),
     materials,
     coverage,
     readyNow: Math.min(remaining, Math.floor(coverage * remaining)),
@@ -214,4 +222,90 @@ export function buildMilestonePlan(input: PlanInput) {
     }
   }
   return { crafts, gathers };
+}
+
+// ── Craftworks guide for a location ─────────────────────────────────────────
+// Lines worth running while you farm one location: crafting/steelworks masteries
+// with an AP milestone ahead whose raw materials drop there, easiest (by your
+// ranking) first. A chain's crafted links get their own slot, set up first, since
+// each Craftworks line only makes one item.
+
+export interface GuideSlot {
+  item: string;
+  difficulty: number;
+  progress: Progress;
+  target: number;
+  feeds?: string;            // chain link: this line's output goes into that line
+  plan?: CraftPlan;          // root lines only
+  fromHere: string[];        // short materials that drop at this location
+  elsewhere: string[];       // short materials you'll have to get somewhere else
+  attempts: number;          // attempts here to cover the short materials that drop here
+}
+
+export interface LocationGuide {
+  slots: GuideSlot[];
+  gathers: { item: string; difficulty: number; progress: Progress; target: number; rate: number; attempts: number }[];
+}
+
+const CRAFTWORKS_METHODS = new Set(['crafting', 'steelworks']);
+// Attempts past which a line is a long-term project rather than something to run on this trip
+export const LONG_HAUL = 50_000;
+// A location counts as a source for a material when its drop rate is within this factor of the best one
+const GOOD_SOURCE = 2;
+
+export function buildLocationGuide(location: string, input: PlanInput, crafts: CraftPlan[], slotCount: number): LocationGuide {
+  const rateHere = new Map<string, number>();
+  const gathers: LocationGuide['gathers'] = [];
+  for (const [item, locs] of Object.entries(itemLocations)) {
+    const here = locs.find((l) => l.name === location && l.rate);
+    if (!here) continue;
+    // Only count it as this location's material when here is a sensible place to get it
+    const best = Math.min(...locs.filter((l) => l.rate).map((l) => l.rate!));
+    if (here.rate! <= best * GOOD_SOURCE) rateHere.set(item, here.rate!);
+    const m = masteryByName.get(item);
+    if (m && earnsAp(item, input)) {
+      const progress = progressOf(item, input);
+      const target = targetFor(progress.level);
+      gathers.push({ item, difficulty: m.difficulty, progress, target, rate: here.rate!, attempts: Math.ceil(Math.max(0, target - progress.count) * here.rate!) });
+    }
+  }
+  gathers.sort((a, b) => a.attempts - b.attempts);
+  // Rare drops (Runestones…) would take millions of attempts, so leave them out
+  const nearGathers = gathers.filter((g) => g.attempts <= 1_000_000);
+
+  const group = (c: { elsewhere: string[]; attempts: number }) => (c.elsewhere.length > 0 ? 2 : c.attempts > LONG_HAUL ? 1 : 0);
+  const candidates = crafts
+    .filter((p) => CRAFTWORKS_METHODS.has(p.method) && !CRAFTWORKS_SKIP.has(p.item) && p.remaining > 0)
+    .map((p) => {
+      const usesHere = p.materials.some((mat) => !mat.passive && rateHere.has(mat.item));
+      const short = p.materials.filter((mat) => mat.short > 0 && !mat.passive);
+      const fromHere = short.filter((mat) => rateHere.has(mat.item));
+      const elsewhere = short.filter((mat) => !rateHere.has(mat.item)).map((mat) => mat.item);
+      const attempts = Math.ceil(Math.max(0, ...fromHere.map((mat) => mat.short * rateHere.get(mat.item)!)));
+      return { p, usesHere, fromHere: fromHere.map((mat) => mat.item), elsewhere, attempts };
+    })
+    .filter((c) => c.usesHere)
+    // Lines this location (plus your stock and passive materials) can fully feed in a sensible
+    // number of attempts come first, then easiest by your ranking, then the most AP the chain earns
+    .sort((a, b) =>
+      group(a) - group(b)
+      || a.p.ease - b.p.ease
+      || b.p.totalPts - a.p.totalPts
+      || a.attempts - b.attempts);
+
+  const slots: GuideSlot[] = [];
+  const taken = new Set<string>();
+  for (const c of candidates) {
+    const links = c.p.chain.filter((s) => s.how === 'craft' && !taken.has(s.item) && CRAFTWORKS_METHODS.has(s.method));
+    if (taken.has(c.p.item) || slots.length + 1 + links.length > slotCount) continue;
+    // Deepest links first so each line's input is already being made
+    for (const s of [...links].sort((a, b) => b.depth - a.depth)) {
+      taken.add(s.item);
+      slots.push({ item: s.item, difficulty: s.difficulty, progress: s.progress, target: targetFor(s.progress.level), feeds: c.p.item, fromHere: [], elsewhere: [], attempts: 0 });
+    }
+    taken.add(c.p.item);
+    slots.push({ item: c.p.item, difficulty: masteryByName.get(c.p.item)!.difficulty, progress: c.p.progress, target: c.p.target, plan: c.p, fromHere: c.fromHere, elsewhere: c.elsewhere, attempts: c.attempts });
+    if (slots.length >= slotCount) break;
+  }
+  return { slots, gathers: nearGathers };
 }
