@@ -5062,5 +5062,51 @@
         "quantity": 2
       }
     ]
+  },
+  {
+    "id": "1568",
+    "name": "Esperium Band",
+    "ingredients": [
+      {
+        "item": "Refined Esperium",
+        "quantity": 1
+      },
+      {
+        "item": "Stone",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1564",
+    "name": "Refined Esperium",
+    "ingredients": [
+      {
+        "item": "Emberstone",
+        "quantity": 1
+      },
+      {
+        "item": "Esperium",
+        "quantity": 2
+      }
+    ]
+  },
+  {
+    "id": "1584",
+    "name": "Strong Wire",
+    "ingredients": [
+      {
+        "item": "Carbon Sphere",
+        "quantity": 1
+      },
+      {
+        "item": "Orange Calcite",
+        "quantity": 1
+      }
+    ]
   }
 ]
