@@ -2526,5 +2526,33 @@
       "type": "mining",
       "rate": 8.6
     }
+  ],
+  "Fenrir's Coin": [
+    {
+      "name": "Fenrir's Den",
+      "type": "mining",
+      "rate": 66.7
+    }
+  ],
+  "Fossilized Frog": [
+    {
+      "name": "Highland Hollow",
+      "type": "mining",
+      "rate": 30.5
+    }
+  ],
+  "Runestone 27": [
+    {
+      "name": "Ember Caverns",
+      "type": "mining",
+      "rate": 84.2
+    }
+  ],
+  "Sol Orb": [
+    {
+      "name": "Sol Grotto",
+      "type": "mining",
+      "rate": 33.9
+    }
   ]
 }
