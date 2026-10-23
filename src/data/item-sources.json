@@ -175,6 +175,10 @@
   ],
   "Anglerfish": [
     {
+      "type": "shop",
+      "label": "Flea Market: 25 gold"
+    },
+    {
       "type": "password",
       "label": "Password \"alliteration\" (×1)"
     }
@@ -264,10 +268,6 @@
     },
     {
       "type": "quiz",
-      "label": "Townsfolk 101 quiz (score 80, ×10)"
-    },
-    {
-      "type": "quiz",
       "label": "Getting Started quiz (score 100, ×30)"
     },
     {
@@ -281,6 +281,10 @@
     {
       "type": "quiz",
       "label": "Apple Facts quiz (score 90, ×200)"
+    },
+    {
+      "type": "quiz",
+      "label": "Townsfolk 101 quiz (score 80, ×10)"
     },
     {
       "type": "password",
@@ -442,11 +446,11 @@
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 50 (×25)"
+      "label": "Goostav friendship Lv 20 (×250)"
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 20 (×250)"
+      "label": "Baba Gec friendship Lv 50 (×25)"
     },
     {
       "type": "temple",
@@ -498,11 +502,11 @@
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
+      "label": "Farm RPG History quiz (score 80, ×5)"
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 80, ×5)"
+      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
     },
     {
       "type": "cards",
@@ -583,6 +587,10 @@
   ],
   "Bacon": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "npc",
       "label": "Vincent friendship Lv 20 (×10)"
     },
@@ -633,6 +641,12 @@
     {
       "type": "quest",
       "label": "Quest reward: The Collector - Gold Crab (×5)"
+    }
+  ],
+  "Barracuda": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
     }
   ],
   "Bat Wing": [
@@ -690,10 +704,6 @@
     }
   ],
   "Bird Egg": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
     {
       "type": "npc",
       "label": "Mariya friendship Lv 40 (×100)"
@@ -906,7 +916,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Problems Start Arising V (×25)"
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart V (×20)"
     }
   ],
   "Bone": [
@@ -965,6 +975,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Hello Hollow Holler I (×100)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart III (×300)"
     }
   ],
   "Book of Schemas": [
@@ -1108,15 +1122,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart III (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Archeology Requires Knowhow VIII (×1)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Secretly A Society Summons You VII (×5)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Crates Unlocked for Buddy's Enrichment V (×1)"
     }
   ],
   "Buddystone": [
@@ -1298,7 +1312,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: New Moon I (×3)"
+      "label": "Quest reward: Liberty To The Captives I (×5)"
     }
   ],
   "Candy Roll": [
@@ -1336,11 +1350,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (14.3%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (20%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "quest",
@@ -1350,15 +1364,15 @@
   "Captured Ghost": [
     {
       "type": "quest",
-      "label": "Quest reward: Grill And Thrill III (×52)"
+      "label": "Quest reward: Catcher of Ghosts III (×24)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Grill And Thrill IV (×52)"
+      "label": "Quest reward: Catcher of Ghosts IV (×42)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Keep Scarecrows Always Masked II (×100)"
+      "label": "Quest reward: Catcher of Ghosts V (×90)"
     }
   ],
   "Carbon Sphere": [
@@ -1639,13 +1653,13 @@
     {
       "type": "quest",
       "label": "Quest reward: Strange Companions XXVII (×5)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Liberty To The Captives III (×5)"
     }
   ],
   "Caterpillar": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 4 gold"
-    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Fire Ant (25%)"
@@ -1672,10 +1686,6 @@
     }
   ],
   "Catfish": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 2 gold"
-    },
     {
       "type": "quest",
       "label": "Quest reward: There’s A Way V (×10)"
@@ -1858,6 +1868,10 @@
     }
   ],
   "Cheese": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 2 gold"
+    },
     {
       "type": "temple",
       "label": "Temple: offer 13,500 Watermelon (×3)"
@@ -2150,11 +2164,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"this is the way\" (×5)"
+      "label": "Password \"give\" (×1)"
     },
     {
       "type": "password",
-      "label": "Password \"give\" (×1)"
+      "label": "Password \"gonna\" (×1)"
     },
     {
       "type": "password",
@@ -2162,7 +2176,7 @@
     },
     {
       "type": "password",
-      "label": "Password \"gonna\" (×1)"
+      "label": "Password \"this is the way\" (×5)"
     },
     {
       "type": "quest",
@@ -2244,6 +2258,10 @@
     }
   ],
   "Crab Claw": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 25 gold"
+    },
     {
       "type": "npc",
       "label": "Lorn friendship Lv 20 (×3)"
@@ -2334,11 +2352,11 @@
     },
     {
       "type": "exchange",
-      "label": "Exchange Center: 350 Spider → 3 (last seen Oct 2026)"
+      "label": "Exchange Center: 25 Cyclops Spider → 3 (last seen Oct 2026)"
     },
     {
       "type": "exchange",
-      "label": "Exchange Center: 25 Cyclops Spider → 3 (last seen Oct 2026)"
+      "label": "Exchange Center: 350 Spider → 3 (last seen Oct 2026)"
     },
     {
       "type": "exchange",
@@ -2406,7 +2424,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Corn of Interest Part 27 (×1)"
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart IV (×1)"
     }
   ],
   "Dice": [
@@ -2424,11 +2442,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Flute (20%)"
+      "label": "Wishing Well: throw Wooden Pipe (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Pipe (25%)"
+      "label": "Wishing Well: throw Small Flute (20%)"
     },
     {
       "type": "password",
@@ -2519,10 +2537,6 @@
   ],
   "Eggs": [
     {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
-    {
       "type": "production",
       "label": "Chicken Coop (daily)"
     },
@@ -2545,6 +2559,10 @@
     {
       "type": "password",
       "label": "Password \"eieio\" (×3)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Cuucoo's Awakening IV (×50)"
     },
     {
       "type": "quest",
@@ -2920,7 +2938,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Bowling for Goldie X (×1)"
+      "label": "Quest reward: Liberty To The Captives I (×40)"
     }
   ],
   "Fishing Net": [
@@ -3164,11 +3182,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"rem\" (×5)"
+      "label": "Password \"double double\" (×5)"
     },
     {
       "type": "password",
-      "label": "Password \"double double\" (×5)"
+      "label": "Password \"rem\" (×5)"
     },
     {
       "type": "quest",
@@ -3723,10 +3741,6 @@
   ],
   "Gold Sea Crest": [
     {
-      "type": "shop",
-      "label": "Flea Market: 15 gold"
-    },
-    {
       "type": "npc",
       "label": "Borgen friendship Lv 40 (×5)"
     },
@@ -3838,10 +3852,6 @@
     }
   ],
   "Goldray": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Gold Trout (33.3%)"
@@ -4246,15 +4256,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart VIII (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Notary Public X (×1)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Sound Unstable IV (×1)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Corn of Interest Part 19 (×1)"
     }
   ],
   "Heart Container": [
@@ -4300,10 +4310,6 @@
     }
   ],
   "Herbs": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
     {
       "type": "npc",
       "label": "Geist friendship Lv 40 (×10)"
@@ -4361,6 +4367,18 @@
     {
       "type": "exchange",
       "label": "Exchange Center: 2,000 Arnold Palmer → 50 (last seen Oct 2022)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: That Which Hat Bewitches Witches And Wizards V (×5)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Cuucoo's Awakening V (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: That Which Hat Bewitches Witches And Wizards I (×25)"
     }
   ],
   "Holiday Wreath": [
@@ -4370,6 +4388,10 @@
     }
   ],
   "Honey": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "npc",
       "label": "Gary Bearson V friendship Lv 30 (×10)"
@@ -4674,11 +4696,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Grill And Thrill III (×52)"
+      "label": "Quest reward: Liberty To The Captives VII (×100)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Grill And Thrill IV (×52)"
+      "label": "Quest reward: Liberty To The Captives VI (×100)"
     }
   ],
   "Jade": [
@@ -4844,11 +4866,11 @@
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 80, ×5)"
+      "label": "Farm RPG History quiz (score 100, ×15)"
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 100, ×15)"
+      "label": "T'rah Notary Public Exam quiz (score 80, ×5)"
     },
     {
       "type": "cards",
@@ -5246,11 +5268,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (33.3%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (25%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "password",
@@ -5288,10 +5310,6 @@
     }
   ],
   "Magna Quartz": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
     {
       "type": "production",
       "label": "Quarry (rarely)"
@@ -5348,11 +5366,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: The Masonry Requires Action XXI (×1)"
+      "label": "Quest reward: Augment Redbrook Through Masonry XXIII (×1)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Augment Redbrook Through Masonry XXIII (×1)"
+      "label": "Quest reward: The Ramparts Mended Anew XXVI (×1)"
     }
   ],
   "Mayonnaise": [
@@ -5426,6 +5444,10 @@
     }
   ],
   "MIAB": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
@@ -5636,11 +5658,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Sprung Forth I (×100)"
+      "label": "Quest reward: Liberty To The Captives I (×200)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Sprung Forth III (×100)"
+      "label": "Quest reward: Sprung Forth I (×100)"
     }
   ],
   "Mushroom Paste": [
@@ -5700,7 +5722,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Candy Cure I (×5)"
+      "label": "Quest reward: Liberty To The Captives VI (×10)"
     }
   ],
   "Mystic Ring": [
@@ -5896,7 +5918,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Strange Companions XVII (×5)"
+      "label": "Quest reward: Liberty To The Captives I (×3)"
     }
   ],
   "Onyx Scorpion": [
@@ -6000,11 +6022,11 @@
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×100)"
+      "label": "Goostav friendship Lv 10 (×250)"
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 10 (×250)"
+      "label": "Star Meerif friendship Lv 40 (×100)"
     },
     {
       "type": "wishing-well",
@@ -6068,19 +6090,7 @@
     },
     {
       "type": "quiz",
-      "label": "The 175k Players Quiz  quiz (score 90, ×100)"
-    },
-    {
-      "type": "quiz",
-      "label": "Halloween for everyone quiz (score 90, ×100)"
-    },
-    {
-      "type": "quiz",
       "label": "April Fools' Day quiz (score 100, ×100)"
-    },
-    {
-      "type": "quiz",
-      "label": "Back-to-School Movies quiz (score 80, ×10)"
     },
     {
       "type": "quiz",
@@ -6095,6 +6105,18 @@
       "label": "Runestones I quiz (score 90, ×100)"
     },
     {
+      "type": "quiz",
+      "label": "Back-to-School Movies quiz (score 80, ×10)"
+    },
+    {
+      "type": "quiz",
+      "label": "The 175k Players Quiz  quiz (score 90, ×100)"
+    },
+    {
+      "type": "quiz",
+      "label": "Halloween for everyone quiz (score 90, ×100)"
+    },
+    {
       "type": "password",
       "label": "Password \"volunteer\" (×5)"
     },
@@ -6104,11 +6126,15 @@
     },
     {
       "type": "password",
+      "label": "Password \"joja\" (×10)"
+    },
+    {
+      "type": "password",
       "label": "Password \"que sera\" (×10)"
     },
     {
       "type": "password",
-      "label": "Password \"joja\" (×10)"
+      "label": "Password \"firestream\" (×1)"
     },
     {
       "type": "password",
@@ -6116,7 +6142,7 @@
     },
     {
       "type": "password",
-      "label": "Password \"firestream\" (×1)"
+      "label": "Password \"welcome to the library\" (×25)"
     },
     {
       "type": "password",
@@ -6125,10 +6151,6 @@
     {
       "type": "password",
       "label": "Password \"lagoon\" (×5)"
-    },
-    {
-      "type": "password",
-      "label": "Password \"welcome to the library\" (×25)"
     },
     {
       "type": "quest",
@@ -6305,6 +6327,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Fun Underground Now II (×100)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart II (×100)"
     }
   ],
   "Piece of Heart": [
@@ -6357,6 +6383,10 @@
   ],
   "Pine Tree": [
     {
+      "type": "shop",
+      "label": "Flea Market: 4 gold"
+    },
+    {
       "type": "farming",
       "label": "Grow from Pine Seeds (8h)"
     },
@@ -6400,10 +6430,6 @@
     }
   ],
   "Pirate Flag": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
     {
       "type": "npc",
       "label": "Buddy friendship Lv 20 (×1)"
@@ -6634,7 +6660,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Problems Start Arising III (×1)"
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart IV (×1)"
     }
   ],
   "Prune Juice": [
@@ -6776,11 +6802,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"thomas is scared of worms\" (×100)"
+      "label": "Password \"rosalie rosalie rosalie\" (×100)"
     },
     {
       "type": "password",
-      "label": "Password \"rosalie rosalie rosalie\" (×100)"
+      "label": "Password \"thomas is scared of worms\" (×100)"
     },
     {
       "type": "password",
@@ -7112,11 +7138,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Moonstone (25%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (33.3%)"
+      "label": "Wishing Well: throw Moonstone (25%)"
     },
     {
       "type": "wishing-well",
@@ -7130,15 +7156,15 @@
     },
     {
       "type": "wishing-well",
+      "label": "Wishing Well: throw Runestone 10 (33.3%)"
+    },
+    {
+      "type": "wishing-well",
       "label": "Wishing Well: throw Runestone 07 (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Runestone 09 (33.3%)"
-    },
-    {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 10 (33.3%)"
     }
   ],
   "Runestone 09": [
@@ -7283,6 +7309,10 @@
   ],
   "Salt": [
     {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
+    {
       "type": "npc",
       "label": "Jill friendship Lv 60 (×25)"
     },
@@ -7342,10 +7372,6 @@
     }
   ],
   "Sea Dragon": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 15 gold"
-    },
     {
       "type": "npc",
       "label": "Lorn friendship Lv 30 (×10)"
@@ -7451,6 +7477,10 @@
   ],
   "Shark Tooth": [
     {
+      "type": "shop",
+      "label": "Flea Market: 25 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Cutlass (33.3%)"
     },
@@ -7493,15 +7523,15 @@
   ],
   "Shinefish": [
     {
-      "type": "shop",
-      "label": "Flea Market: 25 gold"
-    },
-    {
       "type": "exchange",
       "label": "Exchange Center: 1,000 Bone → 10 (last seen Oct 2025)"
     }
   ],
   "Shiny Beetle": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "npc",
       "label": "Holger friendship Lv 30 (×25)"
@@ -7699,6 +7729,10 @@
   ],
   "Small Key": [
     {
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Large Chest 01 (33.3%)"
     },
@@ -7726,10 +7760,6 @@
     }
   ],
   "Small Screw": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
     {
       "type": "production",
       "label": "Ironworks (rarely)"
@@ -7884,7 +7914,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Happy Homunculus II (×1)"
+      "label": "Quest reward: Pumpkins Spiced, Apples Tart III (×1)"
     }
   ],
   "Spectacles": [
@@ -8236,6 +8266,10 @@
     }
   ],
   "Strange Letter": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Gold Carrot (25%)"
@@ -8711,12 +8745,6 @@
     {
       "type": "quest",
       "label": "Quest reward: A Wall In The Way VI (×4)"
-    }
-  ],
-  "Water Lily": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 8 gold"
     }
   ],
   "Watermelon": [
