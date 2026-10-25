@@ -11,6 +11,10 @@
   ],
   "4-leaf Clover": [
     {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
+    {
       "type": "npc",
       "label": "frank friendship Lv 40 (×10)"
     },
@@ -390,11 +394,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Spirit of the Cards IV (×500)"
+      "label": "Quest reward: A Way Back XXIV (×25)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: A Way Back XXIV (×25)"
+      "label": "Quest reward: Hard At Work VI (×5)"
     }
   ],
   "Apple Core": [
@@ -498,11 +502,11 @@
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 80, ×5)"
+      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
+      "label": "Farm RPG History quiz (score 80, ×5)"
     },
     {
       "type": "cards",
@@ -522,6 +526,10 @@
     }
   ],
   "Arrowhead": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Antler (33.3%)"
@@ -551,6 +559,10 @@
     {
       "type": "password",
       "label": "Password \"and my axe\" (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VI (×1000)"
     }
   ],
   "B for Buddies": [
@@ -690,10 +702,6 @@
     }
   ],
   "Bird Egg": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
     {
       "type": "npc",
       "label": "Mariya friendship Lv 40 (×100)"
@@ -954,7 +962,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Strange Companions XXXIX (×10)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) IX (×25)"
     }
   ],
   "Bone Pickaxe": [
@@ -1028,7 +1036,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Far Away XXX (×1)"
+      "label": "Quest reward: Tell-Tale Beat II (×2)"
     }
   ],
   "Broccoli": [
@@ -1157,6 +1165,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Bright Horseshoe VI (×100)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XVI (×200)"
     }
   ],
   "Cabbage": [
@@ -1166,11 +1178,11 @@
     },
     {
       "type": "npc",
-      "label": "frank friendship Lv 10 (×5)"
+      "label": "Baba Gec friendship Lv 20 (×20)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 20 (×20)"
+      "label": "frank friendship Lv 10 (×5)"
     },
     {
       "type": "npc",
@@ -1274,11 +1286,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
+      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (33.3%)"
+      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -1354,15 +1366,15 @@
   "Captured Ghost": [
     {
       "type": "quest",
+      "label": "Quest reward: Masks Aren’t Scary, Kids III (×10)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Catcher of Ghosts III (×24)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Catcher of Ghosts IV (×42)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Catcher of Ghosts V (×90)"
+      "label": "Quest reward: Masks Aren’t Scary, Kids I (×10)"
     }
   ],
   "Carbon Sphere": [
@@ -1846,19 +1858,19 @@
     },
     {
       "type": "password",
-      "label": "Password \"joke\" (×1)"
-    },
-    {
-      "type": "password",
       "label": "Password \"haunted house\" (×10)"
     },
     {
-      "type": "quest",
-      "label": "Quest reward: Once Upon A Halloween III (×25)"
+      "type": "password",
+      "label": "Password \"joke\" (×1)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Happy All Hallows' Eve (×3)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Once Upon A Halloween III (×25)"
     },
     {
       "type": "quest",
@@ -1908,10 +1920,6 @@
     },
     {
       "type": "password",
-      "label": "Password \"elsa\" (×1)"
-    },
-    {
-      "type": "password",
       "label": "Password \"sven\" (×1)"
     },
     {
@@ -1921,6 +1929,10 @@
     {
       "type": "password",
       "label": "Password \"anna\" (×1)"
+    },
+    {
+      "type": "password",
+      "label": "Password \"elsa\" (×1)"
     }
   ],
   "Chum": [
@@ -2182,7 +2194,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Unlikely Pair XV (×450)"
+      "label": "Quest reward: frank's pranks VII (×2000)"
     }
   ],
   "Corn Ball": [
@@ -2216,11 +2228,15 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Strange Companions XXXVIII (×25)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VII (×100)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Far Away X (×100)"
+      "label": "Quest reward: frank's pranks VIII (×50)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: frank's pranks XVI (×10)"
     }
   ],
   "Cotton": [
@@ -2366,6 +2382,10 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XIV (×20)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Problems Start Arising IV (×100)"
     }
   ],
@@ -2405,6 +2425,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Let's Play Pirates V (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XVI (×25)"
     }
   ],
   "Diamonds": [
@@ -2426,6 +2450,10 @@
     }
   ],
   "Dice": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
+    },
     {
       "type": "npc",
       "label": "Buddy friendship Lv 50 (×1)"
@@ -2552,11 +2580,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"chicken\" (×3)"
+      "label": "Password \"eieio\" (×3)"
     },
     {
       "type": "password",
-      "label": "Password \"eieio\" (×3)"
+      "label": "Password \"chicken\" (×3)"
     },
     {
       "type": "quest",
@@ -2719,10 +2747,6 @@
   ],
   "Eye Patch": [
     {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
@@ -2833,6 +2857,10 @@
     {
       "type": "password",
       "label": "Password \"buddys shoe\" (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XX (×1)"
     }
   ],
   "Fancy Table": [
@@ -3007,6 +3035,12 @@
       "label": "Wishing Well: throw Herbs (16.7%)"
     }
   ],
+  "Flarefin": [
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VIII (×2000)"
+    }
+  ],
   "Flarite": [
     {
       "type": "quest",
@@ -3150,7 +3184,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: A Wall In The Way X (×20)"
+      "label": "Quest reward: frank's pranks IV (×25)"
     }
   ],
   "Fuzzy Chick 09": [
@@ -3372,11 +3406,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldfin (33.3%)"
+      "label": "Wishing Well: throw Goldgill (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldgill (33.3%)"
+      "label": "Wishing Well: throw Goldfin (33.3%)"
     },
     {
       "type": "temple",
@@ -3500,11 +3534,11 @@
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×10)"
+      "label": "Baba Gec friendship Lv 40 (×100)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 40 (×100)"
+      "label": "Star Meerif friendship Lv 40 (×10)"
     },
     {
       "type": "wishing-well",
@@ -3824,11 +3858,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Trout (33.3%)"
+      "label": "Wishing Well: throw Goldjack (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Goldjack (33.3%)"
+      "label": "Wishing Well: throw Gold Trout (33.3%)"
     },
     {
       "type": "temple",
@@ -3855,10 +3889,6 @@
   ],
   "Goldray": [
     {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Gold Trout (33.3%)"
     },
@@ -3884,6 +3914,10 @@
     }
   ],
   "Gouda": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 20 gold"
+    },
     {
       "type": "npc",
       "label": "Jill friendship Lv 20 (×5)"
@@ -3922,6 +3956,10 @@
     }
   ],
   "Grab Bag 07": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 7 gold"
+    },
     {
       "type": "npc",
       "label": "Geist friendship Lv 30 (×10)"
@@ -3976,7 +4014,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Strange Companions XIV (×5)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) V (×100)"
     }
   ],
   "Grape Juice": [
@@ -4046,6 +4084,10 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) II (×100)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Gossip Gelding IV (×100)"
     }
   ],
@@ -4112,11 +4154,11 @@
   "Green Scarf": [
     {
       "type": "password",
-      "label": "Password \"green initiative\" (×3)"
+      "label": "Password \"cecil has roomba\" (×1)"
     },
     {
       "type": "password",
-      "label": "Password \"cecil has roomba\" (×1)"
+      "label": "Password \"green initiative\" (×3)"
     }
   ],
   "Green Shield": [
@@ -4205,6 +4247,10 @@
     {
       "type": "password",
       "label": "Password \"halocharts\" (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VI (×1000)"
     },
     {
       "type": "quest",
@@ -4316,6 +4362,10 @@
     }
   ],
   "Herbs": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 10 gold"
+    },
     {
       "type": "npc",
       "label": "Geist friendship Lv 40 (×10)"
@@ -4516,7 +4566,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: A Horse Of A Different Color III (×10)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) II (×100)"
     }
   ],
   "Horseshoe": [
@@ -4545,6 +4595,10 @@
     {
       "type": "npc",
       "label": "Charles Horsington III friendship Lv 30 (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XIX (×1)"
     }
   ],
   "Hourglass": [
@@ -4698,11 +4752,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Indecipherable Note I (×1)"
+      "label": "Quest reward: frank's pranks XIV (×50)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Liberty To The Captives VII (×100)"
+      "label": "Quest reward: Indecipherable Note I (×1)"
     }
   ],
   "Jade": [
@@ -4868,11 +4922,11 @@
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 100, ×15)"
+      "label": "T'rah Notary Public Exam quiz (score 80, ×5)"
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 80, ×5)"
+      "label": "Farm RPG History quiz (score 100, ×15)"
     },
     {
       "type": "cards",
@@ -4965,6 +5019,14 @@
     {
       "type": "skill",
       "label": "Farming Lv 20 reward (×16)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) IV (×2000)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: frank's pranks XIV (×2000)"
     }
   ],
   "Lemon": [
@@ -5246,6 +5308,10 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XVII (×50)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: A Wall In The Way VI (×20)"
     },
     {
@@ -5335,6 +5401,10 @@
     {
       "type": "quest",
       "label": "Quest reward: A Study of Color X (×3)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Tell-Tale Beat II (×5)"
     },
     {
       "type": "quest",
@@ -5479,6 +5549,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Bright Horseshoe VI (×200)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) III (×2000)"
     }
   ],
   "Milk Carton": [
@@ -5532,10 +5606,6 @@
     }
   ],
   "Moonstone": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
     {
       "type": "npc",
       "label": "Beatrix friendship Lv 10 (×5)"
@@ -5618,15 +5688,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VIII (×10)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Far Away XIII (×100)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Problems Start Arising I (×250)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Pirates Start Arriving VII (×250)"
     }
   ],
   "Mushroom": [
@@ -5660,11 +5730,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Hare Handler VI (×150)"
+      "label": "Quest reward: frank's pranks VII (×2000)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Liberty To The Captives I (×200)"
+      "label": "Quest reward: Hare Handler VI (×150)"
     }
   ],
   "Mushroom Paste": [
@@ -5724,7 +5794,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Liberty To The Captives VI (×10)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VI (×10)"
     }
   ],
   "Mystic Ring": [
@@ -5792,15 +5862,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: frank's pranks XV (×10)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: A Wall In The Way IV (×5)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Strange Companions XX (×5)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Peculiar Endings IV (×10)"
     }
   ],
   "Notary Certificate": [
@@ -5858,7 +5928,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: A Real Gem I (×2)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XIII (×2000)"
     }
   ],
   "Onion": [
@@ -5884,7 +5954,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Strange Companions XXI (×500)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) I (×200)"
     }
   ],
   "Onion Seeds": [
@@ -5924,6 +5994,10 @@
     }
   ],
   "Onyx Scorpion": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 10 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Spoon (33.3%)"
@@ -5978,15 +6052,15 @@
     },
     {
       "type": "wishing-well",
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
+    },
+    {
+      "type": "wishing-well",
       "label": "Wishing Well: throw Crab Claw (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Frog (33.3%)"
-    },
-    {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
@@ -6024,11 +6098,11 @@
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 10 (×250)"
+      "label": "Star Meerif friendship Lv 40 (×100)"
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×100)"
+      "label": "Goostav friendship Lv 10 (×250)"
     },
     {
       "type": "wishing-well",
@@ -6092,19 +6166,19 @@
     },
     {
       "type": "quiz",
-      "label": "Halloween for everyone quiz (score 90, ×100)"
-    },
-    {
-      "type": "quiz",
       "label": "April Fools' Day quiz (score 100, ×100)"
     },
     {
       "type": "quiz",
-      "label": "Locations 101 quiz (score 100, ×25)"
+      "label": "Back-to-School Movies quiz (score 80, ×10)"
     },
     {
       "type": "quiz",
-      "label": "Back-to-School Movies quiz (score 80, ×10)"
+      "label": "Townsfolk 101 quiz (score 90, ×2)"
+    },
+    {
+      "type": "quiz",
+      "label": "Locations 101 quiz (score 100, ×25)"
     },
     {
       "type": "quiz",
@@ -6116,7 +6190,7 @@
     },
     {
       "type": "quiz",
-      "label": "Townsfolk 101 quiz (score 90, ×2)"
+      "label": "Halloween for everyone quiz (score 90, ×100)"
     },
     {
       "type": "password",
@@ -6128,15 +6202,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"joja\" (×10)"
-    },
-    {
-      "type": "password",
       "label": "Password \"que sera\" (×10)"
     },
     {
       "type": "password",
-      "label": "Password \"firestream\" (×1)"
+      "label": "Password \"joja\" (×10)"
     },
     {
       "type": "password",
@@ -6144,11 +6214,15 @@
     },
     {
       "type": "password",
-      "label": "Password \"0x5432671\" (×10)"
+      "label": "Password \"firestream\" (×1)"
     },
     {
       "type": "password",
       "label": "Password \"welcome to the library\" (×25)"
+    },
+    {
+      "type": "password",
+      "label": "Password \"0x5432671\" (×10)"
     },
     {
       "type": "password",
@@ -6190,7 +6264,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Monster Hunter IV (×10)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XVII (×10)"
     }
   ],
   "Paper Receipt": [
@@ -6384,6 +6458,10 @@
     }
   ],
   "Pine Tree": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 4 gold"
+    },
     {
       "type": "farming",
       "label": "Grow from Pine Seeds (8h)"
@@ -6650,15 +6728,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Masks Aren’t Scary, Kids II (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Archeology Requires Knowhow IV (×1)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted V (×1)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Pumpkins Spiced, Apples Tart IV (×1)"
     }
   ],
   "Prune Juice": [
@@ -6774,15 +6852,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: frank's pranks VIII (×5)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) VII (×10)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Sound Unstable III (×5)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted III (×10)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Archeology Requires Knowhow II (×50)"
     }
   ],
   "R.O.A.S.": [
@@ -6850,15 +6928,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XII (×100)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Far Away XIV (×100)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Starting To Actually Realize  Magic Ain't Pretty X (×100)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Far Away XXIV (×10)"
     }
   ],
   "Red Berries": [
@@ -6933,6 +7011,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Breaking The Ice Even Icier II (×1000)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) IV (×500)"
     }
   ],
   "Ring of Renthisj": [
@@ -7005,12 +7087,6 @@
     {
       "type": "quest",
       "label": "Quest reward: A Better Understanding II (×1)"
-    }
-  ],
-  "Ruby Fish": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
     }
   ],
   "Ruby Ring": [
@@ -7142,11 +7218,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Moonstone (25%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (33.3%)"
+      "label": "Wishing Well: throw Moonstone (25%)"
     },
     {
       "type": "wishing-well",
@@ -7477,10 +7553,6 @@
   ],
   "Shark Tooth": [
     {
-      "type": "shop",
-      "label": "Flea Market: 25 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Cutlass (33.3%)"
     },
@@ -7528,10 +7600,6 @@
     }
   ],
   "Shiny Beetle": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
     {
       "type": "npc",
       "label": "Holger friendship Lv 30 (×25)"
@@ -7672,6 +7740,10 @@
     }
   ],
   "Small Flute": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
@@ -7841,10 +7913,6 @@
   ],
   "Snail": [
     {
-      "type": "shop",
-      "label": "Flea Market: 2 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
@@ -7897,6 +7965,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Corn of Interest Part 01 (×1000)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: frank's pranks XVII (×100)"
     }
   ],
   "Spades": [
@@ -7949,12 +8021,16 @@
   ],
   "Spider": [
     {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Lollipop (33.3%)"
+      "type": "shop",
+      "label": "Flea Market: 6 gold"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Jack-o-lantern (33.3%)"
+    },
+    {
+      "type": "wishing-well",
+      "label": "Wishing Well: throw Lollipop (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -7970,19 +8046,19 @@
     },
     {
       "type": "password",
-      "label": "Password \"chai tea\" (×1)"
-    },
-    {
-      "type": "password",
-      "label": "Password \"2099\" (×1)"
-    },
-    {
-      "type": "password",
       "label": "Password \"ghost-spider\" (×1)"
     },
     {
       "type": "password",
+      "label": "Password \"chai tea\" (×1)"
+    },
+    {
+      "type": "password",
       "label": "Password \"miles\" (×1)"
+    },
+    {
+      "type": "password",
+      "label": "Password \"2099\" (×1)"
     },
     {
       "type": "quest",
@@ -7998,10 +8074,6 @@
     }
   ],
   "Spiked Shell": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
     {
       "type": "npc",
       "label": "Holger friendship Lv 50 (×10)"
@@ -8090,11 +8162,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Starting To Actually Realize  Magic Ain't Pretty VII (×2)"
+      "label": "Quest reward: Masks Aren’t Scary, Kids I (×1)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Let’s Do The Time Warp IV (×1)"
+      "label": "Quest reward: Starting To Actually Realize  Magic Ain't Pretty VII (×2)"
     }
   ],
   "Spooky Slime": [
@@ -8105,15 +8177,15 @@
   ],
   "Spool of Copper": [
     {
-      "type": "shop",
-      "label": "Flea Market: 4 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Belt Drive (33.3%)"
     }
   ],
   "Square Key": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 25 gold"
+    },
     {
       "type": "npc",
       "label": "Jill friendship Lv 30 (×5)"
@@ -8144,7 +8216,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Notary Public VIII (×10)"
+      "label": "Quest reward: Hoptimistic VI (×7)"
     }
   ],
   "Starfish": [
@@ -8219,6 +8291,12 @@
       "label": "Quest reward: Daily Dairy I (×5000)"
     }
   ],
+  "Steel Plate": [
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XVII (×50)"
+    }
+  ],
   "Steel Wire": [
     {
       "type": "npc",
@@ -8230,15 +8308,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) IV (×1000)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Daily Dairy I (×5000)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Pie Inversion Experimentation II (×1000)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Pie Inversion Experimentation III (×1000)"
     }
   ],
   "Stone": [
@@ -8541,6 +8619,10 @@
     {
       "type": "password",
       "label": "Password \"dread dreads lemons\" (×200)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XII (×1000)"
     }
   ],
   "Tomato": [
@@ -8551,6 +8633,10 @@
     {
       "type": "skill",
       "label": "Farming Lv 20 reward (×16)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) XIX (×2000)"
     }
   ],
   "Tomato Seeds": [
@@ -8695,10 +8781,6 @@
   ],
   "Unpolished Jade": [
     {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
-    {
       "type": "production",
       "label": "Quarry (rarely)"
     },
@@ -8759,6 +8841,12 @@
       "label": "Quest reward: A Wall In The Way VI (×4)"
     }
   ],
+  "Water Lily": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 8 gold"
+    }
+  ],
   "Watermelon": [
     {
       "type": "farming",
@@ -8776,15 +8864,15 @@
     },
     {
       "type": "wishing-well",
+      "label": "Wishing Well: throw Gouda (33.3%)"
+    },
+    {
+      "type": "wishing-well",
       "label": "Wishing Well: throw Small Gear (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Witch Hat (33.3%)"
-    },
-    {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "temple",
@@ -8804,11 +8892,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Hay, How Are You? I (×3)"
+      "label": "Quest reward: Deck The Town (With Bats And Lanterns) I (×100)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Consequences and Defenses XIV (×10)"
+      "label": "Quest reward: Hay, How Are You? I (×3)"
     }
   ],
   "Weird Doll": [
@@ -8920,20 +9008,32 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Carve Out Some Time (×1)"
+      "label": "Quest reward: ribbetribbetribbetribbet ribbet ribbetcroakribbetribbet<br>ribbetcroakcroakribbet croakcroak ribbet ribbetribbet (×1)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Let’s Do The Time Warp III (×1)"
+      "label": "Quest reward: Carve Out Some Time (×1)"
     }
   ],
   "Witch's Brew": [
     {
       "type": "quest",
+      "label": "Quest reward: frank's pranks IX (×5)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Let’s Do The Time Warp III (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Which Wizard Hats And Which Witch Hats V (×1)"
     }
   ],
   "Witch's Broom": [
+    {
+      "type": "quest",
+      "label": "Quest reward: Which Wizard Hats And Which Witch Hats V (×1)"
+    },
     {
       "type": "quest",
       "label": "Quest reward: Let’s Do The Time Warp III (×1)"
@@ -9002,6 +9102,10 @@
     }
   ],
   "Wooden Mask": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Cogwheel (25%)"
