@@ -274,7 +274,7 @@ export function buildMilestonePlan(input: PlanInput) {
 // ── Craftworks guide for a location ─────────────────────────────────────────
 // Lines worth running while you farm one location: crafting/steelworks masteries
 // with an AP milestone ahead whose raw materials drop there, easiest (by your
-// ranking) first. Each Craftworks line only makes one item, so every ingredient
+// ranking) first, then chains that need only passive materials in any slots left. Each Craftworks line only makes one item, so every ingredient
 // Craftworks can make gets its own slot, set up ahead of the line it feeds: the
 // whole chain then runs on passive materials and what you farm here, instead of
 // on stock that runs out.
@@ -404,9 +404,10 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
     };
   };
 
-  const candidates = crafts
+  const lines = crafts
     .filter((p) => CRAFTWORKS_METHODS.has(p.method) && !CRAFTWORKS_SKIP.has(p.item) && p.remaining > 0)
-    .map(expandRoot)
+    .map(expandRoot);
+  const candidates = lines
     .filter((c) => c.usesHere)
     // Chains this location and passive materials can fully feed come first, then easiest by
     // your ranking, then the most AP the chain earns, then the most crafts per attempt
@@ -422,9 +423,15 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
     return { difficulty: m?.difficulty ?? null, progress, target: progress ? targetFor(progress.level) : 0 };
   };
 
+  // Slots this location can't fill go to chains that run on passive materials alone: they
+  // keep building while the passive materials refill, most AP first (until 100k)
+  const passiveOnly = lines
+    .filter((c) => !c.usesHere && c.elsewhere.length === 0 && c.p.materials.every((m) => m.passive || m.short === 0))
+    .sort((a, b) => b.p.totalPts - a.p.totalPts || a.p.ease - b.p.ease);
+
   const slots: GuideSlot[] = [];
   const taken = new Set<string>();
-  for (const c of candidates) {
+  for (const c of [...candidates, ...passiveOnly]) {
     const links = [...c.subLines].filter(([item]) => !taken.has(item));
     if (taken.has(c.p.item) || slots.length + 1 + links.length > slotCount) continue;
     // Deepest lines first so each line's input is already being made

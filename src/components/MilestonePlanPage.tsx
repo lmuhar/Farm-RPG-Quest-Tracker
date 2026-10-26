@@ -301,7 +301,7 @@ function GuideRow({ slot, n, verb }: { slot: GuideSlot; n: number; verb: string 
               {slot.source === 'drops' ? ' from what you farm here' : slot.source === 'mastery' ? ', so both masteries move' : ' from passive materials'}
             </span>
           ) : slot.fromHere.length === 0 && slot.elsewhere.length === 0 ? (
-            'Runs on passive materials'
+            'Runs on passive materials alone: spare slot, keeps building as they refill'
           ) : (
             <>
               {slot.fromHere.length > 0 && (
@@ -336,7 +336,7 @@ function CraftworksGuide({ location, crafts }: { location: RunLocation; crafts: 
         <Factory size={13} style={{ color: 'var(--accent-orange)' }} />
         <span className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>Craftworks while you're here</span>
         <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-          {craftworksSlots} slots · every ingredient on its own line, fed by {location.name} drops and passive materials
+          {craftworksSlots} slots · every ingredient on its own line, fed by {location.name} drops and passive materials · spare slots go to passive-only chains
         </span>
       </div>
       {guide.slots.length === 0 ? (
