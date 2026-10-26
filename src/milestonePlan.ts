@@ -4,8 +4,10 @@ import { itemLocations } from './data/itemSources';
 import { PASSIVE_INPUTS, CRAFTWORKS_SKIP } from './data/passiveMaterials';
 import type { CropTime } from './types';
 
-// Plans the next 10k / 100k mastery milestones (10 and 100 Ascension Points),
-// ranked by how much of each one current inventory already covers. Crafted
+// Plans the next 10k / 100k mastery milestones (10 and 100 Ascension Points)
+// by the farming each one takes: inventory is only a head start, since no
+// milestone fits under the inventory cap, so every shortfall is turned into
+// attempts at its best location (and grows for crops). Crafted
 // items are planned as chains: ingredients that are themselves masteries short
 // of 100k get crafted (or gathered) fresh so they pick up progress on the way,
 // and the plan counts every milestone that progress crosses.
@@ -52,6 +54,10 @@ export interface ChainStep {
 
 export interface Material { item: string; need: number; have: number; short: number; passive: boolean }
 
+// One farming location a plan's short materials drop at. They all drop from the same
+// attempts, so the scarcest one sets the count.
+export interface FarmStop { location: string; type: string; attempts: number; items: string[] }
+
 export interface CraftPlan {
   kind: 'craft';
   item: string;
@@ -65,8 +71,12 @@ export interface CraftPlan {
   totalPts: number;         // root + chain milestones
   ease: number;             // hardest ranking among the masteries you craft (root + crafted links)
   materials: Material[];    // raw materials, most short first
-  coverage: number;         // 0–1: share of the plan current inventory covers
-  readyNow: number;         // root crafts possible right now
+  farm: FarmStop[];         // where the short materials drop, most attempts first
+  crops: string[];          // short materials you grow
+  grows: number;            // grows for all of them on your plots
+  other: string[];          // short materials with no drop or crop (shops, rewards…)
+  attempts: number;         // farming cost: attempts at every stop, plus one per crop
+  apPerThousand: number;    // totalPts per 1,000 attempts (Infinity: passive materials and stock cover it)
 }
 
 export interface GatherPlan {
@@ -101,7 +111,17 @@ function earnsAp(item: string, input: PlanInput): boolean {
   return masteryByName.has(item) && (input.masteryLevels[item] ?? 0) < 2;
 }
 
-function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
+// Best place to farm an item by spending attempts, or null for crops, shops and the like
+const RUN_TYPES = new Set(Object.values(GATHER_TYPE));
+function bestRunLocation(item: string): { name: string; type: string; rate: number } | null {
+  let best: { name: string; type: string; rate: number } | null = null;
+  for (const loc of itemLocations[item] ?? []) {
+    if (RUN_TYPES.has(loc.type) && loc.rate && (!best || loc.rate < best.rate)) best = { name: loc.name, type: loc.type, rate: loc.rate };
+  }
+  return best;
+}
+
+function planCraft(m: Mastery, input: PlanInput, crops: Set<string>): CraftPlan | null {
   const progress = progressOf(m.name, input);
   const target = targetFor(progress.level);
   const remaining = Math.max(0, target - progress.count);
@@ -146,8 +166,29 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
   });
   materials.sort((a, b) => (b.short / b.need) - (a.short / a.need) || b.short - a.short);
 
-  // Inventory caps how many root crafts can happen right now: the scarcest material
-  const coverage = remaining === 0 ? 1 : materials.reduce((min, mat) => Math.min(min, mat.have / mat.need), 1);
+  // What farming the shortfall takes
+  const stops = new Map<string, FarmStop>();
+  const cropNeeds: string[] = [];
+  const other: string[] = [];
+  let cropUnits = 0;
+  for (const mat of materials) {
+    if (mat.short === 0 || mat.passive) continue;
+    const best = bestRunLocation(mat.item);
+    if (best) {
+      const stop = stops.get(best.name) ?? { location: best.name, type: best.type, attempts: 0, items: [] };
+      stop.attempts = Math.max(stop.attempts, Math.ceil(mat.short * best.rate));
+      stop.items.push(mat.item);
+      stops.set(best.name, stop);
+    } else if (crops.has(mat.item)) {
+      cropNeeds.push(mat.item);
+      cropUnits += mat.short;
+    } else {
+      other.push(mat.item);
+    }
+  }
+  const farm = [...stops.values()].sort((a, b) => b.attempts - a.attempts);
+  // A crop counts as one attempt: roughly one item per plot per grow
+  const attempts = farm.reduce((sum, s) => sum + s.attempts, 0) + cropUnits;
 
   const chain: ChainStep[] = [];
   for (const [item, added] of crafted) {
@@ -166,6 +207,7 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
   chain.sort((a, b) => b.pts - a.pts || b.added - a.added);
 
   const pts = ptsFor(progress.level);
+  const totalPts = pts + chain.reduce((sum, s) => sum + s.pts, 0);
   return {
     kind: 'craft',
     item: m.name,
@@ -176,11 +218,15 @@ function planCraft(m: Mastery, input: PlanInput): CraftPlan | null {
     remaining,
     pts,
     chain,
-    totalPts: pts + chain.reduce((sum, s) => sum + s.pts, 0),
+    totalPts,
     ease: Math.max(m.difficulty, ...chain.filter((s) => s.how === 'craft').map((s) => s.difficulty)),
     materials,
-    coverage,
-    readyNow: Math.min(remaining, Math.floor(coverage * remaining)),
+    farm,
+    crops: cropNeeds,
+    grows: input.plotCount > 0 ? Math.ceil(cropUnits / input.plotCount) : 0,
+    other,
+    attempts,
+    apPerThousand: attempts > 0 ? (totalPts * 1000) / attempts : Infinity,
   };
 }
 
@@ -209,12 +255,13 @@ function planGather(m: Mastery, input: PlanInput, cropMinutes: Map<string, numbe
 
 export function buildMilestonePlan(input: PlanInput) {
   const cropMinutes = new Map(input.cropTimes.map((c) => [c.item, c.growMinutes]));
+  const crops = new Set(masteries.filter((m) => m.method === 'farming').map((m) => m.name));
   const crafts: CraftPlan[] = [];
   const gathers: GatherPlan[] = [];
   for (const m of masteries) {
     if ((input.masteryLevels[m.name] ?? 0) >= 2) continue;
     if (CRAFT_METHODS.has(m.method) && recipeByName.has(m.name.toLowerCase())) {
-      const plan = planCraft(m, input);
+      const plan = planCraft(m, input, crops);
       if (plan) crafts.push(plan);
     } else {
       const plan = planGather(m, input, cropMinutes);
@@ -227,7 +274,7 @@ export function buildMilestonePlan(input: PlanInput) {
 // ── Craftworks guide for a location ─────────────────────────────────────────
 // Lines worth running while you farm one location: crafting/steelworks masteries
 // with an AP milestone ahead whose raw materials drop there, easiest (by your
-// ranking) first. Each Craftworks line only makes one item, so every ingredient
+// ranking) first, then chains that need only passive materials in any slots left. Each Craftworks line only makes one item, so every ingredient
 // Craftworks can make gets its own slot, set up ahead of the line it feeds: the
 // whole chain then runs on passive materials and what you farm here, instead of
 // on stock that runs out.
@@ -262,15 +309,29 @@ function craftworksCan(item: string): boolean {
   return !!r && !r.ingredients.some((i) => i.item.toLowerCase() === 'cooking pot');
 }
 
+// Drop rates at a location, for the items it's a sensible place to get
+// (within GOOD_SOURCE of their best rate anywhere)
+const sourceRates = new Map<string, Map<string, number>>();
+function ratesAt(location: string): Map<string, number> {
+  let rates = sourceRates.get(location);
+  if (rates) return rates;
+  rates = new Map();
+  for (const [item, locs] of Object.entries(itemLocations)) {
+    const here = locs.find((l) => l.name === location && l.rate);
+    if (!here) continue;
+    const best = Math.min(...locs.filter((l) => l.rate).map((l) => l.rate!));
+    if (here.rate! <= best * GOOD_SOURCE) rates.set(item, here.rate!);
+  }
+  sourceRates.set(location, rates);
+  return rates;
+}
+
 export function buildLocationGuide(location: string, input: PlanInput, crafts: CraftPlan[], slotCount: number): LocationGuide {
-  const rateHere = new Map<string, number>();
+  const rateHere = ratesAt(location);
   const gathers: LocationGuide['gathers'] = [];
   for (const [item, locs] of Object.entries(itemLocations)) {
     const here = locs.find((l) => l.name === location && l.rate);
     if (!here) continue;
-    // Only count it as this location's material when here is a sensible place to get it
-    const best = Math.min(...locs.filter((l) => l.rate).map((l) => l.rate!));
-    if (here.rate! <= best * GOOD_SOURCE) rateHere.set(item, here.rate!);
     const m = masteryByName.get(item);
     if (m && earnsAp(item, input)) {
       const progress = progressOf(item, input);
@@ -343,9 +404,10 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
     };
   };
 
-  const candidates = crafts
+  const lines = crafts
     .filter((p) => CRAFTWORKS_METHODS.has(p.method) && !CRAFTWORKS_SKIP.has(p.item) && p.remaining > 0)
-    .map(expandRoot)
+    .map(expandRoot);
+  const candidates = lines
     .filter((c) => c.usesHere)
     // Chains this location and passive materials can fully feed come first, then easiest by
     // your ranking, then the most AP the chain earns, then the most crafts per attempt
@@ -361,9 +423,15 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
     return { difficulty: m?.difficulty ?? null, progress, target: progress ? targetFor(progress.level) : 0 };
   };
 
+  // Slots this location can't fill go to chains that run on passive materials alone: they
+  // keep building while the passive materials refill, most AP first (until 100k)
+  const passiveOnly = lines
+    .filter((c) => !c.usesHere && c.elsewhere.length === 0 && c.p.materials.every((m) => m.passive || m.short === 0))
+    .sort((a, b) => b.p.totalPts - a.p.totalPts || a.p.ease - b.p.ease);
+
   const slots: GuideSlot[] = [];
   const taken = new Set<string>();
-  for (const c of candidates) {
+  for (const c of [...candidates, ...passiveOnly]) {
     const links = [...c.subLines].filter(([item]) => !taken.has(item));
     if (taken.has(c.p.item) || slots.length + 1 + links.length > slotCount) continue;
     // Deepest lines first so each line's input is already being made
@@ -376,4 +444,127 @@ export function buildLocationGuide(location: string, input: PlanInput, crafts: C
     if (slots.length >= slotCount) break;
   }
   return { slots, gathers: nearGathers };
+}
+
+// ── Where to farm ───────────────────────────────────────────────────────────
+// Staying at one location feeds every chain that uses its drops at once: two
+// chains that both need Hide add their Hide together, but a chain that needs
+// Hide and one that needs Feathers share the same attempts. So for a location
+// this picks milestones up in the order that adds the most AP per extra
+// attempt, with inventory shared across all of them, and says how many attempts
+// in each one is done. Chains only count when this location, your crops and
+// passive materials (plus stock) cover everything they need.
+
+export interface LadderStep {
+  item: string;
+  kind: 'craft' | 'gather';
+  difficulty: number;       // your ranking (for crafts: the hardest step in the chain)
+  pts: number;              // AP this step adds that earlier steps haven't already crossed
+  also: string[];           // other milestones it crosses on the way
+  attempts: number;         // attempts here by the time it's done (all steps so far)
+  crops: number;            // crops to grow by then (all steps so far)
+  grow: string[];           // crops this step needs
+  plan: CraftPlan | GatherPlan;
+}
+
+export interface FarmLadder { location: string; type: string; steps: LadderStep[] }
+
+const LADDER_MAX_ATTEMPTS = 2_000_000;
+const LADDER_MAX_STEPS = 25;
+
+interface LadderCandidate {
+  plan: CraftPlan | GatherPlan;
+  ease: number;
+  craftNeed: [string, number][]; // drops here (and crops) the chain uses up
+  gatherNeed?: number;           // gathering mastery: fresh drops of plan.item it needs
+  milestones: [string, number][];
+}
+
+export function buildFarmLadder(location: string, type: string, input: PlanInput, crafts: CraftPlan[], gathers: GatherPlan[]): FarmLadder {
+  const rates = ratesAt(location);
+  const isCrop = (item: string) => masteryByName.get(item)?.method === 'farming';
+  const candidates: LadderCandidate[] = [];
+
+  for (const p of crafts) {
+    if (p.remaining === 0) continue;
+    let usesHere = false;
+    let fits = true;
+    const need: [string, number][] = [];
+    for (const mat of p.materials) {
+      if (mat.passive) continue;
+      if (rates.has(mat.item)) {
+        need.push([mat.item, mat.need]);
+        if (mat.short > 0) usesHere = true;
+      } else if (isCrop(mat.item)) {
+        need.push([mat.item, mat.need]);
+      } else if (mat.short > 0) {
+        fits = false;
+        break;
+      }
+    }
+    if (!fits || !usesHere) continue;
+    const milestones: [string, number][] = [[p.item, p.pts], ...p.chain.filter((s) => s.pts > 0).map((s): [string, number] => [s.item, s.pts])];
+    candidates.push({ plan: p, ease: p.ease, craftNeed: need, milestones });
+  }
+  for (const g of gathers) {
+    if (g.location == null || !rates.has(g.item) || GATHER_TYPE[g.method] !== type) continue;
+    candidates.push({ plan: g, ease: g.difficulty, craftNeed: [], gatherNeed: g.remaining, milestones: [[g.item, g.pts]] });
+  }
+
+  // Shared state: what every chosen step uses up, and the AP already crossed
+  const craftNeed = new Map<string, number>();
+  const gatherNeed = new Map<string, number>();
+  const crossed = new Map<string, number>();
+  let attempts = 0;
+  let cropUnits = 0;
+
+  // Fresh drops an item needs: gathering masteries count new drops, crafts use stock first
+  const units = (item: string, craft: number, gather: number) => Math.max(gather, craft - (input.inventory[item] ?? 0), 0);
+  const costOf = (c: LadderCandidate) => {
+    let att = attempts;
+    let crop = cropUnits;
+    const touch = (item: string, addCraft: number, addGather: number) => {
+      const before = units(item, craftNeed.get(item) ?? 0, gatherNeed.get(item) ?? 0);
+      const after = units(item, (craftNeed.get(item) ?? 0) + addCraft, Math.max(gatherNeed.get(item) ?? 0, addGather));
+      if (rates.has(item)) att = Math.max(att, Math.ceil(after * rates.get(item)!));
+      else crop += after - before;
+    };
+    for (const [item, n] of c.craftNeed) touch(item, n, 0);
+    if (c.gatherNeed != null) touch(c.plan.item, 0, c.gatherNeed);
+    return { att, crop };
+  };
+  const gainOf = (c: LadderCandidate) => c.milestones.reduce((sum, [item, pts]) => sum + Math.max(0, pts - (crossed.get(item) ?? 0)), 0);
+
+  const steps: LadderStep[] = [];
+  let pool = candidates;
+  while (steps.length < LADDER_MAX_STEPS) {
+    let best: { c: LadderCandidate; gain: number; att: number; crop: number; ratio: number } | null = null;
+    const next: LadderCandidate[] = [];
+    for (const c of pool) {
+      const gain = gainOf(c);
+      if (gain === 0) continue;
+      const { att, crop } = costOf(c);
+      if (att > LADDER_MAX_ATTEMPTS) continue;
+      next.push(c);
+      const ratio = gain / Math.max(1, att - attempts + crop - cropUnits);
+      if (!best || ratio > best.ratio || (ratio === best.ratio && c.ease < best.c.ease)) best = { c, gain, att, crop, ratio };
+    }
+    if (!best) break;
+    const { c } = best;
+    for (const [item, n] of c.craftNeed) craftNeed.set(item, (craftNeed.get(item) ?? 0) + n);
+    if (c.gatherNeed != null) gatherNeed.set(c.plan.item, Math.max(gatherNeed.get(c.plan.item) ?? 0, c.gatherNeed));
+    const also = c.milestones.filter(([item, pts]) => item !== c.plan.item && pts > (crossed.get(item) ?? 0)).map(([item]) => item);
+    for (const [item, pts] of c.milestones) crossed.set(item, Math.max(crossed.get(item) ?? 0, pts));
+    attempts = best.att;
+    cropUnits = best.crop;
+    const grow = c.craftNeed.filter(([item]) => !rates.has(item)).map(([item]) => item);
+    steps.push({ item: c.plan.item, kind: c.plan.kind, difficulty: c.ease, pts: best.gain, also, attempts, crops: cropUnits, grow, plan: c.plan });
+    pool = next.filter((n) => n !== c);
+  }
+  return { location, type, steps };
+}
+
+// AP a ladder reaches within a number of attempts
+export function apWithin(ladder: FarmLadder, budget: number): number {
+  return ladder.steps.filter((s) => s.attempts <= budget).reduce((sum, s) => sum + s.pts, 0);
 }
