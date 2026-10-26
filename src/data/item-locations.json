@@ -2554,5 +2554,12 @@
       "type": "mining",
       "rate": 33.9
     }
+  ],
+  "Mega Lamprey Shark": [
+    {
+      "name": "Pirate's Cove",
+      "type": "fishing",
+      "rate": 970.8
+    }
   ]
 }
