@@ -2561,5 +2561,12 @@
       "type": "fishing",
       "rate": 970.8
     }
+  ],
+  "Purple Ghost Crab": [
+    {
+      "name": "Lake Minerva",
+      "type": "fishing",
+      "rate": 3430.2
+    }
   ]
 }

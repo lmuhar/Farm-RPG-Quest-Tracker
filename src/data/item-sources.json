@@ -66,15 +66,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: So Hot Right Now IV (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: So Hot Right Now VIII (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Howling At The Mine II (×1)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: You Must Build A Stealth Boat II (×25)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Steam Powered III (×5)"
     }
   ],
   "Amber": [
@@ -264,6 +264,14 @@
     },
     {
       "type": "quiz",
+      "label": "General Studies Trivia quiz (score 80, ×10)"
+    },
+    {
+      "type": "quiz",
+      "label": "Apple Facts quiz (score 90, ×200)"
+    },
+    {
+      "type": "quiz",
       "label": "Townsfolk 101 quiz (score 80, ×10)"
     },
     {
@@ -273,14 +281,6 @@
     {
       "type": "quiz",
       "label": "Runestones I quiz (score 80, ×50)"
-    },
-    {
-      "type": "quiz",
-      "label": "General Studies Trivia quiz (score 80, ×10)"
-    },
-    {
-      "type": "quiz",
-      "label": "Apple Facts quiz (score 90, ×200)"
     },
     {
       "type": "password",
@@ -366,6 +366,14 @@
     },
     {
       "type": "quiz",
+      "label": "April Fools' Day quiz (score 90, ×10)"
+    },
+    {
+      "type": "quiz",
+      "label": "Apple Facts quiz (score 100, ×25)"
+    },
+    {
+      "type": "quiz",
       "label": "Farm RPG History quiz (score 90, ×10)"
     },
     {
@@ -375,14 +383,6 @@
     {
       "type": "quiz",
       "label": "Runestones I quiz (score 100, ×50)"
-    },
-    {
-      "type": "quiz",
-      "label": "April Fools' Day quiz (score 90, ×10)"
-    },
-    {
-      "type": "quiz",
-      "label": "Apple Facts quiz (score 100, ×25)"
     },
     {
       "type": "quest",
@@ -498,11 +498,11 @@
     },
     {
       "type": "quiz",
-      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
+      "label": "Farm RPG History quiz (score 80, ×5)"
     },
     {
       "type": "quiz",
-      "label": "Farm RPG History quiz (score 80, ×5)"
+      "label": "T'rah Notary Public Exam quiz (score 90, ×5)"
     },
     {
       "type": "cards",
@@ -732,15 +732,15 @@
   "Black Truffle": [
     {
       "type": "quest",
+      "label": "Quest reward: So Hot Right Now IX (×200)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Distant Illusions V (×1250)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Pirates Start Arriving VIII (×250)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Candy And Non Dairy Yummies IV (×20)"
     }
   ],
   "Blitzen": [
@@ -874,10 +874,6 @@
   "Bomb": [
     {
       "type": "npc",
-      "label": "Cid friendship Lv 50 (×10)"
-    },
-    {
-      "type": "npc",
       "label": "Cid friendship Lv 10 (×5)"
     },
     {
@@ -891,6 +887,10 @@
     {
       "type": "npc",
       "label": "Cid friendship Lv 40 (×5)"
+    },
+    {
+      "type": "npc",
+      "label": "Cid friendship Lv 50 (×10)"
     },
     {
       "type": "temple",
@@ -914,6 +914,10 @@
     }
   ],
   "Bone": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
     {
       "type": "npc",
       "label": "Geist friendship Lv 10 (×10)"
@@ -1098,15 +1102,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: So Hot Right Now V (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Archeology Requires Knowhow IX (×1)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Distant Illusions XIV (×5)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Monster Hunter IV (×1)"
     }
   ],
   "Buddy Loves You Card": [
@@ -1174,11 +1178,11 @@
     },
     {
       "type": "npc",
-      "label": "frank friendship Lv 10 (×5)"
+      "label": "Baba Gec friendship Lv 20 (×20)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 20 (×20)"
+      "label": "frank friendship Lv 10 (×5)"
     },
     {
       "type": "npc",
@@ -1282,11 +1286,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
+      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (33.3%)"
+      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -1366,11 +1370,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Catcher of Ghosts III (×24)"
+      "label": "Quest reward: So Hot Right Now III (×25)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Masks Aren’t Scary, Kids I (×10)"
+      "label": "Quest reward: So Hot Right Now V (×25)"
     }
   ],
   "Carbon Sphere": [
@@ -1522,11 +1526,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (14.3%)"
+      "label": "Wishing Well: throw Wooden Mask (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Mask (33.3%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "password",
@@ -1680,7 +1684,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Pirate Stealth Arrival XXVII (×10000)"
+      "label": "Quest reward: So Hot Right Now IV (×100)"
     }
   ],
   "Catfish": [
@@ -1984,11 +1988,11 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted XII (×2)"
+      "label": "Quest reward: Spooky Exchanges III (×1)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Unexpected Visitor XVI (×1)"
+      "label": "Quest reward: Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted XII (×2)"
     }
   ],
   "Coal": [
@@ -2265,10 +2269,6 @@
   ],
   "Crab Claw": [
     {
-      "type": "shop",
-      "label": "Flea Market: 25 gold"
-    },
-    {
       "type": "npc",
       "label": "Lorn friendship Lv 20 (×3)"
     },
@@ -2348,10 +2348,6 @@
     }
   ],
   "Cutlass": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 50 gold"
-    },
     {
       "type": "npc",
       "label": "Lorn friendship Lv 20 (×3)"
@@ -2446,10 +2442,6 @@
     }
   ],
   "Dice": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
     {
       "type": "npc",
       "label": "Buddy friendship Lv 50 (×1)"
@@ -2884,15 +2876,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: So Hot Right Now II (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Giamics' Jubilee VIII (×1000)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Of Hares And Feathers (×200)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Now You See It (×1)"
     }
   ],
   "Fern Leaf": [
@@ -3214,11 +3206,15 @@
     },
     {
       "type": "password",
-      "label": "Password \"rem\" (×5)"
+      "label": "Password \"double double\" (×5)"
     },
     {
       "type": "password",
-      "label": "Password \"double double\" (×5)"
+      "label": "Password \"rem\" (×5)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: So Hot Right Now VI (×50)"
     },
     {
       "type": "quest",
@@ -3227,20 +3223,16 @@
     {
       "type": "quest",
       "label": "Quest reward: Candy And Non Dairy Yummies III (×25)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Grill And Thrill III (×25)"
     }
   ],
   "Giant Centipede": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (25%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (8.3%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
@@ -3252,6 +3244,10 @@
     }
   ],
   "Giant Squid": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 8 gold"
+    },
     {
       "type": "temple",
       "label": "Temple: offer 10,500 Watermelon (×3)"
@@ -3268,6 +3264,10 @@
     }
   ],
   "Glacierstone": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 75 gold"
+    },
     {
       "type": "quest",
       "label": "Quest reward: Breaking The Ice VI (×5)"
@@ -3345,11 +3345,19 @@
   ],
   "Gold Boot": [
     {
+      "type": "shop",
+      "label": "Flea Market: 50 gold"
+    },
+    {
       "type": "temple",
       "label": "Temple: offer 1,000 Pair of Boots (×1)"
     }
   ],
   "Gold Carrot": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 2 gold"
+    },
     {
       "type": "farming",
       "label": "Grow from Carrot Seeds (0h)"
@@ -3495,6 +3503,10 @@
   ],
   "Gold Eggplant": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "farming",
       "label": "Grow from Eggplant Seeds (0.1h)"
     },
@@ -3522,11 +3534,11 @@
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 10 (×3)"
+      "label": "Gary Bearson V friendship Lv 30 (×10)"
     },
     {
       "type": "npc",
-      "label": "Gary Bearson V friendship Lv 30 (×10)"
+      "label": "Star Meerif friendship Lv 10 (×3)"
     },
     {
       "type": "npc",
@@ -3586,10 +3598,14 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Feathers VIII (×1)"
+      "label": "Quest reward: So Hot Right Now IV (×100)"
     }
   ],
   "Gold Flier": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 10 gold"
+    },
     {
       "type": "npc",
       "label": "Borgen friendship Lv 10 (×5)"
@@ -3915,10 +3931,6 @@
   ],
   "Gouda": [
     {
-      "type": "shop",
-      "label": "Flea Market: 20 gold"
-    },
-    {
       "type": "npc",
       "label": "Jill friendship Lv 20 (×5)"
     },
@@ -4150,11 +4162,11 @@
   "Green Scarf": [
     {
       "type": "password",
-      "label": "Password \"cecil has roomba\" (×1)"
+      "label": "Password \"green initiative\" (×3)"
     },
     {
       "type": "password",
-      "label": "Password \"green initiative\" (×3)"
+      "label": "Password \"cecil has roomba\" (×1)"
     }
   ],
   "Green Shield": [
@@ -4359,10 +4371,6 @@
   ],
   "Herbs": [
     {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
-    {
       "type": "npc",
       "label": "Geist friendship Lv 40 (×10)"
     },
@@ -4377,6 +4385,10 @@
     {
       "type": "password",
       "label": "Password \"eucalyptus\" (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: So Hot Right Now I (×25)"
     }
   ],
   "Hickory Omelette": [
@@ -4501,6 +4513,10 @@
     {
       "type": "cards",
       "label": "Card trade"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: So Hot Right Now VII (×1)"
     }
   ],
   "Hops": [
@@ -4538,11 +4554,11 @@
   "Horned Beetle": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (25%)"
+      "label": "Wishing Well: throw Giant Centipede (25%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Giant Centipede (25%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
@@ -4752,7 +4768,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Indecipherable Note I (×1)"
+      "label": "Quest reward: Spooky Exchanges III (×100)"
     }
   ],
   "Jade": [
@@ -4776,15 +4792,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Spooky Exchanges V (×1)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted VI (×2)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Far Away XXXIII (×1)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Starting To Actually Realize  Magic Ain't Pretty II (×1)"
     }
   ],
   "Jumbo Fish": [
@@ -5144,15 +5160,15 @@
     },
     {
       "type": "quiz",
-      "label": "Shiny Badges quiz (score 90, ×100)"
-    },
-    {
-      "type": "quiz",
       "label": "General Studies Trivia quiz (score 90, ×10)"
     },
     {
       "type": "quiz",
       "label": "Back-to-School Movies quiz (score 90, ×10)"
+    },
+    {
+      "type": "quiz",
+      "label": "Shiny Badges quiz (score 90, ×100)"
     },
     {
       "type": "password",
@@ -5332,11 +5348,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (25%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (33.3%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "password",
@@ -5430,15 +5446,15 @@
   "Maverick Chip": [
     {
       "type": "quest",
+      "label": "Quest reward: So Hot Right Now IX (×5)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: The Masonry Requires Activity XXV (×1)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Augment Redbrook Through Masonry XXIII (×1)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: The Ramparts Mended Anew XXVI (×1)"
     }
   ],
   "Mayonnaise": [
@@ -5532,11 +5548,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"words or phrases\" (×3)"
+      "label": "Password \"cow\" (×3)"
     },
     {
       "type": "password",
-      "label": "Password \"cow\" (×3)"
+      "label": "Password \"words or phrases\" (×3)"
     },
     {
       "type": "quest",
@@ -5548,7 +5564,7 @@
     },
     {
       "type": "quest",
-      "label": "Quest reward: Deck The Town (With Bats And Lanterns) III (×2000)"
+      "label": "Quest reward: So Hot Right Now III (×1000)"
     }
   ],
   "Milk Carton": [
@@ -5602,10 +5618,6 @@
     }
   ],
   "Moonstone": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
     {
       "type": "npc",
       "label": "Beatrix friendship Lv 10 (×5)"
@@ -5895,6 +5907,10 @@
   ],
   "Octopus": [
     {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Herbs (16.7%)"
     },
@@ -6052,15 +6068,15 @@
     },
     {
       "type": "wishing-well",
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
+    },
+    {
+      "type": "wishing-well",
       "label": "Wishing Well: throw Crab Claw (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Frog (33.3%)"
-    },
-    {
-      "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
@@ -6098,11 +6114,11 @@
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 10 (×250)"
+      "label": "Star Meerif friendship Lv 40 (×100)"
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×100)"
+      "label": "Goostav friendship Lv 10 (×250)"
     },
     {
       "type": "wishing-well",
@@ -6166,6 +6182,10 @@
     },
     {
       "type": "quiz",
+      "label": "Runestones I quiz (score 90, ×100)"
+    },
+    {
+      "type": "quiz",
       "label": "The 175k Players Quiz  quiz (score 90, ×100)"
     },
     {
@@ -6174,23 +6194,19 @@
     },
     {
       "type": "quiz",
-      "label": "April Fools' Day quiz (score 100, ×100)"
-    },
-    {
-      "type": "quiz",
-      "label": "Townsfolk 101 quiz (score 90, ×2)"
-    },
-    {
-      "type": "quiz",
       "label": "Locations 101 quiz (score 100, ×25)"
     },
     {
       "type": "quiz",
-      "label": "Runestones I quiz (score 90, ×100)"
+      "label": "April Fools' Day quiz (score 100, ×100)"
     },
     {
       "type": "quiz",
       "label": "Back-to-School Movies quiz (score 80, ×10)"
+    },
+    {
+      "type": "quiz",
+      "label": "Townsfolk 101 quiz (score 90, ×2)"
     },
     {
       "type": "password",
@@ -6222,11 +6238,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"welcome to the library\" (×25)"
+      "label": "Password \"lagoon\" (×5)"
     },
     {
       "type": "password",
-      "label": "Password \"lagoon\" (×5)"
+      "label": "Password \"welcome to the library\" (×25)"
     },
     {
       "type": "quest",
@@ -6783,6 +6799,10 @@
     {
       "type": "quiz",
       "label": "Reel Frights quiz (score 80, ×10)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: So Hot Right Now II (×100)"
     }
   ],
   "Purple Bag": [
@@ -6826,15 +6846,15 @@
     },
     {
       "type": "quest",
+      "label": "Quest reward: Spooky Exchanges II (×50)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Trouble A Head I (×5)"
     },
     {
       "type": "quest",
-      "label": "Quest reward: Keep Scarecrows Always Masked I (×1000)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Strange Currency IV (×50)"
+      "label": "Quest reward: So Hot Right Now VI (×100)"
     }
   ],
   "Quandary Chowder": [
@@ -7443,13 +7463,11 @@
       "label": "Quest reward: Bananas for Jimothy II (×1)"
     }
   ],
-  "Scrap Wire": [
+  "Sea Dragon": [
     {
       "type": "shop",
-      "label": "Flea Market: 1 gold"
-    }
-  ],
-  "Sea Dragon": [
+      "label": "Flea Market: 15 gold"
+    },
     {
       "type": "npc",
       "label": "Lorn friendship Lv 30 (×10)"
@@ -7524,6 +7542,10 @@
     }
   ],
   "Seaweed": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
     {
       "type": "skill",
       "label": "Fishing Lv 60 reward (×25)"
@@ -7602,10 +7624,6 @@
     }
   ],
   "Shiny Beetle": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
     {
       "type": "npc",
       "label": "Holger friendship Lv 30 (×25)"
@@ -7747,6 +7765,10 @@
   ],
   "Small Flute": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
     },
@@ -7885,10 +7907,6 @@
   ],
   "Small Spring": [
     {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
-    {
       "type": "production",
       "label": "Ironworks (rarely)"
     },
@@ -7997,6 +8015,10 @@
   ],
   "Spectacles": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Dice (25%)"
     },
@@ -8027,10 +8049,6 @@
   ],
   "Spider": [
     {
-      "type": "shop",
-      "label": "Flea Market: 6 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Jack-o-lantern (33.3%)"
     },
@@ -8052,19 +8070,19 @@
     },
     {
       "type": "password",
-      "label": "Password \"miles\" (×1)"
-    },
-    {
-      "type": "password",
-      "label": "Password \"2099\" (×1)"
-    },
-    {
-      "type": "password",
       "label": "Password \"ghost-spider\" (×1)"
     },
     {
       "type": "password",
       "label": "Password \"chai tea\" (×1)"
+    },
+    {
+      "type": "password",
+      "label": "Password \"miles\" (×1)"
+    },
+    {
+      "type": "password",
+      "label": "Password \"2099\" (×1)"
     },
     {
       "type": "quest",
@@ -8579,10 +8597,6 @@
   ],
   "Teapot": [
     {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Freaky Picture (25%)"
     },
@@ -8853,12 +8867,6 @@
       "label": "Quest reward: A Wall In The Way VI (×4)"
     }
   ],
-  "Water Lily": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 8 gold"
-    }
-  ],
   "Watermelon": [
     {
       "type": "farming",
@@ -8876,15 +8884,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Small Gear (33.3%)"
-    },
-    {
-      "type": "wishing-well",
       "label": "Wishing Well: throw Witch Hat (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Gouda (33.3%)"
+    },
+    {
+      "type": "wishing-well",
+      "label": "Wishing Well: throw Small Gear (33.3%)"
     },
     {
       "type": "temple",
@@ -8966,15 +8974,15 @@
   "White Truffle": [
     {
       "type": "quest",
+      "label": "Quest reward: So Hot Right Now VII (×1000)"
+    },
+    {
+      "type": "quest",
       "label": "Quest reward: Pirates Start Arriving IX (×200)"
     },
     {
       "type": "quest",
       "label": "Quest reward: Candy And Non Dairy Yummies I (×25)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Candy And Non Dairy Yummies III (×35)"
     }
   ],
   "Wine": [
