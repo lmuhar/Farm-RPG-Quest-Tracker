@@ -181,10 +181,6 @@
   ],
   "Antler": [
     {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
-    {
       "type": "production",
       "label": "Raptor Pen (daily)"
     },
@@ -218,10 +214,6 @@
     }
   ],
   "Apple": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
     {
       "type": "production",
       "label": "Orchard (daily)"
@@ -450,11 +442,11 @@
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 20 (×250)"
+      "label": "Baba Gec friendship Lv 50 (×25)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 50 (×25)"
+      "label": "Goostav friendship Lv 20 (×250)"
     },
     {
       "type": "temple",
@@ -530,6 +522,10 @@
     }
   ],
   "Arrowhead": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Antler (33.3%)"
@@ -671,6 +667,10 @@
   ],
   "Bird Egg": [
     {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
+    {
       "type": "npc",
       "label": "Mariya friendship Lv 40 (×100)"
     },
@@ -709,10 +709,6 @@
     {
       "type": "quest",
       "label": "Quest reward: Pirates Start Arriving VIII (×250)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: The Spirit of Delicacy V (×1000)"
     }
   ],
   "Blitzen": [
@@ -846,14 +842,6 @@
   "Bomb": [
     {
       "type": "npc",
-      "label": "Cid friendship Lv 40 (×5)"
-    },
-    {
-      "type": "npc",
-      "label": "Cid friendship Lv 50 (×10)"
-    },
-    {
-      "type": "npc",
       "label": "Cid friendship Lv 10 (×5)"
     },
     {
@@ -863,6 +851,14 @@
     {
       "type": "npc",
       "label": "Cid friendship Lv 30 (×5)"
+    },
+    {
+      "type": "npc",
+      "label": "Cid friendship Lv 40 (×5)"
+    },
+    {
+      "type": "npc",
+      "label": "Cid friendship Lv 50 (×10)"
     },
     {
       "type": "temple",
@@ -1134,19 +1130,19 @@
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 20 (×20)"
-    },
-    {
-      "type": "npc",
       "label": "frank friendship Lv 10 (×5)"
     },
     {
       "type": "npc",
-      "label": "Baba Gec friendship Lv 10 (×10)"
+      "label": "Baba Gec friendship Lv 20 (×20)"
     },
     {
       "type": "npc",
       "label": "Baba Gec friendship Lv 50 (×250)"
+    },
+    {
+      "type": "npc",
+      "label": "Baba Gec friendship Lv 10 (×10)"
     },
     {
       "type": "skill",
@@ -1222,11 +1218,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
+      "label": "Wishing Well: throw Gouda (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gouda (33.3%)"
+      "label": "Wishing Well: throw Treat Bag 03 (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -1263,10 +1259,6 @@
   ],
   "Captains Log": [
     {
-      "type": "shop",
-      "label": "Flea Market: 5 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
@@ -1285,16 +1277,6 @@
     {
       "type": "quest",
       "label": "Quest reward: Guest Ledger (×1)"
-    }
-  ],
-  "Captured Ghost": [
-    {
-      "type": "quest",
-      "label": "Quest reward: Troubled Waters I (×100)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: The Spirit of Delicacy III (×50)"
     }
   ],
   "Carbon Sphere": [
@@ -1446,11 +1428,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Teapot (14.3%)"
+      "label": "Wishing Well: throw Wooden Mask (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Mask (33.3%)"
+      "label": "Wishing Well: throw Teapot (14.3%)"
     },
     {
       "type": "password",
@@ -1783,10 +1765,6 @@
   ],
   "Cheese": [
     {
-      "type": "shop",
-      "label": "Flea Market: 2 gold"
-    },
-    {
       "type": "temple",
       "label": "Temple: offer 13,500 Watermelon (×3)"
     },
@@ -1832,7 +1810,7 @@
     },
     {
       "type": "password",
-      "label": "Password \"olaf\" (×1)"
+      "label": "Password \"anna\" (×1)"
     },
     {
       "type": "password",
@@ -1840,7 +1818,7 @@
     },
     {
       "type": "password",
-      "label": "Password \"anna\" (×1)"
+      "label": "Password \"olaf\" (×1)"
     }
   ],
   "Chum": [
@@ -2074,11 +2052,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"you\" (×1)"
+      "label": "Password \"up\" (×1)"
     },
     {
       "type": "password",
-      "label": "Password \"up\" (×1)"
+      "label": "Password \"you\" (×1)"
     },
     {
       "type": "password",
@@ -2177,10 +2155,6 @@
   ],
   "Crab Claw": [
     {
-      "type": "shop",
-      "label": "Flea Market: 25 gold"
-    },
-    {
       "type": "npc",
       "label": "Lorn friendship Lv 20 (×3)"
     },
@@ -2270,11 +2244,11 @@
     },
     {
       "type": "exchange",
-      "label": "Exchange Center: 25 Cyclops Spider → 3 (last seen Nov 2026)"
+      "label": "Exchange Center: 350 Spider → 3 (last seen Nov 2026)"
     },
     {
       "type": "exchange",
-      "label": "Exchange Center: 350 Spider → 3 (last seen Nov 2026)"
+      "label": "Exchange Center: 25 Cyclops Spider → 3 (last seen Nov 2026)"
     },
     {
       "type": "exchange",
@@ -2352,11 +2326,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Strange Letter (25%)"
+      "label": "Wishing Well: throw Spectacles (20%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Spectacles (20%)"
+      "label": "Wishing Well: throw Strange Letter (25%)"
     },
     {
       "type": "wishing-well",
@@ -2623,6 +2597,10 @@
   ],
   "Eye Patch": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
@@ -2778,6 +2756,10 @@
     }
   ],
   "Fire Ant": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Caterpillar (25%)"
@@ -2969,6 +2951,10 @@
   ],
   "Frog": [
     {
+      "type": "shop",
+      "label": "Flea Market: 10 gold"
+    },
+    {
       "type": "npc",
       "label": "Vincent friendship Lv 20 (×10)"
     },
@@ -3085,20 +3071,16 @@
     {
       "type": "password",
       "label": "Password \"rem\" (×5)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Still Keep Your Resplendence In Masks II (×5)"
     }
   ],
   "Giant Centipede": [
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Fire Ant (25%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (8.3%)"
+      "label": "Wishing Well: throw Fire Ant (25%)"
     },
     {
       "type": "wishing-well",
@@ -3126,6 +3108,10 @@
     }
   ],
   "Glacierstone": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 75 gold"
+    },
     {
       "type": "quest",
       "label": "Quest reward: Breaking The Ice VI (×5)"
@@ -3358,15 +3344,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Carrot (25%)"
-    },
-    {
-      "type": "wishing-well",
       "label": "Wishing Well: throw Gold Cucumber (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Gold Peppers (20%)"
+    },
+    {
+      "type": "wishing-well",
+      "label": "Wishing Well: throw Gold Carrot (25%)"
     },
     {
       "type": "wishing-well",
@@ -3380,19 +3366,19 @@
     },
     {
       "type": "npc",
-      "label": "Gary Bearson V friendship Lv 30 (×10)"
-    },
-    {
-      "type": "npc",
       "label": "Star Meerif friendship Lv 10 (×3)"
     },
     {
       "type": "npc",
-      "label": "Star Meerif friendship Lv 40 (×10)"
+      "label": "Gary Bearson V friendship Lv 30 (×10)"
     },
     {
       "type": "npc",
       "label": "Baba Gec friendship Lv 40 (×100)"
+    },
+    {
+      "type": "npc",
+      "label": "Star Meerif friendship Lv 40 (×10)"
     },
     {
       "type": "wishing-well",
@@ -3448,10 +3434,6 @@
     }
   ],
   "Gold Flier": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
     {
       "type": "npc",
       "label": "Captain Thomas friendship Lv 40 (×5)"
@@ -3563,10 +3545,6 @@
   ],
   "Gold Peas": [
     {
-      "type": "shop",
-      "label": "Flea Market: 3 gold"
-    },
-    {
       "type": "farming",
       "label": "Grow from Pea Seeds (0.1h)"
     },
@@ -3588,10 +3566,6 @@
     }
   ],
   "Gold Peppers": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
     {
       "type": "farming",
       "label": "Grow from Pepper Seeds (0h)"
@@ -3642,6 +3616,10 @@
     }
   ],
   "Gold Sea Crest": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 15 gold"
+    },
     {
       "type": "npc",
       "label": "Borgen friendship Lv 40 (×5)"
@@ -4365,6 +4343,10 @@
   ],
   "Horned Beetle": [
     {
+      "type": "shop",
+      "label": "Flea Market: 5 gold"
+    },
+    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Fire Ant (25%)"
     },
@@ -4674,11 +4656,11 @@
     },
     {
       "type": "npc",
-      "label": "Buddy friendship Lv 30 (×5)"
+      "label": "Goostav friendship Lv 30 (×250)"
     },
     {
       "type": "npc",
-      "label": "Goostav friendship Lv 30 (×250)"
+      "label": "Buddy friendship Lv 30 (×5)"
     },
     {
       "type": "npc",
@@ -5104,11 +5086,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 05 (25%)"
+      "label": "Wishing Well: throw Gold Leaf (33.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Gold Leaf (33.3%)"
+      "label": "Wishing Well: throw Runestone 05 (25%)"
     },
     {
       "type": "password",
@@ -5142,6 +5124,10 @@
     }
   ],
   "Magna Quartz": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
+    },
     {
       "type": "production",
       "label": "Quarry (rarely)"
@@ -5272,6 +5258,10 @@
     }
   ],
   "MIAB": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
+    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw 4-leaf Clover (33.3%)"
@@ -5422,6 +5412,10 @@
     }
   ],
   "Mug of Beer": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 10 gold"
+    },
     {
       "type": "npc",
       "label": "George friendship Lv 20 (×1)"
@@ -5747,10 +5741,6 @@
   ],
   "Onyx Scorpion": [
     {
-      "type": "shop",
-      "label": "Flea Market: 10 gold"
-    },
-    {
       "type": "wishing-well",
       "label": "Wishing Well: throw Spoon (33.3%)"
     }
@@ -5804,15 +5794,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Frog (33.3%)"
-    },
-    {
-      "type": "wishing-well",
       "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Crab Claw (33.3%)"
+    },
+    {
+      "type": "wishing-well",
+      "label": "Wishing Well: throw Frog (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -5842,11 +5832,11 @@
     },
     {
       "type": "npc",
-      "label": "Rosalie friendship Lv 30 (×50)"
+      "label": "Buddy friendship Lv 40 (×50)"
     },
     {
       "type": "npc",
-      "label": "Buddy friendship Lv 40 (×50)"
+      "label": "Rosalie friendship Lv 30 (×50)"
     },
     {
       "type": "npc",
@@ -5922,6 +5912,10 @@
     },
     {
       "type": "quiz",
+      "label": "Back-to-School Movies quiz (score 80, ×10)"
+    },
+    {
+      "type": "quiz",
       "label": "The 175k Players Quiz  quiz (score 90, ×100)"
     },
     {
@@ -5930,19 +5924,15 @@
     },
     {
       "type": "quiz",
-      "label": "April Fools' Day quiz (score 100, ×100)"
-    },
-    {
-      "type": "quiz",
-      "label": "Back-to-School Movies quiz (score 80, ×10)"
-    },
-    {
-      "type": "quiz",
       "label": "Townsfolk 101 quiz (score 90, ×2)"
     },
     {
       "type": "quiz",
       "label": "Locations 101 quiz (score 100, ×25)"
+    },
+    {
+      "type": "quiz",
+      "label": "April Fools' Day quiz (score 100, ×100)"
     },
     {
       "type": "password",
@@ -5974,11 +5964,11 @@
     },
     {
       "type": "password",
-      "label": "Password \"lagoon\" (×5)"
+      "label": "Password \"0x5432671\" (×10)"
     },
     {
       "type": "password",
-      "label": "Password \"0x5432671\" (×10)"
+      "label": "Password \"lagoon\" (×5)"
     },
     {
       "type": "quest",
@@ -6196,10 +6186,6 @@
     }
   ],
   "Pine Cone": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 1 gold"
-    },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Antler (33.3%)"
@@ -6579,18 +6565,6 @@
     {
       "type": "password",
       "label": "Password \"lady liberty\" (×1)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Still Keep Your Resplendence In Masks II (×10)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Troubled Waters I (×25)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: Troubled Waters II (×40)"
     }
   ],
   "Quandary Chowder": [
@@ -6980,7 +6954,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 10 (33.3%)"
+      "label": "Wishing Well: throw Runestone 09 (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -6988,7 +6962,7 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Runestone 09 (33.3%)"
+      "label": "Wishing Well: throw Runestone 10 (33.3%)"
     }
   ],
   "Runestone 09": [
@@ -7133,6 +7107,10 @@
   ],
   "Salt": [
     {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
+    },
+    {
       "type": "npc",
       "label": "ROOMBA friendship Lv 30 (×10)"
     },
@@ -7189,6 +7167,12 @@
     {
       "type": "quest",
       "label": "Quest reward: Bananas for Jimothy II (×1)"
+    }
+  ],
+  "Scrap Wire": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 1 gold"
     }
   ],
   "Sea Dragon": [
@@ -7338,10 +7322,6 @@
     }
   ],
   "Shinefish": [
-    {
-      "type": "shop",
-      "label": "Flea Market: 25 gold"
-    },
     {
       "type": "exchange",
       "label": "Exchange Center: 1,000 Bone → 10 (last seen Oct 2025)"
@@ -7536,11 +7516,11 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Wooden Pipe (25%)"
+      "label": "Wishing Well: throw Ancient Coin (8.3%)"
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw Ancient Coin (8.3%)"
+      "label": "Wishing Well: throw Wooden Pipe (25%)"
     }
   ],
   "Small Key": [
@@ -7576,6 +7556,10 @@
     }
   ],
   "Small Screw": [
+    {
+      "type": "shop",
+      "label": "Flea Market: 3 gold"
+    },
     {
       "type": "production",
       "label": "Ironworks (rarely)"
@@ -7782,10 +7766,6 @@
     },
     {
       "type": "password",
-      "label": "Password \"ghost-spider\" (×1)"
-    },
-    {
-      "type": "password",
       "label": "Password \"chai tea\" (×1)"
     },
     {
@@ -7794,11 +7774,15 @@
     },
     {
       "type": "password",
+      "label": "Password \"2099\" (×1)"
+    },
+    {
+      "type": "password",
       "label": "Password \"spider-punk\" (×1)"
     },
     {
       "type": "password",
-      "label": "Password \"2099\" (×1)"
+      "label": "Password \"ghost-spider\" (×1)"
     },
     {
       "type": "quest",
@@ -7920,15 +7904,15 @@
     },
     {
       "type": "wishing-well",
-      "label": "Wishing Well: throw R.O.A.S. (33.3%)"
-    },
-    {
-      "type": "wishing-well",
       "label": "Wishing Well: throw Large Chest 01 (33.3%)"
     },
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Large Chest 02 (33.3%)"
+    },
+    {
+      "type": "wishing-well",
+      "label": "Wishing Well: throw R.O.A.S. (33.3%)"
     },
     {
       "type": "wishing-well",
@@ -8197,12 +8181,6 @@
     {
       "type": "quest",
       "label": "Quest reward: A Way Forward VII (×2)"
-    }
-  ],
-  "Sugar Cane": [
-    {
-      "type": "quest",
-      "label": "Quest reward: Troubled Waters VIII (×10000)"
     }
   ],
   "Sunflower": [
@@ -8647,10 +8625,6 @@
     {
       "type": "quest",
       "label": "Quest reward: Monster Hunter I (×10)"
-    },
-    {
-      "type": "quest",
-      "label": "Quest reward: The Spirit of Delicacy IV (×1000)"
     }
   ],
   "Wine": [
@@ -8822,6 +8796,10 @@
     },
     {
       "type": "quiz",
+      "label": "Ocarina of Time quiz (score 80, ×1)"
+    },
+    {
+      "type": "quiz",
       "label": "Zelda: Quiz of Power quiz (score 80, ×1)"
     },
     {
@@ -8831,6 +8809,10 @@
     {
       "type": "quest",
       "label": "Quest reward: Let's Play Pirates V (×1)"
+    },
+    {
+      "type": "quest",
+      "label": "Quest reward: Reliving the Past I (×1)"
     }
   ],
   "Worms": [
@@ -8867,12 +8849,6 @@
     {
       "type": "wishing-well",
       "label": "Wishing Well: throw Steel Plate (33.3%)"
-    }
-  ],
-  "Wyvern Priestess Mask": [
-    {
-      "type": "quest",
-      "label": "Quest reward: Still Keep Your Resplendence In Masks II (×1)"
     }
   ],
   "Y73841 Blueprint": [
