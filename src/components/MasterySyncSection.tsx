@@ -152,42 +152,6 @@ export function MasterySyncSection() {
         </button>
       </div>
 
-      <div className="space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-          Mobile — copy URL &amp; save as bookmark
-        </p>
-        <button
-          onClick={copy}
-          className="inline-flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg transition-colors"
-          style={{ border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}
-        >
-          {copied
-            ? <><Check size={12} style={{ color: 'var(--accent-green)' }} /> Copied!</>
-            : <><Copy size={12} /> Copy Bookmarklet URL</>}
-        </button>
-        <div className="text-xs space-y-0.5 pl-1" style={{ color: 'var(--text-muted)' }}>
-          <p className="font-medium" style={{ color: 'var(--text-secondary)' }}>Safari:</p>
-          <p>1. Bookmark any page → Add Bookmark</p>
-          <p>2. Open Bookmarks, find it, tap Edit</p>
-          <p>3. Replace URL with copied code → Save</p>
-          <p className="font-medium pt-1" style={{ color: 'var(--text-secondary)' }}>Chrome:</p>
-          <p>1. ⋮ menu → Bookmarks → Add Bookmark</p>
-          <p>2. Long-press bookmark → Edit</p>
-          <p>3. Replace URL with copied code → Save</p>
-        </div>
-      </div>
-
-      <div className="text-xs space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12, color: 'var(--text-muted)' }}>
-        <p>
-          <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>What syncs: </span>
-          Tier levels for all completed milestones, plus exact progress counts for items working toward 10k, 100k, or 1M — used to surface ascension point opportunities.
-        </p>
-        <p>
-          <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>What doesn't: </span>
-          Items you've mastered but aren't currently tracking toward the next tier — add those manually.
-        </p>
-      </div>
-
       <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
         <button
           onClick={() => setPasteOpen((o) => !o)}
