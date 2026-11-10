@@ -126,30 +126,6 @@ export function BookmarkletSection() {
         <CopyButton label="Copy Bookmarklet Code" />
       </div>
 
-      <div className="space-y-2" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
-          Mobile — copy URL &amp; save as bookmark
-        </p>
-        <CopyButton label="Copy Bookmarklet URL" />
-        <div className="text-xs space-y-0.5 pl-1" style={{ color: 'var(--text-muted)' }}>
-          <p className="font-medium" style={{ color: 'var(--text-secondary)' }}>Safari:</p>
-          <p>1. Bookmark any page → Add Bookmark</p>
-          <p>2. Open Bookmarks, find it, tap Edit</p>
-          <p>3. Replace URL with copied code → Save</p>
-          <p className="font-medium pt-1" style={{ color: 'var(--text-secondary)' }}>Chrome:</p>
-          <p>1. ⋮ menu → Bookmarks → Add Bookmark</p>
-          <p>2. Long-press bookmark → Edit</p>
-          <p>3. Replace URL with copied code → Save</p>
-        </div>
-      </div>
-
-      <div className="space-y-1" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Using it</p>
-        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-          Go to <span style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>farmrpg.com/inventory.php</span> and tap the bookmark. Your tracker opens in a new tab with inventory synced.
-        </p>
-      </div>
-
       <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
         <button
           onClick={() => setPasteOpen((o) => !o)}
