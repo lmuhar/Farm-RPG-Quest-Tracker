@@ -123,7 +123,7 @@ function MasteryRequirementRow({ status }: { status: TowerMasteryStatus }) {
           {status.tier === 3 ? 'Mega' : 'Grand'}
         </span>
         <span className="ml-auto text-[11px] font-mono flex-shrink-0" style={{ color }}>
-          {status.done ? 'Done' : `${formatQty(status.count)} / ${formatQty(status.target)}`}
+          {status.done ? 'Done' : `${formatQty(status.count)}${status.estimated ? '+' : ''} / ${formatQty(status.target)}`}
         </span>
       </div>
       {!status.done && (

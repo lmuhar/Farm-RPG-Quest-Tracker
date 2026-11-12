@@ -17,15 +17,21 @@ export interface TowerMasteryStatus {
   tier: MasteryTier;
   target: number;
   count: number;
+  estimated: boolean; // no synced count: count is the floor of the mastery level you have
   done: boolean;
   pct: number; // 0–1
 }
 
 function status(level: number, item: string, tier: MasteryTier, masteryLevels: Record<string, number>, masteryProgress: Record<string, number>): TowerMasteryStatus {
   const target = MASTERY_COUNT[tier];
-  const count = masteryProgress[item] ?? 0;
-  const done = (masteryLevels[item] ?? 0) >= tier || count >= target;
-  return { level, item, tier, target, count, done, pct: done ? 1 : Math.min(1, count / target) };
+  const lv = masteryLevels[item] ?? 0;
+  const synced = masteryProgress[item];
+  // Older Mastery syncs didn't keep counts past 100K, so fall back to your tier's floor
+  const floor = lv >= 2 ? 100_000 : lv >= 1 ? 10_000 : 0;
+  const count = Math.max(synced ?? 0, floor);
+  const estimated = (synced ?? 0) < floor;
+  const done = lv >= tier || count >= target;
+  return { level, item, tier, target, count, estimated, done, pct: done ? 1 : Math.min(1, count / target) };
 }
 
 // Every tower level's item requirements, with your progress
