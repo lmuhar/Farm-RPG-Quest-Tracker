@@ -38,6 +38,6 @@ Common mistake: replacing a constant's usage in JSX (e.g. swapping `allQuestline
 
 The `Sync from buddy.farm` GitHub Action (`.github/workflows/sync-buddyfarm.yml`) runs this weekly and on demand ("Run workflow" in the Actions tab), builds the app, and opens a PR from `sync/buddyfarm` when anything changed. The script only writes files whose content changed, so a run with nothing new opens no PR.
 
-### Tower Mega Mastery items
+### Tower mastery items
 
-From level 201 each Tower level also needs one specific item Mega Mastered. buddy.farm doesn't list these and the game only shows the next level's, so known ones live in `src/data/tower-mastery-items.json` (level → item). Users can also record them on the Tower page (saved as `towerMasteryItems`), and the sync script never touches the file.
+From level 201 each Tower level also needs specific items mastered: Mega Mastery (1M) for 201–300, then a mix of Grand (100K) and Mega from 301. buddy.farm doesn't list these, so `src/data/tower-mastery-items.json` (`level`, `grandMaster?`, `megaMaster`) is copied by hand from the in-game Library page "Tower Masteries". The sync script never touches it, so update it by hand when the Tower grows.

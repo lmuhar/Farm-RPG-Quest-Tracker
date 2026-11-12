@@ -50,7 +50,6 @@ interface Store extends AppState {
   setMasteryProgress: (item: string, count: number) => void;
   mergeMasteryProgress: (data: Record<string, number>) => void;
   replaceMasteryProgress: (data: Record<string, number>) => void;
-  setTowerMasteryItem: (level: number, item: string) => void;
 }
 
 // Crop grow times with every Farm Supply speed perk (80% off base time), in
@@ -145,7 +144,6 @@ export const useStore = create<Store>()((set) => ({
       masteryLevels: {},
       masteryProgress: {},
       borgenShops: {},
-      towerMasteryItems: {},
 
       setQuestStatus: (id, status) =>
         set((s) => {
@@ -226,7 +224,6 @@ export const useStore = create<Store>()((set) => ({
           masteryLevels: {},
           masteryProgress: {},
       borgenShops: {},
-      towerMasteryItems: {},
         }),
 
       importState: (data) =>
@@ -258,9 +255,6 @@ export const useStore = create<Store>()((set) => ({
             ? { ...s.masteryProgress, ...data.masteryProgress }
             : s.masteryProgress,
           borgenShops: data.borgenShops ? { ...s.borgenShops, ...data.borgenShops } : s.borgenShops,
-          towerMasteryItems: data.towerMasteryItems
-            ? { ...s.towerMasteryItems, ...data.towerMasteryItems }
-            : s.towerMasteryItems,
         })),
 
       setCraftingRecipe: (item, ingredients) =>
@@ -313,7 +307,4 @@ export const useStore = create<Store>()((set) => ({
         })),
 
       replaceMasteryProgress: (data) => set({ masteryProgress: data }),
-
-      setTowerMasteryItem: (level, item) =>
-        set((s) => ({ towerMasteryItems: { ...s.towerMasteryItems, [level]: item } })),
     }));

@@ -1,3 +1,1116 @@
-{
-  "203": "Iron Ring"
-}
+[
+ {
+  "level": 201,
+  "megaMaster": [
+   "Board"
+  ]
+ },
+ {
+  "level": 202,
+  "megaMaster": [
+   "Twine"
+  ]
+ },
+ {
+  "level": 203,
+  "megaMaster": [
+   "Iron Ring"
+  ]
+ },
+ {
+  "level": 204,
+  "megaMaster": [
+   "Skipjack"
+  ]
+ },
+ {
+  "level": 205,
+  "megaMaster": [
+   "Purple Butterfly Fish"
+  ]
+ },
+ {
+  "level": 206,
+  "megaMaster": [
+   "Rope"
+  ]
+ },
+ {
+  "level": 207,
+  "megaMaster": [
+   "Crab"
+  ]
+ },
+ {
+  "level": 208,
+  "megaMaster": [
+   "Mushroom"
+  ]
+ },
+ {
+  "level": 209,
+  "megaMaster": [
+   "Clam Shell"
+  ]
+ },
+ {
+  "level": 210,
+  "megaMaster": [
+   "Conch Shell"
+  ]
+ },
+ {
+  "level": 211,
+  "megaMaster": [
+   "Fishing Net"
+  ]
+ },
+ {
+  "level": 212,
+  "megaMaster": [
+   "Sand"
+  ]
+ },
+ {
+  "level": 213,
+  "megaMaster": [
+   "Frosteye"
+  ]
+ },
+ {
+  "level": 214,
+  "megaMaster": [
+   "Crowfish"
+  ]
+ },
+ {
+  "level": 215,
+  "megaMaster": [
+   "Torch Fish"
+  ]
+ },
+ {
+  "level": 216,
+  "megaMaster": [
+   "Mackerel"
+  ]
+ },
+ {
+  "level": 217,
+  "megaMaster": [
+   "Green Barracuda"
+  ]
+ },
+ {
+  "level": 218,
+  "megaMaster": [
+   "Bullfish"
+  ]
+ },
+ {
+  "level": 219,
+  "megaMaster": [
+   "Drum"
+  ]
+ },
+ {
+  "level": 220,
+  "megaMaster": [
+   "Mushroom Paste"
+  ]
+ },
+ {
+  "level": 221,
+  "megaMaster": [
+   "Starfish",
+   "Green Jellyfish"
+  ]
+ },
+ {
+  "level": 222,
+  "megaMaster": [
+   "Swordfish",
+   "Steel Wire"
+  ]
+ },
+ {
+  "level": 223,
+  "megaMaster": [
+   "Bone Fish",
+   "Sunfish"
+  ]
+ },
+ {
+  "level": 224,
+  "megaMaster": [
+   "Flamejack",
+   "Blue Sea Bass"
+  ]
+ },
+ {
+  "level": 225,
+  "megaMaster": [
+   "Barracuda",
+   "Clownfish"
+  ]
+ },
+ {
+  "level": 226,
+  "megaMaster": [
+   "Red Starfish",
+   "Stingray"
+  ]
+ },
+ {
+  "level": 227,
+  "megaMaster": [
+   "Shimmer Stone",
+   "Iron Cup"
+  ]
+ },
+ {
+  "level": 228,
+  "megaMaster": [
+   "Green Chromis",
+   "Pearl"
+  ]
+ },
+ {
+  "level": 229,
+  "megaMaster": [
+   "Blue Crab",
+   "Sea Catfish"
+  ]
+ },
+ {
+  "level": 230,
+  "megaMaster": [
+   "Plumbfish",
+   "Bluegill"
+  ]
+ },
+ {
+  "level": 231,
+  "megaMaster": [
+   "Leather",
+   "Jellyfish"
+  ]
+ },
+ {
+  "level": 232,
+  "megaMaster": [
+   "Blue Tiger Fish",
+   "Spiral Shell"
+  ]
+ },
+ {
+  "level": 233,
+  "megaMaster": [
+   "Horseshoe",
+   "Serpent Eel"
+  ]
+ },
+ {
+  "level": 234,
+  "megaMaster": [
+   "Crappie",
+   "Ruby Coral"
+  ]
+ },
+ {
+  "level": 235,
+  "megaMaster": [
+   "Blue Shell",
+   "White Parchment"
+  ]
+ },
+ {
+  "level": 236,
+  "megaMaster": [
+   "Redgill",
+   "Yarn"
+  ]
+ },
+ {
+  "level": 237,
+  "megaMaster": [
+   "Puffer",
+   "Seahorse"
+  ]
+ },
+ {
+  "level": 238,
+  "megaMaster": [
+   "Emerald",
+   "Fluorifish"
+  ]
+ },
+ {
+  "level": 239,
+  "megaMaster": [
+   "Sturdy Shield",
+   "Orange Juice"
+  ]
+ },
+ {
+  "level": 240,
+  "megaMaster": [
+   "Marlin",
+   "Ruby Fish"
+  ]
+ },
+ {
+  "level": 241,
+  "megaMaster": [
+   "Nailed Board",
+   "Fancy Pipe"
+  ]
+ },
+ {
+  "level": 242,
+  "megaMaster": [
+   "Lemonade",
+   "Ruby"
+  ]
+ },
+ {
+  "level": 243,
+  "megaMaster": [
+   "Black Powder",
+   "Bucket"
+  ]
+ },
+ {
+  "level": 244,
+  "megaMaster": [
+   "Globber",
+   "Broom"
+  ]
+ },
+ {
+  "level": 245,
+  "megaMaster": [
+   "Blue Catfish",
+   "Carp"
+  ]
+ },
+ {
+  "level": 246,
+  "megaMaster": [
+   "Shimmer Topaz",
+   "Flarefin"
+  ]
+ },
+ {
+  "level": 247,
+  "megaMaster": [
+   "Jade",
+   "Garnet"
+  ]
+ },
+ {
+  "level": 248,
+  "megaMaster": [
+   "Wooden Box",
+   "Wooden Shield"
+  ]
+ },
+ {
+  "level": 249,
+  "megaMaster": [
+   "Awl",
+   "Chum"
+  ]
+ },
+ {
+  "level": 250,
+  "megaMaster": [
+   "Ladder",
+   "Wooden Button",
+   "Large Net"
+  ]
+ },
+ {
+  "level": 251,
+  "megaMaster": [
+   "Steel"
+  ]
+ },
+ {
+  "level": 252,
+  "megaMaster": [
+   "Seeker"
+  ]
+ },
+ {
+  "level": 253,
+  "megaMaster": [
+   "Shrimp"
+  ]
+ },
+ {
+  "level": 254,
+  "megaMaster": [
+   "Largemouth Bass"
+  ]
+ },
+ {
+  "level": 255,
+  "megaMaster": [
+   "Glassback"
+  ]
+ },
+ {
+  "level": 256,
+  "megaMaster": [
+   "Small Prawn"
+  ]
+ },
+ {
+  "level": 257,
+  "megaMaster": [
+   "Garnet Ring"
+  ]
+ },
+ {
+  "level": 258,
+  "megaMaster": [
+   "Sea Crest"
+  ]
+ },
+ {
+  "level": 259,
+  "megaMaster": [
+   "Unpolished Shimmer Stone"
+  ]
+ },
+ {
+  "level": 260,
+  "megaMaster": [
+   "Sturdy Box"
+  ]
+ },
+ {
+  "level": 261,
+  "megaMaster": [
+   "Yellow Perch"
+  ]
+ },
+ {
+  "level": 262,
+  "megaMaster": [
+   "Stone Jelly"
+  ]
+ },
+ {
+  "level": 263,
+  "megaMaster": [
+   "Ice Shark"
+  ]
+ },
+ {
+  "level": 264,
+  "megaMaster": [
+   "Jumbo Fish"
+  ]
+ },
+ {
+  "level": 265,
+  "megaMaster": [
+   "Glass Orb"
+  ]
+ },
+ {
+  "level": 266,
+  "megaMaster": [
+   "Orcafish"
+  ]
+ },
+ {
+  "level": 267,
+  "megaMaster": [
+   "Wooden Plank"
+  ]
+ },
+ {
+  "level": 268,
+  "megaMaster": [
+   "Speckled Grouper"
+  ]
+ },
+ {
+  "level": 269,
+  "megaMaster": [
+   "Glass Bottle"
+  ]
+ },
+ {
+  "level": 270,
+  "megaMaster": [
+   "Fish Bones"
+  ]
+ },
+ {
+  "level": 271,
+  "megaMaster": [
+   "Treasure Chest"
+  ]
+ },
+ {
+  "level": 272,
+  "megaMaster": [
+   "Mussel"
+  ]
+ },
+ {
+  "level": 273,
+  "megaMaster": [
+   "Wooden Barrel"
+  ]
+ },
+ {
+  "level": 274,
+  "megaMaster": [
+   "Trout"
+  ]
+ },
+ {
+  "level": 275,
+  "megaMaster": [
+   "Wooden Table",
+   "Peppers"
+  ]
+ },
+ {
+  "level": 276,
+  "megaMaster": [
+   "Catfish",
+   "Peas"
+  ]
+ },
+ {
+  "level": 277,
+  "megaMaster": [
+   "Butter Churn",
+   "Crossbow"
+  ]
+ },
+ {
+  "level": 278,
+  "megaMaster": [
+   "Mulberry Snapper",
+   "Looking Glass"
+  ]
+ },
+ {
+  "level": 279,
+  "megaMaster": [
+   "MIAB",
+   "Bottle Rocket"
+  ]
+ },
+ {
+  "level": 280,
+  "megaMaster": [
+   "Green Dye",
+   "Lantern"
+  ]
+ },
+ {
+  "level": 281,
+  "megaMaster": [
+   "Flier",
+   "Blue Dye"
+  ]
+ },
+ {
+  "level": 282,
+  "megaMaster": [
+   "Wagon Wheel",
+   "Wooden Sword"
+  ]
+ },
+ {
+  "level": 283,
+  "megaMaster": [
+   "Carrot",
+   "Emerald Ring"
+  ]
+ },
+ {
+  "level": 284,
+  "megaMaster": [
+   "Lemon Quartz Ring",
+   "Pearl Necklace"
+  ]
+ },
+ {
+  "level": 285,
+  "megaMaster": [
+   "Amethyst Necklace",
+   "Magnifying Glass"
+  ]
+ },
+ {
+  "level": 286,
+  "megaMaster": [
+   "Wooden Spear",
+   "Aquamarine Ring"
+  ]
+ },
+ {
+  "level": 287,
+  "megaMaster": [
+   "Ruby Ring",
+   "Glass Jar"
+  ]
+ },
+ {
+  "level": 288,
+  "megaMaster": [
+   "Giant Squid",
+   "Magicite"
+  ]
+ },
+ {
+  "level": 289,
+  "megaMaster": [
+   "Hammer",
+   "Axe",
+   "Shovel"
+  ]
+ },
+ {
+  "level": 290,
+  "megaMaster": [
+   "Scissors",
+   "Potato",
+   "Pitchfork"
+  ]
+ },
+ {
+  "level": 291,
+  "megaMaster": [
+   "Octopus",
+   "Green Shield",
+   "Wooden Bow"
+  ]
+ },
+ {
+  "level": 292,
+  "megaMaster": [
+   "Explosive",
+   "Leather Diary",
+   "Green Twine"
+  ]
+ },
+ {
+  "level": 293,
+  "megaMaster": [
+   "Coin Purse",
+   "Blue Purse",
+   "Green Scarf"
+  ]
+ },
+ {
+  "level": 294,
+  "megaMaster": [
+   "Shimmer Ring",
+   "Salt",
+   "Pickaxe"
+  ]
+ },
+ {
+  "level": 295,
+  "megaMaster": [
+   "Fancy Guitar",
+   "Fancy Pan Flute",
+   "Fancy Drum"
+  ]
+ },
+ {
+  "level": 296,
+  "megaMaster": [
+   "Red Dye",
+   "Beet",
+   "Leather Bag"
+  ]
+ },
+ {
+  "level": 297,
+  "megaMaster": [
+   "Horn Canteen",
+   "Mystic Ring",
+   "Green Parchment"
+  ]
+ },
+ {
+  "level": 298,
+  "megaMaster": [
+   "Hourglass",
+   "Essence of Slime",
+   "Wrench"
+  ]
+ },
+ {
+  "level": 299,
+  "megaMaster": [
+   "Jade Charm",
+   "Sturdy Sword",
+   "Red Trunk"
+  ]
+ },
+ {
+  "level": 300,
+  "megaMaster": [
+   "Wizard Hat",
+   "Sewing Needle",
+   "Water Lily"
+  ]
+ },
+ {
+  "level": 301,
+  "grandMaster": [
+   "Corn Oil",
+   "Cotton",
+   "Basic Pillow"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 302,
+  "megaMaster": [
+   "Slimeback",
+   "Splatfish",
+   "Magenta Growth"
+  ]
+ },
+ {
+  "level": 303,
+  "megaMaster": [
+   "Boghead Snapper",
+   "Bog Barnacle",
+   "Slime Egg Shell"
+  ]
+ },
+ {
+  "level": 304,
+  "grandMaster": [
+   "Leather Belt",
+   "Brown Dye",
+   "Oak Table"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 305,
+  "grandMaster": [
+   "Yellow Dye",
+   "Canoe",
+   "Gold Ruby Ring"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 306,
+  "grandMaster": [
+   "Crown of Clover",
+   "Cloth",
+   "Yellow Shirt"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 307,
+  "grandMaster": [
+   "Orange Scarf",
+   "Crab Claw",
+   "White Dye"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 308,
+  "grandMaster": [
+   "Veggie Juice",
+   "Bamboo Rope"
+  ],
+  "megaMaster": [
+   "Glass Eye Urchin"
+  ]
+ },
+ {
+  "level": 309,
+  "grandMaster": [
+   "Tin Scraps",
+   "Bamboo Trellis",
+   "Silk"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 310,
+  "grandMaster": [
+   "Tie Dye Scarf",
+   "Gazebo",
+   "Gold Garnet Ring"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 311,
+  "grandMaster": [
+   "Bamboo Chair",
+   "Barbed Wire"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 312,
+  "grandMaster": [
+   "Yellow Scarf",
+   "Fire Ant Farm"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 313,
+  "grandMaster": [
+   "Step Ladder",
+   "Orange Shirt"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 314,
+  "grandMaster": [
+   "Energy Coil",
+   "Black Dye"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 315,
+  "grandMaster": [
+   "Reinforced Helmet",
+   "Gold Lemon Quartz Ring",
+   "Steel Vise"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 316,
+  "grandMaster": [
+   "Yellow Bag",
+   "Leather Helmet"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 317,
+  "grandMaster": [
+   "Gold Aquamarine Ring",
+   "Handsaw"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 318,
+  "grandMaster": [
+   "Yellow Butterfly",
+   "Acorn Butter"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 319,
+  "grandMaster": [
+   "Strong Paste"
+  ],
+  "megaMaster": [
+   "Spoon"
+  ]
+ },
+ {
+  "level": 320,
+  "grandMaster": [
+   "Corn Husk Doll"
+  ],
+  "megaMaster": [
+   "Blubberfish",
+   "Reaver Claw"
+  ]
+ },
+ {
+  "level": 321,
+  "megaMaster": [
+   "Green Diary",
+   "Sturdy Bow"
+  ]
+ },
+ {
+  "level": 322,
+  "grandMaster": [
+   "Power Monitor",
+   "Bamboo Fence"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 323,
+  "grandMaster": [
+   "Spiked Shell",
+   "Black Scarf"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 324,
+  "grandMaster": [
+   "Spool of Copper"
+  ],
+  "megaMaster": [
+   "Red Twine"
+  ]
+ },
+ {
+  "level": 325,
+  "megaMaster": [
+   "Cloth",
+   "Gold Ring",
+   "Tin Scraps"
+  ]
+ },
+ {
+  "level": 326,
+  "grandMaster": [
+   "Red Shirt",
+   "Black Shirt"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 327,
+  "grandMaster": [
+   "Propeller Hat"
+  ],
+  "megaMaster": [
+   "Blue Twine"
+  ]
+ },
+ {
+  "level": 328,
+  "grandMaster": [
+   "Wine"
+  ],
+  "megaMaster": [
+   "Sunflower"
+  ]
+ },
+ {
+  "level": 329,
+  "grandMaster": [
+   "Pair of Boots",
+   "Black Twine"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 330,
+  "grandMaster": [
+   "Red Diary",
+   "White Twine",
+   "Magus Hat"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 331,
+  "grandMaster": [
+   "Runestone 04",
+   "Orange Twine"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 332,
+  "grandMaster": [
+   "Kill Switch"
+  ],
+  "megaMaster": [
+   "Linked Lantern"
+  ]
+ },
+ {
+  "level": 333,
+  "grandMaster": [
+   "Brown Cloak",
+   "Glowing Lantern"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 334,
+  "grandMaster": [
+   "Grand Piano"
+  ],
+  "megaMaster": [
+   "Oak Table"
+  ]
+ },
+ {
+  "level": 335,
+  "grandMaster": [
+   "Red Brick"
+  ],
+  "megaMaster": [
+   "Iced Tea",
+   "Leather Belt"
+  ]
+ },
+ {
+  "level": 336,
+  "grandMaster": [
+   "Yellow Twine",
+   "Black Bag"
+  ],
+  "megaMaster": [
+   "Seaweed"
+  ]
+ },
+ {
+  "level": 337,
+  "grandMaster": [
+   "White Scarf",
+   "Orange Dye"
+  ],
+  "megaMaster": [
+   "Purple Twine"
+  ]
+ },
+ {
+  "level": 338,
+  "grandMaster": [
+   "Frost Shield",
+   "Mayonnaise"
+  ],
+  "megaMaster": [
+   "Orange Scarf"
+  ]
+ },
+ {
+  "level": 339,
+  "grandMaster": [
+   "Black Purse",
+   "Fancy Violin",
+   "Brown Bag"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 340,
+  "grandMaster": [
+   "White Purse"
+  ],
+  "megaMaster": [
+   "Yellow Dye",
+   "Purple Diary"
+  ]
+ },
+ {
+  "level": 341,
+  "grandMaster": [
+   "Butter",
+   "Joyful Ring",
+   "Purple Butterfly"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 342,
+  "grandMaster": [
+   "Pinecone Bird Feeder",
+   "Sail Cloth"
+  ],
+  "megaMaster": [
+   "Bamboo Chair"
+  ]
+ },
+ {
+  "level": 343,
+  "grandMaster": [
+   "Gold Emerald Ring",
+   "Fancy Chair",
+   "Acid Extract"
+  ],
+  "megaMaster": []
+ },
+ {
+  "level": 344,
+  "grandMaster": [
+   "Mushroom Stew"
+  ],
+  "megaMaster": [
+   "Red Diary",
+   "Barbed Wire"
+  ]
+ },
+ {
+  "level": 345,
+  "grandMaster": [
+   "Gold Carrot",
+   "Fancy Table"
+  ],
+  "megaMaster": [
+   "Bamboo Trellis"
+  ]
+ },
+ {
+  "level": 346,
+  "grandMaster": [
+   "Re'taw Pail",
+   "Black Shield"
+  ],
+  "megaMaster": [
+   "Canoe"
+  ]
+ },
+ {
+  "level": 347,
+  "grandMaster": [
+   "Gold Peas"
+  ],
+  "megaMaster": [
+   "Corn",
+   "White Dye"
+  ]
+ },
+ {
+  "level": 348,
+  "grandMaster": [
+   "Engine",
+   "Ship Mast"
+  ],
+  "megaMaster": [
+   "Brown Bag"
+  ]
+ },
+ {
+  "level": 349,
+  "grandMaster": [
+   "Sunflower Oil"
+  ],
+  "megaMaster": [
+   "Propeller Hat",
+   "Watermelon"
+  ]
+ },
+ {
+  "level": 350,
+  "megaMaster": [
+   "Tie Dye Scarf",
+   "Crown of Clover",
+   "Steel Plate"
+  ]
+ }
+]

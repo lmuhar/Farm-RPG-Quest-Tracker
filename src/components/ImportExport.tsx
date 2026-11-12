@@ -33,7 +33,6 @@ export function ImportExport() {
       masteryLevels: store.masteryLevels,
       masteryProgress: store.masteryProgress,
       borgenShops: store.borgenShops,
-      towerMasteryItems: store.towerMasteryItems,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

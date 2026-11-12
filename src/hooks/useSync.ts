@@ -31,7 +31,6 @@ function snapshotState(): AppState {
     masteryLevels: s.masteryLevels,
     masteryProgress: s.masteryProgress,
     borgenShops: s.borgenShops,
-    towerMasteryItems: s.towerMasteryItems,
   };
 }
 
