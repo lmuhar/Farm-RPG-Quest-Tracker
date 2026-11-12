@@ -23,7 +23,7 @@ function parseMasteryText(text: string): { levels: Record<string, number>; progr
       const count = parseInt(pm[1].replace(/,/g, ''), 10);
       const lv = count >= 1_000_000 ? 3 : count >= 100_000 ? 2 : count >= 10_000 ? 1 : 0;
       if (lv >= 1) levels[pending] = lv;
-      if (lv <= 1) progress[pending] = count; // toward 10k (lv=0) or 100k (lv=1)
+      if (lv <= 2) progress[pending] = count; // toward 10k, 100k or 1M
       pending = null;
       continue;
     }
@@ -46,7 +46,8 @@ export function MasterySyncSection() {
     // Checks main document and any iframes (Framework7 hash nav loads pages in iframes).
     // Uses name-follows-name to capture items even when accordion rows are collapsed
     // and their progress text is hidden (not in innerText).
-    // Derives tier from craft count (≥1k=lv1, ≥10k=lv2, ≥100k=lv3) — no tier-label parsing.
+    // Derives tier from craft count (≥10k=lv1, ≥100k=lv2, ≥1M=lv3) — no tier-label parsing.
+    // Counts are kept for everything under 1M (Tower masteries track 100K→1M).
     // Reads all tracked items plus the "Mega Mastered" section at the bottom of mastery.php.
     const code = `(function(){`
       + `var T='${origin}',m={},p={},pending=null;`
@@ -62,7 +63,7 @@ export function MasterySyncSection() {
       + `var cnt=parseInt(pm[1].replace(/,/g,''),10);`
       + `var lv=cnt>=1000000?3:cnt>=100000?2:cnt>=10000?1:0;`
       + `if(lv>=1)m[pending]=lv;`
-      + `if(lv<=1)p[pending]=cnt;`
+      + `if(lv<=2)p[pending]=cnt;`
       + `pending=null;continue;}`
       + `pending=l;`
       + `}`

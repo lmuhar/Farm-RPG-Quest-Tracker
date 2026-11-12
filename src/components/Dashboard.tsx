@@ -668,7 +668,7 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                     Floor {m.level}{m.level === towerLevel + 1 ? ' · next' : ''} · {m.tier === 3 ? 'Mega' : 'Grand'}
                   </span>
                   <span className="text-xs ml-auto flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
-                    {m.count.toLocaleString()} / {m.target.toLocaleString()}
+                    {m.count.toLocaleString()}{m.estimated ? '+' : ''} / {m.target.toLocaleString()}
                   </span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden ml-5" style={{ background: 'var(--surface-inset)' }}>
