@@ -1,11 +1,12 @@
 import { useMemo, useState } from 'react';
-import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle, Gem, ChevronRight, Coins } from 'lucide-react';
+import { ChevronUp, ChevronDown, Layers, CheckCircle2, Circle, Gem, ChevronRight, Coins, Pencil, X, Plus } from 'lucide-react';
 import towerLevelsData from '../data/tower-levels.json';
 import { nextTowerUnlock } from '../questUnlocks';
 import towerArtifactsData from '../data/tower-artifacts.json';
 import masteriesData from '../data/masteries.json';
 import { useStore, ENRICHED_SOIL_FLOOR } from '../store';
 import { ItemIcon } from './ItemIcon';
+import { towerMasteryRequirements, towerMasteryStatus, MEGA_MASTERY_COUNT, type TowerMasteryStatus } from '../towerMastery';
 
 interface TowerLevelData {
   level: number;
@@ -27,6 +28,10 @@ interface MasteryItem { name: string; difficulty: number; method: string }
 const allMasteries = masteriesData as MasteryItem[];
 
 const allLevels = towerLevelsData as TowerLevelData[];
+const masteryNames = allMasteries.map((m) => m.name).sort();
+const masteryByLower = new Map(masteryNames.map((n) => [n.toLowerCase(), n]));
+// Item-specific Mega Mastery requirements start above this floor
+const ITEM_MASTERY_FROM = 200;
 const artifactByFloor = new Map<number, Artifact>(
   (towerArtifactsData as Artifact[]).map((a) => [a.floor, a])
 );
@@ -102,12 +107,122 @@ function ArtifactPanel({ artifact }: { artifact: Artifact }) {
   );
 }
 
+function MasteryItemInput({ initial, onCommit, onCancel }: { initial: string; onCommit: (item: string) => void; onCancel: () => void }) {
+  const [value, setValue] = useState(initial);
+  const commit = () => {
+    const v = value.trim();
+    if (!v) return onCancel();
+    onCommit(masteryByLower.get(v.toLowerCase()) ?? v);
+  };
+  return (
+    <div className="flex items-center gap-1.5">
+      <input
+        autoFocus
+        list="tower-mastery-items"
+        value={value}
+        placeholder="Item to Mega Master"
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') onCancel(); }}
+        className="flex-1 min-w-0 px-2 py-1 rounded-lg text-xs focus:outline-none"
+        style={{ background: 'var(--surface-inset)', border: '1px solid var(--accent-orange-border)', color: 'var(--text-primary)' }}
+      />
+      <button
+        onClick={commit}
+        className="px-2 py-1 rounded-lg text-xs font-semibold"
+        style={{ background: 'var(--accent-orange-bg)', border: '1px solid var(--accent-orange-border)', color: 'var(--accent-orange)' }}
+      >
+        Save
+      </button>
+      <button onClick={onCancel} className="p-1 rounded-lg" style={{ color: 'var(--text-muted)' }} aria-label="Cancel">
+        <X size={13} />
+      </button>
+    </div>
+  );
+}
+
+function MasteryRequirementRow({
+  status,
+  canAdd,
+  onSet,
+  onRemove,
+}: {
+  status: TowerMasteryStatus | null;
+  canAdd: boolean;
+  onSet: (item: string) => void;
+  onRemove: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+
+  if (editing) {
+    return (
+      <MasteryItemInput
+        initial={status?.item ?? ''}
+        onCommit={(item) => { onSet(item); setEditing(false); }}
+        onCancel={() => setEditing(false)}
+      />
+    );
+  }
+
+  if (!status) {
+    if (!canAdd) return null;
+    return (
+      <button
+        onClick={() => setEditing(true)}
+        className="flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-lg"
+        style={{ border: '1px dashed var(--accent-orange-border)', color: 'var(--accent-orange)' }}
+        title="The game shows the next floor's required Mega Mastery item — record it here"
+      >
+        <Plus size={11} /> Add required Mega Master item
+      </button>
+    );
+  }
+
+  const color = status.done ? 'var(--accent-green)' : 'var(--accent-orange)';
+  return (
+    <div
+      className="rounded-lg px-2.5 py-2 space-y-1.5"
+      style={{
+        background: status.done ? 'var(--accent-green-bg)' : 'var(--accent-orange-bg)',
+        border: `1px solid ${status.done ? 'var(--accent-green-border)' : 'var(--accent-orange-border)'}`,
+      }}
+    >
+      <div className="flex items-center gap-2">
+        {status.done ? <CheckCircle2 size={13} style={{ color, flexShrink: 0 }} /> : <Gem size={13} style={{ color, flexShrink: 0 }} />}
+        <span className="text-[10px] uppercase tracking-wide font-semibold" style={{ color, opacity: 0.8 }}>Mega Master</span>
+        <span className="text-xs font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
+          <ItemIcon item={status.item} />{status.item}
+        </span>
+        <span className="ml-auto text-[11px] font-mono flex-shrink-0" style={{ color }}>
+          {status.done ? 'Done' : `${formatQty(status.count)} / ${formatQty(MEGA_MASTERY_COUNT)}`}
+        </span>
+        <button onClick={() => setEditing(true)} className="p-0.5 rounded" style={{ color: 'var(--text-muted)' }} aria-label="Change item">
+          <Pencil size={11} />
+        </button>
+        <button onClick={onRemove} className="p-0.5 rounded" style={{ color: 'var(--text-muted)' }} aria-label="Remove item">
+          <X size={12} />
+        </button>
+      </div>
+      {!status.done && (
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--surface-inset)' }}>
+          <div className="h-full rounded-full" style={{ width: `${Math.round(status.pct * 100)}%`, background: color }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LevelCard({
   levelData,
   isCurrent,
+  mastery,
+  onSetMastery,
+  onRemoveMastery,
 }: {
   levelData: TowerLevelData;
   isCurrent: boolean;
+  mastery: TowerMasteryStatus | null;
+  onSetMastery: (item: string) => void;
+  onRemoveMastery: () => void;
 }) {
   const artifact = artifactByFloor.get(levelData.level);
   const isMilestone = levelData.level % 10 === 0;
@@ -187,6 +302,14 @@ function LevelCard({
         )}
       </div>
 
+      {/* Item that must be Mega Mastered */}
+      <MasteryRequirementRow
+        status={mastery}
+        canAdd={isCurrent && levelData.level > ITEM_MASTERY_FROM}
+        onSet={onSetMastery}
+        onRemove={onRemoveMastery}
+      />
+
       {/* Rewards */}
       {levelData.items.length > 0 && (
         <div>
@@ -205,7 +328,15 @@ function LevelCard({
 const SHOW_AHEAD = 10;
 
 export function TheTowerPage() {
-  const { towerLevel, setTowerLevel, masteryLevels, player, questStatuses } = useStore();
+  const { towerLevel, setTowerLevel, masteryLevels, masteryProgress, player, questStatuses, towerMasteryItems, setTowerMasteryItem } = useStore();
+
+  const masteryByLevel = useMemo(() => {
+    const map = new Map<number, TowerMasteryStatus>();
+    for (const r of towerMasteryRequirements(towerMasteryItems)) {
+      map.set(r.level, towerMasteryStatus(r, masteryLevels, masteryProgress));
+    }
+    return map;
+  }, [towerMasteryItems, masteryLevels, masteryProgress]);
 
   // Nearest floor that opens quests you otherwise qualify for
   const questUnlock = useMemo(
@@ -436,6 +567,10 @@ export function TheTowerPage() {
         </div>
       </div>
 
+      <datalist id="tower-mastery-items">
+        {masteryNames.map((n) => <option key={n} value={n} />)}
+      </datalist>
+
       {/* Upcoming levels */}
       {upcomingLevels.length === 0 ? (
         <div
@@ -459,6 +594,9 @@ export function TheTowerPage() {
               key={levelData.level}
               levelData={levelData}
               isCurrent={idx === 0}
+              mastery={masteryByLevel.get(levelData.level) ?? null}
+              onSetMastery={(item) => setTowerMasteryItem(levelData.level, item)}
+              onRemoveMastery={() => setTowerMasteryItem(levelData.level, '')}
             />
           ))}
 

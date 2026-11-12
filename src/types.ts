@@ -82,6 +82,7 @@ export interface AppState {
   masteryLevels: Record<string, number>;
   masteryProgress: Record<string, number>;
   borgenShops: BorgenShops;
+  towerMasteryItems: Record<string, string>; // tower level → item to Mega Master ('' hides a built-in one)
 }
 
 // What Borgen's shops were selling when last captured with the bookmarklet

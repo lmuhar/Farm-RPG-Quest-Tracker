@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users, LockOpen, Building2, Link2 } from 'lucide-react';
+import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users, LockOpen, Building2, Link2, Gem } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns, resolveRawIngredients } from '../utils';
 import type { Quest } from '../types';
@@ -11,6 +11,7 @@ import { BottleneckPanel } from './BottleneckPanel';
 import { getUnlockSuggestions } from '../questUnlocks';
 import type { BottleneckEntry } from './BottleneckPanel';
 import { ItemIcon } from './ItemIcon';
+import { upcomingTowerMasteries, MEGA_MASTERY_COUNT } from '../towerMastery';
 
 interface Recipe { id: string; name: string; ingredients: { item: string; quantity: number }[] }
 const allRecipes = recipesData as Recipe[];
@@ -56,7 +57,7 @@ interface Props {
 }
 
 export function Dashboard({ activeQuests, nextUpQuests }: Props) {
-  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, questStatuses, towerLevel } = useStore();
+  const { inventory, cropTimes, plotCount, inventoryMax, craftingRecipes, player, questStatuses, towerLevel, towerMasteryItems, masteryLevels, masteryProgress } = useStore();
 
   const recipeMap = useMemo(() => {
     const map = new Map<string, Recipe>(recipeByName);
@@ -583,6 +584,11 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     [player, questStatuses, towerLevel],
   );
 
+  const towerMasteries = useMemo(
+    () => upcomingTowerMasteries({ towerLevel, towerMasteryItems, masteryLevels, masteryProgress }),
+    [towerLevel, towerMasteryItems, masteryLevels, masteryProgress],
+  );
+
   const growDoneLabel = (totalMinutes: number) => {
     const finishAt = new Date(Date.now() + totalMinutes * 60 * 1000);
     const finishStr = finishAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
@@ -627,6 +633,41 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Tower Mega Mastery requirements */}
+      {towerMasteries.length > 0 && (
+        <div
+          className="rounded-xl overflow-hidden"
+          style={{ background: 'var(--surface-card)', border: '1px solid var(--accent-orange-border)' }}
+        >
+          <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: 'var(--accent-orange-bg)', borderBottom: '1px solid var(--accent-orange-border)' }}>
+            <Gem size={13} style={{ color: 'var(--accent-orange)' }} />
+            <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--accent-orange)' }}>Tower Mega Masteries</span>
+            <span className="text-xs ml-1" style={{ color: 'var(--accent-orange)', opacity: 0.7 }}>— needed to climb</span>
+          </div>
+          <div className="divide-y" style={{ borderColor: 'var(--border-subtle)' }}>
+            {towerMasteries.map((m) => (
+              <div key={m.level} className="px-4 py-2.5 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <Building2 size={12} style={{ color: 'var(--accent-orange)', flexShrink: 0 }} />
+                  <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                    <ItemIcon item={m.item} />{m.item}
+                  </span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    Floor {m.level}{m.level === towerLevel + 1 ? ' · next' : ''}
+                  </span>
+                  <span className="text-xs ml-auto flex-shrink-0" style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-orange)' }}>
+                    {m.count.toLocaleString()} / {MEGA_MASTERY_COUNT.toLocaleString()}
+                  </span>
+                </div>
+                <div className="h-1.5 rounded-full overflow-hidden ml-5" style={{ background: 'var(--surface-inset)' }}>
+                  <div className="h-full rounded-full" style={{ width: `${Math.round(m.pct * 100)}%`, background: 'var(--accent-orange)' }} />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
