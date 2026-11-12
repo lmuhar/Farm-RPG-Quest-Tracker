@@ -6,6 +6,7 @@ import towerArtifactsData from '../data/tower-artifacts.json';
 import masteriesData from '../data/masteries.json';
 import { useStore, ENRICHED_SOIL_FLOOR } from '../store';
 import { ItemIcon } from './ItemIcon';
+import { towerMasteryByLevel, type TowerMasteryStatus } from '../towerMastery';
 
 interface TowerLevelData {
   level: number;
@@ -102,12 +103,46 @@ function ArtifactPanel({ artifact }: { artifact: Artifact }) {
   );
 }
 
+function MasteryRequirementRow({ status }: { status: TowerMasteryStatus }) {
+  const accent = status.tier === 3 ? 'orange' : 'yellow';
+  const color = status.done ? 'var(--accent-green)' : `var(--accent-${accent})`;
+  return (
+    <div
+      className="rounded-lg px-2.5 py-1.5 space-y-1"
+      style={{
+        background: status.done ? 'var(--accent-green-bg)' : `var(--accent-${accent}-bg)`,
+        border: `1px solid ${status.done ? 'var(--accent-green-border)' : `var(--accent-${accent}-border)`}`,
+      }}
+    >
+      <div className="flex items-center gap-2 min-w-0">
+        {status.done ? <CheckCircle2 size={12} style={{ color, flexShrink: 0 }} /> : <Gem size={12} style={{ color, flexShrink: 0 }} />}
+        <span className="text-xs font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
+          <ItemIcon item={status.item} />{status.item}
+        </span>
+        <span className="text-[10px] uppercase tracking-wide font-semibold flex-shrink-0" style={{ color, opacity: 0.8 }}>
+          {status.tier === 3 ? 'Mega' : 'Grand'}
+        </span>
+        <span className="ml-auto text-[11px] font-mono flex-shrink-0" style={{ color }}>
+          {status.done ? 'Done' : `${formatQty(status.count)} / ${formatQty(status.target)}`}
+        </span>
+      </div>
+      {!status.done && (
+        <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-inset)' }}>
+          <div className="h-full rounded-full" style={{ width: `${Math.round(status.pct * 100)}%`, background: color }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LevelCard({
   levelData,
   isCurrent,
+  masteries,
 }: {
   levelData: TowerLevelData;
   isCurrent: boolean;
+  masteries: TowerMasteryStatus[];
 }) {
   const artifact = artifactByFloor.get(levelData.level);
   const isMilestone = levelData.level % 10 === 0;
@@ -187,6 +222,16 @@ function LevelCard({
         )}
       </div>
 
+      {/* Items that must be mastered to climb */}
+      {masteries.length > 0 && (
+        <div>
+          <p className="text-[10px] uppercase tracking-wider font-semibold mb-1" style={{ color: 'var(--text-muted)' }}>Masteries required</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
+            {masteries.map((m) => <MasteryRequirementRow key={`${m.tier}-${m.item}`} status={m} />)}
+          </div>
+        </div>
+      )}
+
       {/* Rewards */}
       {levelData.items.length > 0 && (
         <div>
@@ -205,7 +250,12 @@ function LevelCard({
 const SHOW_AHEAD = 10;
 
 export function TheTowerPage() {
-  const { towerLevel, setTowerLevel, masteryLevels, player, questStatuses } = useStore();
+  const { towerLevel, setTowerLevel, masteryLevels, masteryProgress, player, questStatuses } = useStore();
+
+  const masteryByLevel = useMemo(
+    () => towerMasteryByLevel(masteryLevels, masteryProgress),
+    [masteryLevels, masteryProgress],
+  );
 
   // Nearest floor that opens quests you otherwise qualify for
   const questUnlock = useMemo(
@@ -459,6 +509,7 @@ export function TheTowerPage() {
               key={levelData.level}
               levelData={levelData}
               isCurrent={idx === 0}
+              masteries={masteryByLevel.get(levelData.level) ?? []}
             />
           ))}
 
