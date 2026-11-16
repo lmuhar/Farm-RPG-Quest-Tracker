@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
-import { BookMarked, RefreshCw, Copy, Check, ClipboardPaste, ChevronDown } from 'lucide-react';
+import { BookMarked, RefreshCw, Copy, Check, ClipboardPaste } from 'lucide-react';
 import { useStore } from '../store';
 
 // Inventory page lists items as bulleted blocks: name, 1+ flavor-text lines,
@@ -36,7 +36,6 @@ export function parseInventoryText(text: string): Record<string, number> {
 
 export function BookmarkletSection() {
   const [copied, setCopied] = useState(false);
-  const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteText, setPasteText] = useState('');
   const [pasteStatus, setPasteStatus] = useState<'idle' | 'ok' | 'error'>('idle');
   const { importState } = useStore();
@@ -127,55 +126,51 @@ export function BookmarkletSection() {
       </div>
 
       <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 12 }}>
-        <button
-          onClick={() => setPasteOpen((o) => !o)}
-          className="flex items-center gap-1.5 text-xs w-full text-left"
+        <div
+          className="flex items-center gap-1.5 text-xs"
           style={{ color: 'var(--text-secondary)' }}
         >
           <ClipboardPaste size={12} style={{ color: 'var(--accent-green)' }} />
           <span style={{ fontWeight: 600 }}>Paste inventory page text instead</span>
-          <ChevronDown size={12} style={{ marginLeft: 'auto', transform: pasteOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
-        </button>
-        {pasteOpen && (
-          <div className="mt-2 space-y-2">
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              Go to <span style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>farmrpg.com/inventory.php</span>, select all text on the page (Ctrl+A), copy, and paste below.
-            </p>
-            <textarea
-              rows={5}
-              placeholder="Paste inventory page text here..."
-              value={pasteText}
-              onChange={(e) => setPasteText(e.target.value)}
-              className="w-full rounded-lg px-2 py-1.5 text-xs resize-none focus:outline-none"
-              style={{
-                background: 'var(--surface-inset)',
-                border: '1px solid var(--border-default)',
-                color: 'var(--text-primary)',
-                fontFamily: 'var(--font-mono)',
-              }}
-            />
-            <div className="flex items-center gap-2">
-              <button
-                onClick={applyPaste}
-                disabled={!pasteText.trim()}
-                className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg disabled:opacity-40"
-                style={{ background: 'var(--accent-green)', color: '#0f172a', border: '1px solid var(--accent-green-border)' }}
-              >
-                <ClipboardPaste size={11} /> Import
-              </button>
-              {pasteStatus === 'ok' && (
-                <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--accent-green)' }}>
-                  <Check size={11} /> Imported!
-                </span>
-              )}
-              {pasteStatus === 'error' && (
-                <span className="text-xs" style={{ color: 'var(--accent-orange, #f97316)' }}>
-                  No inventory data found — make sure you pasted from farmrpg.com/inventory.php
-                </span>
-              )}
-            </div>
+        </div>
+        <div className="mt-2 space-y-2">
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            Go to <span style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-mono)' }}>farmrpg.com/inventory.php</span>, select all text on the page (Ctrl+A), copy, and paste below.
+          </p>
+          <textarea
+            rows={5}
+            placeholder="Paste inventory page text here..."
+            value={pasteText}
+            onChange={(e) => setPasteText(e.target.value)}
+            className="w-full rounded-lg px-2 py-1.5 text-xs resize-none focus:outline-none"
+            style={{
+              background: 'var(--surface-inset)',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-mono)',
+            }}
+          />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={applyPaste}
+              disabled={!pasteText.trim()}
+              className="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg disabled:opacity-40"
+              style={{ background: 'var(--accent-green)', color: '#0f172a', border: '1px solid var(--accent-green-border)' }}
+            >
+              <ClipboardPaste size={11} /> Import
+            </button>
+            {pasteStatus === 'ok' && (
+              <span className="flex items-center gap-1 text-xs" style={{ color: 'var(--accent-green)' }}>
+                <Check size={11} /> Imported!
+              </span>
+            )}
+            {pasteStatus === 'error' && (
+              <span className="text-xs" style={{ color: 'var(--accent-orange, #f97316)' }}>
+                No inventory data found — make sure you pasted from farmrpg.com/inventory.php
+              </span>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
