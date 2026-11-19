@@ -208,3 +208,91 @@ export function buildHoldPlan(
   const maxHold = rows.reduce((m, r) => Math.max(m, r.holdNext), 0);
   return { current, rows, clashes, feeds, maxHold };
 }
+
+// ── Where to get what's still short ─────────────────────────────────────────
+// Crafted items are broken down to what you'd actually go and gather, using up
+// spare intermediates you already have first (never ones you're holding for
+// these quests). Gatherable items go to the location where they drop most
+// often; everything else is listed with its best other source.
+
+export interface GatherItem { item: string; qty: number; rate: number; forItems: string[] }
+export interface GatherStop { location: string; type: string; items: GatherItem[]; attempts: number; forItems: string[] }
+export interface OtherNeed { item: string; qty: number; source: string; forItems: string[] }
+
+export interface GatherPlan {
+  stops: GatherStop[];
+  cook: OtherNeed[];      // cooked items (the Kitchen, not Craftworks)
+  other: OtherNeed[];     // pet loot, locksmith, wishing well, crops, shops…
+}
+
+const RUN_TYPES = new Set(['explore', 'fishing', 'mining']);
+
+export function buildGatherPlan(
+  short: Map<string, number>,
+  inventory: Record<string, number>,
+  reserved: Map<string, number>,
+  opts: {
+    isCooked: (item: string) => boolean;
+    isPassive: (item: string) => boolean;
+    locations: Record<string, { name: string; type: string; rate?: number }[]>;
+    sourceOf: (item: string) => string | null;
+  },
+): GatherPlan {
+  const spare = new Map<string, number>();
+  const avail = (item: string) => {
+    if (!spare.has(item)) spare.set(item, Math.max(0, (inventory[item] ?? 0) - (reserved.get(item) ?? 0)));
+    return spare.get(item)!;
+  };
+  const raw = new Map<string, number>();
+  const cook = new Map<string, number>();
+  const usedFor = new Map<string, Set<string>>();
+  const note = (item: string, top: string) => {
+    if (item === top) return;
+    usedFor.set(item, (usedFor.get(item) ?? new Set()).add(top));
+  };
+
+  const need = (item: string, qty: number, top: string, depth: number) => {
+    if (depth > 0) {
+      const use = Math.min(avail(item), qty);
+      spare.set(item, avail(item) - use);
+      qty -= use;
+    }
+    if (qty <= 0) return;
+    const recipe = recipes.get(item);
+    if (recipe && opts.isCooked(item)) { cook.set(item, (cook.get(item) ?? 0) + qty); note(item, top); return; }
+    if (!recipe || depth > 6 || recipe.some((i) => i.item === 'Cooking Pot')) {
+      if (!opts.isPassive(item)) { raw.set(item, (raw.get(item) ?? 0) + qty); note(item, top); }
+      return;
+    }
+    for (const ing of recipe) need(ing.item, ing.quantity * qty, top, depth + 1);
+  };
+  for (const [item, qty] of short) need(item, qty, item, 0);
+  const forOf = (item: string) => [...(usedFor.get(item) ?? [])];
+
+  const stopMap = new Map<string, GatherStop>();
+  const other: OtherNeed[] = [];
+  for (const [item, qty] of raw) {
+    let best: { name: string; type: string; rate?: number } | null = null;
+    for (const loc of opts.locations[item] ?? []) {
+      if (RUN_TYPES.has(loc.type) && loc.rate && (!best || loc.rate < best.rate!)) best = loc;
+    }
+    if (best) {
+      const stop = stopMap.get(best.name) ?? { location: best.name, type: best.type, items: [], attempts: 0, forItems: [] };
+      stop.items.push({ item, qty, rate: best.rate!, forItems: forOf(item) });
+      for (const f of forOf(item)) if (!stop.forItems.includes(f)) stop.forItems.push(f);
+      stop.attempts = Math.max(stop.attempts, Math.ceil(qty * best.rate!));
+      stopMap.set(best.name, stop);
+    } else {
+      other.push({ item, qty, source: opts.sourceOf(item) ?? 'Unknown source', forItems: forOf(item) });
+    }
+  }
+  const stops = [...stopMap.values()];
+  for (const s of stops) s.items.sort((a, b) => b.qty * b.rate - a.qty * a.rate);
+  stops.sort((a, b) => b.items.length - a.items.length || a.attempts - b.attempts);
+  other.sort((a, b) => a.source.localeCompare(b.source) || a.item.localeCompare(b.item));
+  return {
+    stops,
+    cook: [...cook].map(([item, qty]) => ({ item, qty, source: 'Kitchen', forItems: forOf(item) })).sort((a, b) => a.item.localeCompare(b.item)),
+    other,
+  };
+}

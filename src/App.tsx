@@ -391,7 +391,9 @@ export default function App() {
             {tab === 'questlines' && (
               <QuestlinesTab questlineGroups={questlineGroups} globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
             )}
-            {tab === 'hold-quests' && <HoldQuestsPage />}
+            {tab === 'hold-quests' && (
+              <HoldQuestsPage onOpenLocation={(loc) => { setFarmRunLocation(loc); setTab('farming-run'); }} />
+            )}
             {tab === 'craftworks' && (
               <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}

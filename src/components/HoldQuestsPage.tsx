@@ -1,10 +1,14 @@
 import { useMemo, useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, MapPin, Hammer, Package, ChevronRight } from 'lucide-react';
 import { useStore } from '../store';
 import { ItemIcon } from './ItemIcon';
 import { sourceHint } from '../data/itemSources';
 import { parseItems } from '../utils';
-import { HOLD_LINES, buildHoldPlan, shortQuestName, type FeedReward, type HoldLine, type HoldRow } from '../holdQuests';
+import { CraftworksSuggestions, type DirectItem } from './CraftworksSuggestions';
+import { itemLocations } from '../data/itemSources';
+import { PASSIVE_MATERIALS } from '../milestonePlan';
+import masteriesData from '../data/masteries.json';
+import { HOLD_LINES, buildHoldPlan, buildGatherPlan, type GatherPlan, type OtherNeed, shortQuestName, type FeedReward, type HoldLine, type HoldRow } from '../holdQuests';
 
 const LINE_COLOR = { starmaps: 'var(--accent-purple)', pamrats: 'var(--accent-blue)' } as const;
 
@@ -77,6 +81,11 @@ function rowNote(row: HoldRow, feeds: FeedReward[]): { text: string; warn: boole
 }
 
 type View = 'collect' | 'held';
+type Section = 'farm' | 'craft' | 'items';
+
+const cookedNames = new Set((masteriesData as { name: string; method: string }[]).filter((m) => m.method === 'cooking').map((m) => m.name));
+const TYPE_VERB: Record<string, string> = { explore: 'explores', fishing: 'casts', mining: 'digs' };
+
 type Horizon = 'now' | 'next';
 
 function Toggle<T extends string>({ value, options, onChange }: { value: T; options: [T, string][]; onChange: (v: T) => void }) {
@@ -98,22 +107,113 @@ function Toggle<T extends string>({ value, options, onChange }: { value: T; opti
   );
 }
 
-export function HoldQuestsPage() {
+
+function FarmSection({ gather, onOpenLocation }: { gather: GatherPlan; onOpenLocation?: (loc: string) => void }) {
+  const otherGroups = new Map<string, OtherNeed[]>();
+  for (const o of gather.other) {
+    const key = o.source.split(':')[0].replace(/\s*\(.*$/, '');
+    otherGroups.set(key, [...(otherGroups.get(key) ?? []), o]);
+  }
+  if (gather.stops.length === 0 && gather.other.length === 0 && gather.cook.length === 0) {
+    return <p className="text-sm px-1" style={{ color: 'var(--accent-green)' }}>Nothing left to gather for these quests.</p>;
+  }
+  return (
+    <div className="space-y-3">
+      {gather.stops.length > 0 && (
+        <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+          {gather.stops.map((s, i) => (
+            <div key={s.location} className="px-3 py-2.5" style={i > 0 ? { borderTop: '1px solid var(--border-subtle)' } : undefined}>
+              <div className="flex items-center gap-2">
+                <MapPin size={12} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+                <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{s.location}</span>
+                <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                  ~{s.attempts.toLocaleString()} {TYPE_VERB[s.type] ?? 'attempts'}
+                </span>
+                {onOpenLocation && (
+                  <button onClick={() => onOpenLocation(s.location)} className="ml-auto flex items-center text-[11px]" style={{ color: 'var(--accent-blue)' }}>
+                    Plan run <ChevronRight size={12} />
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1 ml-5 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                {s.items.map((it) => (
+                  <span key={it.item} title={it.forItems.length ? `For ${it.forItems.join(', ')}` : undefined}>
+                    <ItemIcon item={it.item} />{it.item} <span className="font-mono" style={{ color: 'var(--accent-orange)' }}>{formatQty(it.qty)}</span>
+                  </span>
+                ))}
+              </div>
+              {s.forItems.length > 0 && (
+                <p className="mt-0.5 ml-5 text-[11px] truncate" style={{ color: 'var(--text-muted)' }} title={s.forItems.join(', ')}>
+                  to craft {s.forItems.slice(0, 5).join(', ')}{s.forItems.length > 5 && ` +${s.forItems.length - 5} more`}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {(otherGroups.size > 0 || gather.cook.length > 0) && (
+        <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
+          {[...(gather.cook.length ? [['Cook in the Kitchen', gather.cook] as const] : []), ...otherGroups].map(([group, items], i) => (
+            <div key={group} className="px-3 py-2 flex gap-3 text-xs" style={i > 0 ? { borderTop: '1px solid var(--border-subtle)' } : undefined}>
+              <span className="w-28 flex-shrink-0 font-medium" style={{ color: 'var(--text-muted)' }}>{group}</span>
+              <span className="flex flex-wrap gap-x-3 gap-y-0.5" style={{ color: 'var(--text-secondary)' }}>
+                {items.map((it) => (
+                  <span key={it.item} title={[it.source, it.forItems.length ? `for ${it.forItems.join(', ')}` : ''].filter(Boolean).join(' · ')}>
+                    <ItemIcon item={it.item} />{it.item} <span className="font-mono" style={{ color: 'var(--accent-orange)' }}>{formatQty(it.qty)}</span>
+                  </span>
+                ))}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function HoldQuestsPage({ onOpenLocation }: { onOpenLocation?: (loc: string) => void }) {
   const { questStatuses, inventory, inventoryMax } = useStore();
   const plan = useMemo(() => buildHoldPlan(questStatuses, inventory), [questStatuses, inventory]);
+  const [section, setSection] = useState<Section>('farm');
   const [view, setView] = useState<View>('collect');
   const [horizon, setHorizon] = useState<Horizon>('now');
 
-  const rows = plan.rows
-    .map((r) => {
-      const hold = horizon === 'now' ? r.holdNow : r.holdNext;
-      const target = hold === 0 ? 0 : hold + (r.target - r.holdNow);
-      return { r, hold, target, short: Math.max(0, target - r.have) };
-    })
-    .filter((x) => x.hold > 0);
-  const collect = rows.filter((x) => x.short > 0).sort((a, b) => a.r.have / a.target - b.r.have / b.target || b.short - a.short);
-  const held = rows.filter((x) => x.short === 0).sort((a, b) => a.r.item.localeCompare(b.r.item));
+  const { rows, collect, held } = useMemo(() => {
+    const rows = plan.rows
+      .map((r) => {
+        const hold = horizon === 'now' ? r.holdNow : r.holdNext;
+        const target = hold === 0 ? 0 : hold + (r.target - r.holdNow);
+        return { r, hold, target, short: Math.max(0, target - r.have) };
+      })
+      .filter((x) => x.hold > 0);
+    return {
+      rows,
+      collect: rows.filter((x) => x.short > 0).sort((a, b) => a.r.have / a.target - b.r.have / b.target || b.short - a.short),
+      held: rows.filter((x) => x.short === 0).sort((a, b) => a.r.item.localeCompare(b.r.item)),
+    };
+  }, [plan, horizon]);
   const shown = view === 'collect' ? collect : held;
+
+  const gather = useMemo(() => buildGatherPlan(
+    new Map(collect.map((x) => [x.r.item, x.short])),
+    inventory,
+    new Map(rows.map((x) => [x.r.item, x.target])),
+    {
+      isCooked: (item) => cookedNames.has(item),
+      isPassive: (item) => PASSIVE_MATERIALS.has(item),
+      locations: itemLocations,
+      sourceOf: sourceHint,
+    },
+  ), [collect, rows, inventory]);
+
+  // Craftworks targets: the held amount (plus craft/other-quest draws), labelled with the quests asking
+  const craftItems: DirectItem[] = collect.map((x) => ({
+    item: x.r.item,
+    quantity: x.target,
+    label: HOLD_LINES.filter((l) => (x.r.lines[l.key]?.[horizon] ?? 0) > 0)
+      .map((l) => { const i = plan.current[l.key]; return i == null ? l.short : shortQuestName(l, l.quests[Math.min(i + (horizon === 'next' ? 1 : 0), l.quests.length - 1)]); })
+      .join(' + '),
+  }));
 
   return (
     <div className="space-y-3">
@@ -139,12 +239,36 @@ export function HoldQuestsPage() {
       )}
 
       <div className="flex items-center gap-2 flex-wrap">
-        <Toggle value={view} onChange={setView} options={[['collect', `To collect · ${collect.length}`], ['held', `Held · ${held.length}`]]} />
+        <div className="flex rounded-md overflow-hidden text-xs" style={{ border: '1px solid var(--border-subtle)' }}>
+          {([['farm', 'Where to farm', MapPin], ['craft', 'Craftworks', Hammer], ['items', `Items · ${collect.length}`, Package]] as const).map(([id, label, Icon]) => (
+            <button
+              key={id}
+              onClick={() => setSection(id)}
+              className="px-2.5 py-1 flex items-center gap-1"
+              style={id === section
+                ? { background: 'var(--accent-green-bg)', color: 'var(--accent-green)', fontWeight: 600 }
+                : { background: 'var(--surface-inset)', color: 'var(--text-muted)' }}
+            >
+              <Icon size={11} />{label}
+            </button>
+          ))}
+        </div>
         <div className="ml-auto">
           <Toggle value={horizon} onChange={setHorizon} options={[['now', 'This quest'], ['next', 'Next quest']]} />
         </div>
       </div>
 
+      {section === 'farm' && <FarmSection gather={gather} onOpenLocation={onOpenLocation} />}
+
+      {section === 'craft' && (
+        craftItems.length
+          ? <CraftworksSuggestions quests={[]} directItems={craftItems} questlineOnly subtitle="for STARMAPS & PAMRATS" />
+          : <p className="text-sm px-1" style={{ color: 'var(--accent-green)' }}>Nothing left to craft for these quests.</p>
+      )}
+
+      {section === 'items' && (
+        <>
+          <Toggle value={view} onChange={setView} options={[['collect', `To collect · ${collect.length}`], ['held', `Held · ${held.length}`]]} />
       <div className="rounded-xl overflow-hidden" style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)' }}>
         <table className="w-full text-xs">
           <thead>
@@ -197,6 +321,8 @@ export function HoldQuestsPage() {
           </tbody>
         </table>
       </div>
+        </>
+      )}
     </div>
   );
 }
