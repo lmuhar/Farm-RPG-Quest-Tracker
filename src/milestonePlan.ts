@@ -21,7 +21,7 @@ const recipeByName = new Map((recipesData as Recipe[]).map((r) => [r.name.toLowe
 
 const CRAFT_METHODS = new Set(['crafting', 'cooking', 'steelworks', 'other']);
 const GATHER_TYPE: Record<string, string> = { fishing: 'fishing', exploring: 'explore', mining: 'mining' };
-const GATHER_VERB: Record<string, string> = { fishing: 'casts', explore: 'explores', mining: 'digs' };
+export const GATHER_VERB: Record<string, string> = { fishing: 'casts', explore: 'explores', mining: 'digs' };
 
 // Materials that refill on their own (farm buildings, daily resets)
 export const PASSIVE_MATERIALS = new Set([...PASSIVE_INPUTS, 'Coal', 'Eggs', 'Milk', 'Feathers']);

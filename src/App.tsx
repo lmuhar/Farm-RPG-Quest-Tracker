@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   GitBranch, Search, X, Wand2, BarChart2, Package,
   Settings, Hammer, RefreshCw, Menu, MapPin, Building2, Users, Layers,
-  LayoutDashboard, Trophy, Target, Route,
+  LayoutDashboard, Trophy, Target, Map as MapIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import questsData from './data/quests.json';
@@ -29,7 +29,7 @@ import { Dashboard } from './components/Dashboard';
 import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
 import { MilestonePlanPage } from './components/MilestonePlanPage';
-import { FarmingRunPage } from './components/FarmingRunPage';
+import { HoldQuestsPage } from './components/HoldQuestsPage';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
 import { MasterySyncSection } from './components/MasterySyncSection';
@@ -38,8 +38,8 @@ const allQuests = questsData as Quest[];
 
 type Tab =
   | 'dashboard' | 'locations' | 'tower' | 'the-tower' | 'inventory'
-  | 'npcs' | 'questlines' | 'craftworks'
-  | 'masteries' | 'milestones' | 'farming-run' | 'stats' | 'settings';
+  | 'npcs' | 'questlines' | 'hold-quests' | 'craftworks'
+  | 'masteries' | 'milestones' | 'stats' | 'settings';
 
 interface NavItem { id: Tab; label: string; Icon: LucideIcon }
 
@@ -51,10 +51,10 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'inventory',  label: 'Inventory',    Icon: Package },
   { id: 'npcs',       label: 'NPCs',         Icon: Users },
   { id: 'questlines', label: 'Quest Lines',  Icon: GitBranch },
+  { id: 'hold-quests', label: 'STARMAPS & PAMRATS', Icon: MapIcon },
   { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
   { id: 'masteries',  label: 'Masteries',    Icon: Trophy },
   { id: 'milestones', label: 'Milestone Plan', Icon: Target },
-  { id: 'farming-run', label: 'Farming Run', Icon: Route },
 ];
 
 const META_ITEMS: NavItem[] = [
@@ -73,7 +73,7 @@ export default function App() {
   const { player, questStatuses, towerLevel, importState } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
-  const [farmRunLocation, setFarmRunLocation] = useState<string | null>(null);
+  const [plannerLocation, setPlannerLocation] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
@@ -380,7 +380,7 @@ export default function App() {
               <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
             {tab === 'locations' && (
-              <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
+              <LocationsTab key={plannerLocation ?? ''} activeQuests={activeQuests} nextUpQuests={nextUpQuests} initialLocation={plannerLocation} />
             )}
             {tab === 'tower' && <QuestFocusPage />}
             {tab === 'the-tower' && <TheTowerPage />}
@@ -389,15 +389,13 @@ export default function App() {
             {tab === 'questlines' && (
               <QuestlinesTab questlineGroups={questlineGroups} globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
             )}
+            {tab === 'hold-quests' && <HoldQuestsPage />}
             {tab === 'craftworks' && (
               <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
             {tab === 'masteries' && <MasteriesPage />}
             {tab === 'milestones' && (
-              <MilestonePlanPage onOpenLocation={(loc) => { setFarmRunLocation(loc); setTab('farming-run'); }} />
-            )}
-            {tab === 'farming-run' && (
-              <FarmingRunPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} initialLocation={farmRunLocation} />
+              <MilestonePlanPage onOpenLocation={(loc) => { setPlannerLocation(loc); setTab('locations'); }} />
             )}
             {tab === 'stats' && <StatsTab questlineGroups={questlineGroups} />}
             {tab === 'settings' && (
