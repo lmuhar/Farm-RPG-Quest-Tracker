@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { CheckCircle2, Hammer, Sprout, Zap, Clock, ChefHat, Gift, Fish, Users, LockOpen, Building2, Link2, Gem } from 'lucide-react';
 import { useStore } from '../store';
 import { parseItems, calcGrowsNeeded, formatDuration, calcHoneyRuns, calcCutlassRuns, resolveRawIngredients } from '../utils';
-import { combineQuestNeeds } from '../questNeeds';
 import type { Quest } from '../types';
 import recipesData from '../data/recipes.json';
 import questsData from '../data/quests.json';
@@ -73,7 +72,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     const allQ = [...activeQuests, ...nextUpQuests];
 
     // Aggregate item needs across active quests
-    const itemMap = new Map([...combineQuestNeeds(activeQuests)].map(([item, n]) => [item, n.need]));
+    const itemMap = new Map<string, number>();
+    for (const q of activeQuests) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+      }
+    }
 
     const readyToTurnIn = activeQuests.filter(q =>
       parseItems(q.itemsRequired).every(({ item, quantity }) => (inventory[item] ?? 0) >= quantity)
@@ -95,7 +99,12 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     }
 
     // Crop grows needed — active quests + immediate next-up quest per questline
-    const nextupItemMap = new Map([...combineQuestNeeds(nextUpQuests)].map(([item, n]) => [item, n.need]));
+    const nextupItemMap = new Map<string, number>();
+    for (const q of nextUpQuests) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        nextupItemMap.set(item, (nextupItemMap.get(item) ?? 0) + quantity);
+      }
+    }
     const cropItems: { item: string; have: number; totalNeeded: number; grows: number; growMinutes: number; totalMinutes: number; priority: 'active' | 'nextup' }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
       if (totalNeeded > inventoryMax) continue;
@@ -345,8 +354,11 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
     const cropSet = new Set(cropTimes.map(c => c.item.toLowerCase()));
 
     const allItemMap = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup'; quests: string[] }>();
-    for (const [item, { need, quests }] of combineQuestNeeds(activeQuests)) {
-      allItemMap.set(item, { totalNeeded: need, priority: 'active', quests });
+    for (const q of activeQuests) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        const ex = allItemMap.get(item);
+        allItemMap.set(item, { totalNeeded: (ex?.totalNeeded ?? 0) + quantity, priority: 'active', quests: [...(ex?.quests ?? []), q.name] });
+      }
     }
     for (const q of nextUpQuests) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
@@ -394,8 +406,11 @@ export function Dashboard({ activeQuests, nextUpQuests }: Props) {
   // Meals/cooking recipes needed for active/next-up quests
   const cookNowItems = useMemo(() => {
     const allItemMap = new Map<string, { totalNeeded: number; priority: 'active' | 'nextup' }>();
-    for (const [item, { need }] of combineQuestNeeds(activeQuests)) {
-      allItemMap.set(item, { totalNeeded: need, priority: 'active' });
+    for (const q of activeQuests) {
+      for (const { item, quantity } of parseItems(q.itemsRequired)) {
+        const ex = allItemMap.get(item);
+        allItemMap.set(item, { totalNeeded: (ex?.totalNeeded ?? 0) + quantity, priority: 'active' });
+      }
     }
     for (const q of nextUpQuests) {
       for (const { item, quantity } of parseItems(q.itemsRequired)) {
