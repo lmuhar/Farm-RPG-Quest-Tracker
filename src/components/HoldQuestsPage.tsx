@@ -135,7 +135,7 @@ function FarmSection({ gather, shortfalls }: { gather: GatherPlan; shortfalls: S
                   ~{s.attempts.toLocaleString()} {TYPE_VERB[s.type] ?? 'attempts'}
                 </span>
                 <span className="ml-auto flex items-center text-[11px]" style={{ color: 'var(--accent-blue)' }}>
-                  {open === s.location ? 'Close' : 'Plan run'}
+                  {open === s.location ? 'Close' : 'Details'}
                   <ChevronRight size={12} style={{ transform: open === s.location ? 'rotate(90deg)' : undefined }} />
                 </span>
               </div>

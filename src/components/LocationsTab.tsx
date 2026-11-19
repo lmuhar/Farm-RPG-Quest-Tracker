@@ -99,7 +99,7 @@ export function LocationsTab({ activeQuests, nextUpQuests, initialLocation }: Pr
         </div>
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
           Where your quest items drop and how much mastery AP each place is worth (over the first {fmt(AP_BUDGET)} attempts).
-          Open one to plan a run: how far it gets you, milestones it crosses, what to put in Craftworks, and what would pass your cap.
+          Open one to see what to get there, the milestones it leads to, and what to put in Craftworks.
         </p>
         <div className="flex items-center gap-3 flex-wrap pt-1">
           <Pills value={sort} onChange={setSort} options={[['quests', 'Quest items first'], ['mastery', 'Mastery AP first']]} />
