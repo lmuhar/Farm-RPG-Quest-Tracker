@@ -8,6 +8,7 @@ import {
   parseItems, formatDuration, formatDoneBy, calcGrowsNeeded, compareQuests,
   calcHoneyRuns, calcCutlassRuns,
 } from '../utils';
+import { combineQuestNeeds } from '../questNeeds';
 import { getQuestStatus } from '../utils';
 import { useStore } from '../store';
 import { getPrereq, getUnlocks, chainLabel } from '../questChains';
@@ -586,14 +587,9 @@ function SummaryPanel({
   });
 
   const tiers = useMemo(() => {
-    const itemMap = new Map<string, number>();
-    questsWithStatus
-      .filter(({ status }) => status !== 'completed')
-      .forEach(({ quest }) => {
-        parseItems(quest.itemsRequired).forEach(({ item, quantity }) => {
-          itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
-        });
-      });
+    const itemMap = new Map([...combineQuestNeeds(
+      questsWithStatus.filter(({ status }) => status !== 'completed').map(({ quest }) => quest),
+    )].map(([item, n]) => [item, n.need]));
     const all = [...itemMap.entries()].map(([item, quantity]) =>
       getItemTierData(item, quantity, inventory, cropTimes, plotCount)
     );
@@ -706,14 +702,9 @@ function GatheringPanel({
   });
 
   const locationGroups = useMemo(() => {
-    const itemMap = new Map<string, number>();
-    questsWithStatus
-      .filter(({ status }) => status !== 'completed')
-      .forEach(({ quest }) => {
-        parseItems(quest.itemsRequired).forEach(({ item, quantity }) => {
-          itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
-        });
-      });
+    const itemMap = new Map([...combineQuestNeeds(
+      questsWithStatus.filter(({ status }) => status !== 'completed').map(({ quest }) => quest),
+    )].map(([item, n]) => [item, n.need]));
 
     const locMap = new Map<string, { type: string; items: { item: string; quantity: number; have: number; rate?: number }[] }>();
     for (const [item, quantity] of itemMap) {
@@ -1169,11 +1160,9 @@ export function QuestFocusPage() {
   // Share of the remaining quests' items already gathered (each item counts
   // equally, so one 3,000-stack doesn't drown out everything else)
   const itemsGatheredPct = useMemo(() => {
-    const need = new Map<string, number>();
-    for (const { quest, status } of questsWithStatus) {
-      if (status === 'completed') continue;
-      for (const { item, quantity } of parseItems(quest.itemsRequired)) need.set(item, (need.get(item) ?? 0) + quantity);
-    }
+    const need = new Map([...combineQuestNeeds(
+      questsWithStatus.filter(({ status }) => status !== 'completed').map(({ quest }) => quest),
+    )].map(([item, n]) => [item, n.need]));
     if (need.size === 0) return null;
     let sum = 0;
     for (const [item, n] of need) sum += Math.min(1, (inventory[item] ?? 0) / n);
@@ -1216,16 +1205,9 @@ export function QuestFocusPage() {
   );
 
   const focusBottlenecks = useMemo(() => {
-    const itemMap = new Map<string, number>();
-    const itemQuestCount = new Map<string, number>();
-    questsWithStatus
-      .filter(({ status }) => status !== 'completed')
-      .forEach(({ quest }) => {
-        parseItems(quest.itemsRequired).forEach(({ item, quantity }) => {
-          itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
-          itemQuestCount.set(item, (itemQuestCount.get(item) ?? 0) + 1);
-        });
-      });
+    const combined = combineQuestNeeds(questsWithStatus.filter(({ status }) => status !== 'completed').map(({ quest }) => quest));
+    const itemMap = new Map([...combined].map(([item, n]) => [item, n.need]));
+    const itemQuestCount = new Map([...combined].map(([item, n]) => [item, n.quests.length]));
     const entries: { item: string; have: number; need: number; location: string; questCount: number; towerLv?: { level: number; levelsAway: number } }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;

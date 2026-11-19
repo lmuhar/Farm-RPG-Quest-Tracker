@@ -5,10 +5,10 @@ import { ItemIcon } from './ItemIcon';
 import { sourceHint } from '../data/itemSources';
 import { parseItems } from '../utils';
 import { CraftworksSuggestions, type DirectItem } from './CraftworksSuggestions';
-import { itemLocations } from '../data/itemSources';
-import { PASSIVE_MATERIALS } from '../milestonePlan';
-import masteriesData from '../data/masteries.json';
-import { HOLD_LINES, buildHoldPlan, buildGatherPlan, type GatherPlan, type GatherStop, type OtherNeed, shortQuestName, type FeedReward, type HoldLine, type HoldRow } from '../holdQuests';
+import { LocationPlanner } from './LocationPlanner';
+import { breakDown, type Shortfalls } from '../questNeeds';
+import { runLocationByName } from '../runLocations';
+import { HOLD_LINES, buildHoldPlan, buildGatherPlan, type GatherPlan, type OtherNeed, shortQuestName, type FeedReward, type HoldLine, type HoldRow } from '../holdQuests';
 
 const LINE_COLOR = { starmaps: 'var(--accent-purple)', pamrats: 'var(--accent-blue)' } as const;
 
@@ -83,7 +83,6 @@ function rowNote(row: HoldRow, feeds: FeedReward[]): { text: string; warn: boole
 type View = 'collect' | 'held';
 type Section = 'farm' | 'craft' | 'items';
 
-const cookedNames = new Set((masteriesData as { name: string; method: string }[]).filter((m) => m.method === 'cooking').map((m) => m.name));
 const TYPE_VERB: Record<string, string> = { explore: 'explores', fishing: 'casts', mining: 'digs' };
 
 type Horizon = 'now' | 'next';
@@ -108,111 +107,7 @@ function Toggle<T extends string>({ value, options, onChange }: { value: T; opti
 }
 
 
-const RUN_PRESETS = [100, 1_000, 5_000];
-
-// One trip to a location: how far a run of N attempts gets each item you need
-// there, what to keep Craftworks turning while you farm, and what would hit
-// your inventory cap.
-function RunPlanner({ stop }: { stop: GatherStop }) {
-  const { inventory, inventoryMax, craftworksSlots } = useStore();
-  const verb = TYPE_VERB[stop.type] ?? 'attempts';
-  const [attempts, setAttempts] = useState(() => Math.min(stop.attempts, 1_000));
-
-  const rows = stop.items.map((it) => {
-    const gain = attempts / it.rate;
-    const have = inventory[it.item] ?? 0;
-    return { ...it, gain, pct: Math.min(1, gain / it.qty), left: Math.max(0, Math.ceil((it.qty - gain) * it.rate)), capped: inventoryMax > 0 && have + gain > inventoryMax };
-  });
-  const finished = rows.filter((r) => r.pct >= 1).length;
-
-  // Craftworks lines that use what this run brings in, most-used drops first
-  const lines: { product: string; from: string[] }[] = [];
-  for (const r of [...rows].sort((a, b) => b.gain - a.gain)) {
-    for (const product of r.madeInto) {
-      const line = lines.find((l) => l.product === product);
-      if (line) { if (!line.from.includes(r.item)) line.from.push(r.item); }
-      else lines.push({ product, from: [r.item] });
-    }
-  }
-  const capped = rows.filter((r) => r.capped);
-
-  return (
-    <div className="px-3 pb-3 pt-1 space-y-3" style={{ background: 'var(--surface-inset)' }}>
-      <div className="flex items-center gap-2 flex-wrap text-xs">
-        <input
-          type="number"
-          min={1}
-          value={attempts}
-          onChange={(e) => setAttempts(Math.max(1, Number(e.target.value) || 1))}
-          className="w-24 rounded px-2 py-1 font-mono"
-          style={{ background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
-        />
-        <span style={{ color: 'var(--text-muted)' }}>{verb}</span>
-        {[...RUN_PRESETS.filter((n) => n < stop.attempts), stop.attempts].map((n) => (
-          <button
-            key={n}
-            onClick={() => setAttempts(n)}
-            className="px-2 py-0.5 rounded-full font-mono"
-            style={n === attempts
-              ? { background: 'var(--accent-blue-bg)', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue-border)' }
-              : { background: 'var(--surface-card)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}
-          >
-            {n === stop.attempts ? `all ${formatQty(n)}` : formatQty(n)}
-          </button>
-        ))}
-        <span className="ml-auto" style={{ color: finished === rows.length ? 'var(--accent-green)' : 'var(--text-muted)' }}>
-          finishes {finished} of {rows.length}
-        </span>
-      </div>
-
-      <div className="space-y-1.5">
-        {rows.map((r) => (
-          <div key={r.item} className="text-xs">
-            <div className="flex items-center gap-2">
-              <span className="flex-1 min-w-0 truncate" style={{ color: 'var(--text-primary)' }}><ItemIcon item={r.item} />{r.item}</span>
-              <span className="font-mono" style={{ color: 'var(--accent-green)' }}>+{formatQty(Math.floor(r.gain))}</span>
-              <span className="font-mono w-24 text-right" style={{ color: 'var(--text-muted)' }}>of {formatQty(r.qty)}</span>
-            </div>
-            <div className="flex items-center gap-2 mt-0.5">
-              <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: 'var(--surface-card)' }}>
-                <div className="h-full" style={{ width: `${r.pct * 100}%`, background: r.pct >= 1 ? 'var(--accent-green)' : 'var(--accent-blue)' }} />
-              </div>
-              <span className="text-[10px] w-24 text-right font-mono" style={{ color: 'var(--text-muted)' }}>
-                {r.left ? `${formatQty(r.left)} more` : 'done'}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {lines.length > 0 && (
-        <div className="text-xs space-y-1">
-          <p className="font-semibold flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
-            <Hammer size={11} /> Keep Craftworks on while you farm
-          </p>
-          {lines.slice(0, Math.max(1, craftworksSlots)).map((l, i) => (
-            <p key={l.product} style={{ color: 'var(--text-secondary)' }}>
-              <span className="font-mono mr-1.5" style={{ color: 'var(--text-muted)' }}>{i + 1}</span>
-              <ItemIcon item={l.product} />{l.product}
-              <span style={{ color: 'var(--text-muted)' }}> — uses {l.from.join(', ')}</span>
-            </p>
-          ))}
-          {lines.length > craftworksSlots && (
-            <p style={{ color: 'var(--text-muted)' }}>+{lines.length - craftworksSlots} more once a slot frees up</p>
-          )}
-        </div>
-      )}
-
-      {capped.length > 0 && (
-        <p className="text-xs" style={{ color: 'var(--accent-orange)' }}>
-          {capped.map((r) => r.item).join(', ')} will pass your {inventoryMax.toLocaleString()} cap on this run — craft {capped.length > 1 ? 'them' : 'it'} down as you go or the extra is lost.
-        </p>
-      )}
-    </div>
-  );
-}
-
-function FarmSection({ gather }: { gather: GatherPlan }) {
+function FarmSection({ gather, shortfalls }: { gather: GatherPlan; shortfalls: Shortfalls }) {
   const [open, setOpen] = useState<string | null>(null);
   const otherGroups = new Map<string, OtherNeed[]>();
   for (const o of gather.other) {
@@ -257,7 +152,9 @@ function FarmSection({ gather }: { gather: GatherPlan }) {
                 </p>
               )}
              </button>
-             {open === s.location && <RunPlanner stop={s} />}
+             {open === s.location && runLocationByName.has(s.location) && (
+              <LocationPlanner key={s.location} location={runLocationByName.get(s.location)!} shortfalls={shortfalls} />
+             )}
             </div>
           ))}
         </div>
@@ -305,16 +202,21 @@ export function HoldQuestsPage() {
   }, [plan, horizon]);
   const shown = view === 'collect' ? collect : held;
 
+  // Only these two lines' needs, in the shape the shared location planner takes
+  const shortfalls = useMemo<Shortfalls>(() => ({
+    needs: new Map(rows.map((x) => [x.r.item, { need: x.target, quests: [] }])),
+    ...breakDown(
+      new Map(collect.map((x) => [x.r.item, x.short])),
+      inventory,
+      new Map(rows.map((x) => [x.r.item, x.target])),
+    ),
+  }), [collect, rows, inventory]);
+
   const gather = useMemo(() => buildGatherPlan(
     new Map(collect.map((x) => [x.r.item, x.short])),
     inventory,
     new Map(rows.map((x) => [x.r.item, x.target])),
-    {
-      isCooked: (item) => cookedNames.has(item),
-      isPassive: (item) => PASSIVE_MATERIALS.has(item),
-      locations: itemLocations,
-      sourceOf: sourceHint,
-    },
+    sourceHint,
   ), [collect, rows, inventory]);
 
   // Craftworks targets: the held amount (plus craft/other-quest draws), labelled with the quests asking
@@ -369,7 +271,7 @@ export function HoldQuestsPage() {
         </div>
       </div>
 
-      {section === 'farm' && <FarmSection gather={gather} />}
+      {section === 'farm' && <FarmSection gather={gather} shortfalls={shortfalls} />}
 
       {section === 'craft' && (
         craftItems.length

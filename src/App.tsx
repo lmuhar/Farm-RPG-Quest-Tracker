@@ -73,6 +73,7 @@ export default function App() {
   const { player, questStatuses, towerLevel, importState } = useStore();
   const sync = useSync();
   const [tab, setTab] = useState<Tab>('tower');
+  const [plannerLocation, setPlannerLocation] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [showWizard, setShowWizard] = useState(false);
@@ -379,7 +380,7 @@ export default function App() {
               <Dashboard activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
             {tab === 'locations' && (
-              <LocationsTab activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
+              <LocationsTab key={plannerLocation ?? ''} activeQuests={activeQuests} nextUpQuests={nextUpQuests} initialLocation={plannerLocation} />
             )}
             {tab === 'tower' && <QuestFocusPage />}
             {tab === 'the-tower' && <TheTowerPage />}
@@ -394,7 +395,7 @@ export default function App() {
             )}
             {tab === 'masteries' && <MasteriesPage />}
             {tab === 'milestones' && (
-              <MilestonePlanPage />
+              <MilestonePlanPage onOpenLocation={(loc) => { setPlannerLocation(loc); setTab('locations'); }} />
             )}
             {tab === 'stats' && <StatsTab questlineGroups={questlineGroups} />}
             {tab === 'settings' && (
