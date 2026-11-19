@@ -215,7 +215,7 @@ export function buildHoldPlan(
 // these quests). Gatherable items go to the location where they drop most
 // often; everything else is listed with its best other source.
 
-export interface GatherItem { item: string; qty: number; rate: number; forItems: string[] }
+export interface GatherItem { item: string; qty: number; rate: number; forItems: string[]; madeInto: string[] }
 export interface GatherStop { location: string; type: string; items: GatherItem[]; attempts: number; forItems: string[] }
 export interface OtherNeed { item: string; qty: number; source: string; forItems: string[] }
 
@@ -246,12 +246,14 @@ export function buildGatherPlan(
   const raw = new Map<string, number>();
   const cook = new Map<string, number>();
   const usedFor = new Map<string, Set<string>>();
+  const parents = new Map<string, Set<string>>();   // recipes that use the item directly
   const note = (item: string, top: string) => {
     if (item === top) return;
     usedFor.set(item, (usedFor.get(item) ?? new Set()).add(top));
   };
 
-  const need = (item: string, qty: number, top: string, depth: number) => {
+  const need = (item: string, qty: number, top: string, depth: number, parent?: string) => {
+    if (parent) parents.set(item, (parents.get(item) ?? new Set()).add(parent));
     if (depth > 0) {
       const use = Math.min(avail(item), qty);
       spare.set(item, avail(item) - use);
@@ -264,7 +266,7 @@ export function buildGatherPlan(
       if (!opts.isPassive(item)) { raw.set(item, (raw.get(item) ?? 0) + qty); note(item, top); }
       return;
     }
-    for (const ing of recipe) need(ing.item, ing.quantity * qty, top, depth + 1);
+    for (const ing of recipe) need(ing.item, ing.quantity * qty, top, depth + 1, item);
   };
   for (const [item, qty] of short) need(item, qty, item, 0);
   const forOf = (item: string) => [...(usedFor.get(item) ?? [])];
@@ -278,7 +280,7 @@ export function buildGatherPlan(
     }
     if (best) {
       const stop = stopMap.get(best.name) ?? { location: best.name, type: best.type, items: [], attempts: 0, forItems: [] };
-      stop.items.push({ item, qty, rate: best.rate!, forItems: forOf(item) });
+      stop.items.push({ item, qty, rate: best.rate!, forItems: forOf(item), madeInto: [...(parents.get(item) ?? [])] });
       for (const f of forOf(item)) if (!stop.forItems.includes(f)) stop.forItems.push(f);
       stop.attempts = Math.max(stop.attempts, Math.ceil(qty * best.rate!));
       stopMap.set(best.name, stop);
