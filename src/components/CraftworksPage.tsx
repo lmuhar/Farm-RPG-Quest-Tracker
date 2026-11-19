@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { Quest } from '../types';
-import { compareQuests, getQuestStatus } from '../utils';
-import { combineQuestNeeds } from '../questNeeds';
+import { compareQuests, getQuestStatus, parseItems } from '../utils';
 import { useStore } from '../store';
 import { CraftworksSuggestions } from './CraftworksSuggestions';
 import type { DirectItem } from './CraftworksSuggestions';
@@ -138,10 +137,15 @@ export function CraftworksPage({ activeQuests, nextUpQuests }: Props) {
 
   // ── Focus bottlenecks: rare/pet-only items needed across the entire questline ──
   const focusBottlenecks = useMemo(() => {
-    const remaining = focusQuests.filter((quest) => getQuestStatus(quest, player, questStatuses, towerLevel) !== 'completed');
-    const combined = combineQuestNeeds(remaining);
-    const itemMap = new Map([...combined].map(([item, n]) => [item, n.need]));
-    const itemQuestCount = new Map([...combined].map(([item, n]) => [item, n.quests.length]));
+    const itemMap = new Map<string, number>();
+    const itemQuestCount = new Map<string, number>();
+    for (const quest of focusQuests) {
+      if (getQuestStatus(quest, player, questStatuses, towerLevel) === 'completed') continue;
+      for (const { item, quantity } of parseItems(quest.itemsRequired)) {
+        itemMap.set(item, (itemMap.get(item) ?? 0) + quantity);
+        itemQuestCount.set(item, (itemQuestCount.get(item) ?? 0) + 1);
+      }
+    }
     const entries: { item: string; have: number; need: number; location: string; questCount: number }[] = [];
     for (const [item, totalNeeded] of itemMap.entries()) {
       const have = inventory[item] ?? 0;
