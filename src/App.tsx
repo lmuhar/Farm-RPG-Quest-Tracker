@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   GitBranch, Search, X, Wand2, BarChart2, Package,
   Settings, Hammer, RefreshCw, Menu, MapPin, Building2, Users, Layers,
-  LayoutDashboard, Trophy, Target, Route,
+  LayoutDashboard, Trophy, Target, Route, Map as MapIcon,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import questsData from './data/quests.json';
@@ -30,6 +30,7 @@ import { InventoryGrowthCard } from './components/InventoryGrowthCard';
 import { MasteriesPage } from './components/MasteriesPage';
 import { MilestonePlanPage } from './components/MilestonePlanPage';
 import { FarmingRunPage } from './components/FarmingRunPage';
+import { HoldQuestsPage } from './components/HoldQuestsPage';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
 import { MasterySyncSection } from './components/MasterySyncSection';
@@ -38,7 +39,7 @@ const allQuests = questsData as Quest[];
 
 type Tab =
   | 'dashboard' | 'locations' | 'tower' | 'the-tower' | 'inventory'
-  | 'npcs' | 'questlines' | 'craftworks'
+  | 'npcs' | 'questlines' | 'hold-quests' | 'craftworks'
   | 'masteries' | 'milestones' | 'farming-run' | 'stats' | 'settings';
 
 interface NavItem { id: Tab; label: string; Icon: LucideIcon }
@@ -51,6 +52,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'inventory',  label: 'Inventory',    Icon: Package },
   { id: 'npcs',       label: 'NPCs',         Icon: Users },
   { id: 'questlines', label: 'Quest Lines',  Icon: GitBranch },
+  { id: 'hold-quests', label: 'STARMAPS & PAMRATS', Icon: MapIcon },
   { id: 'craftworks', label: 'Craftworks',   Icon: Hammer },
   { id: 'masteries',  label: 'Masteries',    Icon: Trophy },
   { id: 'milestones', label: 'Milestone Plan', Icon: Target },
@@ -389,6 +391,7 @@ export default function App() {
             {tab === 'questlines' && (
               <QuestlinesTab questlineGroups={questlineGroups} globalSearch={globalSearch} setGlobalSearch={setGlobalSearch} />
             )}
+            {tab === 'hold-quests' && <HoldQuestsPage />}
             {tab === 'craftworks' && (
               <CraftworksPage activeQuests={activeQuests} nextUpQuests={nextUpQuests} />
             )}
