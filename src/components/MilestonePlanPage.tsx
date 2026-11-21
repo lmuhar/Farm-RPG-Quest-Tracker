@@ -11,8 +11,8 @@ type SortMode = 'farming' | 'easiest';
 type TierFilter = 'all' | '10k' | '100k';
 
 const SORTS: { id: SortMode; label: string; hint: string }[] = [
-  { id: 'farming', label: 'Least farming', hint: 'most AP (chain milestones included) per 1,000 attempts · chains needing shop or reward items last' },
   { id: 'easiest', label: 'Easiest to master', hint: 'by your mastery ranking (hardest step in the chain), most AP first' },
+  { id: 'farming', label: 'Least farming', hint: 'most AP (chain milestones included) per 1,000 attempts · chains needing shop or reward items last' },
 ];
 
 // Attempts the ladder ranks locations by
@@ -270,7 +270,7 @@ function GatherRow({ plan, onOpen }: { plan: GatherPlan; onOpen?: OpenLocation }
 // How many crafts the drops keep fed, e.g. "≈ 75 crafts per 1,000 explores"
 export function MilestonePlanPage({ onOpenLocation }: { onOpenLocation?: OpenLocation }) {
   const { masteryLevels, masteryProgress, inventory, cropTimes, plotCount } = useStore();
-  const [sort, setSort] = useState<SortMode>('farming');
+  const [sort, setSort] = useState<SortMode>('easiest');
   const [tier, setTier] = useState<TierFilter>('all');
   const [craftLimit, setCraftLimit] = useState(12);
   const [gatherLimit, setGatherLimit] = useState(10);
