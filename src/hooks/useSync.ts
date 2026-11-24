@@ -3,6 +3,7 @@ import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { useStore } from '../store';
 import type { AppState } from '../types';
+import { mergeStates, same, type Json } from '../syncMerge';
 
 export type SyncStatus = 'idle' | 'syncing' | 'synced' | 'error';
 
@@ -46,29 +47,62 @@ export function useSync() {
   const userRef = useRef<User | null>(null);
   const initializedRef = useRef(false);
   const initUserPromiseRef = useRef<Promise<void> | null>(null);
+  // The saved row as this tab last read or wrote it: its content and timestamp.
+  // Saves only go through if the row still has that timestamp.
+  const baseRef = useRef<{ state: Json; updatedAt: string } | null>(null);
 
   const saveToCloud = useCallback(async (userId: string, state: AppState) => {
     setSyncStatus('syncing');
-    const { error } = await supabase
-      .from('user_data')
-      .upsert({ user_id: userId, state, updated_at: new Date().toISOString() });
-    if (error) {
-      console.error('[sync] save error:', error.message);
+    let next = state as unknown as Json;
+    try {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const updated_at = new Date().toISOString();
+        const base = baseRef.current;
+        if (!base) {
+          // Nothing read yet (first save for a new user)
+          const { error } = await supabase.from('user_data').upsert({ user_id: userId, state: next, updated_at });
+          if (error) throw new Error(error.message);
+        } else {
+          const { data, error } = await supabase
+            .from('user_data')
+            .update({ state: next, updated_at })
+            .eq('user_id', userId)
+            .eq('updated_at', base.updatedAt)
+            .select('user_id');
+          if (error) throw new Error(error.message);
+          if (!data?.length) {
+            // Saved elsewhere since we read it: merge their changes in and retry
+            const { data: row, error: readError } = await supabase
+              .from('user_data').select('state, updated_at').eq('user_id', userId).single();
+            if (readError || !row) throw new Error(readError?.message ?? 'Could not re-read saved data');
+            const remote = row.state as Json;
+            next = mergeStates(base.state, next, remote);
+            baseRef.current = { state: remote, updatedAt: row.updated_at as string };
+            useStore.getState().importState(next as unknown as AppState);
+            continue;
+          }
+        }
+        baseRef.current = { state: next, updatedAt: updated_at };
+        setSyncStatus('synced');
+        setLastSynced(new Date());
+        return;
+      }
+      throw new Error('Saved data kept changing while saving');
+    } catch (e) {
+      console.error('[sync] save error:', (e as Error).message);
       setSyncStatus('error');
-    } else {
-      setSyncStatus('synced');
-      setLastSynced(new Date());
     }
   }, []);
 
   const loadAndApply = useCallback(async (userId: string, migrateIfEmpty: boolean) => {
     const { data, error } = await supabase
       .from('user_data')
-      .select('state')
+      .select('state, updated_at')
       .eq('user_id', userId)
       .single();
 
     if (!error && data?.state) {
+      baseRef.current = { state: data.state as Json, updatedAt: data.updated_at as string };
       useStore.getState().importState(data.state as AppState);
       setSyncStatus('synced');
       setLastSynced(new Date());
@@ -118,6 +152,7 @@ export function useSync() {
       } else {
         setUser(null);
         userRef.current = null;
+        baseRef.current = null;
         initializedRef.current = false;
         setSyncStatus('idle');
         setAuthLoading(false);
@@ -133,7 +168,11 @@ export function useSync() {
     const unsub = useStore.subscribe(() => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       saveTimerRef.current = setTimeout(() => {
-        if (userRef.current) saveToCloud(userRef.current.id, snapshotState());
+        if (!userRef.current) return;
+        const snap = snapshotState();
+        // Nothing changed since the last read or save: don't write
+        if (baseRef.current && same(snap, baseRef.current.state)) return;
+        saveToCloud(userRef.current.id, snap);
       }, 2000);
     });
     return () => {
@@ -166,6 +205,7 @@ export function useSync() {
     await supabase.auth.signOut();
     setUser(null);
     userRef.current = null;
+    baseRef.current = null;
     initializedRef.current = false;
     setSyncStatus('idle');
   }, []);

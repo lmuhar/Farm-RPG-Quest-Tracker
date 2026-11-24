@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Farm RPG Quest Tracker helper",
+  "version": "1.0.0",
+  "description": "Shows how many of each item your active quests need on Farm RPG's Inventory, item and Craftworks pages, and keeps your tracker's inventory up to date.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkAFiq3ycfm0j7EJ+yXPkiGACf46vvWvKmZDHeroNEBClrt88FJvkOqt3fwIjxJ40jPP/tPijuL/T10Y2V/v0TgGK0O2fB2LvtbdjvkQhr/AtJNiiY2chsD4eToEB9J4lzCfcszg5UG1LAy2zsf0G90BkruRvtADR8dUsqg74oeXmWrpFX0tSgk3NSqFeH6mRHhmz/Q1P04IiIeI0xIm2bSv2dJSydDFv5EeicGgGeHB4YabWn42X8NP4uKcfuDavGPHODNJhiPDF+98h3qeVfx7q1LjhtsGxWCkTKKqANvKPq5eZRffCCQRQb9+bxVcRWJnqDEdul762zrfvzXTQLQIDAQAB",
+  "permissions": ["identity", "storage"],
+  "host_permissions": ["https://vxpumllfhlzpnveulojg.supabase.co/*"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "content_scripts": [
+    { "matches": ["https://farmrpg.com/*", "https://www.farmrpg.com/*"], "js": ["content.js"], "run_at": "document_idle" }
+  ]
+}

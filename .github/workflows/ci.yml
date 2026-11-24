@@ -18,3 +18,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run build:server
+      - run: npm run build:extension
+      - uses: actions/upload-artifact@v4
+        with:
+          name: farm-rpg-quest-tracker-extension
+          path: extension/dist
