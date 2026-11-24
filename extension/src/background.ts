@@ -72,6 +72,8 @@ const MAX_REMOVED = (before: number) => Math.max(10, Math.floor(before * 0.25));
 const MAX_ITEMS = 5000;
 const MAX_QTY = 1_000_000_000;
 const SOURCES: InventorySource[] = ['Inventory page', 'Item page', 'Craftworks'];
+const validLevels = (v: unknown): v is Record<string, number> =>
+  validInventory(v) && Object.values(v).every((lv) => lv <= 3);
 function validInventory(inv: unknown): inv is Record<string, number> {
   if (!inv || typeof inv !== 'object' || Array.isArray(inv)) return false;
   const entries = Object.entries(inv as Record<string, unknown>);
@@ -151,6 +153,39 @@ async function push(inventory: Record<string, number>, full: boolean, source: In
   }
 }
 
+// Mastery page: merged into what's saved, like the mastery bookmarklet (the page
+// only lists the items you track, so nothing else is cleared).
+async function pushMastery(levels: Record<string, number>, progress: Record<string, number>): Promise<Status> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return status();
+  await setMeta({ lastRead: { source: 'Mastery page', at: Date.now() } });
+  try {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const { state, updatedAt } = await loadRow(session.user.id, true);
+      const oldLevels = (state.masteryLevels ?? {}) as Record<string, number>;
+      const oldProgress = (state.masteryProgress ?? {}) as Record<string, number>;
+      const nextLevels = { ...oldLevels, ...levels };
+      const nextProgress = { ...oldProgress, ...progress };
+      const changed = new Set([
+        ...Object.keys(levels).filter((i) => oldLevels[i] !== levels[i]),
+        ...Object.keys(progress).filter((i) => oldProgress[i] !== progress[i]),
+      ]);
+      if (!changed.size) return status();
+      const next = { ...state, masteryLevels: nextLevels, masteryProgress: nextProgress };
+      if (await saveRow(session.user.id, next, updatedAt)) {
+        await setMeta({
+          lastSync: Date.now(),
+          lastChanges: [{ item: 'Mastery', delta: changed.size, label: `Mastery for ${changed.size} item${changed.size > 1 ? 's' : ''}` }],
+        });
+        return status();
+      }
+    }
+    return status(false, 'The tracker kept changing while saving; try Sync now.');
+  } catch (e) {
+    return status(false, (e as Error).message);
+  }
+}
+
 // Only this extension's own script, running on farmrpg.com, may talk to us
 function trustedSender(sender: { id?: string; url?: string }): boolean {
   if (sender.id !== chrome.runtime.id || !sender.url) return false;
@@ -174,6 +209,11 @@ chrome.runtime.onMessage.addListener((req: Request, sender: { id?: string; url?:
           return status(false, 'Ignored counts that did not look valid.');
         }
         return push(req.inventory, req.full, req.source, req.allowRemovals === true);
+      case 'pushMastery':
+        if (!validLevels(req.levels) || !validInventory(req.progress)) {
+          return status(false, 'Ignored mastery data that did not look valid.');
+        }
+        return pushMastery(req.levels, req.progress);
       default: return status(false, 'Unknown request');
     }
   };
