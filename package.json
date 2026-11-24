@@ -10,7 +10,8 @@
     "lint": "oxlint",
     "sync:buddyfarm": "node scripts/sync-buddyfarm.mjs",
     "preview": "vite preview",
-    "start": "node dist-server/index.js"
+    "start": "node dist-server/index.js",
+    "build:extension": "tsc -p extension && node extension/build.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.7",

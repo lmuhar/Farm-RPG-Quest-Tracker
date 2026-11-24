@@ -41,3 +41,7 @@ The `Sync from buddy.farm` GitHub Action (`.github/workflows/sync-buddyfarm.yml`
 ### Tower mastery items
 
 From level 201 each Tower level also needs specific items mastered: Mega Mastery (1M) for 201–300, then a mix of Grand (100K) and Mega from 301. buddy.farm doesn't list these, so `src/data/tower-mastery-items.json` (`level`, `grandMaster?`, `megaMaster`) is copied by hand from the in-game Library page "Tower Masteries". The sync script never touches it, so update it by hand when the Tower grows.
+
+## Chrome extension
+
+`extension/` is a Chrome extension (Manifest V3) that adds have/need badges on farmrpg.com and writes inventory counts into the same Supabase `user_data` row as the app (only the `inventory` key). It reuses the app's code in `src/` (`questNeeds.ts`, `holdQuests.ts`), so keep those free of React/DOM-only imports. Build with `npm run build:extension` (type-checks `extension/tsconfig.json`, bundles to `extension/dist`); CI uploads that folder as the `farm-rpg-quest-tracker-extension` artifact. See `extension/README.md` for install and the one Supabase redirect setting.
