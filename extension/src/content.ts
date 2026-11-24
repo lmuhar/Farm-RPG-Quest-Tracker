@@ -227,7 +227,7 @@ async function scan(force = false) {
   busy = true;
   renderPanel();
   try {
-    setStatus(await send({ type: 'push', inventory: read.counts, full: read.full, source: read.source }));
+    setStatus(await send({ type: 'push', inventory: read.counts, full: read.full, source: read.source, allowRemovals: force }));
   } catch (e) {
     if (status) setStatus({ ...status, error: (e as Error).message });
   } finally {

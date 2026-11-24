@@ -6,7 +6,7 @@ export type Request =
   | { type: 'status'; refresh?: boolean }
   | { type: 'signIn' }
   | { type: 'signOut' }
-  | { type: 'push'; inventory: Record<string, number>; full: boolean; source: InventorySource };
+  | { type: 'push'; inventory: Record<string, number>; full: boolean; source: InventorySource; allowRemovals?: boolean };
 
 export interface Change { item: string; delta: number }
 
