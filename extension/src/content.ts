@@ -3,6 +3,7 @@
 // tracker. It only reads the page; it never clicks anything or talks to Farm RPG.
 import { activeQuests, itemNeeds, type ItemNeed } from './needs';
 import { send, type InventorySource, type Status } from './messages';
+import { parseMasteryText } from '../../src/masteryParse';
 
 let status: Status | null = null;
 let needs = new Map<string, ItemNeed>();
@@ -203,8 +204,13 @@ async function scan(force = false) {
   const page = currentPage();
   if (!page) return;
   if (!force && scanned?.page === page && scanned.version === version) return;
-  const reader = READERS[(page as HTMLElement).dataset.page ?? ''];
+  const pageName = (page as HTMLElement).dataset.page ?? '';
   scanned = { page, version };
+  // Matched by page name, or by its "Mastery In-Progress" heading in case the name differs
+  if (MASTERY_PAGES.has(pageName) || (!READERS[pageName] && page.textContent?.includes('Mastery In-Progress'))) {
+    return syncMastery(page as HTMLElement, force);
+  }
+  const reader = READERS[pageName];
   if (!reader) return;
   const read = reader(page);
   if (!read) return;
@@ -230,6 +236,28 @@ async function scan(force = false) {
     setStatus(await send({ type: 'push', inventory: read.counts, full: read.full, source: read.source, allowRemovals: force }));
   } catch (e) {
     if (status) setStatus({ ...status, error: (e as Error).message });
+  } finally {
+    busy = false;
+    renderPanel();
+  }
+}
+
+// Mastery page: no badges, just send the levels and counts it shows. Uses the
+// same text parsing as the tracker's mastery bookmarklet.
+const MASTERY_PAGES = new Set(['mastery', 'masteries']);
+async function syncMastery(page: HTMLElement, force: boolean) {
+  if (!status?.signedIn || busy) return;
+  const { levels, progress } = parseMasteryText(page.innerText);
+  if (!Object.keys(levels).length && !Object.keys(progress).length) return;
+  const sig = JSON.stringify({ levels, progress });
+  if (!force && lastPushed.get('mastery') === sig) return;
+  lastPushed.set('mastery', sig);
+  busy = true;
+  renderPanel();
+  try {
+    setStatus(await send({ type: 'pushMastery', levels, progress }));
+  } catch (e) {
+    setStatus({ ...status, error: (e as Error).message });
   } finally {
     busy = false;
     renderPanel();
@@ -304,12 +332,12 @@ function renderPanel() {
       const active = activeQuests(status.questStatuses).length;
       const short = [...needs.values()].filter((n) => n.state !== 'ok').length;
       const changes = status.lastChanges.length
-        ? status.lastChanges.slice(0, 3).map((c) => `${esc(c.item)} ${c.delta > 0 ? '+' : ''}${fmt(c.delta)}`).join(', ') + (status.lastChanges.length > 3 ? ` +${status.lastChanges.length - 3} more` : '')
+        ? status.lastChanges.slice(0, 3).map((c) => c.label ? esc(c.label) : `${esc(c.item)} ${c.delta > 0 ? '+' : ''}${fmt(c.delta)}`).join(', ') + (status.lastChanges.length > 3 ? ` +${status.lastChanges.length - 3} more` : '')
         : 'None';
       body = `
         <div class="row"><span>Active quests</span><span>${active}</span></div>
         <div class="row"><span>Items still short</span><span style="color:#ffa26b">${short}</span></div>
-        <div class="row"><span>Last inventory read</span><span>${status.lastRead ? `${status.lastRead.source} · ${ago(status.lastRead.at)}` : 'Not yet'}</span></div>
+        <div class="row"><span>Last read</span><span>${status.lastRead ? `${status.lastRead.source} · ${ago(status.lastRead.at)}` : 'Not yet'}</span></div>
         <div class="row"><span>Last change sent</span><span>${changes}</span></div>
         <div class="btns"><button class="b" id="sync" ${busy ? 'disabled' : ''}>${busy ? 'Syncing…' : 'Sync now'}</button><a id="signout">Sign out</a></div>`;
     }

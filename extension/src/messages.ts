@@ -1,14 +1,15 @@
 import type { QuestStatus } from '../../src/types';
 
-export type InventorySource = 'Inventory page' | 'Item page' | 'Craftworks';
+export type InventorySource = 'Inventory page' | 'Item page' | 'Craftworks' | 'Mastery page';
 
 export type Request =
   | { type: 'status'; refresh?: boolean }
   | { type: 'signIn' }
   | { type: 'signOut' }
-  | { type: 'push'; inventory: Record<string, number>; full: boolean; source: InventorySource; allowRemovals?: boolean };
+  | { type: 'push'; inventory: Record<string, number>; full: boolean; source: InventorySource; allowRemovals?: boolean }
+  | { type: 'pushMastery'; levels: Record<string, number>; progress: Record<string, number> };
 
-export interface Change { item: string; delta: number }
+export interface Change { item: string; delta: number; label?: string }   // label replaces "item ±delta"
 
 export interface Status {
   signedIn: boolean;

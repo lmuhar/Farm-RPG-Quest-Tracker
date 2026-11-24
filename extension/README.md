@@ -13,6 +13,9 @@ Farm RPG.
 - Opening the **Inventory** page replaces the tracker's inventory, like the
   bookmarklet. An **item page** or **Craftworks** updates just those items.
   The tracker app picks the change up when you switch back to it.
+- The **Mastery** page sends your mastery levels and progress counts, merged
+  into what's saved the same way as the mastery bookmarklet (items not on the
+  page are left alone). It gets no badges.
 - The dot in the top-right corner opens a small panel: sync status, active
   quests, items still short, the last change sent, and **Sync now**.
 
