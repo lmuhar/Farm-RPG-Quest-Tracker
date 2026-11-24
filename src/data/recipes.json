@@ -5108,5 +5108,23 @@
         "quantity": 1
       }
     ]
+  },
+  {
+    "id": "1440",
+    "name": "Oak Table",
+    "ingredients": [
+      {
+        "item": "Oak",
+        "quantity": 80
+      },
+      {
+        "item": "Handsaw",
+        "quantity": 1
+      },
+      {
+        "item": "Nails",
+        "quantity": 24
+      }
+    ]
   }
 ]
