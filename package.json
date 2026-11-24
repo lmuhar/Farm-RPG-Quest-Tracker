@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && cp src/data/quests.json dist/quests.json",
-    "build:server": "tsc -p tsconfig.server.json",
+    "build": "tsc -b && vite build && cp src/data/quests.json dist/quests.json && cp widget/farm-rpg.js dist/farm-rpg-widget.js",
+    "build:server": "tsc -p tsconfig.server.json && node scripts/build-server.mjs",
     "lint": "oxlint",
     "sync:buddyfarm": "node scripts/sync-buddyfarm.mjs",
     "preview": "vite preview",

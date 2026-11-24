@@ -1,7 +1,7 @@
 // Runs on farmrpg.com. Adds have/need badges to the Inventory page, item pages
 // and Craftworks, reads the counts those pages show and sends them to the
 // tracker. It only reads the page; it never clicks anything or talks to Farm RPG.
-import { activeQuests, itemNeeds, type ItemNeed } from './needs';
+import { activeQuests, itemNeeds, type ItemNeed } from '../../src/itemNeeds';
 import { send, type InventorySource, type Status } from './messages';
 import { addMasteryCount } from '../../src/masteryParse';
 

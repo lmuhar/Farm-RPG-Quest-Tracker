@@ -33,6 +33,7 @@ import { HoldQuestsPage } from './components/HoldQuestsPage';
 import { QuestlinesTab } from './components/QuestlinesTab';
 import { BookmarkletSection } from './components/BookmarkletSection';
 import { MasterySyncSection } from './components/MasterySyncSection';
+import { WidgetKeySection } from './components/WidgetKeySection';
 
 const allQuests = questsData as Quest[];
 
@@ -414,6 +415,7 @@ export default function App() {
                   <BookmarkletSection />
                   <MasterySyncSection />
                   <BorgenSyncSection />
+                  <WidgetKeySection user={sync.user} />
                 </div>
                 <div className="space-y-4">
                   <InventoryGrowthCard />
