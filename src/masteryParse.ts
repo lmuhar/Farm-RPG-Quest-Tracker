@@ -4,6 +4,14 @@
 // still sync. Page chrome (tier headers, stats text) is never followed by a
 // progress line, so it's dropped.
 
+// Tier from the craft count (10k = Mastered, 100k = Grand, 1M = Mega); the count
+// is kept for everything still short of 1M.
+export function addMasteryCount(levels: Record<string, number>, progress: Record<string, number>, item: string, count: number) {
+  const lv = count >= 1_000_000 ? 3 : count >= 100_000 ? 2 : count >= 10_000 ? 1 : 0;
+  if (lv >= 1) levels[item] = lv;
+  if (lv <= 2) progress[item] = count; // toward 10k, 100k or 1M
+}
+
 export function parseMasteryText(text: string): { levels: Record<string, number>; progress: Record<string, number> } {
   const levels: Record<string, number> = {};
   const progress: Record<string, number> = {};
@@ -17,10 +25,7 @@ export function parseMasteryText(text: string): { levels: Record<string, number>
     if (SKIP.has(l) || l.includes('%') || l.startsWith('[')) continue;
     const pm = l.match(/^([\d,]+)\s*\/.*Progress/);
     if (pm && pending !== null) {
-      const count = parseInt(pm[1].replace(/,/g, ''), 10);
-      const lv = count >= 1_000_000 ? 3 : count >= 100_000 ? 2 : count >= 10_000 ? 1 : 0;
-      if (lv >= 1) levels[pending] = lv;
-      if (lv <= 2) progress[pending] = count; // toward 10k, 100k or 1M
+      addMasteryCount(levels, progress, pending, parseInt(pm[1].replace(/,/g, ''), 10));
       pending = null;
       continue;
     }

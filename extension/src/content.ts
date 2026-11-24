@@ -3,7 +3,7 @@
 // tracker. It only reads the page; it never clicks anything or talks to Farm RPG.
 import { activeQuests, itemNeeds, type ItemNeed } from './needs';
 import { send, type InventorySource, type Status } from './messages';
-import { parseMasteryText } from '../../src/masteryParse';
+import { addMasteryCount } from '../../src/masteryParse';
 
 let status: Status | null = null;
 let needs = new Map<string, ItemNeed>();
@@ -243,11 +243,19 @@ async function scan(force = false) {
 }
 
 // Mastery page: no badges, just send the levels and counts it shows. Uses the
-// same text parsing as the tracker's mastery bookmarklet.
+// same tier rules as the tracker's mastery bookmarklet.
 const MASTERY_PAGES = new Set(['mastery', 'masteries']);
 async function syncMastery(page: HTMLElement, force: boolean) {
   if (!status?.signedIn || busy) return;
-  const { levels, progress } = parseMasteryText(page.innerText);
+  // Every row has the item name in <strong> and "N / M Progress" under it.
+  // Reading rows (not visible text) also picks up items in collapsed tiers.
+  const levels: Record<string, number> = {};
+  const progress: Record<string, number> = {};
+  for (const title of page.querySelectorAll('.item-title')) {
+    const name = title.querySelector('strong')?.textContent?.trim();
+    const m = title.textContent?.match(/([\d,]+)\s*\/[^\n]*Progress/);
+    if (name && m) addMasteryCount(levels, progress, name, parseInt(m[1].replace(/,/g, ''), 10));
+  }
   if (!Object.keys(levels).length && !Object.keys(progress).length) return;
   const sig = JSON.stringify({ levels, progress });
   if (!force && lastPushed.get('mastery') === sig) return;
