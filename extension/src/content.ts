@@ -309,6 +309,9 @@ const PANEL_CSS = `
 .hd span:last-child{font-weight:400;font-size:12px}
 .row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid #2a2d33}
 .row span:first-child{white-space:nowrap}
+.upd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 8px;padding:6px 8px;border-radius:6px;background:#172a45;border:1px solid #2f5a8f;color:#bcd8ff}
+.upd a{color:#8cc2ff;font-weight:700;margin:0;font-size:12px}
+.ver{color:#5d626b;font-size:10px;margin-top:8px}
 .row span:last-child{text-align:right}
 .btns{display:flex;gap:8px;margin-top:10px;align-items:center}
 button.b{background:#3b2f5c;color:#e5d8ff;border:1px solid #57408a;border-radius:6px;padding:5px 10px;font-size:12px;font-weight:600;cursor:pointer}
@@ -327,7 +330,8 @@ function dotColor() {
 
 function renderPanel() {
   const parts: string[] = [`<style>${PANEL_CSS}</style>`];
-  parts.push(`<button class="dot" id="dot" title="Quest tracker" style="background:${dotColor()}"></button>`);
+  const upd = status?.update?.available ? status.update : null;
+  parts.push(`<button class="dot" id="dot" title="${upd ? 'Quest tracker · update available' : 'Quest tracker'}" style="background:${dotColor()}${upd ? ';border-color:#60a5fa;box-shadow:0 0 0 2px #60a5fa' : ''}"></button>`);
   if (panelOpen) {
     const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
     let body = '';
@@ -352,7 +356,11 @@ function renderPanel() {
     const synced = status?.signedIn
       ? (busy ? 'syncing…' : status.lastSync ? `<span style="color:#7fdc8f">● synced ${ago(status.lastSync)}</span>` : '')
       : '';
-    parts.push(`<div class="card"><div class="hd"><span>Quest tracker</span><span>${synced}</span></div>${body}${status?.error ? `<div class="err">${esc(status.error)}</div>` : ''}</div>`);
+    const updRow = upd
+      ? `<div class="upd"><span>Update available</span><a href="${esc(upd.url)}" target="_blank" rel="noopener">Download</a></div>`
+      : '';
+    const ver = status?.update?.current ? `<div class="ver">Version ${esc(status.update.current)}${upd ? ` · latest ${esc(upd.latest ?? '')}` : ''}</div>` : '';
+    parts.push(`<div class="card"><div class="hd"><span>Quest tracker</span><span>${synced}</span></div>${updRow}${body}${status?.error ? `<div class="err">${esc(status.error)}</div>` : ''}${ver}</div>`);
   }
   shadow.innerHTML = parts.join('');
   shadow.getElementById('dot')?.addEventListener('click', () => { panelOpen = !panelOpen; renderPanel(); });
@@ -371,4 +379,5 @@ setInterval(() => { if (panelOpen) renderPanel(); }, 15_000);
 renderPanel();
 send({ type: 'status' }).then(setStatus).catch((e) => setStatus({
   signedIn: false, email: null, questStatuses: {}, inventory: {}, lastSync: null, lastRead: null, lastChanges: [], error: (e as Error).message,
+  update: { current: '', latest: null, available: false, url: '' },
 }));
