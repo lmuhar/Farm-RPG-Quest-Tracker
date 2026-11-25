@@ -5126,5 +5126,63 @@
         "quantity": 24
       }
     ]
+  },
+  {
+    "id": "1569",
+    "name": "Green Halite Ring",
+    "ingredients": [
+      {
+        "item": "Green Halite",
+        "quantity": 1
+      },
+      {
+        "item": "Mushroom Paste",
+        "quantity": 1
+      },
+      {
+        "item": "Iron Ring",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1573",
+    "name": "Ocean Stone",
+    "ingredients": [
+      {
+        "item": "Oceanite",
+        "quantity": 1
+      },
+      {
+        "item": "Acid Extract",
+        "quantity": 1
+      },
+      {
+        "item": "Sandstone",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "1582",
+    "name": "Quench",
+    "ingredients": [
+      {
+        "item": "Straw",
+        "quantity": 1
+      },
+      {
+        "item": "Steel",
+        "quantity": 2
+      },
+      {
+        "item": "Bucket",
+        "quantity": 1
+      },
+      {
+        "item": "Magmastone",
+        "quantity": 1
+      }
+    ]
   }
 ]
