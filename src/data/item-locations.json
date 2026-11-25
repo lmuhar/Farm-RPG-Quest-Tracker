@@ -2575,5 +2575,19 @@
       "type": "explore",
       "rate": 29276.9
     }
+  ],
+  "Magmastone": [
+    {
+      "name": "Ember Caverns",
+      "type": "mining",
+      "rate": 5.2
+    }
+  ],
+  "Oceanite": [
+    {
+      "name": "Highland Hollow",
+      "type": "mining",
+      "rate": 14.3
+    }
   ]
 }
