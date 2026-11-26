@@ -20,6 +20,14 @@ export interface Status {
   lastRead: { source: InventorySource; at: number } | null;
   lastChanges: Change[];            // what the last push changed
   error: string | null;
+  update: UpdateInfo;
+}
+
+export interface UpdateInfo {
+  current: string;          // this build's id
+  latest: string | null;    // the id the tracker app is serving, if it could be read
+  available: boolean;
+  url: string;              // where to download the latest zip
 }
 
 export function send<T = Status>(req: Request): Promise<T> {

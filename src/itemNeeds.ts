@@ -2,11 +2,11 @@
 // tracker's STARMAPS & PAMRATS page: quests that take their items add up,
 // STARMAPS/PAMRATS only check you hold them (so the larger amount counts), and
 // crafting a held item from another held item comes on top.
-import questsData from '../../src/data/quests.json';
-import { isHoldQuest, questLabel } from '../../src/questNeeds';
-import { buildHoldPlan } from '../../src/holdQuests';
-import { parseItems } from '../../src/utils';
-import type { Quest, QuestStatus } from '../../src/types';
+import questsData from './data/quests.json';
+import { isHoldQuest, questLabel } from './questNeeds';
+import { buildHoldPlan } from './holdQuests';
+import { parseItems } from './utils';
+import type { Quest, QuestStatus } from './types';
 
 const allQuests = questsData as Quest[];
 

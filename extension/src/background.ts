@@ -2,7 +2,7 @@
 // saved tracker data, and writes inventory counts back into it. Only the
 // `inventory` part of the saved state is ever changed.
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import type { Change, InventorySource, Request, Status } from './messages';
+import type { Change, InventorySource, Request, Status, UpdateInfo } from './messages';
 import type { QuestStatus } from '../../src/types';
 
 const storage = {
@@ -82,7 +82,34 @@ function validInventory(inv: unknown): inv is Record<string, number> {
     && typeof qty === 'number' && Number.isInteger(qty) && qty >= 0 && qty <= MAX_QTY);
 }
 
+// ── Updates ──────────────────────────────────────────────────────────────────
+// The tracker app serves the latest build at /extension.zip with its id in
+// /extension.json. Checked at most hourly (or on Sync now).
+const UPDATE_EVERY_MS = 60 * 60 * 1000;
+async function checkUpdate(force: boolean): Promise<UpdateInfo> {
+  const { upd } = await chrome.storage.session.get('upd');
+  if (!force && upd && Date.now() - upd.at < UPDATE_EVERY_MS) return upd.info;
+  const url = `${__APP_URL__}/extension.zip`;
+  let current = '';
+  let latest: string | null = null;
+  try {
+    current = ((await (await fetch(chrome.runtime.getURL('build.json'))).json()) as { id: string }).id;
+    const res = await fetch(`${__APP_URL__}/extension.json`, { cache: 'no-store' });
+    const id = res.ok ? ((await res.json()) as { id?: unknown }).id : null;
+    if (typeof id === 'string' && /^[0-9a-f]{10}$/.test(id)) latest = id;
+  } catch {
+    // offline or the app is down: try again next time
+  }
+  const info: UpdateInfo = { current, latest, available: !!latest && !!current && latest !== current, url };
+  await chrome.storage.session.set({ upd: { at: Date.now(), info } });
+  return info;
+}
+
 async function status(refresh = false, error: string | null = null): Promise<Status> {
+  return { ...(await syncStatus(refresh, error)), update: await checkUpdate(refresh) };
+}
+
+async function syncStatus(refresh: boolean, error: string | null): Promise<Omit<Status, 'update'>> {
   const { data: { session } } = await supabase.auth.getSession();
   const meta = await getMeta();
   if (!session) {

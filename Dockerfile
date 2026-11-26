@@ -7,7 +7,8 @@ ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_ANON_KEY
 ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
 ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
-RUN npm run build && npm run build:server
+# The Chrome extension's latest build is served at /extension.zip (+ /extension.json for update checks)
+RUN npm run build && npm run build:server && npm run build:extension && cp extension/release/* dist/
 
 FROM node:20-alpine
 WORKDIR /app

@@ -24,17 +24,28 @@ the extension isn't around.
 
 ## Install
 
-1. Download the **farm-rpg-quest-tracker-extension** artifact from the latest
-   green **CI** run (or build it yourself: `npm ci && npm run build:extension`,
-   which writes `extension/dist`).
+1. Download the latest build from the tracker app:
+   `https://farm-rpg-tracker.fly.dev/extension.zip` (or build it yourself:
+   `npm ci && npm run build:extension`, which writes `extension/dist`).
 2. Unzip it.
 3. In Chrome open `chrome://extensions`, turn on **Developer mode**, click
    **Load unpacked** and pick the unzipped folder.
 4. Open farmrpg.com, click the dot in the top-right corner and **Sign in with
    Google** using the account you use for the tracker.
 
-To update, replace the folder's contents with a newer build and click the
-reload arrow on the extension's card.
+## Updates
+
+Chrome doesn't update unpacked extensions by itself, so the extension checks
+the tracker app for a newer build about once an hour (and on **Sync now**).
+When there is one, the dot gets a blue ring and the panel shows **Update
+available · Download**. Download the zip, unzip it over your extension folder
+and click the reload arrow on the extension's card in `chrome://extensions`.
+
+Each build has an id (a hash of its code, shown at the bottom of the panel).
+The app's Docker build runs `npm run build:extension` and serves
+`extension/release/extension.zip` and `extension.json` from its `dist/`, so a
+deploy is what publishes a new version. `EXTENSION_APP_URL` overrides the app
+address, which otherwise comes from `fly.toml`'s app name.
 
 ## One-time Supabase setting
 
