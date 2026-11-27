@@ -50,6 +50,7 @@ export function useSync() {
   // The saved row as this tab last read or wrote it: its content and timestamp.
   // Saves only go through if the row still has that timestamp.
   const baseRef = useRef<{ state: Json; updatedAt: string } | null>(null);
+  const savingRef = useRef<Promise<void> | null>(null);
 
   const saveToCloud = useCallback(async (userId: string, state: AppState) => {
     setSyncStatus('syncing');
@@ -168,11 +169,12 @@ export function useSync() {
     const unsub = useStore.subscribe(() => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
       saveTimerRef.current = setTimeout(() => {
+        saveTimerRef.current = null;
         if (!userRef.current) return;
         const snap = snapshotState();
         // Nothing changed since the last read or save: don't write
         if (baseRef.current && same(snap, baseRef.current.state)) return;
-        saveToCloud(userRef.current.id, snap);
+        savingRef.current = saveToCloud(userRef.current.id, snap);
       }, 2000);
     });
     return () => {
@@ -184,14 +186,25 @@ export function useSync() {
   // Pull latest when switching back to this tab (handles switching devices)
   useEffect(() => {
     if (!user) return;
-    const onVisible = () => {
-      if (document.visibilityState === 'visible' && userRef.current) {
-        loadAndApply(userRef.current.id, false);
+    const onVisible = async () => {
+      if (!userRef.current) return;
+      const userId = userRef.current.id;
+      // An edit still waiting for its 2s save goes out now, before anything is
+      // reloaded over it (the save merges with whatever changed elsewhere).
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+        const snap = snapshotState();
+        if (!baseRef.current || !same(snap, baseRef.current.state)) savingRef.current = saveToCloud(userId, snap);
       }
+      // Let a save that's under way finish first, or the reload could put the
+      // old counts back in the app and the next save would write them out again
+      if (savingRef.current) await savingRef.current;
+      if (document.visibilityState === 'visible') loadAndApply(userId, false);
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [user, loadAndApply]);
+  }, [user, loadAndApply, saveToCloud]);
 
   const signIn = useCallback(
     () => supabase.auth.signInWithOAuth({

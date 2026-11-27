@@ -10,6 +10,9 @@ let needs = new Map<string, ItemNeed>();
 let version = 0;                    // bumps whenever needs change, so badges redraw
 let busy = false;
 const lastPushed = new Map<string, string>();   // what we last sent per page, to skip repeats
+// When each game page first appeared. Counts on a page are only as new as the
+// page, so the background refuses them if the tracker was saved after that.
+const seenAt = new WeakMap<Element, number>();
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 const ago = (t: number) => {
@@ -206,6 +209,7 @@ async function scan(force = false) {
   if (!force && scanned?.page === page && scanned.version === version) return;
   const pageName = (page as HTMLElement).dataset.page ?? '';
   scanned = { page, version };
+  if (!seenAt.has(page)) seenAt.set(page, Date.now());
   // Matched by page name, or by its "Mastery In-Progress" heading in case the name differs
   if (MASTERY_PAGES.has(pageName) || (!READERS[pageName] && page.textContent?.includes('Mastery In-Progress'))) {
     return syncMastery(page as HTMLElement, force);
@@ -233,7 +237,7 @@ async function scan(force = false) {
   busy = true;
   renderPanel();
   try {
-    setStatus(await send({ type: 'push', inventory: read.counts, full: read.full, source: read.source, allowRemovals: force }));
+    setStatus(await send({ type: 'push', inventory: read.counts, full: read.full, source: read.source, allowRemovals: force, readAt: seenAt.get(page)! }));
   } catch (e) {
     if (status) setStatus({ ...status, error: (e as Error).message });
   } finally {
@@ -263,7 +267,7 @@ async function syncMastery(page: HTMLElement, force: boolean) {
   busy = true;
   renderPanel();
   try {
-    setStatus(await send({ type: 'pushMastery', levels, progress }));
+    setStatus(await send({ type: 'pushMastery', levels, progress, readAt: seenAt.get(page)! }));
   } catch (e) {
     setStatus({ ...status, error: (e as Error).message });
   } finally {
