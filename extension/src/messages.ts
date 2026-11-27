@@ -6,8 +6,8 @@ export type Request =
   | { type: 'status'; refresh?: boolean }
   | { type: 'signIn' }
   | { type: 'signOut' }
-  | { type: 'push'; inventory: Record<string, number>; full: boolean; source: InventorySource; allowRemovals?: boolean }
-  | { type: 'pushMastery'; levels: Record<string, number>; progress: Record<string, number> };
+  | { type: 'push'; inventory: Record<string, number>; full: boolean; source: InventorySource; allowRemovals?: boolean; readAt: number }
+  | { type: 'pushMastery'; levels: Record<string, number>; progress: Record<string, number>; readAt: number };
 
 export interface Change { item: string; delta: number; label?: string }   // label replaces "item ±delta"
 

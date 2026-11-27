@@ -72,6 +72,7 @@ const MAX_REMOVED = (before: number) => Math.max(10, Math.floor(before * 0.25));
 const MAX_ITEMS = 5000;
 const MAX_QTY = 1_000_000_000;
 const SOURCES: InventorySource[] = ['Inventory page', 'Item page', 'Craftworks'];
+const validTime = (t: unknown): t is number => typeof t === 'number' && Number.isFinite(t) && t > 0 && t <= Date.now() + 60_000;
 const validLevels = (v: unknown): v is Record<string, number> =>
   validInventory(v) && Object.values(v).every((lv) => lv <= 3);
 function validInventory(inv: unknown): inv is Record<string, number> {
@@ -144,7 +145,13 @@ async function signIn(): Promise<Status> {
   return status(true, exchangeError?.message ?? null);
 }
 
-async function push(inventory: Record<string, number>, full: boolean, source: InventorySource, allowRemovals: boolean): Promise<Status> {
+// A game page's counts are as old as the page. If the tracker was saved after
+// the page appeared (e.g. you edited a count in the app while this page sat
+// open), its counts may be out of date, so they're not written.
+const STALE_PAGE = 'This page was open from before your tracker was last saved, so its counts weren\'t sent (they could undo newer changes). Reload the page to send fresh counts.';
+const pageIsStale = (readAt: number, updatedAt: string | null) => updatedAt !== null && readAt < Date.parse(updatedAt);
+
+async function push(inventory: Record<string, number>, full: boolean, source: InventorySource, allowRemovals: boolean, readAt: number): Promise<Status> {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return status();
   await setMeta({ lastRead: { source, at: Date.now() } });
@@ -160,6 +167,7 @@ async function push(inventory: Record<string, number>, full: boolean, source: In
         if (delta !== 0) changes.push({ item, delta });
       }
       if (!changes.length) return status();
+      if (pageIsStale(readAt, updatedAt)) return status(false, STALE_PAGE);
       if (full && !allowRemovals) {
         const had = Object.values(before).filter((q) => q > 0).length;
         const removed = Object.keys(before).filter((item) => (before[item] ?? 0) > 0 && !(item in after)).length;
@@ -182,7 +190,7 @@ async function push(inventory: Record<string, number>, full: boolean, source: In
 
 // Mastery page: merged into what's saved, like the mastery bookmarklet (the page
 // only lists the items you track, so nothing else is cleared).
-async function pushMastery(levels: Record<string, number>, progress: Record<string, number>): Promise<Status> {
+async function pushMastery(levels: Record<string, number>, progress: Record<string, number>, readAt: number): Promise<Status> {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) return status();
   await setMeta({ lastRead: { source: 'Mastery page', at: Date.now() } });
@@ -198,6 +206,7 @@ async function pushMastery(levels: Record<string, number>, progress: Record<stri
         ...Object.keys(progress).filter((i) => oldProgress[i] !== progress[i]),
       ]);
       if (!changed.size) return status();
+      if (pageIsStale(readAt, updatedAt)) return status(false, STALE_PAGE);
       const next = { ...state, masteryLevels: nextLevels, masteryProgress: nextProgress };
       if (await saveRow(session.user.id, next, updatedAt)) {
         await setMeta({
@@ -232,15 +241,15 @@ chrome.runtime.onMessage.addListener((req: Request, sender: { id?: string; url?:
       case 'signIn': return signIn();
       case 'signOut': await supabase.auth.signOut(); cache = null; return status();
       case 'push':
-        if (!validInventory(req.inventory) || typeof req.full !== 'boolean' || !SOURCES.includes(req.source)) {
+        if (!validInventory(req.inventory) || typeof req.full !== 'boolean' || !SOURCES.includes(req.source) || !validTime(req.readAt)) {
           return status(false, 'Ignored counts that did not look valid.');
         }
-        return push(req.inventory, req.full, req.source, req.allowRemovals === true);
+        return push(req.inventory, req.full, req.source, req.allowRemovals === true, req.readAt);
       case 'pushMastery':
-        if (!validLevels(req.levels) || !validInventory(req.progress)) {
+        if (!validLevels(req.levels) || !validInventory(req.progress) || !validTime(req.readAt)) {
           return status(false, 'Ignored mastery data that did not look valid.');
         }
-        return pushMastery(req.levels, req.progress);
+        return pushMastery(req.levels, req.progress, req.readAt);
       default: return status(false, 'Unknown request');
     }
   };
